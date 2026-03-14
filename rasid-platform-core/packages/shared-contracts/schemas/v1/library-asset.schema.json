@@ -1,1 +1,0 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://rasid/schemas/v1/library-asset.schema.json","title":"LibraryAsset","type":"object","required":["asset_id","asset_type","version","tenant_scope"],"properties":{"asset_id":{"type":"string"},"asset_type":{"type":"string"},"version":{"type":"string"},"tenant_scope":{"enum":["tenant","workspace","user"]}}}
