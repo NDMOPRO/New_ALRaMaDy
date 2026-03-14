@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/evidence.schema.json",
+  "title": "EvidenceStatus",
+  "type": "object",
+  "required": ["verification_status", "evidence_pack_ref", "validation_checks_executed"],
+  "properties": {
+    "verification_status": { "enum": ["unverified", "verified", "success_with_warnings", "degraded", "failed"] },
+    "evidence_pack_ref": { "type": "string" },
+    "validation_checks_executed": { "type": "array", "items": { "type": "object" } }
+  }
+}

@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://rasid/schemas/v1/degrade-warning.schema.json","title":"ExecutionOutcome","type":"object","required":["outcome","warnings","degraded_items","failed_items"],"properties":{"outcome":{"enum":["success","success_with_warnings","degraded","failed"]}}}

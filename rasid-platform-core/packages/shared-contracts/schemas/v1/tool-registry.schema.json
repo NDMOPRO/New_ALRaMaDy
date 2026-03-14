@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://rasid/schemas/v1/tool-registry.schema.json","title":"ToolRegistration","type":"object","required":["tool_id","owner_capability","version","input_contract","output_contract"],"properties":{"tool_id":{"type":"string"},"owner_capability":{"type":"string"},"version":{"type":"string"}}}

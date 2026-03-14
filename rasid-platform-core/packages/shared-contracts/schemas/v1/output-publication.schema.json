@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://rasid/schemas/v1/output-publication.schema.json","title":"Publication","type":"object","required":["publication_id","artifact_ref","publication_type","permission_scope","evidence_ref"],"properties":{"publication_id":{"type":"string"},"artifact_ref":{"type":"string"},"publication_type":{"type":"string"}}}

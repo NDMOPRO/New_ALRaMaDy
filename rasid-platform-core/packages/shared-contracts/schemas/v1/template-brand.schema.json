@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://rasid/schemas/v1/template-brand.schema.json","title":"TemplateBrandPreset","type":"object","required":["preset_id","scope","colors","fonts","rtl_support"],"properties":{"preset_id":{"type":"string"},"scope":{"enum":["org","workspace","user","uploaded_custom"]},"rtl_support":{"type":"boolean"}}}

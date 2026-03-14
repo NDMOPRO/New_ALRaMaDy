@@ -1,0 +1,13 @@
+{
+  "name": "rasid-platform-core",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "node apps/contracts-cli/index.mjs"
+  }
+}
