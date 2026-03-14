@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0",
+  "contracts": [
+    "canonical",
+    "artifact",
+    "job_lifecycle",
+    "action_runtime",
+    "evidence",
+    "audit_lineage",
+    "library_asset",
+    "brand_template",
+    "canvas_integration",
+    "source_connector",
+    "tenant_permission",
+    "mode",
+    "degrade_warning",
+    "capability_registry",
+    "output_publication"
+  ]
+}

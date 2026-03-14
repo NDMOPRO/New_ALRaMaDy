@@ -1,0 +1,20 @@
+name: rasid-platform-core-ci
+
+on:
+  push:
+    paths:
+      - 'rasid-platform-core/**'
+  pull_request:
+    paths:
+      - 'rasid-platform-core/**'
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rasid-platform-core
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run baseline checks
+        run: npm run check

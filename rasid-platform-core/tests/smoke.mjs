@@ -1,0 +1,30 @@
+import { validateCanonical, validateMode, validateDegrade } from "../packages/contracts/src/index.mjs";
+import { validateArtifact } from "../packages/artifacts/src/index.mjs";
+import { validateJob } from "../packages/jobs/src/index.mjs";
+import { validateEvidenceStatus } from "../packages/evidence/src/index.mjs";
+import { validateAuditEvent } from "../packages/audit-lineage/src/index.mjs";
+import { validateLibraryAsset } from "../packages/library/src/index.mjs";
+import { validateBrandTemplate } from "../packages/brand-template/src/index.mjs";
+import { validateCanvasState } from "../packages/canvas-contract/src/index.mjs";
+import { validateTenantPermission } from "../packages/permissions/src/index.mjs";
+import { validateSource } from "../packages/connectors/src/index.mjs";
+import { validatePublication } from "../packages/output-publication/src/index.mjs";
+import { CapabilityRegistry } from "../packages/capability-registry/src/index.mjs";
+
+validateMode("easy");
+validateMode("advanced");
+validateCanonical({ contract: "canonical", version: "1.0.0", source_descriptors: [], entities: {}, layout_metadata: {}, data_binding_refs: [], formula_refs: [], semantic_labels: [], lineage_refs: [], template_refs: [], localization: {}, editability_flags: {}, strictness_mode: "strict", evidence_refs: [] });
+validateArtifact({ contract: "artifact", version: "1.0.0", artifact_id: "a1", artifact_type: "report", artifact_subtype: "std", project_id: "p1", workspace_id: "w1", source_refs: [], parent_artifact_refs: [], created_by: "u1", created_at: "now", mode: "easy", editable_status: "editable", template_status: "applied", lineage_ref: "l1", evidence_ref: "e1", verification_status: "verified", storage_ref: "s1", preview_ref: "p1", export_refs: [], version_ref: "v1", tenant_ref: "t1", permission_scope: {} });
+validateJob({ contract: "job_lifecycle", version: "1.0.0", job_id: "j1", capability: "reports", requested_mode: "easy", source_refs: [], artifact_refs: [], state: "created", progress: 0, stage: "created", warnings: [], retry_policy: {}, evidence_ref: "e1", resource_profile: {} });
+validateEvidenceStatus({ contract: "evidence", version: "1.0.0", verification_status: "verified", evidence_pack_ref: "ep1", warnings: [], validation_checks_executed: [], failure_reasons: [], degraded_reasons: [], reproducibility_metadata: {} });
+validateAuditEvent({ contract: "audit_lineage", version: "1.0.0", event_id: "ev1", timestamp: "now", actor_ref: "u1", actor_type: "user", action_ref: "ac1", object_refs: [], workspace_id: "w1", tenant_ref: "t1", metadata: {} });
+validateLibraryAsset({ contract: "library_asset", version: "1.0.0", asset_id: "as1", asset_type: "template", source: "upload", tags: [], version: "1.0.0", tenant_scope: "tenant", permission_scope: {}, reuse_policy: "free", dependency_refs: [] });
+validateBrandTemplate({ contract: "brand_template", version: "1.0.0", preset_id: "b1", scope: "org", colors: [], fonts: [], logos: [], layout_rules: [], spacing_grid_rules: [], chart_palette: [], icon_style: "default", rtl_support: true, lock_behavior: {} });
+validateCanvasState({ contract: "canvas_integration", version: "1.0.0", session_id: "s1", workspace_id: "w1", tenant_ref: "t1", mode_state: "easy", selected_sources: [], selected_artifacts: [], action_suggestions: [], action_execution_state: [], inspector_state: {}, evidence_drawer_state: {}, compare_state: {}, library_state: {}, drag_drop_payloads: [] });
+validateTenantPermission({ contract: "tenant_permission", version: "1.0.0", tenant: {}, workspace: {}, role_binding: {}, permission_scope: {} });
+validateSource({ contract: "source_connector", version: "1.0.0", source_id: "src1", source_type: "uploaded_file", ingestion_batch_id: "ib1", tenant_ref: "t1", original_name: "f.csv", media_type: "text/csv", size: 1, parser_status: "parsed", profiling_status: "profiled", schema_summary: {}, sensitivity_hint: "internal" });
+validateDegrade({ outcome: "success", warnings: [], degraded_items: [], failed_items: [], editability_after_run: {}, rerun_repair: {} });
+validatePublication({ contract: "output_publication", version: "1.0.0", publication_id: "pb1", artifact_ref: "a1", publication_type: "preview", editable_default: true, explicit_non_editable_export: false, target_ref: "workspace", published_by: "u1", published_at: "now", permission_scope: {}, evidence_ref: "e1" });
+
+if (!CapabilityRegistry.capabilities.length) throw new Error("capability registry empty");
+console.log("smoke: all shared contracts validate with baseline fixtures");

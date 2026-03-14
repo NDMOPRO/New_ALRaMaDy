@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/artifact.schema.json",
+  "title": "Artifact",
+  "type": "object",
+  "required": ["artifact_id", "artifact_type", "workspace_id", "mode", "evidence_ref", "verification_status", "tenant_ref"],
+  "properties": {
+    "artifact_id": { "type": "string" },
+    "artifact_type": { "type": "string" },
+    "artifact_subtype": { "type": "string" },
+    "workspace_id": { "type": "string" },
+    "mode": { "enum": ["easy", "advanced"] },
+    "evidence_ref": { "type": "string" },
+    "verification_status": { "enum": ["unverified", "verified", "success_with_warnings", "degraded", "failed"] },
+    "tenant_ref": { "type": "string" }
+  }
+}

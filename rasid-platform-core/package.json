@@ -1,0 +1,19 @@
+{
+  "name": "rasid-platform-core",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "typecheck": "node tools/typecheck.mjs",
+    "lint": "node tools/lint.mjs",
+    "test:smoke": "node tests/smoke.mjs",
+    "check:boundaries": "node tools/check-boundaries.mjs",
+    "check": "npm run build && npm run typecheck && npm run lint && npm run check:boundaries && npm run test:smoke",
+    "start": "node apps/contracts-cli/index.mjs"
+  }
+}

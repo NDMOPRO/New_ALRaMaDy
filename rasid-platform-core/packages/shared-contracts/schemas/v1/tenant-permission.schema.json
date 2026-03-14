@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://rasid/schemas/v1/tenant-permission.schema.json","title":"TenantPermission","type":"object","required":["tenant","workspace","role_binding","permission_scope"],"properties":{"tenant":{"type":"object"},"workspace":{"type":"object"},"role_binding":{"type":"object"},"permission_scope":{"type":"object"}}}
