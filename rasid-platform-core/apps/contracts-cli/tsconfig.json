@@ -8,6 +8,7 @@
   "references": [
     { "path": "../../packages/common" },
     { "path": "../../packages/contracts" },
+    { "path": "../../packages/dashboard-engine" },
     { "path": "../../packages/runtime" },
     { "path": "../../packages/artifacts" },
     { "path": "../../packages/jobs" },

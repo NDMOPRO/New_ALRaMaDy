@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/dashboard.schema.json",
+  "title": "Dashboard",
+  "type": "object",
+  "required": ["dashboard_id", "workspace_id", "mode", "status", "artifact_ref", "current_version_ref", "widgets", "pages"],
+  "properties": {
+    "dashboard_id": { "type": "string" },
+    "workspace_id": { "type": "string" },
+    "mode": { "enum": ["easy", "advanced"] },
+    "status": { "enum": ["draft", "active", "published", "archived"] },
+    "artifact_ref": { "type": "string" },
+    "current_version_ref": { "type": "string" },
+    "widgets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["widget_id", "widget_type", "page_id"],
+        "properties": {
+          "widget_id": { "type": "string" },
+          "widget_type": {
+            "enum": ["kpi_card", "table", "bar_chart", "line_chart", "pie_chart", "area_chart", "combo_chart", "filter", "selector", "text", "image", "section"]
+          },
+          "page_id": { "type": "string" }
+        }
+      }
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["page_id", "title"],
+        "properties": {
+          "page_id": { "type": "string" },
+          "title": { "type": "string" }
+        }
+      }
+    }
+  }
+}

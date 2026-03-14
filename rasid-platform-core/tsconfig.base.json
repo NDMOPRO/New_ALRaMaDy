@@ -13,6 +13,8 @@
     "paths": {
       "@rasid/common": ["packages/common/src/index"],
       "@rasid/contracts": ["packages/contracts/src/index"],
+      "@rasid/dashboard-engine": ["packages/dashboard-engine/src/index"],
+      "@rasid/excel-engine": ["packages/excel-engine/src/index"],
       "@rasid/runtime": ["packages/runtime/src/index"],
       "@rasid/artifacts": ["packages/artifacts/src/index"],
       "@rasid/jobs": ["packages/jobs/src/index"],

@@ -13,6 +13,7 @@
     "@rasid/canvas-contract": "1.0.0",
     "@rasid/connectors": "1.0.0",
     "@rasid/contracts": "1.0.0",
+    "@rasid/dashboard-engine": "1.0.0",
     "@rasid/evidence": "1.0.0",
     "@rasid/jobs": "1.0.0",
     "@rasid/library": "1.0.0",

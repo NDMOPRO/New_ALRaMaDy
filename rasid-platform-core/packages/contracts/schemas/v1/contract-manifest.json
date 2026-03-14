@@ -2,19 +2,26 @@
   "packVersion": "1.0.0",
   "contracts": {
     "canonical": "1.0.0",
+    "dashboard": "1.0.0",
     "artifact": "1.0.0",
     "job": "1.0.0",
     "action": "1.0.0",
+    "excel": "1.0.0",
     "tool_registry": "1.0.0",
     "evidence": "1.0.0",
     "audit": "1.0.0",
     "library": "1.0.0",
     "mode": "1.0.0",
     "degrade": "1.0.0",
+    "strict": "1.0.0",
+    "localization": "1.0.0",
     "template_brand": "1.0.0",
     "permission": "1.0.0",
     "source": "1.0.0",
     "publication": "1.0.0",
-    "canvas": "1.0.0"
+    "canvas": "1.0.0",
+    "report": "1.0.0",
+    "presentation": "1.0.0",
+    "schedule": "1.0.0"
   }
 }

@@ -5,20 +5,27 @@ export const CONTRACT_PACK_VERSION = "1.0.0" as const;
 
 export const ContractNameSchema = z.enum([
   "canonical",
+  "dashboard",
   "artifact",
   "job",
   "action",
+  "excel",
   "tool_registry",
   "evidence",
   "audit",
   "library",
   "mode",
   "degrade",
+  "strict",
+  "localization",
   "template_brand",
   "permission",
   "source",
   "publication",
-  "canvas"
+  "canvas",
+  "report",
+  "presentation",
+  "schedule"
 ]);
 
 export const SemverSchema = z.string().regex(/^\d+\.\d+\.\d+$/);
@@ -126,7 +133,7 @@ export const PreviewRefSchema = z.object({
 
 export const ExportRefSchema = z.object({
   export_id: IdentifierSchema,
-  export_type: z.enum(["pdf", "pptx", "xlsx", "csv", "png", "json", "zip", "other"]),
+  export_type: z.enum(["pdf", "docx", "html", "pptx", "xlsx", "csv", "png", "json", "zip", "other"]),
   explicit_non_editable: z.boolean(),
   storage_ref: z.string()
 });
@@ -179,20 +186,27 @@ export const contractEnvelope = (contractName: z.infer<typeof ContractNameSchema
 
 export const CONTRACT_VERSIONS = {
   canonical: CONTRACT_PACK_VERSION,
+  dashboard: CONTRACT_PACK_VERSION,
   artifact: CONTRACT_PACK_VERSION,
   job: CONTRACT_PACK_VERSION,
   action: CONTRACT_PACK_VERSION,
+  excel: CONTRACT_PACK_VERSION,
   tool_registry: CONTRACT_PACK_VERSION,
   evidence: CONTRACT_PACK_VERSION,
   audit: CONTRACT_PACK_VERSION,
   library: CONTRACT_PACK_VERSION,
   mode: CONTRACT_PACK_VERSION,
   degrade: CONTRACT_PACK_VERSION,
+  strict: CONTRACT_PACK_VERSION,
+  localization: CONTRACT_PACK_VERSION,
   template_brand: CONTRACT_PACK_VERSION,
   permission: CONTRACT_PACK_VERSION,
   source: CONTRACT_PACK_VERSION,
   publication: CONTRACT_PACK_VERSION,
-  canvas: CONTRACT_PACK_VERSION
+  canvas: CONTRACT_PACK_VERSION,
+  report: CONTRACT_PACK_VERSION,
+  presentation: CONTRACT_PACK_VERSION,
+  schedule: CONTRACT_PACK_VERSION
 } as const;
 
 export const assertContractVersion = (contractName: keyof typeof CONTRACT_VERSIONS, version: string): void => {
