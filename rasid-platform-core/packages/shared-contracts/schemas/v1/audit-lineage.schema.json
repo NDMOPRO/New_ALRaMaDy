@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://rasid/schemas/v1/audit-lineage.schema.json","title":"AuditEvent","type":"object","required":["event_id","timestamp","actor_ref","action_ref"],"properties":{"event_id":{"type":"string"},"timestamp":{"type":"string"},"actor_ref":{"type":"string"},"action_ref":{"type":"string"}}}

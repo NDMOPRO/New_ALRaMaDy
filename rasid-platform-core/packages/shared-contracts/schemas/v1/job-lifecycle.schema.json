@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/job-lifecycle.schema.json",
+  "title": "JobLifecycle",
+  "type": "object",
+  "required": ["job_id", "capability", "requested_mode", "state", "progress", "evidence_ref"],
+  "properties": {
+    "job_id": { "type": "string" },
+    "capability": { "type": "string" },
+    "requested_mode": { "enum": ["easy", "advanced"] },
+    "state": {
+      "enum": ["created", "queued", "parsing", "profiling", "planning", "awaiting_approval", "executing", "verifying", "completed", "degraded", "failed", "cancelled", "partially_completed"]
+    },
+    "progress": { "type": "number", "minimum": 0, "maximum": 100 },
+    "evidence_ref": { "type": "string" }
+  }
+}
