@@ -1,0 +1,34 @@
+name: shared-foundation
+
+on:
+  push:
+    branches:
+      - main
+      - codex/**
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: rasid-platform-core/package-lock.json
+      - name: Install
+        working-directory: rasid-platform-core
+        run: npm ci
+      - name: Build
+        working-directory: rasid-platform-core
+        run: npm run build
+      - name: Lint
+        working-directory: rasid-platform-core
+        run: npm run lint
+      - name: Smoke
+        working-directory: rasid-platform-core
+        run: npm run test:smoke
+      - name: Check
+        working-directory: rasid-platform-core
+        run: npm run check

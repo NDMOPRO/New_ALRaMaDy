@@ -1,6 +1,23 @@
 {
   "name": "@rasid/contracts-cli",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
-  "type": "module"
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@rasid/common": "1.0.0",
+    "@rasid/artifacts": "1.0.0",
+    "@rasid/audit-lineage": "1.0.0",
+    "@rasid/brand-template": "1.0.0",
+    "@rasid/capability-registry": "1.0.0",
+    "@rasid/canvas-contract": "1.0.0",
+    "@rasid/connectors": "1.0.0",
+    "@rasid/contracts": "1.0.0",
+    "@rasid/evidence": "1.0.0",
+    "@rasid/jobs": "1.0.0",
+    "@rasid/library": "1.0.0",
+    "@rasid/output-publication": "1.0.0",
+    "@rasid/permissions": "1.0.0",
+    "@rasid/runtime": "1.0.0"
+  }
 }

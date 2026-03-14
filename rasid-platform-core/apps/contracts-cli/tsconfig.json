@@ -1,9 +1,25 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "composite": true,
     "rootDir": "src",
-    "outDir": "dist",
-    "baseUrl": "."
+    "outDir": "dist"
   },
+  "references": [
+    { "path": "../../packages/common" },
+    { "path": "../../packages/contracts" },
+    { "path": "../../packages/runtime" },
+    { "path": "../../packages/artifacts" },
+    { "path": "../../packages/jobs" },
+    { "path": "../../packages/evidence" },
+    { "path": "../../packages/audit-lineage" },
+    { "path": "../../packages/library" },
+    { "path": "../../packages/brand-template" },
+    { "path": "../../packages/canvas-contract" },
+    { "path": "../../packages/permissions" },
+    { "path": "../../packages/connectors" },
+    { "path": "../../packages/output-publication" },
+    { "path": "../../packages/capability-registry" }
+  ],
   "include": ["src"]
 }

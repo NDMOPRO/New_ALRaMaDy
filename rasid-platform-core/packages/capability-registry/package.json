@@ -1,0 +1,17 @@
+{
+  "name": "@rasid/capability-registry",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@rasid/contracts": "1.0.0",
+    "@rasid/runtime": "1.0.0"
+  }
+}

@@ -7,7 +7,16 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "node scripts/build.mjs",
-    "start": "node apps/contracts-cli/index.mjs"
+    "build": "npm run typecheck && npm run build:checks",
+    "typecheck": "tsc -b tsconfig.json",
+    "build:checks": "node scripts/check-contract-versions.mjs",
+    "lint": "node scripts/check-shared-guardrails.mjs && node scripts/check-workspace-imports.mjs",
+    "test:smoke": "node scripts/smoke/foundation-smoke.mjs",
+    "check": "npm run lint && npm run build:checks && npm run test:smoke",
+    "start": "node apps/contracts-cli/dist/index.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "zod": "^3.24.2"
   }
 }

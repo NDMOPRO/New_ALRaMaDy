@@ -1,16 +1,12 @@
 # rasid-platform-core
 
-Baseline monorepo/workspace for Rasid shared contracts.
+Shared executable foundation for Rasid.
 
-## Included baseline
-- monorepo workspace structure (`packages/*`, `apps/*`)
-- shared contracts as TypeScript + Zod schemas in `packages/shared-contracts/src/contracts`
-- versioned JSON schemas in `packages/shared-contracts/schemas/v1`
-- action registry in `packages/shared-contracts/src/registry/actionRegistry.json`
-- runnable CLI bootstrap in `apps/contracts-cli/index.mjs`
-
-## Run
+Build:
 ```bash
+npm install
 npm run build
-npm start
+npm run check
 ```
+
+Build any capability only through the shared packages under `packages/`.

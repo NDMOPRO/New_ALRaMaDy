@@ -2,12 +2,29 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "CommonJS",
+    "moduleResolution": "Node",
     "declaration": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "outDir": "dist"
+    "baseUrl": ".",
+    "paths": {
+      "@rasid/common": ["packages/common/src/index"],
+      "@rasid/contracts": ["packages/contracts/src/index"],
+      "@rasid/runtime": ["packages/runtime/src/index"],
+      "@rasid/artifacts": ["packages/artifacts/src/index"],
+      "@rasid/jobs": ["packages/jobs/src/index"],
+      "@rasid/evidence": ["packages/evidence/src/index"],
+      "@rasid/audit-lineage": ["packages/audit-lineage/src/index"],
+      "@rasid/library": ["packages/library/src/index"],
+      "@rasid/brand-template": ["packages/brand-template/src/index"],
+      "@rasid/canvas-contract": ["packages/canvas-contract/src/index"],
+      "@rasid/permissions": ["packages/permissions/src/index"],
+      "@rasid/connectors": ["packages/connectors/src/index"],
+      "@rasid/output-publication": ["packages/output-publication/src/index"],
+      "@rasid/capability-registry": ["packages/capability-registry/src/index"]
+    }
   }
 }
