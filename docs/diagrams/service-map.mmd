@@ -1,0 +1,86 @@
+flowchart LR
+  subgraph entrypoints["HTTP and App Entry Points"]
+    gateway["Unified Gateway"]
+    transcribeweb["Transcription Web"]
+    reportplatform["Report Platform"]
+    presentationplatform["Presentations Platform"]
+    rasidserver["rasid-web Server"]
+  end
+
+  subgraph engines["Shared Engines"]
+    ai["AI Engine"]
+    gov["Governance Engine"]
+    dashboard["Dashboard Engine"]
+    report["Report Engine"]
+    presentationengine["Presentation Engine"]
+    transcription["Transcription Extraction Engine"]
+    localization["Localization Engine"]
+    strict["Strict Replication Engine"]
+    excel["Excel Engine"]
+  end
+
+  subgraph workers["Local Worker and Queue Model"]
+    dqs["Dashboard refresh schedules\n+ runner jobs"]
+    rqs["Report schedules\n+ orchestration records\n+ dispatch records"]
+    gqueue["Governance queue controls\n+ approval records"]
+    formulaworkers["Excel formula workers"]
+    proofruns["Regression / proof scripts"]
+  end
+
+  subgraph stores["Durable Stores"]
+    runtimefs[".runtime filesystem"]
+    reportbackend["report-engine-backend"]
+    excelbackend["excel-engine-backend"]
+    sqldb["sql.js"]
+    mysqldb["Optional MySQL"]
+  end
+
+  gateway --> ai
+  gateway --> gov
+  gateway --> dashboard
+  gateway --> report
+  gateway --> presentationengine
+  gateway --> transcription
+  gateway --> localization
+  gateway --> strict
+  gateway --> excel
+
+  transcribeweb --> transcription
+  transcribeweb --> ai
+  reportplatform --> report
+  presentationplatform --> presentationengine
+  rasidserver --> ai
+  rasidserver --> sqldb
+  rasidserver --> mysqldb
+
+  ai --> transcription
+  ai --> report
+  ai --> presentationengine
+  ai --> dashboard
+  ai --> localization
+  ai --> excel
+  gov --> ai
+  gov --> dashboard
+  gov --> report
+  gov --> presentationengine
+
+  dashboard --> dqs
+  report --> rqs
+  gov --> gqueue
+  excel --> formulaworkers
+
+  dqs --> runtimefs
+  rqs --> runtimefs
+  gqueue --> runtimefs
+  dashboard --> runtimefs
+  report --> runtimefs
+  presentationengine --> runtimefs
+  transcription --> runtimefs
+  localization --> runtimefs
+  strict --> runtimefs
+  ai --> runtimefs
+  gov --> runtimefs
+  excel --> runtimefs
+  report --> reportbackend
+  excel --> excelbackend
+  proofruns --> runtimefs

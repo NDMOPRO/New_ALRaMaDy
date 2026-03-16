@@ -202,10 +202,11 @@ const reportWorkflow = reportEngine.createReport({
   ]
 });
 
-const server = spawn("node", ["apps/contracts-cli/dist/index.js", "dashboard-serve-web"], {
+const server = spawn(process.execPath, ["apps/contracts-cli/dist/index.js", "dashboard-serve-web"], {
   cwd: root,
   env: {
     ...process.env,
+    RASID_DASHBOARD_WEB_HOST: host,
     RASID_DASHBOARD_WEB_PORT: String(port),
     RASID_DASHBOARD_TRANSPORT_PORT: String(transportPort)
   },

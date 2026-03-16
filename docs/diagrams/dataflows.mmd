@@ -1,0 +1,52 @@
+flowchart TB
+  subgraph request["Request Lifecycle"]
+    a1["Browser action"]
+    a2["HTTP route or tRPC procedure"]
+    a3["Auth / session resolution"]
+    a4["Governance or route validation"]
+    a5["Engine method"]
+    a6["Store persistence"]
+    a7["JSON payload + ids + open_path"]
+    a1 --> a2 --> a3 --> a4 --> a5 --> a6 --> a7
+  end
+
+  subgraph ingestion["Document Processing Pipeline"]
+    b1["Source file / attachment"]
+    b2["TranscriptionExtractionEngine.ingestAndExtract"]
+    b3["Python content bridge / OCR / normalization"]
+    b4["Unified content bundle\nsegments, fields, entities, tables, summaries"]
+    b5["Transcription store"]
+    b1 --> b2 --> b3 --> b4 --> b5
+  end
+
+  subgraph layout["Layout Reconstruction Pipeline"]
+    c1["Imported DOCX/PDF/PPTX/reference"]
+    c2["Bridge parser extracts structure, geometry, semantics"]
+    c3["Canonical representation / outline / storyboard"]
+    c4["Engine-specific editable model\nreport sections or slide blocks"]
+    c5["Rendered preview and parity artifacts"]
+    c1 --> c2 --> c3 --> c4 --> c5
+  end
+
+  subgraph translation["Translation and Localization Pipeline"]
+    d1["Dashboard/report/presentation content"]
+    d2["Localization plan"]
+    d3["Language transform"]
+    d4["RTL/LTR and typography refinement"]
+    d5["Cultural formatting + quality gates"]
+    d6["Localized output bundle"]
+    d1 --> d2 --> d3 --> d4 --> d5 --> d6
+  end
+
+  subgraph export["Export and Publication Pipeline"]
+    e1["Editable runtime artifact"]
+    e2["Export generation\nHTML/PDF/DOCX/PPTX/JPEG/video/etc."]
+    e3["Publication record"]
+    e4["Served/public bundle"]
+    e5["Downstream continuation\nreport -> dashboard/presentation\npresentation -> dashboard"]
+    e1 --> e2 --> e3 --> e4 --> e5
+  end
+
+  b5 --> c4
+  c4 --> e1
+  e4 --> d1

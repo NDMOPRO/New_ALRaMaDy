@@ -1,0 +1,108 @@
+flowchart TB
+  subgraph actors["Actors and Clients"]
+    analyst["Analyst / Operator"]
+    author["Author / Reviewer"]
+    admin["Governance Admin"]
+    viewer["Public Viewer"]
+    browser["Browser Clients"]
+  end
+
+  subgraph presentation["Presentation and Delivery Layer"]
+    gateway["Unified Gateway\napps/contracts-cli/src/dashboard-web.ts"]
+    transcribeweb["Transcription Web\napps/contracts-cli/src/transcription-web.ts"]
+    reportplatform["Report Platform\npackages/report-engine/src/platform.ts"]
+    presentationplatform["Presentations Platform\npackages/presentations-engine/src/platform.ts"]
+    rasidclient["rasid-web Client\nReact/Vite SPA"]
+    rasidserver["rasid-web Server\nExpress + tRPC + uploads"]
+  end
+
+  subgraph domain["Domain Engine Layer"]
+    ai["AI Engine"]
+    gov["Governance Engine"]
+    dashboard["Dashboard Engine"]
+    report["Report Engine"]
+    presentationengine["Presentation Engine"]
+    transcription["Transcription Extraction Engine"]
+    localization["Arabic Localization LCT Engine"]
+    strict["Strict Replication Engine"]
+    excel["Excel Engine"]
+  end
+
+  subgraph kernel["Shared Kernel"]
+    contracts["Contracts / Registries"]
+    runtime["Runtime Hooks"]
+    registry["Capability Registry"]
+  end
+
+  subgraph persistence["Persistence Layer"]
+    runtimefs[".runtime/*\nfile-backed stores"]
+    sqldb["sql.js database\napps/rasid-web data/rasid.db"]
+    mysqldb["Optional MySQL / Drizzle"]
+    uploads["uploads/ filesystem"]
+  end
+
+  subgraph external["External Integrations"]
+    openai["OpenAI API"]
+    forge["Forge APIs\nLLM, storage, data, speech"]
+    railway["Railway / Nixpacks"]
+  end
+
+  analyst --> browser
+  author --> browser
+  admin --> browser
+  viewer --> browser
+
+  browser --> gateway
+  browser --> transcribeweb
+  browser --> reportplatform
+  browser --> presentationplatform
+  browser --> rasidclient
+  rasidclient --> rasidserver
+
+  gateway --> ai
+  gateway --> gov
+  gateway --> dashboard
+  gateway --> report
+  gateway --> presentationengine
+  gateway --> transcription
+  gateway --> localization
+  gateway --> strict
+  gateway --> excel
+
+  transcribeweb --> transcription
+  transcribeweb --> ai
+  reportplatform --> report
+  presentationplatform --> presentationengine
+  rasidserver --> ai
+
+  contracts --> runtime
+  contracts --> registry
+  contracts --> ai
+  contracts --> gov
+  contracts --> dashboard
+  contracts --> report
+  contracts --> presentationengine
+  contracts --> transcription
+  contracts --> localization
+  contracts --> strict
+  contracts --> excel
+  registry --> gateway
+
+  ai --> runtimefs
+  gov --> runtimefs
+  dashboard --> runtimefs
+  report --> runtimefs
+  presentationengine --> runtimefs
+  transcription --> runtimefs
+  localization --> runtimefs
+  strict --> runtimefs
+  excel --> runtimefs
+
+  rasidserver --> sqldb
+  rasidserver --> mysqldb
+  rasidserver --> uploads
+  rasidserver --> openai
+  rasidserver --> forge
+
+  transcription --> forge
+  railway --> gateway

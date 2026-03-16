@@ -1,4 +1,3 @@
-import { spawn, spawnSync } from "node:child_process";
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import net from "node:net";
@@ -6,12 +5,11 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 const root = process.cwd();
-const tscCommand = process.platform === "win32" ? path.join(root, "node_modules", ".bin", "tsc.cmd") : path.join(root, "node_modules", ".bin", "tsc");
 const ensureBuilt = (label, args) => {
   const result =
     process.platform === "win32"
-      ? spawnSync(process.env.ComSpec || "cmd.exe", ["/d", "/s", "/c", `"${tscCommand}" ${args.join(" ")}`], { cwd: root, encoding: "utf8" })
-      : spawnSync(tscCommand, args, { cwd: root, encoding: "utf8" });
+      ? spawnSync(process.env.ComSpec || "cmd.exe", ["/d", "/s", "/c", `npx tsc ${args.join(" ")}`], { cwd: root, encoding: "utf8" })
+      : spawnSync("npx", ["tsc", ...args], { cwd: root, encoding: "utf8" });
   if (result.status !== 0) {
     throw new Error(`${label} failed: ${result.error?.message || result.stderr || result.stdout || `exit ${result.status}`}`);
   }

@@ -1,9 +1,9 @@
 # Session Status
 
 - Session started: 2026-03-15T01:06:43+03:00
-- Current phase: `procedure_binding_spec_governance` promote the procedure-by-procedure binding spec to the governing repository reference
-- Last completed checkpoint: The governing procedure-binding spec now explicitly includes authoritative operation classes and produced-record requirements
-- Current scope: Preserve the written integration guides and treat `docs/RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md` as the governing implementation reference
+- Current phase: `c4_architecture_documentation` completed the repository architecture documentation suite and Mermaid diagram package
+- Last completed checkpoint: The requested C4, dataflow, database, API, infrastructure, deployment, security, and performance documentation set has been written under `docs/`
+- Current scope: Preserve the generated architecture package as the durable baseline for future implementation and review
 - Completed folders/files:
   - docs/audit/
   - docs/audit/phases/
@@ -31,9 +31,30 @@
   - C:\ALRaMaDy\.runtime\railway-proof\20260316-governance-page-live.png
   - rasid-platform-core/apps/rasid-web/
   - docs/RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md
+  - docs/diagrams/
+  - docs/system-overview.md
+  - docs/c4-context.md
+  - docs/c4-containers.md
+  - docs/c4-components.md
+  - docs/c4-code.md
+  - docs/dataflows.md
+  - docs/database.md
+  - docs/apis.md
+  - docs/infrastructure.md
+  - docs/deployment.md
+  - docs/security.md
+  - docs/performance.md
+  - docs/diagrams/system-context.mmd
+  - docs/diagrams/container-architecture.mmd
+  - docs/diagrams/component-unified-gateway.mmd
+  - docs/diagrams/component-rasid-web.mmd
+  - docs/diagrams/code-structure.mmd
+  - docs/diagrams/dataflow-request-lifecycle.mmd
+  - docs/diagrams/dataflow-document-ingestion.mmd
+  - docs/diagrams/dataflow-cross-engine-pipeline.mmd
+  - docs/diagrams/database-erd.mmd
+  - docs/diagrams/integration-map.mmd
 - Remaining scope:
-  - Apply the documented mappings in code
-  - Replace local app storage/runtime adapters with engine-backed procedures
-  - Verify each bound procedure from the calling UI surfaces
-- Next exact step: use `docs/RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md` as the governing checklist while implementing the adapter layer
-- Last update: 2026-03-16T06:24:57.4938066+03:00
+  - None for the current architecture-documentation deliverable
+- Next exact step: use the generated architecture package as the durable baseline for implementation and review
+- Last update: 2026-03-16T06:27:04.0346223+03:00

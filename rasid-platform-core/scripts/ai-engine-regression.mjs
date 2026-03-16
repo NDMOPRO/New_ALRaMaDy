@@ -46,6 +46,10 @@ const writeJson = (filePath, payload) => {
   ensureDir(path.dirname(filePath));
   fs.writeFileSync(filePath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
 };
+const appendLog = (filePath, chunk) => {
+  ensureDir(path.dirname(filePath));
+  fs.appendFileSync(filePath, chunk, "utf8");
+};
 const slug = (value) => value.replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "").toLowerCase();
 const step = (message) => console.log(`[ai-engine-regression] ${message}`);
 
@@ -103,8 +107,8 @@ const requestJson = (targetHost, targetPort, targetPath, method = "GET", headers
     request.end();
   });
 
-const waitForServer = async (targetHost, targetPort, targetPath = "/login") => {
-  for (let attempt = 0; attempt < 60; attempt += 1) {
+const waitForServer = async (targetHost, targetPort, targetPath = "/login", handle = null) => {
+  for (let attempt = 0; attempt < 120; attempt += 1) {
     try {
       const response = await new Promise((resolve, reject) => {
         const request = http.request({ host: targetHost, port: targetPort, path: targetPath, method: "GET" }, (result) => resolve(result.statusCode ?? 0));
@@ -117,6 +121,9 @@ const waitForServer = async (targetHost, targetPort, targetPath = "/login") => {
       }
     } catch {
       // retry
+    }
+    if (handle?.exitCode !== null && handle?.exitCode !== undefined) {
+      throw new Error(`ai engine web server exited before startup with code ${handle.exitCode}`);
     }
     await wait(250);
   }
@@ -139,7 +146,13 @@ const runtimePaths = (jobsRoot, jobId) => {
 const filePresence = (paths) =>
   Object.fromEntries(Object.entries(paths).map(([key, filePath]) => [key, key === "root" ? fs.existsSync(filePath) : fs.existsSync(filePath)]));
 
-const server = spawn("node", ["apps/contracts-cli/dist/index.js", "dashboard-serve-web"], {
+ensureDir(proofRoot);
+const dashboardServerStdout = path.join(proofRoot, "dashboard-server.stdout.log");
+const dashboardServerStderr = path.join(proofRoot, "dashboard-server.stderr.log");
+const transcriptionServerStdout = path.join(proofRoot, "transcription-server.stdout.log");
+const transcriptionServerStderr = path.join(proofRoot, "transcription-server.stderr.log");
+
+const server = spawn(process.execPath, ["apps/contracts-cli/dist/index.js", "dashboard-serve-web"], {
   cwd: process.cwd(),
   env: {
     ...process.env,
@@ -147,25 +160,29 @@ const server = spawn("node", ["apps/contracts-cli/dist/index.js", "dashboard-ser
     RASID_DASHBOARD_TRANSPORT_PORT: String(transportPort),
     RASID_DEBUG_STACKS: "1"
   },
-  stdio: "ignore"
+  stdio: ["ignore", "pipe", "pipe"]
 });
-const transcriptionServer = spawn("node", ["apps/contracts-cli/dist/index.js", "transcription-serve-web"], {
+server.stdout?.on("data", (chunk) => appendLog(dashboardServerStdout, chunk.toString()));
+server.stderr?.on("data", (chunk) => appendLog(dashboardServerStderr, chunk.toString()));
+
+const transcriptionServer = spawn(process.execPath, ["apps/contracts-cli/dist/index.js", "transcription-serve-web"], {
   cwd: process.cwd(),
   env: {
     ...process.env,
     RASID_TRANSCRIPTION_WEB_PORT: String(transcriptionPort)
   },
-  stdio: "ignore"
+  stdio: ["ignore", "pipe", "pipe"]
 });
+transcriptionServer.stdout?.on("data", (chunk) => appendLog(transcriptionServerStdout, chunk.toString()));
+transcriptionServer.stderr?.on("data", (chunk) => appendLog(transcriptionServerStderr, chunk.toString()));
 
 let browser;
 let presentationsHandle = null;
 
 try {
-  ensureDir(proofRoot);
   step(`starting live proof on ${baseUrl}`);
-  await waitForServer(host, port, "/login");
-  await waitForServer(host, transcriptionPort, "/login");
+  await waitForServer(host, port, "/login", server);
+  await waitForServer(host, transcriptionPort, "/login", transcriptionServer);
   const { startPresentationPlatformServer } = await import("../packages/presentations-engine/dist/platform.js");
   presentationsHandle = await startPresentationPlatformServer({ host, port: presentationsPort });
 

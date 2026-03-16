@@ -2183,3 +2183,26 @@ Append-only.
 - Unresolved items:
   - the spec remains a governance artifact until the adapter layer is implemented against it
 - Next exact step: apply the governing spec directly while replacing the current demo/local router handlers with engine-backed adapters
+
+- Timestamp: 2026-03-16T06:27:04.0346223+03:00
+- Phase: C4 architecture documentation suite
+- Scope: Analyze the active repository architecture and generate the requested C4 documentation, dataflow notes, database notes, API inventory, and Mermaid diagrams
+- Files/Folders inspected:
+  - C:\ALRaMaDy\docs\audit\_session_status.md
+  - C:\ALRaMaDy\docs\audit\_knowledge_base.md
+  - C:\ALRaMaDy\rasid-platform-core\package.json
+  - C:\ALRaMaDy\rasid-platform-core\apps\contracts-cli\src\
+  - C:\ALRaMaDy\rasid-platform-core\packages\
+  - C:\ALRaMaDy\rasid-platform-core\apps\rasid-web\client\
+  - C:\ALRaMaDy\rasid-platform-core\apps\rasid-web\server\
+  - C:\ALRaMaDy\rasid-platform-core\apps\rasid-web\drizzle\
+  - C:\ALRaMaDy\docs\
+  - C:\ALRaMaDy\docs\diagrams\
+- Findings added:
+  - the active deployable system is the `rasid-platform-core` monorepo centered on `apps/contracts-cli/src/dashboard-web.ts`
+  - the platform is contract-first and engine-oriented, with the main runtime persisting to `.runtime/*` filesystem stores rather than a shared central database
+  - `apps/rasid-web` is a separate full-stack app with its own auth, sql.js store, optional MySQL/Drizzle schema, and direct AI/storage integrations
+  - the requested documentation suite and Mermaid diagram package were written under `docs/` and `docs/diagrams/`
+- Unresolved items:
+  - none for the current documentation deliverable
+- Next exact step: use the generated architecture package as the durable baseline for implementation and review
