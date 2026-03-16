@@ -16,6 +16,14 @@
     "./workspace": {
       "types": "./dist/workspace.d.ts",
       "default": "./dist/workspace.js"
+    },
+    "./catalogs": {
+      "types": "./dist/catalogs.d.ts",
+      "default": "./dist/catalogs.js"
+    },
+    "./control-manifest": {
+      "types": "./dist/control-manifest.d.ts",
+      "default": "./dist/control-manifest.js"
     }
   },
   "dependencies": {
