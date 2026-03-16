@@ -10,6 +10,7 @@ import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { uploadRouter } from "../uploadRoute";
 import { wsManager } from "../websocket";
+import { seedAdminAccount } from "../localDb";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -67,6 +68,9 @@ async function startServer() {
 
   // Initialize WebSocket server for real-time updates
   wsManager.init(server);
+
+  // Seed admin account on startup
+  await seedAdminAccount().catch(() => {});
 
   const preferredPort = parseInt(process.env.PORT || "3000");
   

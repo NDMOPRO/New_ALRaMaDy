@@ -1,21 +1,20 @@
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
-import { getUserFromRequest, type EngineUser } from "../engineAuth";
+import { getUserFromRequest, type LocalUser } from "../localAuth";
 
 export type TrpcContext = {
   req: CreateExpressContextOptions["req"];
   res: CreateExpressContextOptions["res"];
-  user: EngineUser | null;
+  user: LocalUser | null;
 };
 
 export async function createContext(
   opts: CreateExpressContextOptions
 ): Promise<TrpcContext> {
-  let user: EngineUser | null = null;
+  let user: LocalUser | null = null;
 
   try {
     user = await getUserFromRequest(opts.req);
-  } catch (error) {
-    // Authentication is optional for public procedures.
+  } catch {
     user = null;
   }
 

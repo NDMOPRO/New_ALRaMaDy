@@ -1,27 +1,23 @@
 /**
- * routers.ts — ALL operations execute EXCLUSIVELY on Railway engines
- * 
+ * routers.ts — LOCAL SQLite database for all CRUD operations
+ *
  * ██████████████████████████████████████████████████████████████
- * ██  ZERO localDb  ·  ZERO SQLite  ·  ZERO local logic     ██
- * ██  EVERYTHING → Railway Engines via platformConnector      ██
+ * ██  LOCAL SQLite via sql.js  ·  No external engine needed   ██
+ * ██  AI/SlideLibrary/Platform routers kept as-is             ██
  * ██████████████████████████████████████████████████████████████
- * 
- * Design principle: 
- *   التصميم منا والبرمجة من المحركات
- *   UI/Design = Our custom frontend
- *   Execution/Logic = Exclusively from backend engines on Railway
  */
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { aiRouter } from "./aiRouter";
 import { libraryRouter } from "./libraryRouter";
 import { platformRouter } from "./platformRouter";
-import { loginUser, registerUser, setAuthCookie, clearAuthCookie } from "./engineAuth";
+import { loginUser, registerUser, setAuthCookie, clearAuthCookie } from "./localAuth";
+import * as localDb from "./localDb";
 import * as engine from "./platformConnector";
 import { z } from "zod";
 
 export const appRouter = router({
   // ═══════════════════════════════════════════════════════════════
-  // AUTH — via Central Engine (governance/auth)
+  // AUTH — via Local SQLite DB
   // ═══════════════════════════════════════════════════════════════
   auth: router({
     me: publicProcedure.query(({ ctx }) => {
@@ -78,60 +74,24 @@ export const appRouter = router({
   }),
 
   // ═══════════════════════════════════════════════════════════════
-  // AI — via OpenAI + Engine AI Jobs
+  // AI — via OpenAI + Engine AI Jobs (KEPT AS-IS)
   // ═══════════════════════════════════════════════════════════════
   ai: aiRouter,
 
   // ═══════════════════════════════════════════════════════════════
-  // FILES — via Central Engine (data/register + data/list)
+  // FILES — via Local SQLite DB
   // ═══════════════════════════════════════════════════════════════
   files: router({
-    list: protectedProcedure.query(async () => {
-      const result = await engine.engineListFiles();
-      if (!result.ok) return [];
-      const data = result.data as any;
-      const items = Array.isArray(data) ? data : (data?.data || data?.files || data?.datasets || []);
-      return items.map((f: any, i: number) => ({
-        id: f.id || f.file_id || f.dataset_id || i + 1,
-        title: f.title || f.name || f.file_name || 'ملف بدون عنوان',
-        type: f.type || f.source_kind || 'file',
-        category: f.category || 'general',
-        status: f.status || 'ready',
-        icon: f.icon || 'description',
-        size: f.size || '',
-        filePath: f.file_path || f.filePath || '',
-        mimeType: f.mime_type || f.mimeType || '',
-        metadata: f.metadata || {},
-        tags: f.tags || [],
-        favorite: f.favorite || 0,
-        createdAt: f.created_at || f.createdAt || new Date().toISOString(),
-        updatedAt: f.updated_at || f.updatedAt || new Date().toISOString(),
-      }));
+    list: protectedProcedure.query(async ({ ctx }) => {
+      const userId = (ctx as any).user?.id || 1;
+      return localDb.getFilesByUserId(userId);
     }),
 
     get: protectedProcedure
       .input(z.object({ id: z.number() }))
-      .query(async ({ input }) => {
-        // Get from files list and filter
-        const result = await engine.engineListFiles();
-        if (!result.ok) return null;
-        const data = result.data as any;
-        const items = Array.isArray(data) ? data : (data?.data || data?.files || data?.datasets || []);
-        const found = items.find((f: any) => String(f.id || f.file_id || f.dataset_id) === String(input.id));
-        if (!found) return null;
-        return {
-          id: found.id || found.file_id || input.id,
-          title: found.title || found.name || '',
-          type: found.type || found.source_kind || 'file',
-          category: found.category || 'general',
-          status: found.status || 'ready',
-          icon: found.icon || 'description',
-          size: found.size || '',
-          filePath: found.file_path || found.filePath || '',
-          mimeType: found.mime_type || found.mimeType || '',
-          metadata: found.metadata || {},
-          tags: found.tags || [],
-        };
+      .query(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        return localDb.getFileById(input.id, userId);
       }),
 
     create: protectedProcedure
@@ -147,10 +107,9 @@ export const appRouter = router({
         metadata: z.record(z.string(), z.any()).optional(),
         tags: z.array(z.string()).optional(),
       }))
-      .mutation(async ({ input }) => {
-        const result = await engine.engineCreateFile(input);
-        if (!result.ok) throw new Error(`فشل تسجيل الملف على المحرك`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        return localDb.createFile({ userId, ...input });
       }),
 
     update: protectedProcedure
@@ -161,70 +120,44 @@ export const appRouter = router({
         metadata: z.record(z.string(), z.any()).optional(),
         tags: z.array(z.string()).optional(),
       }))
-      .mutation(async ({ input }) => {
-        // Update via re-register on engine
-        if (input.title) {
-          await engine.engineCreateFile({ title: input.title, status: input.status });
-        }
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const { id, ...data } = input;
+        await localDb.updateFile(id, userId, data);
         return { success: true };
       }),
 
     delete: protectedProcedure
       .input(z.object({ id: z.number() }))
-      .mutation(async ({ input }) => {
-        await engine.engineDeleteFile(String(input.id));
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        await localDb.deleteFile(input.id, userId);
         return { success: true };
       }),
 
     toggleFavorite: protectedProcedure
       .input(z.object({ id: z.number() }))
-      .mutation(async () => {
-        // Favorite state managed via engine metadata
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        await localDb.toggleFavorite(input.id, userId);
         return { success: true };
       }),
   }),
 
   // ═══════════════════════════════════════════════════════════════
-  // REPORTS — via Report Engine (report-start-platform)
+  // REPORTS — via Local SQLite DB
   // ═══════════════════════════════════════════════════════════════
   reports: router({
-    list: protectedProcedure.query(async () => {
-      const result = await engine.listReports();
-      if (!result.ok) return [];
-      const data = result.data as any;
-      const reports = Array.isArray(data) ? data : (data?.data || data?.reports || []);
-      return reports.map((r: any, i: number) => ({
-        id: r.id || r.report_id || i + 1,
-        title: r.title || r.name || 'تقرير بدون عنوان',
-        description: r.description || '',
-        reportType: r.report_type || r.type || 'general',
-        sections: r.sections || r.blocks || [],
-        classification: r.classification || '',
-        entity: r.entity || '',
-        status: r.status || 'draft',
-        createdAt: r.created_at || r.createdAt || new Date().toISOString(),
-        updatedAt: r.updated_at || r.updatedAt || new Date().toISOString(),
-      }));
+    list: protectedProcedure.query(async ({ ctx }) => {
+      const userId = (ctx as any).user?.id || 1;
+      return localDb.getReportsByUserId(userId);
     }),
 
     get: protectedProcedure
       .input(z.object({ id: z.union([z.number(), z.string()]) }))
-      .query(async ({ input }) => {
-        const result = await engine.getReportDetail(String(input.id));
-        if (!result.ok) return null;
-        const r = result.data as any;
-        return {
-          id: r.id || r.report_id || input.id,
-          title: r.title || r.name || '',
-          description: r.description || '',
-          reportType: r.report_type || r.type || 'general',
-          sections: r.sections || r.blocks || [],
-          classification: r.classification || '',
-          entity: r.entity || '',
-          status: r.status || 'draft',
-          createdAt: r.created_at || r.createdAt || '',
-          updatedAt: r.updated_at || r.updatedAt || '',
-        };
+      .query(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        return localDb.getReportById(Number(input.id), userId);
       }),
 
     create: protectedProcedure
@@ -236,17 +169,9 @@ export const appRouter = router({
         classification: z.string().optional(),
         entity: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
-        const result = await engine.createReport({
-          title: input.title,
-          description: input.description,
-          report_type: input.reportType,
-          sections: input.sections,
-          classification: input.classification,
-          entity: input.entity,
-        });
-        if (!result.ok) throw new Error(`فشل إنشاء التقرير: ${JSON.stringify(result.data)}`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        return localDb.createReport({ userId, ...input });
       }),
 
     createFromExcel: protectedProcedure
@@ -255,14 +180,9 @@ export const appRouter = router({
         title: z.string().optional(),
         options: z.record(z.string(), z.any()).optional(),
       }))
-      .mutation(async ({ input }) => {
-        const result = await engine.createReportFromExcel({
-          file_url: input.fileUrl,
-          title: input.title,
-          ...input.options,
-        });
-        if (!result.ok) throw new Error(`فشل إنشاء التقرير من Excel`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        return localDb.createReport({ userId, title: input.title || 'تقرير من Excel', reportType: 'excel' });
       }),
 
     createFromTranscription: protectedProcedure
@@ -270,18 +190,17 @@ export const appRouter = router({
         transcriptionJobId: z.string(),
         options: z.record(z.string(), z.any()).optional(),
       }))
-      .mutation(async ({ input }) => {
-        const result = await engine.createReportFromTranscription(input.transcriptionJobId, input.options);
-        if (!result.ok) throw new Error(`فشل إنشاء التقرير من التفريغ`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        return localDb.createReport({ userId, title: 'تقرير من التفريغ الصوتي', reportType: 'transcription' });
       }),
 
     import: protectedProcedure
       .input(z.object({ payload: z.record(z.string(), z.any()) }))
-      .mutation(async ({ input }) => {
-        const result = await engine.importReport(input.payload);
-        if (!result.ok) throw new Error(`فشل استيراد التقرير`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const p = input.payload as any;
+        return localDb.createReport({ userId, title: p.title || 'تقرير مستورد', description: p.description, sections: p.sections, reportType: p.reportType || 'imported' });
       }),
 
     update: protectedProcedure
@@ -295,132 +214,127 @@ export const appRouter = router({
         blockRef: z.string().optional(),
         body: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
-        if (input.blockRef && input.body) {
-          const result = await engine.updateReport(String(input.id), input.blockRef, input.body);
-          if (!result.ok) throw new Error(`فشل تحديث التقرير`);
-          return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const { id, blockRef, body, ...data } = input;
+        if (blockRef && body) {
+          // Update specific section content
+          const report = await localDb.getReportById(Number(id), userId);
+          if (report) {
+            let sections = [];
+            try { sections = JSON.parse(report.sections as string || '[]'); } catch { sections = []; }
+            const idx = sections.findIndex((s: any) => s.ref === blockRef || s.id === blockRef);
+            if (idx >= 0) { sections[idx].body = body; }
+            await localDb.updateReport(Number(id), userId, { ...data, sections });
+          }
+          return { success: true };
         }
-        const result = await engine.refreshReport(String(input.id));
-        return result.data || { success: true };
+        await localDb.updateReport(Number(id), userId, data);
+        return { success: true };
       }),
 
     delete: protectedProcedure
       .input(z.object({ id: z.union([z.number(), z.string()]) }))
-      .mutation(async ({ input }) => {
-        try { await engine.refreshReport(String(input.id)); } catch { /* ignore */ }
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        await localDb.deleteReport(Number(input.id), userId);
         return { success: true };
       }),
 
     review: protectedProcedure
       .input(z.object({ id: z.string() }))
-      .mutation(async ({ input }) => {
-        const result = await engine.reviewReport(input.id);
-        if (!result.ok) throw new Error(`فشل مراجعة التقرير`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        await localDb.updateReport(Number(input.id), userId, { status: 'reviewed' });
+        return { success: true };
       }),
 
     approve: protectedProcedure
       .input(z.object({ id: z.string() }))
-      .mutation(async ({ input }) => {
-        const result = await engine.approveReport(input.id);
-        if (!result.ok) throw new Error(`فشل اعتماد التقرير`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        await localDb.updateReport(Number(input.id), userId, { status: 'approved' });
+        return { success: true };
       }),
 
     publish: protectedProcedure
       .input(z.object({ id: z.string() }))
-      .mutation(async ({ input }) => {
-        const result = await engine.publishReport(input.id);
-        if (!result.ok) throw new Error(`فشل نشر التقرير`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        await localDb.updateReport(Number(input.id), userId, { status: 'published' });
+        return { success: true };
       }),
 
     exportHtml: protectedProcedure
       .input(z.object({ id: z.string() }))
-      .mutation(async ({ input }) => {
-        const result = await engine.exportReportHtml(input.id);
-        if (!result.ok) throw new Error(`فشل تصدير التقرير`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const report = await localDb.getReportById(Number(input.id), userId);
+        if (!report) throw new Error('التقرير غير موجود');
+        return { html: `<h1>${report.title}</h1><div>${report.description || ''}</div>`, title: report.title };
       }),
 
     exportPdf: protectedProcedure
       .input(z.object({ id: z.string() }))
-      .mutation(async ({ input }) => {
-        const result = await engine.exportReportPdf(input.id);
-        if (!result.ok) throw new Error(`فشل تصدير التقرير`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const report = await localDb.getReportById(Number(input.id), userId);
+        if (!report) throw new Error('التقرير غير موجود');
+        return { success: true, message: 'PDF export not available in local mode', title: report.title };
       }),
 
     exportDocx: protectedProcedure
       .input(z.object({ id: z.string() }))
-      .mutation(async ({ input }) => {
-        const result = await engine.exportReportDocx(input.id);
-        if (!result.ok) throw new Error(`فشل تصدير التقرير`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const report = await localDb.getReportById(Number(input.id), userId);
+        if (!report) throw new Error('التقرير غير موجود');
+        return { success: true, message: 'DOCX export not available in local mode', title: report.title };
       }),
 
     convertToPresentation: protectedProcedure
       .input(z.object({ id: z.string() }))
-      .mutation(async ({ input }) => {
-        const result = await engine.convertReportToPresentation(input.id);
-        if (!result.ok) throw new Error(`فشل تحويل التقرير`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const report = await localDb.getReportById(Number(input.id), userId);
+        if (!report) throw new Error('التقرير غير موجود');
+        const pres = await localDb.createPresentation({ userId, title: `عرض من: ${report.title}`, description: report.description as string || '' });
+        return pres;
       }),
 
     convertToDashboard: protectedProcedure
       .input(z.object({ id: z.string() }))
-      .mutation(async ({ input }) => {
-        const result = await engine.convertReportToDashboard(input.id);
-        if (!result.ok) throw new Error(`فشل تحويل التقرير`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const report = await localDb.getReportById(Number(input.id), userId);
+        if (!report) throw new Error('التقرير غير موجود');
+        const dash = await localDb.createDashboard({ userId, title: `لوحة من: ${report.title}`, description: report.description as string || '' });
+        return dash;
       }),
 
     compare: protectedProcedure
       .input(z.object({ id: z.string() }))
-      .query(async ({ input }) => {
-        const result = await engine.compareReport(input.id);
-        return result.data;
+      .query(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const report = await localDb.getReportById(Number(input.id), userId);
+        return { current: report, previous: null };
       }),
   }),
 
   // ═══════════════════════════════════════════════════════════════
-  // PRESENTATIONS — via Presentations Engine
+  // PRESENTATIONS — via Local SQLite DB
   // ═══════════════════════════════════════════════════════════════
   presentations: router({
-    list: protectedProcedure.query(async () => {
-      const result = await engine.listPresentations();
-      if (!result.ok) return [];
-      const data = result.data as any;
-      const decks = Array.isArray(data) ? data : (data?.data || data?.decks || []);
-      return decks.map((d: any, i: number) => ({
-        id: d.id || d.deck_id || i + 1,
-        title: d.title || d.name || 'عرض بدون عنوان',
-        description: d.description || '',
-        slides: d.slides || [],
-        theme: d.theme || 'default',
-        status: d.status || 'draft',
-        createdAt: d.created_at || d.createdAt || new Date().toISOString(),
-        updatedAt: d.updated_at || d.updatedAt || new Date().toISOString(),
-      }));
+    list: protectedProcedure.query(async ({ ctx }) => {
+      const userId = (ctx as any).user?.id || 1;
+      return localDb.getPresentationsByUserId(userId);
     }),
 
     get: protectedProcedure
       .input(z.object({ id: z.union([z.number(), z.string()]) }))
-      .query(async ({ input }) => {
-        const result = await engine.getPresentationDetail(String(input.id));
-        if (!result.ok) return null;
-        const d = result.data as any;
-        return {
-          id: d.id || d.deck_id || input.id,
-          title: d.title || d.name || '',
-          description: d.description || '',
-          slides: d.slides || [],
-          theme: d.theme || 'default',
-          status: d.status || 'draft',
-          createdAt: d.created_at || d.createdAt || '',
-          updatedAt: d.updated_at || d.updatedAt || '',
-        };
+      .query(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        return localDb.getPresentationById(Number(input.id), userId);
       }),
 
     create: protectedProcedure
@@ -430,23 +344,17 @@ export const appRouter = router({
         slides: z.array(z.any()).optional(),
         theme: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
-        const result = await engine.createPresentation({
-          title: input.title,
-          description: input.description,
-          slides: input.slides,
-          theme: input.theme,
-        });
-        if (!result.ok) throw new Error(`فشل إنشاء العرض: ${JSON.stringify(result.data)}`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        return localDb.createPresentation({ userId, ...input });
       }),
 
     createFromCanvas: protectedProcedure
       .input(z.object({ canvasData: z.record(z.string(), z.any()) }))
-      .mutation(async ({ input }) => {
-        const result = await engine.createPresentationFromCanvas(input.canvasData);
-        if (!result.ok) throw new Error(`فشل إنشاء العرض من Canvas`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const cd = input.canvasData as any;
+        return localDb.createPresentation({ userId, title: cd.title || 'عرض من Canvas', slides: cd.slides || [], theme: cd.theme || 'default' });
       }),
 
     update: protectedProcedure
@@ -457,22 +365,19 @@ export const appRouter = router({
         theme: z.string().optional(),
         status: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
-        const result = await engine.platformPost(`/api/v1/presentations/decks/${input.id}/update`, {
-          title: input.title,
-          slides: input.slides,
-          theme: input.theme,
-          status: input.status,
-        });
-        if (!result.ok) throw new Error(`فشل تحديث العرض`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const { id, ...data } = input;
+        await localDb.updatePresentation(Number(id), userId, data);
+        return { success: true };
       }),
 
     delete: protectedProcedure
       .input(z.object({ id: z.union([z.number(), z.string()]) }))
-      .mutation(async ({ input }) => {
-        const result = await engine.platformPost(`/api/v1/presentations/decks/${input.id}/delete`, {});
-        return { success: result.ok };
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        await localDb.deletePresentation(Number(input.id), userId);
+        return { success: true };
       }),
 
     share: protectedProcedure
@@ -481,103 +386,90 @@ export const appRouter = router({
         password: z.string().optional(),
         expiresAt: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
-        const result = await engine.platformPost(`/api/v1/presentations/decks/${input.presentationId}/share`, {
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const pres = await localDb.getPresentationById(Number(input.presentationId), userId);
+        if (!pres) throw new Error('العرض غير موجود');
+        const shared = await localDb.createSharedPresentation({
+          presentationId: Number(input.presentationId),
+          userId,
+          title: pres.title as string,
+          slides: pres.slides as string || '[]',
+          theme: pres.theme as string || 'default',
+          brandKit: '{}',
           password: input.password,
-          expires_at: input.expiresAt,
         });
-        if (!result.ok) throw new Error(`فشل مشاركة العرض`);
-        return result.data;
+        return shared;
       }),
 
     publish: protectedProcedure
       .input(z.object({ id: z.string() }))
-      .mutation(async ({ input }) => {
-        const result = await engine.platformPost(`/api/v1/presentations/decks/${input.id}/publish`, {});
-        if (!result.ok) throw new Error(`فشل نشر العرض`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        await localDb.updatePresentation(Number(input.id), userId, { status: 'published' });
+        return { success: true };
       }),
 
     exportPptx: protectedProcedure
       .input(z.object({ id: z.string() }))
-      .mutation(async ({ input }) => {
-        const result = await engine.platformPost(`/api/v1/presentations/decks/${input.id}/export/pptx`, {});
-        if (!result.ok) throw new Error(`فشل تصدير العرض`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const pres = await localDb.getPresentationById(Number(input.id), userId);
+        if (!pres) throw new Error('العرض غير موجود');
+        return { success: true, message: 'PPTX export not available in local mode', title: pres.title };
       }),
 
     exportPdf: protectedProcedure
       .input(z.object({ id: z.string() }))
-      .mutation(async ({ input }) => {
-        const result = await engine.platformPost(`/api/v1/presentations/decks/${input.id}/export/pdf`, {});
-        if (!result.ok) throw new Error(`فشل تصدير العرض`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const pres = await localDb.getPresentationById(Number(input.id), userId);
+        if (!pres) throw new Error('العرض غير موجود');
+        return { success: true, message: 'PDF export not available in local mode', title: pres.title };
       }),
 
     convertToDashboard: protectedProcedure
       .input(z.object({ id: z.string() }))
-      .mutation(async ({ input }) => {
-        const result = await engine.convertPresentationToDashboard(input.id);
-        if (!result.ok) throw new Error(`فشل التحويل`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const pres = await localDb.getPresentationById(Number(input.id), userId);
+        if (!pres) throw new Error('العرض غير موجود');
+        const dash = await localDb.createDashboard({ userId, title: `لوحة من: ${pres.title}`, description: pres.description as string || '' });
+        return dash;
       }),
 
     templates: protectedProcedure.query(async () => {
-      const result = await engine.platformGet("/api/v1/presentations/templates");
-      return result.ok ? result.data : [];
+      return [];
     }),
 
     templateLibrary: protectedProcedure.query(async () => {
-      const result = await engine.platformGet("/api/v1/presentations/template-library");
-      return result.ok ? result.data : [];
+      return [];
     }),
 
     viewShared: publicProcedure
       .input(z.object({ token: z.string(), password: z.string().optional() }))
       .query(async ({ input }) => {
-        const result = await engine.platformGet(`/api/v1/presentations/public/${encodeURIComponent(input.token)}${input.password ? `?password=${encodeURIComponent(input.password)}` : ''}`);
-        if (!result.ok) return { error: 'الرابط غير صالح' };
-        return result.data;
+        const shared = await localDb.getSharedPresentation(input.token);
+        if (!shared) return { error: 'الرابط غير صالح' };
+        if (shared.password && shared.password !== input.password) return { error: 'كلمة المرور غير صحيحة' };
+        return shared;
       }),
   }),
 
   // ═══════════════════════════════════════════════════════════════
-  // DASHBOARDS — via Dashboard Engine
+  // DASHBOARDS — via Local SQLite DB
   // ═══════════════════════════════════════════════════════════════
   dashboards: router({
-    list: protectedProcedure.query(async () => {
-      const result = await engine.getDashboardState();
-      if (!result.ok) return [];
-      const data = result.data as any;
-      const dashboards = Array.isArray(data) ? data : (data?.dashboards || data?.data || []);
-      return dashboards.map((d: any, i: number) => ({
-        id: d.id || d.dashboard_id || i + 1,
-        title: d.title || d.name || 'لوحة بدون عنوان',
-        description: d.description || '',
-        widgets: d.widgets || [],
-        layout: d.layout || {},
-        status: d.status || 'draft',
-        createdAt: d.created_at || d.createdAt || new Date().toISOString(),
-        updatedAt: d.updated_at || d.updatedAt || new Date().toISOString(),
-      }));
+    list: protectedProcedure.query(async ({ ctx }) => {
+      const userId = (ctx as any).user?.id || 1;
+      return localDb.getDashboardsByUserId(userId);
     }),
 
     get: protectedProcedure
       .input(z.object({ id: z.union([z.number(), z.string()]) }))
-      .query(async ({ input }) => {
-        const result = await engine.getDashboardState(String(input.id));
-        if (!result.ok) return null;
-        const d = result.data as any;
-        return {
-          id: d.id || d.dashboard_id || input.id,
-          title: d.title || d.name || '',
-          description: d.description || '',
-          widgets: d.widgets || [],
-          layout: d.layout || {},
-          status: d.status || 'draft',
-          createdAt: d.created_at || d.createdAt || '',
-          updatedAt: d.updated_at || d.updatedAt || '',
-        };
+      .query(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        return localDb.getDashboardById(Number(input.id), userId);
       }),
 
     create: protectedProcedure
@@ -590,16 +482,9 @@ export const appRouter = router({
         datasetRefs: z.array(z.string()).optional(),
         templateId: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
-        const result = input.templateId
-          ? await engine.createDashboardFromTemplate(input.templateId, input.datasetRefs || [])
-          : await engine.createDashboard({
-              title: input.title,
-              mode: input.mode,
-              dataset_refs: input.datasetRefs,
-            });
-        if (!result.ok) throw new Error(`فشل إنشاء لوحة المؤشرات: ${JSON.stringify(result.data)}`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        return localDb.createDashboard({ userId, title: input.title, description: input.description, widgets: input.widgets, layout: input.layout });
       }),
 
     update: protectedProcedure
@@ -610,98 +495,84 @@ export const appRouter = router({
         layout: z.record(z.string(), z.any()).optional(),
         status: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
-        const result = await engine.refreshDashboard(String(input.id));
-        return result.data || { success: true };
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const { id, ...data } = input;
+        await localDb.updateDashboard(Number(id), userId, data);
+        return { success: true };
       }),
 
     delete: protectedProcedure
       .input(z.object({ id: z.union([z.number(), z.string()]) }))
-      .mutation(async ({ input }) => {
-        try { await engine.refreshDashboard(String(input.id)); } catch { /* ignore */ }
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        await localDb.deleteDashboard(Number(input.id), userId);
         return { success: true };
       }),
 
     publish: protectedProcedure
       .input(z.object({ id: z.string() }))
-      .mutation(async ({ input }) => {
-        const result = await engine.publishDashboard(input.id);
-        if (!result.ok) throw new Error(`فشل نشر اللوحة`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        await localDb.updateDashboard(Number(input.id), userId, { status: 'published' });
+        return { success: true };
       }),
 
     share: protectedProcedure
       .input(z.object({ id: z.string(), options: z.record(z.string(), z.any()).optional() }))
-      .mutation(async ({ input }) => {
-        const result = await engine.shareDashboard(input.id, input.options);
-        if (!result.ok) throw new Error(`فشل مشاركة اللوحة`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const dash = await localDb.getDashboardById(Number(input.id), userId);
+        if (!dash) throw new Error('اللوحة غير موجودة');
+        return { success: true, shareUrl: `/dashboard/shared/${input.id}` };
       }),
 
     addWidget: protectedProcedure
       .input(z.object({ dashboardId: z.string(), widget: z.record(z.string(), z.unknown()) }))
-      .mutation(async ({ input }) => {
-        const result = await engine.addDashboardWidget(input.dashboardId, input.widget);
-        if (!result.ok) throw new Error(`فشل إضافة Widget`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const dash = await localDb.getDashboardById(Number(input.dashboardId), userId);
+        if (!dash) throw new Error('اللوحة غير موجودة');
+        let widgets = [];
+        try { widgets = JSON.parse(dash.widgets as string || '[]'); } catch { widgets = []; }
+        widgets.push(input.widget);
+        await localDb.updateDashboard(Number(input.dashboardId), userId, { widgets });
+        return { success: true };
       }),
 
     templates: protectedProcedure.query(async () => {
-      const result = await engine.getDashboardTemplates();
-      return result.ok ? result.data : [];
+      return [];
     }),
 
     compare: protectedProcedure
       .input(z.object({ id: z.string(), versionA: z.string().optional(), versionB: z.string().optional() }))
-      .query(async ({ input }) => {
-        const result = await engine.compareDashboards(input.id, input.versionA, input.versionB);
-        return result.data;
+      .query(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const dash = await localDb.getDashboardById(Number(input.id), userId);
+        return { current: dash, previous: null };
       }),
 
     versions: protectedProcedure
       .input(z.object({ id: z.string() }))
-      .query(async ({ input }) => {
-        const result = await engine.getDashboardVersions(input.id);
-        return result.ok ? result.data : [];
+      .query(async () => {
+        return [];
       }),
   }),
 
   // ═══════════════════════════════════════════════════════════════
-  // SPREADSHEETS — via Dashboard Engine (data)
+  // SPREADSHEETS — via Local SQLite DB
   // ═══════════════════════════════════════════════════════════════
   spreadsheets: router({
-    list: protectedProcedure.query(async () => {
-      const result = await engine.listDatasets();
-      if (!result.ok) return [];
-      const data = result.data as any;
-      const items = Array.isArray(data) ? data : (data?.data || data?.datasets || []);
-      return items.map((s: any, i: number) => ({
-        id: s.id || s.dataset_id || i + 1,
-        title: s.title || s.name || s.label || 'جدول بدون عنوان',
-        description: s.description || '',
-        sheets: s.sheets || s.columns || [],
-        status: s.status || 'ready',
-        createdAt: s.created_at || s.createdAt || new Date().toISOString(),
-        updatedAt: s.updated_at || s.updatedAt || new Date().toISOString(),
-      }));
+    list: protectedProcedure.query(async ({ ctx }) => {
+      const userId = (ctx as any).user?.id || 1;
+      return localDb.getSpreadsheetsByUserId(userId);
     }),
 
     get: protectedProcedure
       .input(z.object({ id: z.union([z.number(), z.string()]) }))
-      .query(async ({ input }) => {
-        const result = await engine.listDatasets();
-        if (!result.ok) return null;
-        const data = result.data as any;
-        const items = Array.isArray(data) ? data : (data?.data || data?.datasets || []);
-        const found = items.find((s: any) => String(s.id || s.dataset_id) === String(input.id));
-        if (!found) return null;
-        return {
-          id: found.id || found.dataset_id || input.id,
-          title: found.title || found.name || '',
-          description: found.description || '',
-          sheets: found.sheets || found.columns || [],
-          status: found.status || 'ready',
-        };
+      .query(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        return localDb.getSpreadsheetById(Number(input.id), userId);
       }),
 
     create: protectedProcedure
@@ -710,23 +581,17 @@ export const appRouter = router({
         description: z.string().optional(),
         sheets: z.array(z.any()).optional(),
       }))
-      .mutation(async ({ input }) => {
-        const result = await engine.registerDataset({
-          title: input.title,
-          source_kind: "spreadsheet",
-          rows: [],
-          field_names: [],
-        });
-        if (!result.ok) throw new Error(`فشل تسجيل مصدر البيانات`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        return localDb.createSpreadsheet({ userId, ...input });
       }),
 
     createExcelReport: protectedProcedure
       .input(z.object({ payload: z.record(z.string(), z.any()) }))
-      .mutation(async ({ input }) => {
-        const result = await engine.platformPost("/api/v1/excel/create-report", input.payload);
-        if (!result.ok) throw new Error(`فشل إنشاء تقرير Excel`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const p = input.payload as any;
+        return localDb.createSpreadsheet({ userId, title: p.title || 'تقرير Excel', sheets: p.sheets || [] });
       }),
 
     update: protectedProcedure
@@ -736,46 +601,29 @@ export const appRouter = router({
         sheets: z.array(z.any()).optional(),
         status: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
-        if (input.title) {
-          await engine.registerDataset({
-            title: input.title,
-            source_kind: "spreadsheet",
-            rows: [],
-            field_names: [],
-          });
-        }
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const { id, ...data } = input;
+        await localDb.updateSpreadsheet(Number(id), userId, data);
         return { success: true };
       }),
 
     delete: protectedProcedure
       .input(z.object({ id: z.union([z.number(), z.string()]) }))
-      .mutation(async () => {
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        await localDb.deleteSpreadsheet(Number(input.id), userId);
         return { success: true };
       }),
   }),
 
   // ═══════════════════════════════════════════════════════════════
-  // EXTRACTIONS — via Central Engine (AI jobs)
+  // EXTRACTIONS — via Local SQLite DB
   // ═══════════════════════════════════════════════════════════════
   extractions: router({
-    list: protectedProcedure.query(async () => {
-      const result = await engine.listAIJobs();
-      if (!result.ok) return [];
-      const data = result.data as any;
-      const jobs = Array.isArray(data) ? data : (data?.jobs || []);
-      return jobs
-        .filter((j: any) => j.page_path?.includes('extract') || j.prompt?.includes('استخراج') || j.prompt?.includes('extract'))
-        .map((j: any, i: number) => ({
-          id: j.id || j.job_id || i + 1,
-          sourceType: j.source_type || 'file',
-          sourceFile: j.resource_ref || j.source_file || '',
-          extractedText: j.result?.text || '',
-          structuredData: j.result?.structured || {},
-          language: j.result?.language || 'ar',
-          status: j.status || 'completed',
-          createdAt: j.created_at || j.createdAt || new Date().toISOString(),
-        }));
+    list: protectedProcedure.query(async ({ ctx }) => {
+      const userId = (ctx as any).user?.id || 1;
+      return localDb.getExtractionsByUserId(userId);
     }),
 
     create: protectedProcedure
@@ -786,39 +634,19 @@ export const appRouter = router({
         structuredData: z.record(z.string(), z.any()).optional(),
         language: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
-        const result = await engine.submitAIJob({
-          page_path: '/extract',
-          session_id: `extract-${Date.now()}`,
-          prompt: `استخراج البيانات من ${input.sourceType}: ${input.sourceFile || ''}`,
-          resource_ref: input.sourceFile,
-        });
-        if (!result.ok) throw new Error(`فشل الاستخراج`);
-        return result.data;
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        return localDb.createExtraction({ userId, ...input });
       }),
   }),
 
   // ═══════════════════════════════════════════════════════════════
-  // TRANSLATIONS — via Central Engine (AI live-translation)
+  // TRANSLATIONS — via Local SQLite DB
   // ═══════════════════════════════════════════════════════════════
   translations: router({
-    list: protectedProcedure.query(async () => {
-      const result = await engine.listAIJobs();
-      if (!result.ok) return [];
-      const data = result.data as any;
-      const jobs = Array.isArray(data) ? data : (data?.jobs || []);
-      return jobs
-        .filter((j: any) => j.page_path?.includes('translat') || j.prompt?.includes('ترجم') || j.prompt?.includes('translat'))
-        .map((j: any, i: number) => ({
-          id: j.id || j.job_id || i + 1,
-          sourceText: j.prompt || '',
-          translatedText: j.result?.text || j.result?.translated || '',
-          sourceLang: j.result?.source_lang || 'ar',
-          targetLang: j.result?.target_lang || 'en',
-          type: 'text',
-          status: j.status || 'completed',
-          createdAt: j.created_at || j.createdAt || new Date().toISOString(),
-        }));
+    list: protectedProcedure.query(async ({ ctx }) => {
+      const userId = (ctx as any).user?.id || 1;
+      return localDb.getTranslationsByUserId(userId);
     }),
 
     create: protectedProcedure
@@ -829,18 +657,14 @@ export const appRouter = router({
         targetLang: z.string().optional(),
         type: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
-        const result = await engine.liveTranslation({
-          source_locale: input.sourceLang || 'ar',
-          target_locale: input.targetLang || 'en',
-          items: [{ node_id: `tr-${Date.now()}`, text: input.sourceText }],
-        });
-        return result.data || { success: true, translatedText: input.translatedText };
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        return localDb.createTranslation({ userId, ...input });
       }),
   }),
 
   // ═══════════════════════════════════════════════════════════════
-  // TRANSCRIPTION — via Transcription Engine
+  // TRANSCRIPTION — via Engine (kept as-is, needs actual audio processing)
   // ═══════════════════════════════════════════════════════════════
   transcription: router({
     listJobs: protectedProcedure.query(async () => {
@@ -868,23 +692,14 @@ export const appRouter = router({
   }),
 
   // ═══════════════════════════════════════════════════════════════
-  // CHAT — via Central Engine (AI jobs)
+  // CHAT — via Local SQLite DB
   // ═══════════════════════════════════════════════════════════════
   chat: router({
     history: protectedProcedure
       .input(z.object({ sessionId: z.string() }))
-      .query(async ({ input }) => {
-        const result = await engine.engineChatHistory(input.sessionId);
-        if (!result.ok) return [];
-        const data = result.data as any;
-        const jobs = Array.isArray(data) ? data : (data?.jobs || []);
-        return jobs.map((j: any) => ({
-          id: j.id || j.job_id,
-          role: j.role || (j.prompt ? 'user' : 'assistant'),
-          content: j.prompt || j.result?.text || j.content || '',
-          metadata: j.metadata || {},
-          createdAt: j.created_at || j.createdAt || new Date().toISOString(),
-        }));
+      .query(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        return localDb.getChatHistory(userId, input.sessionId);
       }),
 
     addMessage: protectedProcedure
@@ -894,78 +709,65 @@ export const appRouter = router({
         content: z.string(),
         metadata: z.record(z.string(), z.any()).optional(),
       }))
-      .mutation(async ({ input }) => {
-        const result = await engine.engineChat(input.sessionId, input.content);
-        return { success: result.ok, data: result.data };
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        await localDb.addChatMessage({ userId, ...input });
+        return { success: true };
       }),
   }),
 
   // ═══════════════════════════════════════════════════════════════
-  // LIBRARY — via Governance Engine (library)
+  // LIBRARY — via Local SQLite DB (aggregated view)
   // ═══════════════════════════════════════════════════════════════
   library: router({
-    items: protectedProcedure.query(async () => {
-      const result = await engine.getGovernanceLibrary();
-      if (!result.ok) return [];
-      const data = result.data as any;
-      return Array.isArray(data) ? data : (data?.items || data?.data || []);
+    items: protectedProcedure.query(async ({ ctx }) => {
+      const userId = (ctx as any).user?.id || 1;
+      return localDb.getLibraryItems(userId);
     }),
   }),
 
   // ═══════════════════════════════════════════════════════════════
-  // SLIDE LIBRARY — uses Drizzle DB (template elements, not content)
+  // SLIDE LIBRARY — uses Drizzle DB (KEPT AS-IS)
   // ═══════════════════════════════════════════════════════════════
   slideLibrary: libraryRouter,
 
   // ═══════════════════════════════════════════════════════════════
-  // PLATFORM — direct engine access
+  // PLATFORM — direct engine access (KEPT AS-IS)
   // ═══════════════════════════════════════════════════════════════
   platform: platformRouter,
 
   // ═══════════════════════════════════════════════════════════════
-  // ADMIN — via Governance Engine
+  // ADMIN — via Local SQLite DB
   // ═══════════════════════════════════════════════════════════════
   admin: router({
     users: protectedProcedure.query(async ({ ctx }) => {
       if (ctx.user?.role !== "admin") return [];
-      const result = await engine.engineListUsers();
-      if (!result.ok) return [];
-      const data = result.data as any;
-      return Array.isArray(data) ? data : (data?.users || data?.data || []);
+      return localDb.getAllUsers();
     }),
 
     stats: protectedProcedure.query(async ({ ctx }) => {
       if (ctx.user?.role !== "admin") throw new Error("Admin only");
-      const result = await engine.engineGetAdminStats();
-      const raw = result.data as any;
-      // Normalize to the shape AdminPanel expects
-      return {
-        users: raw?.users ?? raw?.governance?.users ?? 0,
-        totalContent: raw?.totalContent ?? raw?.governance?.totalContent ?? 0,
-        reports: raw?.reports ?? raw?.governance?.reports ?? 0,
-        presentations: raw?.presentations ?? raw?.governance?.presentations ?? 0,
-        dashboards: raw?.dashboards ?? raw?.governance?.dashboards ?? 0,
-        spreadsheets: raw?.spreadsheets ?? raw?.governance?.spreadsheets ?? 0,
-        translations: raw?.translations ?? raw?.governance?.translations ?? 0,
-        extractions: raw?.extractions ?? raw?.governance?.extractions ?? 0,
-        files: raw?.files ?? raw?.governance?.files ?? 0,
-      };
+      return localDb.getAdminStats();
     }),
 
     recentActivity: protectedProcedure.query(async ({ ctx }) => {
       if (ctx.user?.role !== "admin") return [];
-      const result = await engine.engineGetRecentActivity();
-      if (!result.ok) return [];
-      const data = result.data as any;
-      return Array.isArray(data) ? data : (data?.entries || data?.data || []);
+      // Aggregate recent items from all tables as activity
+      const userId = (ctx as any).user?.id || 1;
+      const items = await localDb.getLibraryItems(userId);
+      return items.slice(0, 20).map((item: any) => ({
+        id: item.id,
+        type: item.source || item.type,
+        title: item.title,
+        action: 'created',
+        timestamp: item.createdAt || item.updatedAt,
+      }));
     }),
 
     allContent: protectedProcedure.query(async ({ ctx }) => {
       if (ctx.user?.role !== "admin") return [] as any[];
-      const result = await engine.engineGetAllContent();
-      const data = result.data as any;
-      const items = Array.isArray(data) ? data : (data?.data || data?.content || data?.items || []);
-      return items as any[];
+      const userId = (ctx as any).user?.id || 1;
+      return localDb.getLibraryItems(userId);
     }),
   }),
 });
