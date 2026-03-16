@@ -20,10 +20,10 @@ const allowedRoots = new Set([
 ]);
 
 const forbiddenPatterns = [
-  /export\s+(const|type|interface)\s+Artifact(Schema)?\b(\s|$|[<{=;,])/m,
-  /export\s+(const|type|interface)\s+Job(Schema)?\b(\s|$|[<{=;,])/m,
-  /export\s+(const|type|interface)\s+EvidencePack(Schema)?\b(\s|$|[<{=;,])/m,
-  /export\s+(const|type|interface)\s+CanonicalRepresentation(Schema)?\b(\s|$|[<{=;,])/m
+  /export\s+(const|type|interface)\s+Artifact(Schema)?/m,
+  /export\s+(const|type|interface)\s+Job(Schema)?/m,
+  /export\s+(const|type|interface)\s+EvidencePack(Schema)?/m,
+  /export\s+(const|type|interface)\s+CanonicalRepresentation(Schema)?/m
 ];
 
 const violations = [];

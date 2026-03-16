@@ -24,9 +24,3 @@ export * from "./ai";
 export * from "./transcription";
 export * from "./governance";
 export * from "./registry";
-
-// Seed-migrated types (from rasid_core_seed 02_shared_contracts)
-export * from "./seed-common";
-export * from "./seed-canonical-ir";
-export * from "./seed-engine-types";
-export * from "./seed-db-adapter";

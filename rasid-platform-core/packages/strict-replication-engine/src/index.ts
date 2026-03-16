@@ -1910,6 +1910,3 @@ export {
   computePerceptualHash,
   GOLDEN_CORPUS_PATH
 };
-
-// ─── Seed Services (adapted from rasid_core_seed) ────────────────────
-export * as SeedServices from "./seed-services";
