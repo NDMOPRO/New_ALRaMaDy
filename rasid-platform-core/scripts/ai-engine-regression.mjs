@@ -286,7 +286,7 @@ try {
         url.searchParams.set(key, String(value));
       }
     }
-    await page.goto(url.toString(), { waitUntil: "networkidle" });
+    await page.goto(url.toString(), { waitUntil: "domcontentloaded", timeout: 120000 });
     await page.fill("#ai-session-id", sessionId);
     await page.fill("#ai-prompt", prompt);
     await page.fill("#ai-resource-ref", resourceRef ?? "");
@@ -327,7 +327,7 @@ try {
         (currentUrl) => currentUrl.toString().startsWith(redirectTarget.split("?ai_job_id=")[0]),
         { timeout: 10000 }
       ).catch(() => wait(1000));
-      await page.goto(redirectTarget, { waitUntil: "networkidle" }).catch(() => null);
+      await page.goto(redirectTarget, { waitUntil: "domcontentloaded", timeout: 120000 }).catch(() => null);
     }
     const resultText = await readAiResult();
     const resultScreenshot = path.join(proofRoot, `${slug(name)}-result.png`);
@@ -346,7 +346,7 @@ try {
 
   const captureApprovedPath = async (name, openPath) => {
     step(`capture approved path ${name}`);
-    await page.goto(`${baseUrl}${openPath}`, { waitUntil: "networkidle" });
+    await page.goto(`${baseUrl}${openPath}`, { waitUntil: "domcontentloaded", timeout: 120000 });
     const resultText = await readAiResult();
     const screenshot = path.join(proofRoot, `${slug(name)}-approved.png`);
     await page.screenshot({ path: screenshot, fullPage: true });
@@ -408,7 +408,7 @@ try {
     });
     const firstJobId = firstJob.job.job_id;
     const secondJobId = secondJob.job.job_id;
-    await transcriptionPage.goto(`${transcriptionBaseUrl}/transcription`, { waitUntil: "networkidle" }).catch(() => null);
+    await transcriptionPage.goto(`${transcriptionBaseUrl}/transcription`, { waitUntil: "domcontentloaded", timeout: 120000 }).catch(() => null);
     await transcriptionPage.fill("#ai-session-id", `session-transcription-${Date.now()}`);
     await transcriptionPage.fill("#ai-resource-ref", String(firstJob.bundle.bundle_id ?? ""));
     await transcriptionPage.fill("#ai-prompt", "قارن بين آخر ملفين واستخرج الاختلافات الجوهرية");
@@ -604,7 +604,7 @@ try {
   }
   const presentationPlatformState = JSON.parse(fs.readFileSync(presentationPlatformStatePath, "utf8"));
   const publicViewerPath = `/published/${presentationDeckId}?share_token=${encodeURIComponent(presentationPlatformState.live_share_token)}`;
-  await presentationsPage.goto(`${presentationsBaseUrl}${publicViewerPath}`, { waitUntil: "networkidle" });
+  await presentationsPage.goto(`${presentationsBaseUrl}${publicViewerPath}`, { waitUntil: "domcontentloaded", timeout: 120000 });
   await presentationsPage.waitForSelector("#viewerFrame", { timeout: 120000 });
   const presentationPublicScreenshot = path.join(proofRoot, "presentations-platform-public-viewer.png");
   await presentationsPage.screenshot({ path: presentationPublicScreenshot, fullPage: true });

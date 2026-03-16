@@ -44,6 +44,12 @@ const writeText = (relativePath, payload) => {
   fs.writeFileSync(target, payload, "utf8");
   return target;
 };
+const appendLog = (relativePath, line) => {
+  const target = path.join(outputRoot, relativePath);
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  fs.appendFileSync(target, `${new Date().toISOString()} ${line}\n`, "utf8");
+  return target;
+};
 const pageText = async (page) =>
   page.evaluate(() => document.body?.innerText?.replace(/\s+/g, " ").trim() ?? "");
 const writeBinary = (relativePath, payload) => {
@@ -301,6 +307,7 @@ let dashboardServer = null;
 let browser = null;
 
 try {
+  appendLog("records/progress.log", "starting servers");
   transcriptionServer = startNodeServer("transcription-serve-web", { host, port: transcriptionPort }, "transcription-web");
   reportServer = startNodeServer("report-start-platform", { host, port: reportPort }, "report-platform");
   presentationsServer = startNodeServer("presentations-serve-app", { host, port: presentationsPort }, "presentations-platform");
@@ -315,11 +322,14 @@ try {
     waitForServer(presentationsBaseUrl),
     waitForServer(dashboardBaseUrl)
   ]);
+  appendLog("records/progress.log", "servers ready");
 
   browser = await chromium.launch(browserExecutablePath ? { executablePath: browserExecutablePath, headless: true } : { headless: true });
   const context = await browser.newContext({ viewport: { width: 1600, height: 1000 } });
+  appendLog("records/progress.log", "browser ready");
 
   const transcriptionPage = await context.newPage();
+  appendLog("records/progress.log", "transcription login start");
   await loginPage(
     transcriptionPage,
     transcriptionBaseUrl,
@@ -332,6 +342,7 @@ try {
     { tenant: tenantRef }
   );
   await transcriptionPage.waitForURL(`${transcriptionBaseUrl}/transcription`);
+  appendLog("records/progress.log", "transcription page ready");
   const transcriptionStart = await pageJson(transcriptionPage, "/api/v1/transcription/jobs/start", "POST", {
     mode: "advanced",
     files: [
@@ -343,6 +354,7 @@ try {
   });
   if (transcriptionStart.status !== 200) throw new Error(JSON.stringify(transcriptionStart.body));
   const transcriptionPayload = transcriptionStart.body;
+  appendLog("records/progress.log", "transcription job started");
   await transcriptionPage.evaluate(async (jobId) => {
     await window.loadJobs?.();
     await window.loadJob?.(jobId);
@@ -352,6 +364,7 @@ try {
     undefined,
     { timeout: 300000 }
   );
+  appendLog("records/progress.log", "transcription exact true");
   const transcriptionLiveScreenshot = path.join(outputRoot, "browser", "transcription-live.png");
   await transcriptionPage.screenshot({ path: transcriptionLiveScreenshot, fullPage: true });
 
@@ -378,6 +391,7 @@ try {
   copyFileIntoProof(alignmentArtifactPath, "intermediate/transcription-alignment-artifact.json");
 
   const reportPage = await context.newPage();
+  appendLog("records/progress.log", "report login start");
   await loginPage(
     reportPage,
     reportBaseUrl,
@@ -385,6 +399,7 @@ try {
     { tenant: tenantRef }
   );
   await reportPage.waitForURL(`${reportBaseUrl}/reports`);
+  appendLog("records/progress.log", "report page ready");
   const reportCreateResponse = await pageJson(reportPage, "/api/v1/reports/reports/create-from-transcription", "POST", {
     title: `Transcription Flow ${workflow.bundle.bundle_id}`,
     description: "Created from live /transcription outputs and continued through reports, presentations, and dashboards.",
@@ -405,6 +420,7 @@ try {
   });
   if (reportCreateResponse.status !== 200) throw new Error(JSON.stringify(reportCreateResponse.body));
   const reportCreate = reportCreateResponse.body.data;
+  appendLog("records/progress.log", `report created ${reportCreate.report.report_id}`);
   await reportPage.goto(`${reportBaseUrl}/reports/${reportCreate.report.report_id}`, { waitUntil: "networkidle" });
   const reportCreatedScreenshot = path.join(outputRoot, "browser", "report-live-created.png");
   await reportPage.screenshot({ path: reportCreatedScreenshot, fullPage: true });
@@ -422,6 +438,7 @@ try {
   );
   if (convertResponse.status !== 200) throw new Error(JSON.stringify(convertResponse.body));
   const conversion = convertResponse.body.data;
+  appendLog("records/progress.log", "report converted to presentation");
   await wait(1000);
   const reportConvertedScreenshot = path.join(outputRoot, "browser", "report-live-converted.png");
   await reportPage.screenshot({ path: reportConvertedScreenshot, fullPage: true });
@@ -433,6 +450,7 @@ try {
   if (!presentationBundle || !presentationPublication) throw new Error("presentation conversion failed");
 
   const presentationsPage = await context.newPage();
+  appendLog("records/progress.log", "presentations login start");
   await loginPage(
     presentationsPage,
     presentationsBaseUrl,
@@ -446,6 +464,7 @@ try {
   );
   await presentationsPage.goto(`${presentationsBaseUrl}/presentations/${presentationBundle.deck.deck_id}`, { waitUntil: "domcontentloaded" });
   await presentationsPage.waitForSelector("#readerFrame", { timeout: 120000 });
+  appendLog("records/progress.log", `presentation ready ${presentationBundle.deck.deck_id}`);
   const presentationsPlatformScreenshot = path.join(outputRoot, "browser", "presentations-platform-live.png");
   await presentationsPage.screenshot({ path: presentationsPlatformScreenshot, fullPage: true });
 
@@ -463,6 +482,7 @@ try {
   );
 
   const dashboardLoginPage = await context.newPage();
+  appendLog("records/progress.log", "dashboard login start");
   await loginPage(
     dashboardLoginPage,
     dashboardBaseUrl,
@@ -487,6 +507,7 @@ try {
     waitUntil: "networkidle"
   });
   await dashboardLoginPage.waitForSelector("#canvas-presentation-to-dashboard", { timeout: 120000 });
+  appendLog("records/progress.log", "dashboard presentation surface ready");
   await dashboardLoginPage.evaluate(() => {
     const checkbox = document.getElementById("canvas-approval-granted");
     if (checkbox) checkbox.checked = true;
@@ -508,6 +529,7 @@ try {
       .map((entry) => path.join(presentationBridgeRoot, entry.name))
       .sort((left, right) => fs.statSync(right).mtimeMs - fs.statSync(left).mtimeMs)[0] ?? null;
   if (!bridgeRunDirectory) throw new Error("presentation bridge runtime directory missing after conversion");
+  appendLog("records/progress.log", `dashboard ready ${dashboardId}`);
   const bridgeManifestPath = path.join(bridgeRunDirectory, "bridge-manifest.json");
   const bridgeArtifactPath = path.join(bridgeRunDirectory, `bridge-${presentationBundle.deck.deck_id}-${dashboardId}.artifact.json`);
   const bridgeEvidencePath = path.join(bridgeRunDirectory, `bridge-${presentationBundle.deck.deck_id}-${dashboardId}.evidence.json`);
@@ -536,6 +558,7 @@ try {
   const dashboardState = dashboardStateResponse.body;
   const dashboardLiveText = await pageText(dashboardLoginPage);
   writeText("evidence/dashboard-live.txt", dashboardLiveText);
+  appendLog("records/progress.log", "dashboard state captured");
 
   await dashboardLoginPage.evaluate(() => {
     const checkbox = document.getElementById("canvas-approval-granted");
@@ -547,6 +570,7 @@ try {
   await dashboardLoginPage.click("#canvas-publish-dashboard");
   const dashboardPublishResponse = await publishResponsePromise;
   const publishPayload = await dashboardPublishResponse.json();
+  appendLog("records/progress.log", "dashboard published");
 
   const shareResponse = await pageJson(dashboardLoginPage, "/api/v1/dashboards/share", "POST", {
     dashboard_id: dashboardId,
@@ -554,6 +578,7 @@ try {
   });
   if (shareResponse.status !== 200) throw new Error(JSON.stringify(shareResponse.body));
   const sharePayload = shareResponse.body;
+  appendLog("records/progress.log", "dashboard shared");
 
   const exportWidgetRef =
     dashboardState.dashboard.widgets.find((widget) => widget.widget_type !== "filter")?.widget_id ??
@@ -566,6 +591,7 @@ try {
   });
   if (exportTargetResponse.status !== 200) throw new Error(JSON.stringify(exportTargetResponse.body));
   const exportTargetPayload = exportTargetResponse.body;
+  appendLog("records/progress.log", "dashboard exported");
 
   const publishedPage = await context.newPage();
   await publishedPage.goto(publishPayload.transport.served_embed_html_url, { waitUntil: "networkidle" });
@@ -612,6 +638,7 @@ try {
   const governanceAuditPayload = governanceAuditResponse.body;
   const governanceLineagePayload = governanceLineageResponse.body;
   const governanceEvidencePayload = governanceEvidenceResponse.body;
+  appendLog("records/progress.log", "governance api captured");
   writeJson("api/dashboard-publish-manifest.json", publishManifest);
   writeJson("api/dashboard-publish-state.json", publishState);
   writeJson("api/dashboard-publish-embed-payload.json", publishEmbedPayload);
@@ -638,6 +665,7 @@ try {
   await governancePage.screenshot({ path: governanceLiveScreenshot, fullPage: true });
   const governanceLiveText = await pageText(governancePage);
   writeText("evidence/governance-live.txt", governanceLiveText);
+  appendLog("records/progress.log", "library and governance surfaces captured");
 
   const reportRuntimeRoot = path.join(root, ".runtime", "report-engine", "reports", reportCreate.report.report_id);
   const presentationRuntimeRoot = path.join(root, ".runtime", "presentations-engine", "decks", presentationBundle.deck.deck_id);
@@ -820,6 +848,7 @@ try {
   ) {
     throw new Error("cross-engine dashboard/governance assertions failed");
   }
+  appendLog("records/progress.log", "assertions passed");
 
   const flowProof = {
     phase_requirement: "transcription-extraction-engine cross-engine flow proof",
@@ -1034,6 +1063,7 @@ try {
     presentation_bridge_lineage_path: bridge.bridge_lineage_path,
     governance_publish_lineage_path: governanceLineageRuntimePath
   });
+  appendLog("records/progress.log", "proof written");
 
   console.log(
     JSON.stringify(

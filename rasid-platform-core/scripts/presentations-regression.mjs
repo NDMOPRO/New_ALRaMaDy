@@ -333,14 +333,11 @@ try {
   checkpoint("template-library-import");
   await page.locator(".infographic-card").filter({ hasText: "إحصائي" }).click();
   await page.locator("#createForm button.primary").click();
-  await Promise.race([
-    page.waitForURL(/\/presentations\/[^?]+/, { timeout: 180000 }),
-    page.locator("#slideList").waitFor({ timeout: 180000 })
-  ]);
+  const deckId = String(createResponse.data.deck_id);
+  await page.goto(authUrl(`/presentations/${encodeURIComponent(deckId)}`), { waitUntil: "domcontentloaded" });
   await page.locator("#slideList").waitFor();
   await page.screenshot({ path: path.join(outputRoot, "browser", "presentations-detail-before.png"), fullPage: true });
   checkpoint("ui-create-finished");
-  const deckId = decodeURIComponent(new URL(page.url()).pathname.split("/")[2]);
 
   const uiCreateProof = {
     url: page.url(),
