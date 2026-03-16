@@ -2156,6 +2156,20 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
       strictMode: z.boolean().default(true),
     }))
     .mutation(async ({ input }) => {
+      // Convert local file path to base64 data URI for OpenAI
+      let imageUrl = input.imageUrl;
+      if (imageUrl.startsWith('/uploads/') || imageUrl.startsWith('uploads/')) {
+        const fs = await import('fs');
+        const path = await import('path');
+        const localPath = path.join(process.cwd(), imageUrl.startsWith('/') ? imageUrl.slice(1) : imageUrl);
+        if (fs.existsSync(localPath)) {
+          const buffer = fs.readFileSync(localPath);
+          const ext = path.extname(localPath).toLowerCase();
+          const mime = ext === '.png' ? 'image/png' : ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : ext === '.webp' ? 'image/webp' : ext === '.gif' ? 'image/gif' : 'image/png';
+          imageUrl = `data:${mime};base64,${buffer.toString('base64')}`;
+        }
+      }
+
       // Step 1: Send image to GPT-4o Vision for full structural analysis
       const visionPrompt = buildVisionPrompt(input.targetType, input.language);
 
@@ -2168,7 +2182,7 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
           role: 'user',
           content: [
             { type: 'text', text: `حلل هذه الصورة وأرجع JSON كامل بكل العناصر المرئية بدقة 100%. النوع المستهدف: ${input.targetType}` },
-            { type: 'image_url', image_url: { url: input.imageUrl, detail: 'high' } },
+            { type: 'image_url', image_url: { url: imageUrl, detail: 'high' } },
           ],
         },
       ];
@@ -2237,7 +2251,20 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
       title: z.string().default(''),
     }))
     .mutation(async ({ input }) => {
-      // First replicate
+      // Convert local path to base64
+      let imageUrl = input.imageUrl;
+      if (imageUrl.startsWith('/uploads/') || imageUrl.startsWith('uploads/')) {
+        const fs = await import('fs');
+        const path = await import('path');
+        const localPath = path.join(process.cwd(), imageUrl.startsWith('/') ? imageUrl.slice(1) : imageUrl);
+        if (fs.existsSync(localPath)) {
+          const buffer = fs.readFileSync(localPath);
+          const ext = path.extname(localPath).toLowerCase();
+          const mime = ext === '.png' ? 'image/png' : ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : ext === '.webp' ? 'image/webp' : 'image/png';
+          imageUrl = `data:${mime};base64,${buffer.toString('base64')}`;
+        }
+      }
+
       const visionPrompt = buildVisionPrompt(input.targetType, input.language);
       const visionMessages: VisionMessage[] = [
         { role: 'system', content: visionPrompt },
@@ -2245,7 +2272,7 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
           role: 'user',
           content: [
             { type: 'text', text: `حلل هذه الصورة واستخرج كل العناصر بدقة 100%. النوع: ${input.targetType}` },
-            { type: 'image_url', image_url: { url: input.imageUrl, detail: 'high' } },
+            { type: 'image_url', image_url: { url: imageUrl, detail: 'high' } },
           ],
         },
       ];
