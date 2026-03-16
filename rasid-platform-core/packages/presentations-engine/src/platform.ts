@@ -19,6 +19,7 @@ import {
   type PresentationBundle,
   PresentationEngine
 } from "./index";
+import { handleAddendumRoute } from "./test-interface";
 
 type PlatformServerHandle = {
   origin: string;
@@ -3291,6 +3292,18 @@ export const startPresentationPlatformServer = async (options: { port?: number; 
         json(response, 200, { data: { provider: payload.extension_type, action: payload.action, result } });
         return;
       }
+
+      // ═══════════════════════════════════════════════════════════════
+      // ADDENDUM routes (catalog, control manifest, transforms, data picker, dashboard, tools, test interface)
+      // ═══════════════════════════════════════════════════════════════
+      const session4 = authenticate(request);
+      const addendumCtx = {
+        rootDir: engine.store.rootDir,
+        userId: session4?.userId ?? "anonymous",
+        tenantRef: session4?.tenantRef ?? "tenant-default",
+      };
+      const handled = await handleAddendumRoute(request, response, pathname, (request.method ?? "GET").toUpperCase(), addendumCtx);
+      if (handled) return;
 
       json(response, 404, { error: "Not found" });
     } catch (error) {
