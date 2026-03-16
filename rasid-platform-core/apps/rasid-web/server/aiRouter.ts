@@ -5,9 +5,7 @@
 import { z } from "zod";
 import { publicProcedure, router } from "./_core/trpc";
 import { callAI, callVision, isAIAvailable, SYSTEM_PROMPTS, type ChatMessage, type VisionMessage } from "./openai";
-import { getDb } from "./db";
-import { slideElements, elementCategories, elementUsageRules } from "../drizzle/schema";
-import { eq, and, desc, sql } from "drizzle-orm";
+// DB imports removed — library elements not available without database
 
 // ─── Helper Functions ──────────────────────────────────────────
 function formatTime(seconds: number): string {
@@ -26,8 +24,8 @@ function formatDuration(seconds: number): string {
 
 async function getLibraryElementsForGeneration(layoutTypes: string[]): Promise<string> {
   try {
-    const db = await getDb();
-    if (!db) return '';
+    // Database removed — return empty until library engine is connected
+    return '';
     
     const elements = await db.select().from(slideElements).where(eq(slideElements.isActive, true)).orderBy(desc(slideElements.qualityRating));
     if (elements.length === 0) return '';
@@ -109,8 +107,8 @@ async function getLibraryElementsForGeneration(layoutTypes: string[]): Promise<s
 /* ─── Fetch HTML Templates for Generation ──────────────────────── */
 async function getHtmlTemplatesForLayouts(layoutTypes: string[]): Promise<Record<string, string>> {
   try {
-    const db = await getDb();
-    if (!db) return {};
+    // Database removed — return empty until library engine is connected
+    return {};
     
     const elements = await db.select().from(slideElements)
       .where(eq(slideElements.isActive, true))
@@ -1483,12 +1481,8 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
       contentType: z.string(),
     }))
     .mutation(async ({ input }) => {
-      const { storagePut } = await import('./storage');
-      const suffix = Math.random().toString(36).slice(2, 8);
-      const key = `extractions/${suffix}-${input.fileName}`;
-      const buffer = Buffer.from(input.fileBase64.replace(/^data:[^;]+;base64,/, ''), 'base64');
-      const { url } = await storagePut(key, buffer, input.contentType);
-      return { url, key, size: buffer.length };
+      // Storage removed — file upload not available without S3 config
+      throw new Error('File upload not available: storage not configured');
     }),
 
   // ─── Extract text from any file via AI ─────────────────────

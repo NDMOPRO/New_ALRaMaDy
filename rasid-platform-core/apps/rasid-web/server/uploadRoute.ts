@@ -6,7 +6,10 @@
 import { Router } from "express";
 import multer from "multer";
 import { verifyToken } from "./engineAuth";
-import { storagePut } from "./storage";
+// Storage stub — S3 not configured yet
+const storagePut = async (key: string, data: Buffer, contentType: string): Promise<{url: string}> => {
+  throw new Error('Storage not configured — file upload disabled');
+};
 import * as engine from "./platformConnector";
 
 // Use memory storage — files go to S3, not local disk

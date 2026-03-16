@@ -1,1 +1,0 @@
-ALTER TABLE `slide_elements` ADD `htmlTemplate` text;

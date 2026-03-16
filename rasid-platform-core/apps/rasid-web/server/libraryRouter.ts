@@ -1,18 +1,21 @@
 import { z } from "zod";
-import { eq, desc, and, sql } from "drizzle-orm";
 import JSZip from "jszip";
 import { protectedProcedure, publicProcedure } from "./_core/trpc";
 import { router } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
-import { getDb } from "./db";
-import {
-  slideTemplates,
-  slideElements,
-  elementCategories,
-  elementUsageRules,
-} from "../drizzle/schema";
-import { storagePut } from "./storage";
 import { invokeLLM } from "./_core/llm";
+
+// DB/Storage stubs — library features disabled until database is reconnected
+const eq = (..._a: any[]) => ({} as any);
+const desc = (..._a: any[]) => ({} as any);
+const and = (..._a: any[]) => ({} as any);
+const sql = {} as any;
+const slideTemplates = {} as any;
+const slideElements = {} as any;
+const elementCategories = {} as any;
+const elementUsageRules = {} as any;
+async function getDb(): Promise<any> { return null; }
+const storagePut = async (..._args: any[]): Promise<{url: string}> => { throw new Error('Storage not configured'); };
 
 // ─── Default Categories (seeded on first use) ────────────────────
 
