@@ -2,12 +2,10 @@
  * Presentation Addendum Router — tRPC procedures for the ADDENDUM features:
  * Catalog, Control Manifest, Transforms, Data Picker, Dashboard Slides,
  * Literal Verification, Tool Schemas
- *
- * Imports directly from @rasid/presentations-engine source (monorepo sibling).
  */
 import { z } from "zod";
 import { publicProcedure, router } from "./_core/trpc";
-import { getCatalog } from "../../../packages/presentations-engine/src/catalogs";
+import { getCatalog } from "./engines/presentationCatalogs";
 import {
   buildControlManifest,
   getVisibleControls,
@@ -25,7 +23,7 @@ import {
   computeLiteralHash,
   verifyLiteralFidelity,
   PRESENTATION_TOOL_SCHEMAS,
-} from "../../../packages/presentations-engine/src/control-manifest";
+} from "./engines/presentationControlManifest";
 import * as path from "node:path";
 import * as os from "node:os";
 
