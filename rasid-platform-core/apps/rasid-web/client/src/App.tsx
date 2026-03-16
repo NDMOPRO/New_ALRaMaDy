@@ -16,6 +16,7 @@ import AdminPanel from "./pages/AdminPanel";
 import Profile from "./pages/Profile";
 import SharedPresentation from "./pages/SharedPresentation";
 import About from "./pages/About";
+import StrictEngineTest from "./pages/StrictEngineTest";
 import MaterialIcon from "./components/MaterialIcon";
 
 /** Loading spinner while checking auth */
@@ -57,6 +58,9 @@ function Router() {
       <Route path="/shared/:token" component={SharedPresentation} />
       <Route path="/about" component={About} />
       
+      {/* Strict Engine Test */}
+      <Route path="/strict-engine-test" component={StrictEngineTest} />
+
       {/* Protected routes */}
       <Route path="/profile">{() => <ProtectedRoute component={Profile} />}</Route>
       <Route path="/admin">{() => <AdminRoute component={AdminPanel} />}</Route>
