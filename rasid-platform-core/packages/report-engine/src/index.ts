@@ -620,18 +620,28 @@ type ServedReportPublicationRoute = {
 const REPORT_TRANSPORT_HOST = "127.0.0.1";
 const allocateReportTransportPort = (): number => {
   try {
-    const output = spawnSync(
-      "powershell",
-      [
-        "-NoProfile",
-        "-Command",
-        "$listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Parse('127.0.0.1'),0); $listener.Start(); $port = ($listener.LocalEndpoint).Port; $listener.Stop(); Write-Output $port"
-      ],
-      { encoding: "utf8" }
-    ).stdout.trim();
-    const parsed = Number(output);
-    if (Number.isFinite(parsed) && parsed > 0) {
-      return parsed;
+    if (process.platform === "win32") {
+      const output = spawnSync(
+        "powershell",
+        [
+          "-NoProfile",
+          "-Command",
+          "$listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Parse('127.0.0.1'),0); $listener.Start(); $port = ($listener.LocalEndpoint).Port; $listener.Stop(); Write-Output $port"
+        ],
+        { encoding: "utf8" }
+      ).stdout.trim();
+      const parsed = Number(output);
+      if (Number.isFinite(parsed) && parsed > 0) {
+        return parsed;
+      }
+    } else {
+      const net = require("node:net") as typeof import("node:net");
+      const srv = net.createServer();
+      srv.listen(0, "127.0.0.1");
+      const addr = srv.address();
+      const port = typeof addr === "object" && addr ? addr.port : 0;
+      srv.close();
+      if (port > 0) return port;
     }
   } catch {
     // Fall through to a deterministic high port if the OS probe fails.

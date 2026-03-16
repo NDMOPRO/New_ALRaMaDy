@@ -438,18 +438,28 @@ type ServedPublicationSnapshot = {
 const DASHBOARD_TRANSPORT_HOST = process.env.RASID_DASHBOARD_TRANSPORT_HOST ?? "127.0.0.1";
 const allocateDashboardTransportPort = (): number => {
   try {
-    const output = execFileSync(
-      "powershell",
-      [
-        "-NoProfile",
-        "-Command",
-        "$listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Parse('127.0.0.1'),0); $listener.Start(); $port = ($listener.LocalEndpoint).Port; $listener.Stop(); Write-Output $port"
-      ],
-      { encoding: "utf8" }
-    ).trim();
-    const parsed = Number(output);
-    if (Number.isFinite(parsed) && parsed > 0) {
-      return parsed;
+    if (process.platform === "win32") {
+      const output = execFileSync(
+        "powershell",
+        [
+          "-NoProfile",
+          "-Command",
+          "$listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Parse('127.0.0.1'),0); $listener.Start(); $port = ($listener.LocalEndpoint).Port; $listener.Stop(); Write-Output $port"
+        ],
+        { encoding: "utf8" }
+      ).trim();
+      const parsed = Number(output);
+      if (Number.isFinite(parsed) && parsed > 0) {
+        return parsed;
+      }
+    } else {
+      const net = require("node:net") as typeof import("node:net");
+      const srv = net.createServer();
+      srv.listen(0, "127.0.0.1");
+      const addr = srv.address();
+      const port = typeof addr === "object" && addr ? addr.port : 0;
+      srv.close();
+      if (port > 0) return port;
     }
   } catch {
     // Fall through to deterministic high port only if the OS probe fails.

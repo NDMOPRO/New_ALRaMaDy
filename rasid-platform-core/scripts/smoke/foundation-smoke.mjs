@@ -839,7 +839,7 @@ if (compared.compareResult.changed_widget_refs.length === 0) {
 }
 
 const strictRegression = strictEngine.runStrictReplicationRegressionSuite();
-if (strictRegression.length !== 2) {
+if (strictRegression.length !== 3) {
   throw new Error("Strict replication regression bundle count mismatch");
 }
 if (!strictRegression.some((bundle) => bundle.strictPublished) || !strictRegression.some((bundle) => !bundle.strictPublished)) {
@@ -885,7 +885,7 @@ if (!localizationRegression.some((sample) => sample.sample_name === "presentatio
 if (!localizationRegression.some((sample) => sample.sample_name === "spreadsheet-en-ar-pass" && sample.artifacts.localized_output_path.endsWith(".xlsx"))) {
   throw new Error("Localization regression missing native spreadsheet output coverage");
 }
-if (!localizationRegression.some((sample) => sample.sample_name === "dashboard-en-ar-pass" && sample.artifacts.localized_output_path.endsWith(".html") && sample.artifacts.published_sidecar_paths.some((entry) => entry.endsWith("dashboard-bundle\\embed-payload.json")) && sample.artifacts.dashboard_package_path && sample.artifacts.dashboard_package_path.endsWith(".zip"))) {
+if (!localizationRegression.some((sample) => sample.sample_name === "dashboard-en-ar-pass" && sample.artifacts.localized_output_path.endsWith(".html") && sample.artifacts.published_sidecar_paths.some((entry) => entry.replaceAll("\\", "/").endsWith("dashboard-bundle/embed-payload.json")) && sample.artifacts.dashboard_package_path && sample.artifacts.dashboard_package_path.endsWith(".zip"))) {
   throw new Error("Localization regression missing native dashboard bundle coverage");
 }
 const dashboardPass = localizationRegression.find((sample) => sample.sample_name === "dashboard-en-ar-pass");
