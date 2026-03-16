@@ -484,9 +484,12 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
       });
     } catch (error: any) {
       setIsTyping(false);
-      const errorMsg = error?.message?.includes('API') || error?.message?.includes('OPENAI')
-        ? 'عذراً، لم يتم تكوين مفتاح الذكاء الاصطناعي بعد. يرجى إضافة OPENAI_API_KEY في إعدادات Railway.'
-        : `عذراً، حدث خطأ: ${error?.message || 'يرجى المحاولة مرة أخرى.'}`;
+      const rawMsg = error?.message || error?.data?.message || '';
+      const errorMsg = rawMsg.includes('OPENAI_API_KEY is not configured')
+        ? 'عذراً، لم يتم تكوين مفتاح الذكاء الاصطناعي. يرجى إضافة OPENAI_API_KEY في إعدادات Railway.'
+        : rawMsg.includes('fetch failed') || rawMsg.includes('ECONNREFUSED')
+        ? 'عذراً، لا يمكن الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى.'
+        : `عذراً، حدث خطأ أثناء التنفيذ. يرجى المحاولة مرة أخرى.\n\n(${rawMsg || 'خطأ غير معروف'})`;
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
