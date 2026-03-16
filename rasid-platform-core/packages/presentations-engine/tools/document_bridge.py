@@ -292,38 +292,12 @@ def decode_media(spec):
     return None
 
 
-def _find_font(candidates):
-    """Search for a font file across common OS-specific directories."""
-    for candidate in candidates:
-        if Path(candidate).exists():
-            return candidate
-    return None
-
-
 def render_pdf(spec_path, output_path):
     spec = json.loads(Path(spec_path).read_text(encoding="utf-8"))
-    font_regular = _find_font([
-        r"C:\Windows\Fonts\arial.ttf",
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-        "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
-        "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
-        "/usr/share/fonts/TTF/DejaVuSans.ttf",
-        "/System/Library/Fonts/Helvetica.ttc",
-    ])
-    font_bold = _find_font([
-        r"C:\Windows\Fonts\arialbd.ttf",
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
-        "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
-        "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf",
-        "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf",
-        "/System/Library/Fonts/Helvetica.ttc",
-    ])
-    if font_regular:
-        ensure_font("ArialArabic", font_regular)
-    if font_bold:
-        ensure_font("ArialArabicBold", font_bold)
-    elif font_regular:
-        ensure_font("ArialArabicBold", font_regular)
+    font_regular = r"C:\Windows\Fonts\arial.ttf"
+    font_bold = r"C:\Windows\Fonts\arialbd.ttf"
+    ensure_font("ArialArabic", font_regular)
+    ensure_font("ArialArabicBold", font_bold if Path(font_bold).exists() else font_regular)
 
     page_width = 960
     page_height = 540

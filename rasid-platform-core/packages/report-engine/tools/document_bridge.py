@@ -59,20 +59,12 @@ def shape(v, rtl):
 
 def ar_font():
     name = "ArialArabic"
-    candidates = [
-        r"C:\Windows\Fonts\arial.ttf",
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-        "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
-        "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
-        "/usr/share/fonts/TTF/DejaVuSans.ttf",
-        "/System/Library/Fonts/Helvetica.ttc",
-    ]
+    path = Path(r"C:\\Windows\\Fonts\\arial.ttf")
     try:
         pdfmetrics.getFont(name)
     except Exception:
-        font_path = next((c for c in candidates if Path(c).exists()), None)
-        if font_path:
-            pdfmetrics.registerFont(TTFont(name, font_path))
+        if path.exists():
+            pdfmetrics.registerFont(TTFont(name, str(path)))
         else:
             return "Helvetica"
     return name
