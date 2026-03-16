@@ -40,6 +40,60 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
   const [inputFocused, setInputFocused] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [dropSnap, setDropSnap] = useState(false);
+
+  // Pending intent — inline wizard above input (like Claude's follow-up chips)
+  const [pendingIntent, setPendingIntent] = useState<{
+    type: 'presentation' | 'report' | 'dashboard';
+    step: number; // 0=topic, 1=source, 2=count, 3=brand, 4=language
+    topic: string;
+    contentSource: 'ai' | 'user';
+    slideCount: number;
+    brandId: string;
+    language: string;
+  } | null>(null);
+
+  // Handle pending intent chip selection
+  const handleIntentChip = useCallback((value: string) => {
+    if (!pendingIntent) return;
+    const pi = { ...pendingIntent };
+
+    if (pi.step === 0) {
+      // Topic selected
+      pi.topic = value;
+      pi.step = 1;
+      setPendingIntent(pi);
+    } else if (pi.step === 1) {
+      // Content source selected
+      pi.contentSource = value as 'ai' | 'user';
+      pi.step = 2;
+      setPendingIntent(pi);
+    } else if (pi.step === 2) {
+      // Slide/section count selected
+      pi.slideCount = parseInt(value) || 8;
+      pi.step = 3;
+      setPendingIntent(pi);
+    } else if (pi.step === 3) {
+      // Brand selected
+      pi.brandId = value;
+      pi.step = 4;
+      setPendingIntent(pi);
+    } else if (pi.step === 4) {
+      // Language selected — EXECUTE!
+      pi.language = value;
+      setPendingIntent(null);
+      // Build the full command and send
+      const typeLabel = pi.type === 'presentation' ? 'عرض' : pi.type === 'report' ? 'تقرير' : 'لوحة مؤشرات';
+      doSend(`أنشئ ${typeLabel} عن ${pi.topic}`);
+    }
+  }, [pendingIntent, doSend]);
+
+  // Handle typing topic in pending intent mode
+  const handleIntentTopicSubmit = useCallback(() => {
+    if (!pendingIntent || !input.trim()) return;
+    const pi = { ...pendingIntent, topic: input.trim(), step: 1 };
+    setPendingIntent(pi);
+    setInput('');
+  }, [pendingIntent, input]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatMenuRef = useRef<HTMLDivElement>(null);
 
@@ -195,9 +249,12 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
       // ═══ PRESENTATION ENGINE ═══
       if (intent === 'presentation') {
-        // Must have a real topic — don't generate without one
-        if (!topic || topic.length < 3 || /^(عرض|شرائح|presentation|slides)$/i.test(topic.trim())) {
-          addAssistantMessage('📝 ما موضوع العرض التقديمي؟\n\nاكتب الموضوع وسأنشئ لك عرضًا احترافيًا. مثال:\n• "أنشئ عرض عن رؤية 2030"\n• "أنشئ عرض عن الأمن السيبراني"\n• "أنشئ عرض عن التحول الرقمي في القطاع الصحي"');
+        if (!topic || topic.length < 3) {
+          setIsTyping(false);
+          setPendingIntent({
+            type: 'presentation', step: 0, topic: '', contentSource: 'ai',
+            slideCount: 8, brandId: 'ndmo', language: 'ar',
+          });
           return;
         }
         addAssistantMessage(`جاري إنشاء عرض عن **${topic}**... ⏳`, {
@@ -248,8 +305,12 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
       // ═══ REPORT ENGINE ═══
       if (intent === 'report') {
-        if (!topic || topic.length < 3 || /^(تقرير|report)$/i.test(topic.trim())) {
-          addAssistantMessage('📝 ما موضوع التقرير؟\n\nاكتب الموضوع وسأنشئ لك تقريرًا احترافيًا. مثال:\n• "أنشئ تقرير عن أداء الربع الأول"\n• "أنشئ تقرير عن نضج البيانات"\n• "أنشئ تقرير عن رضا العملاء"');
+        if (!topic || topic.length < 3) {
+          setIsTyping(false);
+          setPendingIntent({
+            type: 'report', step: 0, topic: '', contentSource: 'ai',
+            slideCount: 8, brandId: 'ndmo', language: 'ar',
+          });
           return;
         }
         addAssistantMessage(`جاري إنشاء تقرير عن **${topic}**... ⏳`, {
@@ -299,8 +360,12 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
       // ═══ DASHBOARD ENGINE ═══
       if (intent === 'dashboard') {
-        if (!topic || topic.length < 3 || /^(لوحة|داشبورد|dashboard)$/i.test(topic.trim())) {
-          addAssistantMessage('📝 ما موضوع لوحة المؤشرات؟\n\nاكتب الموضوع وسأنشئ لك لوحة مؤشرات احترافية. مثال:\n• "أنشئ لوحة مؤشرات للمبيعات"\n• "أنشئ لوحة مؤشرات لأداء الموظفين"\n• "أنشئ لوحة مؤشرات تشغيلية"');
+        if (!topic || topic.length < 3) {
+          setIsTyping(false);
+          setPendingIntent({
+            type: 'dashboard', step: 0, topic: '', contentSource: 'ai',
+            slideCount: 8, brandId: 'ndmo', language: 'ar',
+          });
           return;
         }
         addAssistantMessage(`جاري إنشاء لوحة مؤشرات عن **${topic}**... ⏳`, {
@@ -903,6 +968,138 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           </div>
         )}
       </div>
+
+      {/* ═══ Inline Wizard Chips (above input) ═══ */}
+      {pendingIntent && (
+        <div className="px-2.5 md:px-4 pb-1 animate-slide-up">
+          <div className="rounded-xl border border-primary/20 bg-primary/[0.03] p-3 flex flex-col gap-2.5">
+            {/* Step indicator */}
+            <div className="flex items-center gap-2">
+              <div className="flex gap-1">
+                {[0,1,2,3,4].map(s => (
+                  <div key={s} className={`w-1.5 h-1.5 rounded-full transition-all ${s <= pendingIntent.step ? 'bg-primary scale-110' : 'bg-border'}`} />
+                ))}
+              </div>
+              <span className="text-[10px] text-muted-foreground">
+                {pendingIntent.step === 0 ? 'الموضوع' : pendingIntent.step === 1 ? 'مصدر المحتوى' : pendingIntent.step === 2 ? (pendingIntent.type === 'presentation' ? 'عدد الشرائح' : 'عدد الأقسام') : pendingIntent.step === 3 ? 'الهوية البصرية' : 'اللغة'}
+              </span>
+              <button onClick={() => setPendingIntent(null)} className="mr-auto text-muted-foreground hover:text-foreground transition-colors">
+                <MaterialIcon icon="close" size={14} />
+              </button>
+            </div>
+
+            {/* Step 0: Topic — text input (no suggestions) */}
+            {pendingIntent.step === 0 && (
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[12px] font-semibold text-foreground">ما موضوع {pendingIntent.type === 'presentation' ? 'العرض' : pendingIntent.type === 'report' ? 'التقرير' : 'لوحة المؤشرات'}؟</span>
+                <div className="flex gap-1.5">
+                  <input
+                    autoFocus
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter' && input.trim()) { handleIntentTopicSubmit(); } }}
+                    placeholder="اكتب الموضوع هنا..."
+                    className="flex-1 text-[12px] bg-card border border-border rounded-lg px-3 py-2 outline-none focus:border-primary/40 transition-colors"
+                  />
+                  <button
+                    onClick={handleIntentTopicSubmit}
+                    disabled={!input.trim()}
+                    className="px-3 py-2 rounded-lg bg-primary text-white text-[11px] font-bold disabled:opacity-40 hover:bg-primary/90 transition-all active:scale-95"
+                  >
+                    التالي
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 1: Content source */}
+            {pendingIntent.step === 1 && (
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[12px] font-semibold text-foreground">مصدر المحتوى</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    { id: 'ai', label: 'توليد بالذكاء الاصطناعي', icon: 'auto_awesome' },
+                    { id: 'user', label: 'لدي محتوى جاهز', icon: 'edit_note' },
+                  ].map(opt => (
+                    <button key={opt.id} onClick={() => handleIntentChip(opt.id)}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-card hover:border-primary/30 hover:bg-primary/[0.04] text-[11px] font-medium transition-all active:scale-95">
+                      <MaterialIcon icon={opt.icon} size={15} className="text-primary" />
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Slide/section count */}
+            {pendingIntent.step === 2 && (
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[12px] font-semibold text-foreground">{pendingIntent.type === 'presentation' ? 'عدد الشرائح' : 'عدد الأقسام'}</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {['5', '8', '10', '12', '15', '20'].map(n => (
+                    <button key={n} onClick={() => handleIntentChip(n)}
+                      className="px-3 py-2 rounded-lg border border-border bg-card hover:border-primary/30 hover:bg-primary/[0.04] text-[12px] font-bold transition-all active:scale-95 min-w-[44px]">
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Brand/identity */}
+            {pendingIntent.step === 3 && (
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[12px] font-semibold text-foreground">الهوية البصرية</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    { id: 'ndmo', label: 'مكتب إدارة البيانات الوطنية', color: '#0f2744' },
+                    { id: 'sdaia', label: 'سدايا', color: '#1a73e8' },
+                    { id: 'modern', label: 'عصري احترافي', color: '#6366f1' },
+                    { id: 'minimal', label: 'بسيط ونظيف', color: '#1f2937' },
+                    { id: 'custom', label: 'مخصص', color: '#0CAB8F' },
+                  ].map(b => (
+                    <button key={b.id} onClick={() => handleIntentChip(b.id)}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-card hover:border-primary/30 hover:bg-primary/[0.04] text-[11px] font-medium transition-all active:scale-95">
+                      <div className="w-3 h-3 rounded-full shrink-0" style={{ background: b.color }} />
+                      {b.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Language */}
+            {pendingIntent.step === 4 && (
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[12px] font-semibold text-foreground">اللغة</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    { id: 'ar', label: 'العربية', icon: '🇸🇦' },
+                    { id: 'en', label: 'English', icon: '🇺🇸' },
+                    { id: 'both', label: 'ثنائي اللغة', icon: '🌐' },
+                  ].map(l => (
+                    <button key={l.id} onClick={() => handleIntentChip(l.id)}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-card hover:border-primary/30 hover:bg-primary/[0.04] text-[11px] font-medium transition-all active:scale-95">
+                      <span>{l.icon}</span>
+                      {l.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Summary of selections so far */}
+            {pendingIntent.step > 0 && (
+              <div className="flex flex-wrap gap-1 pt-0.5">
+                {pendingIntent.topic && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{pendingIntent.topic}</span>}
+                {pendingIntent.step > 1 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{pendingIntent.contentSource === 'ai' ? 'ذكاء اصطناعي' : 'محتوى جاهز'}</span>}
+                {pendingIntent.step > 2 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{pendingIntent.slideCount} {pendingIntent.type === 'presentation' ? 'شريحة' : 'قسم'}</span>}
+                {pendingIntent.step > 3 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'ndmo':'NDMO','sdaia':'سدايا','modern':'عصري','minimal':'بسيط','custom':'مخصص'}[pendingIntent.brandId]}</span>}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Input Bar */}
       <div className="px-1.5 sm:px-2.5 md:px-4 pb-1.5 sm:pb-2.5 md:pb-3 pt-1.5 sm:pt-2 shrink-0 mobile-safe-bottom">
