@@ -336,6 +336,10 @@ const STRICT_REPLICATION_RUNTIME_ROOT = path.join(process.cwd(), "packages", "st
 const STRICT_REPLICATION_OUTPUT_ROOT = path.join(STRICT_REPLICATION_RUNTIME_ROOT, "outputs");
 const STRICT_REPLICATION_CONSUMPTION_ROOT = path.join(ROOT, "strict-replication");
 const TOKEN = createHash("sha256").update("rasid-dashboard-web").digest("hex");
+const VALID_USERS: Record<string, { password: string; role: string; displayName: string }> = {
+  admin: { password: "1500", role: "admin", displayName: "مدير النظام" },
+  mruhaily: { password: "15001500", role: "admin", displayName: "محمد الرحيلي — عقل راصد الذكي" },
+};
 const LOGIN_EMAIL = "admin";
 const LOGIN_PASSWORD = "1500";
 const COOKIE_TOKEN = "rasid_auth";
@@ -8902,7 +8906,8 @@ export const startDashboardWebApp = (options?: DashboardWebServerOptions): { hos
         const url = requestUrl(request);
         if (request.method === "POST" && url.pathname === "/api/v1/governance/auth/login") {
           const body = (await parseBody(request)) as { email: string; password: string; tenant_ref?: string; workspace_id?: string; project_id?: string; actor_ref?: string };
-          if (body.email !== LOGIN_EMAIL || body.password !== LOGIN_PASSWORD) {
+          const matchedUser = VALID_USERS[body.email];
+          if (!matchedUser || matchedUser.password !== body.password) {
             sendJson(response, 401, { error: "unauthorized" });
             return;
           }
@@ -8910,8 +8915,8 @@ export const startDashboardWebApp = (options?: DashboardWebServerOptions): { hos
           setCookie(response, COOKIE_TENANT, body.tenant_ref ?? "tenant-dashboard-web");
           setCookie(response, COOKIE_WORKSPACE, body.workspace_id ?? "workspace-dashboard-web");
           setCookie(response, COOKIE_PROJECT, body.project_id ?? "project-dashboard-web");
-          setCookie(response, COOKIE_ACTOR, body.actor_ref ?? "admin");
-          sendJson(response, 200, { data: { accessToken: TOKEN, tenantRef: body.tenant_ref ?? "tenant-dashboard-web", actorRef: body.actor_ref ?? "admin" } });
+          setCookie(response, COOKIE_ACTOR, body.actor_ref ?? body.email);
+          sendJson(response, 200, { data: { accessToken: TOKEN, tenantRef: body.tenant_ref ?? "tenant-dashboard-web", actorRef: body.actor_ref ?? body.email, user: { id: body.email, username: body.email, display_name: matchedUser.displayName, role: matchedUser.role, email: body.email, status: "active", permissions: ["manage_users","manage_content","manage_roles","view_analytics","manage_settings","manage_data","create_reports","approve_content","manage_system","full_access"] } } });
           return;
         }
         if (url.pathname.startsWith("/api/")) {

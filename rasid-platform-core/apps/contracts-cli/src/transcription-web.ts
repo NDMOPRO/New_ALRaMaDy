@@ -30,6 +30,10 @@ const ROOT = path.join(process.cwd(), ".runtime", "transcription-web");
 const ENGINE_ROOT = path.join(ROOT, "transcription-engine");
 const AI_ROOT = path.join(ROOT, "ai-engine");
 const TOKEN = createHash("sha256").update("rasid-transcription-web").digest("hex");
+const VALID_USERS: Record<string, { password: string; role: string; displayName: string }> = {
+  admin: { password: "1500", role: "admin", displayName: "مدير النظام" },
+  mruhaily: { password: "15001500", role: "admin", displayName: "محمد الرحيلي — عقل راصد الذكي" },
+};
 const LOGIN_EMAIL = "admin";
 const LOGIN_PASSWORD = "1500";
 const COOKIE_TOKEN = "rasid_auth";
@@ -592,7 +596,8 @@ export const startTranscriptionWebApp = (options?: TranscriptionWebServerOptions
         const url = requestUrl(request);
         if (request.method === "POST" && url.pathname === "/api/v1/governance/auth/login") {
           const body = (await parseBody(request)) as { email: string; password: string; tenant_ref?: string; workspace_id?: string; project_id?: string };
-          if (body.email !== LOGIN_EMAIL || body.password !== LOGIN_PASSWORD) {
+          const matchedUser = VALID_USERS[body.email];
+          if (!matchedUser || matchedUser.password !== body.password) {
             sendJson(response, 401, { error: "unauthorized" });
             return;
           }
@@ -600,7 +605,7 @@ export const startTranscriptionWebApp = (options?: TranscriptionWebServerOptions
           setCookie(response, COOKIE_TENANT, body.tenant_ref ?? "tenant-transcription-web");
           setCookie(response, COOKIE_WORKSPACE, body.workspace_id ?? "workspace-transcription-web");
           setCookie(response, COOKIE_PROJECT, body.project_id ?? "project-transcription-web");
-          sendJson(response, 200, { data: { accessToken: TOKEN, tenantRef: body.tenant_ref ?? "tenant-transcription-web" } });
+          sendJson(response, 200, { data: { accessToken: TOKEN, tenantRef: body.tenant_ref ?? "tenant-transcription-web", user: { id: body.email, username: body.email, display_name: matchedUser.displayName, role: matchedUser.role, status: "active", permissions: ["full_access"] } } });
           return;
         }
         if (url.pathname.startsWith("/api/")) {
