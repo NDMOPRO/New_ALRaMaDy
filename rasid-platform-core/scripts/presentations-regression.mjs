@@ -5,16 +5,16 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 const root = process.cwd();
-const npxCommand = process.platform === "win32" ? "npx.cmd" : "npx";
+const tscCommand = process.platform === "win32" ? path.join(root, "node_modules", ".bin", "tsc.cmd") : path.join(root, "node_modules", ".bin", "tsc");
 const ensureBuilt = (label, args) => {
-  const result = spawnSync(npxCommand, args, { cwd: root, encoding: "utf8" });
+  const result = spawnSync(tscCommand, args, { cwd: root, encoding: "utf8" });
   if (result.status !== 0) {
-    throw new Error(`${label} failed: ${result.stderr || result.stdout || `exit ${result.status}`}`);
+    throw new Error(`${label} failed: ${result.error?.message || result.stderr || result.stdout || `exit ${result.status}`}`);
   }
 };
 
-ensureBuilt("presentations-engine-build", ["tsc", "-p", "packages/presentations-engine/tsconfig.json"]);
-ensureBuilt("contracts-cli-build", ["tsc", "-p", "apps/contracts-cli/tsconfig.json"]);
+ensureBuilt("presentations-engine-build", ["-p", "packages/presentations-engine/tsconfig.json"]);
+ensureBuilt("contracts-cli-build", ["-p", "apps/contracts-cli/tsconfig.json"]);
 
 const load = async (relativePath) => import(pathToFileURL(path.join(root, relativePath)).href);
 const presentationsEngine = await load("packages/presentations-engine/dist/index.js");
