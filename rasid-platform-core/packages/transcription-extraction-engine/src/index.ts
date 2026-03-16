@@ -556,13 +556,17 @@ export class TranscriptionExtractionEngine {
     this.pythonExecutable = options?.pythonExecutable ?? resolvePythonExecutable();
   }
 
-  private callBridge(inputPath: string, inputKind: string, workDir: string): BridgeResponse {
+  private callBridge(inputPath: string, inputKind: string, workDir: string, options?: { desired_frame_count?: number }): BridgeResponse {
     const requestPath = bridgeRequestPath(workDir, path.basename(inputPath));
     const outputPath = bridgeOutputPath(workDir, path.basename(inputPath));
     fs.mkdirSync(workDir, { recursive: true });
+    const requestPayload: Record<string, unknown> = { input_path: inputPath, input_kind: inputKind, work_dir: workDir };
+    if (options?.desired_frame_count) {
+      requestPayload.desired_frame_count = options.desired_frame_count;
+    }
     fs.writeFileSync(
       requestPath,
-      JSON.stringify({ input_path: inputPath, input_kind: inputKind, work_dir: workDir }, null, 2),
+      JSON.stringify(requestPayload, null, 2),
       "utf8"
     );
     const result = spawnSync(this.pythonExecutable, [bridgeScriptPath(), "analyze", "--request", requestPath, "--output", outputPath], {
@@ -758,10 +762,12 @@ export class TranscriptionExtractionEngine {
           };
         } catch {
           // Fallback to single-engine path if ensemble fails
-          response = this.callBridge(entry.targetPath, inputKind, path.join(jobRoot, sourceId));
+          const bridgeOpts = inputKind === "video_file" ? { desired_frame_count: 6 } : undefined;
+          response = this.callBridge(entry.targetPath, inputKind, path.join(jobRoot, sourceId), bridgeOpts);
         }
       } else {
-        response = this.callBridge(entry.targetPath, inputKind, path.join(jobRoot, sourceId));
+        const bridgeOpts = inputKind === "video_file" ? { desired_frame_count: 6 } : undefined;
+        response = this.callBridge(entry.targetPath, inputKind, path.join(jobRoot, sourceId), bridgeOpts);
       }
 
       if (response.status !== "success") {
@@ -901,23 +907,138 @@ export class TranscriptionExtractionEngine {
         });
       }
 
-      for (const word of response.word_timestamps ?? []) {
-        const text = normalizeText(String(word.text ?? ""));
-        if (!text) {
-          continue;
+      /* ── Forced Alignment with confidence scoring, gap/overlap detection ── */
+      const rawWordTimestamps = (response.word_timestamps ?? []).map((word) => ({
+        text: normalizeText(String(word.text ?? "")),
+        startMs: Number(word.start_ms ?? 0),
+        endMs: Number(word.end_ms ?? Number(word.start_ms ?? 0)),
+        confidence: Math.max(0, Math.min(1, Number(word.confidence ?? 0.75)))
+      })).filter((w) => w.text.length > 0);
+
+      // Pre-pass: detect segments that need redistribution (low confidence clusters)
+      const needsRedistribution = (words: typeof rawWordTimestamps, segStart: number, segEnd: number): boolean => {
+        const segWords = words.filter((w) => w.startMs >= segStart && w.endMs <= segEnd);
+        if (segWords.length < 2) return false;
+        const avgConf = segWords.reduce((s, w) => {
+          const duration = Math.max(1, w.endMs - w.startMs);
+          const expectedMinMs = w.text.length * 30; // ~30ms per char minimum
+          return s + (duration < expectedMinMs ? 0.3 : 0.8);
+        }, 0) / segWords.length;
+        return avgConf < 0.5;
+      };
+
+      // Redistribute timestamps evenly across words within a segment time range
+      const redistributeWords = (words: typeof rawWordTimestamps, segStart: number, segEnd: number): void => {
+        const segWords = words.filter((w) => w.startMs >= segStart && w.endMs <= segEnd);
+        if (segWords.length < 2) return;
+        const totalDuration = segEnd - segStart;
+        const totalChars = segWords.reduce((s, w) => s + w.text.length, 0) || 1;
+        let cursor = segStart;
+        for (const w of segWords) {
+          const proportion = w.text.length / totalChars;
+          const wordDuration = Math.round(totalDuration * proportion);
+          w.startMs = cursor;
+          w.endMs = cursor + wordDuration;
+          cursor = w.endMs;
         }
-        const startMs = Number(word.start_ms ?? 0);
-        const endMs = Number(word.end_ms ?? startMs);
+      };
+
+      // Re-synchronize segments with low alignment confidence
+      for (const segment of globalSegments.filter((s) => s.source_ref === sourceRef && s.start_ms !== null && s.end_ms !== null)) {
+        if (needsRedistribution(rawWordTimestamps, segment.start_ms!, segment.end_ms!)) {
+          redistributeWords(rawWordTimestamps, segment.start_ms!, segment.end_ms!);
+        }
+      }
+
+      for (let wordIndex = 0; wordIndex < rawWordTimestamps.length; wordIndex++) {
+        const word = rawWordTimestamps[wordIndex];
+        const prevWord = wordIndex > 0 ? rawWordTimestamps[wordIndex - 1] : null;
+
+        // Alignment confidence scoring
+        const duration = Math.max(1, word.endMs - word.startMs);
+        const expectedMinMs = word.text.length * 30; // ~30ms per character minimum
+        const expectedMaxMs = word.text.length * 250; // ~250ms per character maximum
+        const durationFit = duration >= expectedMinMs && duration <= expectedMaxMs
+          ? 1.0
+          : duration < expectedMinMs
+            ? Math.max(0.1, duration / expectedMinMs)
+            : Math.max(0.2, expectedMaxMs / duration);
+        const alignmentConfidence = Math.max(0, Math.min(1, Number((durationFit * 0.6 + word.confidence * 0.4).toFixed(3))));
+
+        // Alignment flags
+        const alignmentFlags: string[] = [];
+        if (duration < expectedMinMs) alignmentFlags.push("short_duration");
+        if (duration > expectedMaxMs) alignmentFlags.push("long_duration");
+        if (prevWord) {
+          const gap = word.startMs - prevWord.endMs;
+          if (gap > 500) alignmentFlags.push("gap_before");
+          if (gap < 0) alignmentFlags.push("overlap");
+        }
+        if (alignmentConfidence < 0.5) alignmentFlags.push("low_confidence");
+
         const segmentRef =
           globalSegments.find(
             (segment) =>
               segment.source_ref === sourceRef &&
               segment.start_ms !== null &&
               segment.end_ms !== null &&
-              startMs >= segment.start_ms &&
-              endMs <= segment.end_ms
+              word.startMs >= segment.start_ms &&
+              word.endMs <= segment.end_ms
           )?.segment_id ?? null;
-        const alignedWordId = id("aligned-word", sourceRef, startMs, text);
+
+        // Insert alignment_gap marker as a disagreement when large gaps are detected
+        if (prevWord && (word.startMs - prevWord.endMs) > 500) {
+          const gapDisagreementId = id("disagreement", sourceRef, "alignment-gap", word.startMs);
+          const gapEvidenceRef = id("evidence", gapDisagreementId);
+          globalDisagreements.push({
+            schema_namespace: TRANSCRIPTION_SCHEMA_NAMESPACE,
+            schema_version: TRANSCRIPTION_SCHEMA_VERSION,
+            disagreement_id: gapDisagreementId,
+            source_ref: sourceRef,
+            disagreement_type: "alignment_gap" as UnifiedContentBundle["disagreements"][number]["disagreement_type"],
+            text: `Alignment gap of ${word.startMs - prevWord.endMs}ms between "${prevWord.text}" and "${word.text}"`,
+            start_ms: prevWord.endMs,
+            end_ms: word.startMs,
+            page_number: null,
+            severity: (word.startMs - prevWord.endMs) > 2000 ? "high" as const : "medium" as const,
+            resolution_status: "open" as const,
+            evidence_ref: gapEvidenceRef
+          });
+          evidenceRefs.push(gapEvidenceRef);
+        }
+
+        // Insert alignment_conflict disagreement for overlapping timestamps
+        if (prevWord && (word.startMs - prevWord.endMs) < 0) {
+          const overlapDisagreementId = id("disagreement", sourceRef, "alignment-overlap", word.startMs);
+          const overlapEvidenceRef = id("evidence", overlapDisagreementId);
+          globalDisagreements.push({
+            schema_namespace: TRANSCRIPTION_SCHEMA_NAMESPACE,
+            schema_version: TRANSCRIPTION_SCHEMA_VERSION,
+            disagreement_id: overlapDisagreementId,
+            source_ref: sourceRef,
+            disagreement_type: "alignment_gap" as UnifiedContentBundle["disagreements"][number]["disagreement_type"],
+            text: `Alignment overlap of ${prevWord.endMs - word.startMs}ms between "${prevWord.text}" and "${word.text}"`,
+            start_ms: word.startMs,
+            end_ms: prevWord.endMs,
+            page_number: null,
+            severity: "medium" as const,
+            resolution_status: "open" as const,
+            evidence_ref: overlapEvidenceRef
+          });
+          evidenceRefs.push(overlapEvidenceRef);
+        }
+
+        // Check if this word was redistributed
+        const wasRedistributed = globalSegments.some(
+          (s) => s.source_ref === sourceRef && s.start_ms !== null && s.end_ms !== null &&
+            word.startMs >= s.start_ms && word.endMs <= s.end_ms &&
+            needsRedistribution(rawWordTimestamps, s.start_ms!, s.end_ms!)
+        );
+        if (wasRedistributed && !alignmentFlags.includes("redistributed")) {
+          alignmentFlags.push("redistributed");
+        }
+
+        const alignedWordId = id("aligned-word", sourceRef, word.startMs, word.text);
         const evidenceRef = id("evidence", alignedWordId);
         const lineageRef = id("lineage", alignedWordId);
         globalAlignedWords.push({
@@ -927,11 +1048,13 @@ export class TranscriptionExtractionEngine {
           source_ref: sourceRef,
           segment_ref: segmentRef,
           speaker_ref: segmentRef ? globalSegments.find((segment) => segment.segment_id === segmentRef)?.speaker_ref ?? null : null,
-          text,
-          normalized_text: text,
-          start_ms: startMs,
-          end_ms: endMs,
-          confidence: Math.max(0, Math.min(1, Number(word.confidence ?? 0.75))),
+          text: word.text,
+          normalized_text: word.text,
+          start_ms: word.startMs,
+          end_ms: word.endMs,
+          confidence: word.confidence,
+          alignment_confidence: alignmentConfidence,
+          alignment_flags: alignmentFlags,
           evidence_ref: evidenceRef,
           lineage_ref: lineageRef
         });
@@ -1238,6 +1361,49 @@ export class TranscriptionExtractionEngine {
     const unresolvedDisagreementRefs = globalDisagreements
       .filter((disagreement) => disagreement.resolution_status === "open")
       .map((disagreement) => disagreement.disagreement_id);
+    const highSeverityUnresolved = globalDisagreements
+      .filter((d) => d.resolution_status === "open" && d.severity === "high").length;
+
+    /* ── Quality-metric based verification gate ── */
+
+    // Alignment quality: average alignment_confidence of all aligned words
+    const alignmentQuality = globalAlignedWords.length > 0
+      ? Number((globalAlignedWords.reduce((s, w) => s + w.alignment_confidence, 0) / globalAlignedWords.length).toFixed(3))
+      : mediaSourceCount === 0 ? 1.0 : 0;
+
+    // OCR quality: average confidence of on-screen text blocks
+    const ocrQuality = globalOnScreenText.length > 0
+      ? Number((globalOnScreenText.reduce((s, o) => s + o.confidence, 0) / globalOnScreenText.length).toFixed(3))
+      : videoSourceCount === 0 ? 1.0 : 0;
+
+    // Transcript coherence: check segments form readable sentences (average word count > 3)
+    const segmentWordCounts = globalSegments.map((s) => s.normalized_text.split(/\s+/).filter(Boolean).length);
+    const avgWordsPerSegment = segmentWordCounts.length > 0
+      ? segmentWordCounts.reduce((s, c) => s + c, 0) / segmentWordCounts.length
+      : 0;
+    const transcriptCoherence = globalSegments.length > 0
+      ? Number(Math.min(1, avgWordsPerSegment / 10).toFixed(3)) // 10+ words/segment = 1.0
+      : 0;
+
+    // Coverage score: ratio of audio duration covered by aligned words vs total duration
+    const totalAudioDuration = globalSources
+      .filter((s) => ["audio_file", "video_file"].includes(s.input_kind) && s.duration_ms)
+      .reduce((s, src) => s + (src.duration_ms ?? 0), 0);
+    const coveredDuration = globalAlignedWords.length > 0
+      ? globalAlignedWords.reduce((s, w) => s + (w.end_ms - w.start_ms), 0)
+      : 0;
+    const coverageScore = totalAudioDuration > 0
+      ? Number(Math.min(1, coveredDuration / totalAudioDuration).toFixed(3))
+      : mediaSourceCount === 0 ? 1.0 : 0;
+
+    const qualityDetails = [
+      { metric: "alignment_quality", value: alignmentQuality, threshold: 0.7, passed: alignmentQuality >= 0.7 },
+      { metric: "ocr_quality", value: ocrQuality, threshold: 0.6, passed: ocrQuality >= 0.6 },
+      { metric: "transcript_coherence", value: transcriptCoherence, threshold: 0.3, passed: transcriptCoherence >= 0.3 },
+      { metric: "coverage_score", value: coverageScore, threshold: 0.8, passed: coverageScore >= 0.8 },
+      { metric: "high_severity_disagreements", value: highSeverityUnresolved, threshold: 0, passed: highSeverityUnresolved === 0 }
+    ];
+
     const multimodalCorroborated =
       mediaSourceCount === 0 ||
       (globalAlignedWords.length > 0 && (videoSourceCount === 0 || globalOnScreenText.length > 0) && unresolvedDisagreementRefs.length === 0);
@@ -1245,31 +1411,44 @@ export class TranscriptionExtractionEngine {
       ...(mediaSourceCount > 0 && globalAlignedWords.length === 0 ? ["alignment_missing"] : []),
       ...(videoSourceCount > 0 && globalOnScreenText.length === 0 ? ["on_screen_ocr_missing"] : []),
       ...(mediaSourceCount > 0 && !multimodalCorroborated ? ["asr_single_engine"] : []),
-      ...(unresolvedDisagreementRefs.length > 0 ? ["verification_disagreements_present"] : [])
+      ...(unresolvedDisagreementRefs.length > 0 ? ["verification_disagreements_present"] : []),
+      ...(alignmentQuality < 0.7 && mediaSourceCount > 0 ? ["alignment_quality_low"] : []),
+      ...(coverageScore < 0.8 && mediaSourceCount > 0 ? ["coverage_score_low"] : [])
     ];
     const verificationPenalty =
       unresolvedDisagreementRefs.length * 0.18 +
       (mediaSourceCount > 0 && globalAlignedWords.length === 0 ? 0.25 : 0) +
-      (videoSourceCount > 0 && globalOnScreenText.length === 0 ? 0.2 : 0);
+      (videoSourceCount > 0 && globalOnScreenText.length === 0 ? 0.2 : 0) +
+      (alignmentQuality < 0.7 ? (0.7 - alignmentQuality) * 0.3 : 0) +
+      (coverageScore < 0.8 ? (0.8 - coverageScore) * 0.2 : 0);
+
+    // Exact requires quality thresholds, not just existence checks
+    const exactPass =
+      alignmentQuality >= 0.7 &&
+      coverageScore >= 0.8 &&
+      highSeverityUnresolved === 0 &&
+      (mediaSourceCount === 0 || globalAlignedWords.length > 0) &&
+      (videoSourceCount === 0 || globalOnScreenText.length > 0);
+
     const verificationGate = {
       schema_namespace: TRANSCRIPTION_SCHEMA_NAMESPACE,
       schema_version: TRANSCRIPTION_SCHEMA_VERSION,
       gate_id: id("verification-gate", jobId),
-      exact:
-        unresolvedDisagreementRefs.length === 0 &&
-        (mediaSourceCount === 0 || globalAlignedWords.length > 0) &&
-        (videoSourceCount === 0 || globalOnScreenText.length > 0) &&
-        verificationWarnings.length === 0,
+      exact: exactPass,
       verification_score: Number(Math.max(0.05, Math.min(1, 1 - verificationPenalty)).toFixed(3)),
       alignment_pass: mediaSourceCount === 0 || globalAlignedWords.length > 0,
+      alignment_quality: alignmentQuality,
+      ocr_quality: ocrQuality,
+      transcript_coherence: transcriptCoherence,
+      coverage_score: coverageScore,
+      quality_details: qualityDetails,
       subtitle_detection_pass: videoSourceCount === 0 || globalOnScreenText.length > 0,
       on_screen_ocr_applied: globalOnScreenText.length > 0,
       unresolved_disagreement_refs: unresolvedDisagreementRefs,
       warning_codes: verificationWarnings,
-      summary:
-        unresolvedDisagreementRefs.length > 0
-          ? `Verification gate found ${unresolvedDisagreementRefs.length} unresolved multimodal disagreement span(s).`
-          : "Verification gate passed with aligned timestamps and no unresolved multimodal disagreements.",
+      summary: !exactPass
+        ? `Verification gate: alignment_quality=${alignmentQuality}, coverage=${coverageScore}, high_severity_disagreements=${highSeverityUnresolved}. ${qualityDetails.filter((d) => !d.passed).map((d) => `${d.metric} below threshold (${d.value}<${d.threshold})`).join("; ")}.`
+        : "Verification gate passed all quality thresholds with aligned timestamps and no high-severity disagreements.",
       checked_at: timestamp
     } as UnifiedContentBundle["verification_gate"];
 
@@ -1723,6 +1902,11 @@ export class TranscriptionExtractionEngine {
           exact: false,
           verification_score: 0.5,
           alignment_pass: false,
+          alignment_quality: 0,
+          ocr_quality: 0,
+          transcript_coherence: 0,
+          coverage_score: 0,
+          quality_details: [],
           subtitle_detection_pass: false,
           on_screen_ocr_applied: false,
           unresolved_disagreement_refs: [],
@@ -2104,7 +2288,7 @@ export class TranscriptionExtractionEngine {
 
   static getImplementationMatrix(): Array<{
     feature: string;
-    status: "implemented" | "pending" | "unsupported" | "deferred";
+    status: "implemented" | "partial" | "pending" | "unsupported" | "deferred";
     proof_ref: string;
     notes: string;
   }> {
@@ -2112,7 +2296,9 @@ export class TranscriptionExtractionEngine {
       { feature: "vosk_local_asr", status: "implemented", proof_ref: "callBridge()", notes: "Vosk ASR via Python content_bridge.py" },
       { feature: "spreadsheet_extraction", status: "implemented", proof_ref: "analyzeSpreadsheet()", notes: "ExcelJS-based xlsx/csv parsing" },
       { feature: "unified_content_bundle", status: "implemented", proof_ref: "ingestAndExtract()", notes: "Full UCB construction with sources, segments, entities, fields" },
-      { feature: "verification_gate", status: "implemented", proof_ref: "ingestAndExtract():verificationGate", notes: "Multimodal corroboration and disagreement scoring" },
+      { feature: "forced_alignment", status: "partial", proof_ref: "ingestAndExtract():aligned_words", notes: "Word-level timestamps from ASR with alignment confidence scoring and gap/overlap detection" },
+      { feature: "exactness_gate", status: "implemented", proof_ref: "ingestAndExtract():verificationGate", notes: "Quality-metric based verification with alignment/OCR/coherence/coverage scoring" },
+      { feature: "multimodal_corroboration", status: "partial", proof_ref: "ingestAndExtract():multimodalCorroborated", notes: "OCR vs ASR token overlap comparison; limited video frame sampling" },
       { feature: "bundle_comparison", status: "implemented", proof_ref: "compareBundles()", notes: "Entity/field diff between two bundles" },
       { feature: "question_answering", status: "implemented", proof_ref: "answerQuestion()", notes: "QA over bundle segments, fields, entities" },
       { feature: "semantic_graph", status: "implemented", proof_ref: "ingestAndExtract():semanticNodes/Edges", notes: "Full semantic node/edge graph per bundle" },

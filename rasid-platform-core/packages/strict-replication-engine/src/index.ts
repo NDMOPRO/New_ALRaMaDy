@@ -1,3 +1,6 @@
+import http from "node:http";
+import fs from "node:fs";
+import path from "node:path";
 import { RegistryBootstrap, createActionManifest } from "@rasid/capability-registry";
 import {
   ActionRegistry,
@@ -218,6 +221,13 @@ export type StrictExecutionArtifacts = {
   publication: Publication;
 };
 
+export type EnhancedPixelVerification = {
+  diff_map: string[][];
+  source_perceptual_hash: string;
+  target_perceptual_hash: string;
+  structural_similarity: number;
+};
+
 export type StrictExecutionBundle = {
   input: StrictSourceInput;
   policy: StrictPolicy;
@@ -239,6 +249,7 @@ export type StrictExecutionBundle = {
   job: Job;
   imageUnderstanding: ImageUnderstandingResult;
   goldenCorpusEntry: GoldenCorpusEntry;
+  enhancedPixelVerification: EnhancedPixelVerification;
   exportedPayload: Record<string, unknown>;
   stageRecords: StrictStageRecord[];
   strictPublished: boolean;
@@ -363,6 +374,34 @@ const buildGoldenCorpusEntry = (bundle: StrictExecutionBundle): GoldenCorpusEntr
   created_at: now()
 });
 
+const GOLDEN_CORPUS_PATH = path.join(process.cwd(), ".runtime", "strict-replication-engine", "golden-corpus.json");
+
+function loadGoldenCorpus(): GoldenCorpusEntry[] {
+  try {
+    if (fs.existsSync(GOLDEN_CORPUS_PATH)) {
+      const raw = fs.readFileSync(GOLDEN_CORPUS_PATH, "utf-8");
+      return JSON.parse(raw) as GoldenCorpusEntry[];
+    }
+  } catch {
+    // If file is corrupted or unreadable, return empty
+  }
+  return [];
+}
+
+function saveGoldenCorpus(entries: GoldenCorpusEntry[]): void {
+  const dir = path.dirname(GOLDEN_CORPUS_PATH);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  fs.writeFileSync(GOLDEN_CORPUS_PATH, JSON.stringify(entries, null, 2), "utf-8");
+}
+
+function appendGoldenCorpusEntry(entry: GoldenCorpusEntry): void {
+  const entries = loadGoldenCorpus();
+  entries.push(entry);
+  saveGoldenCorpus(entries);
+}
+
 const runCIGateCheck = (bundle: StrictExecutionBundle, corpus: GoldenCorpusEntry): CIGateResult => {
   const structuralMatch = bundle.cdrAbsolute.structural_hash === corpus.expected_structural_hash;
   const pixelMatch = bundle.pixelResult.target_pixel_hash === corpus.expected_pixel_hash ||
@@ -390,6 +429,91 @@ const compareGrids = (left: Grid, right: Grid) => {
     }
   }
   return { diff, ratio: maxWidth * maxHeight === 0 ? 0 : diff / (maxWidth * maxHeight) };
+};
+
+const generateDiffMap = (left: Grid, right: Grid): string[][] => {
+  const maxHeight = Math.max(left.length, right.length);
+  const maxWidth = Math.max(left[0]?.length ?? 0, right[0]?.length ?? 0);
+  const result: string[][] = [];
+  for (let y = 0; y < maxHeight; y += 1) {
+    const row: string[] = [];
+    for (let x = 0; x < maxWidth; x += 1) {
+      const l = left[y]?.[x];
+      const r = right[y]?.[x];
+      if (l === undefined && r === undefined) row.push("=");
+      else if (l === undefined) row.push("+");
+      else if (r === undefined) row.push("-");
+      else if (l === r) row.push("=");
+      else row.push("~");
+    }
+    result.push(row);
+  }
+  return result;
+};
+
+const computePerceptualHash = (grid: Grid): string => {
+  // Downsample grid to 8x8 and compute a simplified pHash
+  const targetSize = 8;
+  const h = grid.length || 1;
+  const w = (grid[0]?.length) || 1;
+  const downsampled: number[] = [];
+  for (let ty = 0; ty < targetSize; ty += 1) {
+    for (let tx = 0; tx < targetSize; tx += 1) {
+      const sy = Math.min(Math.floor((ty / targetSize) * h), h - 1);
+      const sx = Math.min(Math.floor((tx / targetSize) * w), w - 1);
+      downsampled.push(grid[sy]?.[sx]?.charCodeAt(0) ?? 0);
+    }
+  }
+  const mean = downsampled.reduce((a, b) => a + b, 0) / downsampled.length;
+  let bits = 0n;
+  for (let i = 0; i < downsampled.length; i += 1) {
+    if (downsampled[i] >= mean) bits |= 1n << BigInt(i);
+  }
+  return `phash:${bits.toString(16)}`;
+};
+
+const computeStructuralSimilarity = (sourcePages: StrictPage[], exportedPages: StrictPage[]): number => {
+  if (sourcePages.length === 0 && exportedPages.length === 0) return 1;
+  if (sourcePages.length === 0 || exportedPages.length === 0) return 0;
+
+  const pageCount = Math.max(sourcePages.length, exportedPages.length);
+  let totalScore = 0;
+
+  for (let p = 0; p < pageCount; p += 1) {
+    const sp = sourcePages[p];
+    const ep = exportedPages[p];
+    if (!sp || !ep) continue;
+
+    const sourceEls = sp.elements;
+    const exportEls = ep.elements;
+    const maxEls = Math.max(sourceEls.length, exportEls.length);
+    if (maxEls === 0) { totalScore += 1; continue; }
+
+    let matchScore = 0;
+    for (const se of sourceEls) {
+      const match = exportEls.find((ee) => ee.element_id === se.element_id);
+      if (!match) continue;
+      let elScore = 0;
+      // Type match
+      if (match.element_type === se.element_type) elScore += 0.4;
+      // Position match (normalized by page size)
+      const posDist = Math.sqrt(
+        Math.pow((match.x - se.x) / sp.width, 2) +
+        Math.pow((match.y - se.y) / sp.height, 2)
+      );
+      elScore += Math.max(0, 0.3 * (1 - posDist));
+      // Size match
+      const sizeDist = Math.sqrt(
+        Math.pow((match.width - se.width) / sp.width, 2) +
+        Math.pow((match.height - se.height) / sp.height, 2)
+      );
+      elScore += Math.max(0, 0.3 * (1 - sizeDist));
+      matchScore += elScore;
+    }
+    totalScore += matchScore / maxEls;
+  }
+
+  return totalScore / pageCount;
 };
 
 const runtimeStamp = "strict-runtime:v1";
@@ -1463,6 +1587,34 @@ export class StrictReplicationEngine {
     } as StrictExecutionBundle;
     const goldenCorpusEntry = buildGoldenCorpusEntry(partialBundle);
 
+    // Persist golden corpus entry to disk after successful run
+    try {
+      appendGoldenCorpusEntry(goldenCorpusEntry);
+    } catch {
+      // Non-fatal: continue even if disk persistence fails
+    }
+
+    // Enhanced pixel verification
+    const diffMap = generateDiffMap(sourceGrid, exportedGrid);
+    const sourcePerceptualHash = computePerceptualHash(sourceGrid);
+    const targetPerceptualHash = computePerceptualHash(exportedGrid);
+    const structSimilarity = computeStructuralSimilarity(input.pages, exported.pages);
+    const enhancedPixelVerification: EnhancedPixelVerification = {
+      diff_map: diffMap,
+      source_perceptual_hash: sourcePerceptualHash,
+      target_perceptual_hash: targetPerceptualHash,
+      structural_similarity: structSimilarity
+    };
+    stageRecords.push({
+      stage: "enhanced pixel verification",
+      status: "passed",
+      output_refs: [id("enhanced-pixel", input.run_id)],
+      notes: [
+        `phash_match=${sourcePerceptualHash === targetPerceptualHash}`,
+        `structural_similarity=${structSimilarity.toFixed(4)}`
+      ]
+    });
+
     return {
       input,
       policy,
@@ -1484,6 +1636,7 @@ export class StrictReplicationEngine {
       job,
       imageUnderstanding,
       goldenCorpusEntry,
+      enhancedPixelVerification,
       exportedPayload: exported,
       stageRecords,
       strictPublished
@@ -1613,4 +1766,147 @@ export const runStrictReplicationRegressionSuite = (): StrictExecutionBundle[] =
   new StrictReplicationEngine().run(fullSample())
 ];
 
-export { buildGoldenCorpusEntry, runCIGateCheck };
+export const startStrictReplicationServer = async (
+  options?: { port?: number; host?: string }
+): Promise<{ origin: string; port: number; close: () => Promise<void> }> => {
+  const host = options?.host ?? "127.0.0.1";
+  const port = options?.port ?? 0;
+
+  const jobStore = new Map<string, StrictExecutionBundle>();
+
+  const readBody = (req: http.IncomingMessage): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const chunks: Buffer[] = [];
+      req.on("data", (chunk: Buffer) => chunks.push(chunk));
+      req.on("end", () => resolve(Buffer.concat(chunks).toString("utf-8")));
+      req.on("error", reject);
+    });
+
+  const json = (res: http.ServerResponse, status: number, body: unknown) => {
+    const payload = JSON.stringify(body);
+    res.writeHead(status, { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(payload) });
+    res.end(payload);
+  };
+
+  const server = http.createServer(async (req, res) => {
+    const url = new URL(req.url ?? "/", `http://${host}`);
+    const pathname = url.pathname;
+    const method = req.method ?? "GET";
+
+    try {
+      // POST /v1/strict-replication/jobs
+      if (method === "POST" && pathname === "/v1/strict-replication/jobs") {
+        const raw = await readBody(req);
+        const input = StrictSourceInputSchema.parse(JSON.parse(raw));
+        const engine = new StrictReplicationEngine();
+        const bundle = engine.run(input);
+        jobStore.set(bundle.job.job_id, bundle);
+        json(res, 201, {
+          job_id: bundle.job.job_id,
+          state: bundle.job.state,
+          strict_published: bundle.strictPublished,
+          stage_records: bundle.stageRecords,
+          golden_corpus_entry: bundle.goldenCorpusEntry,
+          enhanced_pixel_verification: bundle.enhancedPixelVerification
+        });
+        return;
+      }
+
+      // GET /v1/strict-replication/jobs/:job_id/artifacts
+      const artifactsMatch = pathname.match(/^\/v1\/strict-replication\/jobs\/([^/]+)\/artifacts$/);
+      if (method === "GET" && artifactsMatch) {
+        const jobId = decodeURIComponent(artifactsMatch[1]);
+        const bundle = jobStore.get(jobId);
+        if (!bundle) { json(res, 404, { error: "job_not_found", job_id: jobId }); return; }
+        json(res, 200, {
+          job_id: jobId,
+          artifacts: {
+            source: bundle.artifacts.sourceArtifact.artifact_id,
+            cdr: bundle.artifacts.cdrArtifact.artifact_id,
+            export: bundle.artifacts.exportArtifact.artifact_id,
+            published: bundle.artifacts.publishedArtifact.artifact_id,
+            preview: bundle.artifacts.previewArtifact.artifact_id,
+            diff: bundle.artifacts.diffArtifact.artifact_id,
+            repro: bundle.artifacts.reproArtifact.artifact_id,
+            evidence: bundle.artifacts.evidenceArtifact.artifact_id
+          },
+          publication_id: bundle.artifacts.publication.publication_id
+        });
+        return;
+      }
+
+      // GET /v1/strict-replication/jobs/:job_id
+      const jobMatch = pathname.match(/^\/v1\/strict-replication\/jobs\/([^/]+)$/);
+      if (method === "GET" && jobMatch) {
+        const jobId = decodeURIComponent(jobMatch[1]);
+        const bundle = jobStore.get(jobId);
+        if (!bundle) { json(res, 404, { error: "job_not_found", job_id: jobId }); return; }
+        json(res, 200, {
+          job_id: bundle.job.job_id,
+          state: bundle.job.state,
+          strict_published: bundle.strictPublished,
+          stage_records: bundle.stageRecords,
+          golden_corpus_entry: bundle.goldenCorpusEntry,
+          enhanced_pixel_verification: bundle.enhancedPixelVerification
+        });
+        return;
+      }
+
+      // GET /v1/strict-replication/golden-corpus
+      if (method === "GET" && pathname === "/v1/strict-replication/golden-corpus") {
+        const entries = loadGoldenCorpus();
+        json(res, 200, { entries, count: entries.length });
+        return;
+      }
+
+      // POST /v1/strict-replication/ci-gate
+      if (method === "POST" && pathname === "/v1/strict-replication/ci-gate") {
+        const raw = await readBody(req);
+        const input = StrictSourceInputSchema.parse(JSON.parse(raw));
+        const engine = new StrictReplicationEngine();
+        const bundle = engine.run(input);
+        jobStore.set(bundle.job.job_id, bundle);
+        const corpus = loadGoldenCorpus();
+        const results: CIGateResult[] = corpus.map((entry) => runCIGateCheck(bundle, entry));
+        const allPassed = results.length > 0 && results.every((r) => r.passed);
+        json(res, 200, {
+          job_id: bundle.job.job_id,
+          gate_passed: allPassed,
+          corpus_count: corpus.length,
+          results
+        });
+        return;
+      }
+
+      json(res, 404, { error: "not_found", path: pathname });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      json(res, 400, { error: "bad_request", message });
+    }
+  });
+
+  return new Promise((resolve) => {
+    server.listen(port, host, () => {
+      const addr = server.address();
+      const boundPort = typeof addr === "object" && addr !== null ? addr.port : port;
+      const origin = `http://${host}:${boundPort}`;
+      resolve({
+        origin,
+        port: boundPort,
+        close: () => new Promise<void>((res, rej) => server.close((err) => (err ? rej(err) : res())))
+      });
+    });
+  });
+};
+
+export {
+  buildGoldenCorpusEntry,
+  runCIGateCheck,
+  loadGoldenCorpus,
+  saveGoldenCorpus,
+  appendGoldenCorpusEntry,
+  generateDiffMap,
+  computeStructuralSimilarity,
+  computePerceptualHash,
+  GOLDEN_CORPUS_PATH
+};

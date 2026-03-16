@@ -143,6 +143,8 @@ export const AlignedWordSchema = transcriptionEntity({
   start_ms: z.number().int().nonnegative(),
   end_ms: z.number().int().nonnegative(),
   confidence: z.number().min(0).max(1),
+  alignment_confidence: z.number().min(0).max(1),
+  alignment_flags: z.array(z.string()),
   evidence_ref: z.string(),
   lineage_ref: z.string()
 });
@@ -179,6 +181,16 @@ export const TranscriptionVerificationGateSchema = transcriptionEntity({
   exact: z.boolean(),
   verification_score: z.number().min(0).max(1),
   alignment_pass: z.boolean(),
+  alignment_quality: z.number().min(0).max(1),
+  ocr_quality: z.number().min(0).max(1),
+  transcript_coherence: z.number().min(0).max(1),
+  coverage_score: z.number().min(0).max(1),
+  quality_details: z.array(z.object({
+    metric: z.string(),
+    value: z.number(),
+    threshold: z.number(),
+    passed: z.boolean()
+  })),
   subtitle_detection_pass: z.boolean(),
   on_screen_ocr_applied: z.boolean(),
   unresolved_disagreement_refs: z.array(z.string()),

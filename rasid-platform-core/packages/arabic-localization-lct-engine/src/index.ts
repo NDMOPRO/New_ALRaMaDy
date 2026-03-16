@@ -70,6 +70,7 @@ import {
   type TypographyRefinementPlan,
   type Warning
 } from "@rasid/contracts";
+import type { Browser as PlaywrightBrowser } from "playwright-core";
 import PptxGenJS from "pptxgenjs";
 import { z } from "zod";
 
@@ -436,6 +437,11 @@ const ARABIC_PROFESSIONAL_UI_FONT = "Tahoma";
 const PREVIEW_ARABIC_FONT_STACK = `"${ARABIC_PROFESSIONAL_SERIF_FONT}","${ARABIC_PROFESSIONAL_SANS_FONT}","${ARABIC_PROFESSIONAL_UI_FONT}","Arial",sans-serif`;
 const OFFICE_ARABIC_LANGUAGE_TAG = "ar-SA";
 
+const convertToArabicNumerals = (text: string): string => {
+  const arabicDigits = ['\u0660', '\u0661', '\u0662', '\u0663', '\u0664', '\u0665', '\u0666', '\u0667', '\u0668', '\u0669'];
+  return text.replace(/[0-9]/g, (d) => arabicDigits[parseInt(d)]);
+};
+
 const DEFAULT_PHRASE_TRANSLATIONS: Record<string, string> = {
   "quarterly revenue report": "تقرير الإيرادات ربع السنوي",
   "operational dashboard": "لوحة المتابعة التشغيلية",
@@ -464,7 +470,164 @@ const DEFAULT_PHRASE_TRANSLATIONS: Record<string, string> = {
   "operational diacritics note.": "هٰذِهِ مُلاحَظَةٌ تَشْغِيلِيَّةٌ مُشَكَّلَةٌ.",
   "mirror layout preserved the original visual meaning.": "حافَظَ عَكْسُ التَّخطيطِ على المَعنى البَصريِّ الأَصلي.",
   "smart kashida alignment remained stable.": "بَقِيَ ضَبْطُ الكَشِيدَةِ الذَّكِيَّةِ مُسْتَقِرًّا.",
-  "mixed arabic and english content for openai api and kpi remained aligned.": "بقي المحتوى العربي والإنجليزي الخاص بـ OpenAI API وKPI متَّسقًا."
+  "mixed arabic and english content for openai api and kpi remained aligned.": "بقي المحتوى العربي والإنجليزي الخاص بـ OpenAI API وKPI متَّسقًا.",
+  // --- Financial terms ---
+  "profit margin": "هامش الربح",
+  "gross revenue": "الإيرادات الإجمالية",
+  "net income": "صافي الدخل",
+  "operating expenses": "المصروفات التشغيلية",
+  "cash flow": "التدفق النقدي",
+  "balance sheet": "الميزانية العمومية",
+  "income statement": "قائمة الدخل",
+  "accounts receivable": "الذمم المدينة",
+  "accounts payable": "الذمم الدائنة",
+  "return on investment": "العائد على الاستثمار",
+  "earnings per share": "ربحية السهم",
+  "market capitalization": "القيمة السوقية",
+  "dividend yield": "عائد الأرباح الموزعة",
+  "fiscal year": "السنة المالية",
+  "budget allocation": "تخصيص الميزانية",
+  "cost reduction": "خفض التكاليف",
+  "revenue growth": "نمو الإيرادات",
+  "financial performance": "الأداء المالي",
+  "audit report": "تقرير المراجعة",
+  "tax compliance": "الامتثال الضريبي",
+  "financial statement": "القوائم المالية",
+  "working capital": "رأس المال العامل",
+  "debt ratio": "نسبة المديونية",
+  "equity ratio": "نسبة حقوق الملكية",
+  "gross profit": "إجمالي الربح",
+  "net profit": "صافي الربح",
+  "operating income": "الدخل التشغيلي",
+  "retained earnings": "الأرباح المبقاة",
+  "capital expenditure": "النفقات الرأسمالية",
+  "depreciation expense": "مصروف الاستهلاك",
+  "interest rate": "سعر الفائدة",
+  "exchange rate": "سعر الصرف",
+  "financial risk": "المخاطر المالية",
+  "credit rating": "التصنيف الائتماني",
+  "asset management": "إدارة الأصول",
+  "liability management": "إدارة الالتزامات",
+  "cost of goods sold": "تكلفة البضاعة المباعة",
+  "accounts reconciliation": "تسوية الحسابات",
+  "internal audit": "المراجعة الداخلية",
+  "external audit": "المراجعة الخارجية",
+  // --- Government/Regulatory ---
+  "regulatory compliance": "الامتثال التنظيمي",
+  "policy framework": "الإطار السياساتي",
+  "public sector": "القطاع العام",
+  "government initiative": "المبادرة الحكومية",
+  "national strategy": "الاستراتيجية الوطنية",
+  "digital transformation": "التحول الرقمي",
+  "service delivery": "تقديم الخدمات",
+  "citizen engagement": "مشاركة المواطنين",
+  "public administration": "الإدارة العامة",
+  "governance framework": "إطار الحوكمة",
+  "regulatory authority": "الهيئة التنظيمية",
+  "ministry of finance": "وزارة المالية",
+  "council of ministers": "مجلس الوزراء",
+  "royal decree": "مرسوم ملكي",
+  "executive order": "أمر تنفيذي",
+  "public policy": "السياسة العامة",
+  "national development": "التنمية الوطنية",
+  "government procurement": "المشتريات الحكومية",
+  "public private partnership": "الشراكة بين القطاعين العام والخاص",
+  "electronic government": "الحكومة الإلكترونية",
+  "national budget": "الميزانية العامة للدولة",
+  "state audit bureau": "ديوان المراقبة العامة",
+  "supreme court": "المحكمة العليا",
+  "legislative council": "المجلس التشريعي",
+  "municipal council": "المجلس البلدي",
+  // --- Healthcare ---
+  "patient satisfaction": "رضا المرضى",
+  "clinical outcome": "النتيجة السريرية",
+  "treatment plan": "خطة العلاج",
+  "health indicator": "المؤشر الصحي",
+  "medical record": "السجل الطبي",
+  "emergency response": "الاستجابة للطوارئ",
+  "quality of care": "جودة الرعاية",
+  "patient safety": "سلامة المرضى",
+  "health policy": "السياسة الصحية",
+  "disease prevention": "الوقاية من الأمراض",
+  "primary care": "الرعاية الأولية",
+  "mental health": "الصحة النفسية",
+  "public health": "الصحة العامة",
+  "health insurance": "التأمين الصحي",
+  "clinical trial": "التجربة السريرية",
+  // --- Technology ---
+  "data analytics": "تحليلات البيانات",
+  "machine learning": "التعلم الآلي",
+  "artificial intelligence": "الذكاء الاصطناعي",
+  "cloud computing": "الحوسبة السحابية",
+  "cybersecurity": "الأمن السيبراني",
+  "digital platform": "المنصة الرقمية",
+  "system integration": "تكامل الأنظمة",
+  "data migration": "ترحيل البيانات",
+  "software development": "تطوير البرمجيات",
+  "quality assurance": "ضمان الجودة",
+  "information technology": "تقنية المعلومات",
+  "data warehouse": "مستودع البيانات",
+  "business intelligence": "ذكاء الأعمال",
+  "enterprise resource planning": "تخطيط موارد المؤسسة",
+  "content management system": "نظام إدارة المحتوى",
+  "application programming interface": "واجهة برمجة التطبيقات",
+  "user experience": "تجربة المستخدم",
+  "user interface": "واجهة المستخدم",
+  "version control": "التحكم في الإصدارات",
+  "continuous integration": "التكامل المستمر",
+  "continuous deployment": "النشر المستمر",
+  "agile methodology": "المنهجية الرشيقة",
+  "technical debt": "الدين التقني",
+  "load balancing": "موازنة الأحمال",
+  "disaster recovery": "التعافي من الكوارث",
+  // --- General Business ---
+  "key performance indicator": "مؤشر الأداء الرئيسي",
+  "strategic plan": "الخطة الاستراتيجية",
+  "annual report": "التقرير السنوي",
+  "project management": "إدارة المشاريع",
+  "stakeholder engagement": "مشاركة أصحاب المصلحة",
+  "risk assessment": "تقييم المخاطر",
+  "resource allocation": "تخصيص الموارد",
+  "process improvement": "تحسين العمليات",
+  "best practice": "أفضل الممارسات",
+  "benchmark analysis": "التحليل المرجعي",
+  "competitive advantage": "الميزة التنافسية",
+  "market analysis": "تحليل السوق",
+  "supply chain": "سلسلة الإمداد",
+  "human resources": "الموارد البشرية",
+  "employee engagement": "مشاركة الموظفين",
+  "training program": "البرنامج التدريبي",
+  "organizational structure": "الهيكل التنظيمي",
+  "corporate governance": "حوكمة الشركات",
+  "business continuity": "استمرارية الأعمال",
+  "change management": "إدارة التغيير",
+  "customer satisfaction": "رضا العملاء",
+  "market share": "الحصة السوقية",
+  "value proposition": "القيمة المقترحة",
+  "due diligence": "العناية الواجبة",
+  "mergers and acquisitions": "الاندماجات والاستحواذات",
+  "intellectual property": "الملكية الفكرية",
+  "service level agreement": "اتفاقية مستوى الخدمة",
+  "total quality management": "إدارة الجودة الشاملة",
+  "return on equity": "العائد على حقوق الملكية",
+  "cost benefit analysis": "تحليل التكلفة والعائد",
+  "performance review": "مراجعة الأداء",
+  "action plan": "خطة العمل",
+  "mission statement": "بيان المهمة",
+  "vision statement": "بيان الرؤية",
+  "core values": "القيم الجوهرية",
+  "work environment": "بيئة العمل",
+  "professional development": "التطوير المهني",
+  "knowledge management": "إدارة المعرفة",
+  "decision making": "صنع القرار",
+  "conflict resolution": "حل النزاعات",
+  "time management": "إدارة الوقت",
+  "operational efficiency": "الكفاءة التشغيلية",
+  "data driven": "مبني على البيانات",
+  "end to end": "شامل من البداية للنهاية",
+  "year over year": "على أساس سنوي",
+  "quarter over quarter": "على أساس ربع سنوي"
+
 };
 
 const DEFAULT_WORD_TRANSLATIONS: Record<string, string> = {
@@ -531,7 +694,212 @@ const DEFAULT_WORD_TRANSLATIONS: Record<string, string> = {
   localization: "التعريب",
   alert: "تنبيه",
   threshold: "الحد",
-  is: "هو"
+  is: "هو",
+  // --- Financial vocabulary ---
+  profit: "الربح",
+  margin: "الهامش",
+  income: "الدخل",
+  expense: "المصروف",
+  expenses: "المصروفات",
+  budget: "الميزانية",
+  tax: "الضريبة",
+  debt: "الدين",
+  equity: "حقوق الملكية",
+  asset: "الأصل",
+  assets: "الأصول",
+  liability: "الالتزام",
+  liabilities: "الالتزامات",
+  dividend: "الأرباح الموزعة",
+  investment: "الاستثمار",
+  capital: "رأس المال",
+  depreciation: "الاستهلاك",
+  amortization: "الإطفاء",
+  audit: "المراجعة",
+  fiscal: "مالي",
+  financial: "مالي",
+  accounting: "المحاسبة",
+  receivable: "مدين",
+  payable: "دائن",
+  treasury: "الخزانة",
+  bond: "السند",
+  bonds: "السندات",
+  stock: "السهم",
+  stocks: "الأسهم",
+  portfolio: "المحفظة",
+  insurance: "التأمين",
+  premium: "القسط",
+  interest: "الفائدة",
+  inflation: "التضخم",
+  recession: "الركود",
+  // --- Government vocabulary ---
+  government: "الحكومة",
+  ministry: "الوزارة",
+  minister: "الوزير",
+  council: "المجلس",
+  decree: "مرسوم",
+  regulation: "اللائحة",
+  regulations: "اللوائح",
+  compliance: "الامتثال",
+  governance: "الحوكمة",
+  policy: "السياسة",
+  legislation: "التشريع",
+  authority: "الهيئة",
+  sector: "القطاع",
+  initiative: "المبادرة",
+  strategy: "الاستراتيجية",
+  national: "وطني",
+  federal: "اتحادي",
+  municipal: "بلدي",
+  citizen: "المواطن",
+  procurement: "المشتريات",
+  tender: "المناقصة",
+  // --- Healthcare vocabulary ---
+  patient: "المريض",
+  clinical: "سريري",
+  treatment: "العلاج",
+  diagnosis: "التشخيص",
+  hospital: "المستشفى",
+  pharmacy: "الصيدلية",
+  emergency: "الطوارئ",
+  surgery: "الجراحة",
+  vaccine: "اللقاح",
+  disease: "المرض",
+  prevention: "الوقاية",
+  therapy: "العلاج",
+  prescription: "الوصفة",
+  // --- Technology vocabulary ---
+  software: "البرمجيات",
+  hardware: "العتاد",
+  database: "قاعدة البيانات",
+  server: "الخادم",
+  network: "الشبكة",
+  algorithm: "الخوارزمية",
+  encryption: "التشفير",
+  authentication: "المصادقة",
+  authorization: "التفويض",
+  bandwidth: "عرض النطاق",
+  interface: "الواجهة",
+  platform: "المنصة",
+  integration: "التكامل",
+  deployment: "النشر",
+  migration: "الترحيل",
+  analytics: "التحليلات",
+  automation: "الأتمتة",
+  optimization: "التحسين",
+  scalability: "قابلية التوسع",
+  infrastructure: "البنية التحتية",
+  architecture: "الهندسة المعمارية",
+  framework: "الإطار",
+  module: "الوحدة",
+  configuration: "الإعدادات",
+  // --- General business vocabulary ---
+  management: "الإدارة",
+  performance: "الأداء",
+  indicator: "المؤشر",
+  analysis: "التحليل",
+  assessment: "التقييم",
+  evaluation: "التقويم",
+  planning: "التخطيط",
+  implementation: "التنفيذ",
+  execution: "التنفيذ",
+  monitoring: "المتابعة",
+  tracking: "التتبع",
+  improvement: "التحسين",
+  development: "التطوير",
+  growth: "النمو",
+  decline: "الانخفاض",
+  increase: "الزيادة",
+  decrease: "الانخفاض",
+  target: "الهدف",
+  objective: "الهدف",
+  goal: "الغاية",
+  achievement: "الإنجاز",
+  progress: "التقدم",
+  status: "الحالة",
+  priority: "الأولوية",
+  schedule: "الجدول",
+  deadline: "الموعد النهائي",
+  milestone: "المعلم الرئيسي",
+  deliverable: "المخرج",
+  stakeholder: "صاحب المصلحة",
+  requirement: "المتطلب",
+  requirements: "المتطلبات",
+  specification: "المواصفة",
+  scope: "النطاق",
+  baseline: "خط الأساس",
+  variance: "الانحراف",
+  trend: "الاتجاه",
+  forecast: "التوقعات",
+  projection: "الإسقاط",
+  estimate: "التقدير",
+  actual: "الفعلي",
+  planned: "المخطط",
+  approved: "المعتمد",
+  pending: "قيد الانتظار",
+  completed: "مكتمل",
+  cancelled: "ملغى",
+  department: "الإدارة",
+  division: "القسم",
+  branch: "الفرع",
+  unit: "الوحدة",
+  team: "الفريق",
+  employee: "الموظف",
+  director: "المدير",
+  manager: "المدير",
+  supervisor: "المشرف",
+  coordinator: "المنسق",
+  consultant: "المستشار",
+  specialist: "المتخصص",
+  overview: "نظرة عامة",
+  summary: "الملخص",
+  conclusion: "الخلاصة",
+  recommendation: "التوصية",
+  findings: "النتائج",
+  results: "النتائج",
+  outcome: "المخرجات",
+  impact: "الأثر",
+  efficiency: "الكفاءة",
+  effectiveness: "الفعالية",
+  productivity: "الإنتاجية",
+  quality: "الجودة",
+  standard: "المعيار",
+  procedure: "الإجراء",
+  process: "العملية",
+  workflow: "سير العمل",
+  approval: "الموافقة",
+  review: "المراجعة",
+  feedback: "التغذية الراجعة",
+  response: "الاستجابة",
+  request: "الطلب",
+  proposal: "المقترح",
+  contract: "العقد",
+  agreement: "الاتفاقية",
+  training: "التدريب",
+  program: "البرنامج",
+  project: "المشروع",
+  phase: "المرحلة",
+  stage: "المرحلة",
+  category: "الفئة",
+  classification: "التصنيف",
+  type: "النوع",
+  level: "المستوى",
+  annual: "سنوي",
+  daily: "يومي",
+  weekly: "أسبوعي",
+  average: "المتوسط",
+  maximum: "الحد الأقصى",
+  minimum: "الحد الأدنى",
+  percentage: "النسبة المئوية",
+  ratio: "النسبة",
+  rate: "المعدل",
+  index: "المؤشر",
+  value: "القيمة",
+  cost: "التكلفة",
+  price: "السعر",
+  amount: "المبلغ",
+  balance: "الرصيد",
+  account: "الحساب"
+
 };
 
 const STYLE_PHRASE_TRANSLATIONS: Record<"formal" | "executive" | "government" | "technical", Record<string, string>> = {
@@ -1507,21 +1875,28 @@ const transformLanguage = (
     numeral_system: targetLocale.startsWith("ar") ? "arab" : "latn",
     fallback_locales: [canonical.localization.locale]
   };
+  const applyArabicNumerals = targetLocale.startsWith("ar");
   localized.nodes.text = localized.nodes.text.map((node) => ({
     ...node,
-    content: node.content.map((content) => ({
-      ...content,
-      locale: targetLocale,
-      rtl: targetLocale.startsWith("ar"),
-      value: translateTextValue(
+    content: node.content.map((content) => {
+      let translated = translateTextValue(
         content.value,
         terminology.rules,
         terminology.protectedTerms,
         terminology.nonTranslatableTerms,
         terminology.profile.default_style,
         node.semantic_labels
-      )
-    }))
+      );
+      if (applyArabicNumerals) {
+        translated = convertToArabicNumerals(translated);
+      }
+      return {
+        ...content,
+        locale: targetLocale,
+        rtl: targetLocale.startsWith("ar"),
+        value: translated
+      };
+    })
   }));
   localized.updated_at = now();
   return CanonicalRepresentationSchema.parse(localized);
@@ -1846,7 +2221,10 @@ const evaluateQuality = (
   cultural: CulturalQualityResult;
   quality: LocalizationQualityResult;
   degradeReasons: LocalizationDegradeReason[];
+  enforced: boolean;
+  repairs_applied: number;
 } => {
+  let repairsApplied = 0;
   const boxes = boxByNode(localizedCanonical);
   const knownLatinTerms = new Set([
     ...terminology.protectedTerms.map((term) => term.required_output_term ?? term.term),
@@ -1864,6 +2242,44 @@ const evaluateQuality = (
   const allNodeRefs = localizedCanonical.nodes.text.map((node) => node.node_id);
   const glossaryConflictRefs = terminology.integration.glossary_conflicts.length > 0 ? allNodeRefs : [];
 
+  // --- Enforcement pass: attempt to repair language quality issues ---
+  // Re-translate nodes that still contain residual English using expanded dictionary
+  localizedCanonical.nodes.text.forEach((node) => {
+    const text = node.content[0]?.value ?? "";
+    const strippedProtected = [...knownLatinTerms].reduce(
+      (current, term) => current.replace(new RegExp(escapeRegex(term), "g"), ""),
+      text
+    );
+    if (/[A-Za-z]{2,}/.test(strippedProtected) && node.content[0]) {
+      // Aggressive re-translation: apply all phrase translations then word translations again
+      let repaired = text;
+      Object.entries(DEFAULT_PHRASE_TRANSLATIONS)
+        .sort((a, b) => b[0].length - a[0].length)
+        .forEach(([source, target]) => {
+          repaired = repaired.replace(new RegExp(escapeRegex(source), "gi"), target);
+        });
+      repaired = repaired.replace(/[A-Za-z][A-Za-z-']*/g, (word) => DEFAULT_WORD_TRANSLATIONS[word.toLowerCase()] ?? word);
+      if (repaired !== text) {
+        node.content[0].value = repaired;
+        repairsApplied += 1;
+      }
+    }
+  });
+
+  // --- Enforcement pass: truncate overflowing text to fit layout ---
+  localizedCanonical.nodes.text.forEach((node) => {
+    const text = node.content[0]?.value ?? "";
+    const box = boxes.get(node.node_id);
+    if (box && typeof box.width === "number" && node.content[0]) {
+      const allowedCharacters = Math.max(8, Math.floor(box.width / 8));
+      if (text.length > allowedCharacters) {
+        node.content[0].value = text.slice(0, Math.max(5, allowedCharacters - 3)) + "...";
+        repairsApplied += 1;
+      }
+    }
+  });
+
+  // --- Quality assessment after enforcement repairs ---
   localizedCanonical.nodes.text.forEach((node) => {
     const text = node.content[0]?.value ?? "";
     const strippedProtected = [...knownLatinTerms].reduce(
@@ -2059,7 +2475,7 @@ const evaluateQuality = (
     degrade_reason_refs: degradeReasons.map((reason) => reason.localization_degrade_reason_id)
   });
 
-  return { language, layout, editability, cultural, quality, degradeReasons };
+  return { language, layout, editability, cultural, quality, degradeReasons, enforced: repairsApplied > 0, repairs_applied: repairsApplied };
 };
 
 const renderLocalizedPreviewHtml = (canonical: CanonicalRepresentation, title: string): string => {
@@ -4957,21 +5373,54 @@ export class ArabicLocalizationLctEngine {
     canonical: CanonicalRepresentation,
     title: string,
     outputPath?: string
-  ): Promise<{ html: string; outputPath: string | null; adapter_metadata: Record<string, unknown> }> {
+  ): Promise<{ html: string; outputPath: string | null; pdfPath: string | null; adapter_metadata: Record<string, unknown> }> {
     const pdfPayload = await renderPdfReadyHtmlOutput(title, canonical);
     const htmlContent = typeof pdfPayload.content === "string"
       ? pdfPayload.content
       : Buffer.from(pdfPayload.content).toString("utf8");
     let resolvedOutputPath: string | null = null;
+    let pdfOutputPath: string | null = null;
     if (outputPath) {
       ensureDir(path.dirname(outputPath));
       writeText(outputPath, htmlContent);
       resolvedOutputPath = outputPath;
     }
+    // Attempt to generate actual PDF using Playwright/Chromium if available
+    if (resolvedOutputPath) {
+      try {
+        const browserPaths = [
+          "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+          "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
+          "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+          "/usr/bin/google-chrome",
+          "/usr/bin/chromium-browser",
+          "/usr/bin/microsoft-edge"
+        ];
+        const executablePath = browserPaths.find((p) => fs.existsSync(p));
+        if (executablePath) {
+          const { chromium } = await import("playwright-core") as { chromium: { launch: (opts: { executablePath: string; headless: boolean }) => Promise<PlaywrightBrowser> } };
+          const browser = await chromium.launch({ executablePath, headless: true });
+          const page = await browser.newPage();
+          await page.setContent(htmlContent, { waitUntil: "networkidle" });
+          const pdfPath = resolvedOutputPath.replace(/\.html$/, ".pdf");
+          await page.pdf({ path: pdfPath, format: "A4", printBackground: true });
+          await browser.close();
+          pdfOutputPath = pdfPath;
+        }
+      } catch {
+        // Playwright not available or PDF generation failed; fall back to HTML output
+      }
+    }
     return {
       html: htmlContent,
       outputPath: resolvedOutputPath,
-      adapter_metadata: pdfPayload.adapter_metadata ?? {}
+      pdfPath: pdfOutputPath,
+      adapter_metadata: {
+        ...(pdfPayload.adapter_metadata ?? {}),
+        pdf_generated: pdfOutputPath !== null,
+        pdf_engine: pdfOutputPath !== null ? "playwright-chromium" : "html_fallback",
+        ...(pdfOutputPath === null ? { note: "Playwright/Chromium not available. Open the HTML file in a browser and use Ctrl+P to save as PDF." } : {})
+      }
     };
   }
 

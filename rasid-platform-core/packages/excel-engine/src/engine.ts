@@ -4829,6 +4829,10 @@ type SmartAnalysisResult = {
   suggested_dashboards: SmartDashboardSuggestion[];
   suggested_reports: SmartReportSuggestion[];
   suggested_slides: SmartSlideSuggestion[];
+  preflight: Array<{ sheet: string; rows: number; cols: number; nulls: number; duplicates: number; sensitive_columns: string[]; datetime_columns: string[] }>;
+  column_unification: Array<{ columns: Array<{ sheet: string; column: string }>; suggested_name: string; similarity: number }>;
+  merge_suggestions: Array<{ type: "join_by_key" | "append_rows" | "add_side_column"; sheets: string[]; key_column?: string; reason: string }>;
+  master_table: { headers: string[]; rows: string[][]; source_sheets: string[] } | null;
 };
 
 // ─── Arrow / Parquet / Catalog / Semantic Graph Types ─────────────────────────
@@ -4854,7 +4858,9 @@ type DataCleaningResult = {
   outliers: Array<{ column: string; values: Array<{ row: number; value: number; z_score: number }> }>;
   imputed: Array<{ column: string; strategy: string; filled_count: number }>;
   normalized: Array<{ column: string; method: string; min: number; max: number }>;
-  quality_report: { total_rows: number; total_columns: number; completeness: number; validity: number; uniqueness: number; issues: string[] };
+  quality_report: { total_rows: number; total_columns: number; completeness: number; validity: number; uniqueness: number; quality_score: number; issues: string[] };
+  spelling_normalized: Array<{ column: string; corrections: number; examples: Array<{ original: string; normalized: string }> }>;
+  unit_normalized: Array<{ column: string; conversions: number; unit_detected: string; examples: Array<{ original: string; normalized: string }> }>;
 };
 
 // ─── Diff Types ───────────────────────────────────────────────────────────────
@@ -4879,10 +4885,15 @@ type Recipe = {
 };
 
 // ─── AI for Excel Types ───────────────────────────────────────────────────────
-type NLQResult = { query: string; interpreted_as: string; sql_equivalent: string; result_rows: string[][]; result_columns: string[] };
+type NLQResult = { query: string; interpreted_as: string; sql_equivalent: string; result_rows: string[][]; result_columns: string[]; confidence: number };
 type AutoAnalysisResult = {
   insights: Array<{ category: string; description: string; confidence: number; affected_columns: string[] }>;
   anomalies: Array<{ column: string; description: string; severity: string }>;
+  sensitive_columns: Array<{ column: string; sheet: string; pattern: string; sample_count: number }>;
+  time_dimensions: Array<{ column: string; sheet: string; format_hint: string }>;
+  entity_keys: Array<{ column: string; sheet: string; uniqueness_ratio: number }>;
+  executive_summary: string;
+  suggestions: string[];
 };
 type PredictiveResult = { column: string; predictions: Array<{ row: number; predicted_value: number; confidence: number }>; method: string; r_squared: number };
 type WhatIfResult = {
@@ -8191,11 +8202,211 @@ export class ExcelEngine {
       (ws) => !ws.name.startsWith("__") && ws.state !== "veryHidden"
     );
 
+    // ── Preflight Phase ──
+    const sensitivePatterns = ["email", "phone", "ssn", "password", "secret", "token", "card"];
+    const datePatterns = /^(date|time|timestamp|created|updated|modified|born|expired|deadline|start|end|period)/i;
+    const preflight: SmartAnalysisResult["preflight"] = [];
+    const sheetTables = new Map<string, WorksheetTable>();
+
+    for (const ws of worksheets) {
+      const table = extractTable(ws);
+      sheetTables.set(ws.name, table);
+
+      let nullCount = 0;
+      const rowKeys = new Set<string>();
+      let duplicateCount = 0;
+
+      for (const row of table.rows) {
+        const key = table.headers.map((h) => `${row[h] ?? ""}`).join("||");
+        if (rowKeys.has(key)) {
+          duplicateCount++;
+        } else {
+          rowKeys.add(key);
+        }
+        for (const h of table.headers) {
+          if (row[h] === null || row[h] === undefined || row[h] === "") nullCount++;
+        }
+      }
+
+      const sensitiveColumns = table.headers.filter((h) => {
+        const lower = h.toLowerCase();
+        return sensitivePatterns.some((p) => lower.includes(p));
+      });
+
+      const datetimeColumns = table.headers.filter((h) => {
+        if (datePatterns.test(h)) return true;
+        // Check if values look like dates
+        const sampleVals = table.rows.slice(0, 20).map((r) => r[h]).filter((v) => v !== null && v !== undefined && v !== "");
+        const dateCount = sampleVals.filter((v) => {
+          const s = `${v}`;
+          return /^\d{4}-\d{2}-\d{2}/.test(s) || /^\d{1,2}[/\-\.]\d{1,2}[/\-\.]\d{2,4}/.test(s) || (!isNaN(Date.parse(s)) && s.length > 6);
+        }).length;
+        return dateCount > sampleVals.length * 0.5;
+      });
+
+      preflight.push({
+        sheet: ws.name,
+        rows: table.rows.length,
+        cols: table.headers.length,
+        nulls: nullCount,
+        duplicates: duplicateCount,
+        sensitive_columns: sensitiveColumns,
+        datetime_columns: datetimeColumns
+      });
+    }
+
+    // ── Column Unification Phase ──
+    const columnUnification: SmartAnalysisResult["column_unification"] = [];
+    const allSheetHeaders: Array<{ sheet: string; column: string }> = [];
+    for (const ws of worksheets) {
+      const table = sheetTables.get(ws.name);
+      if (!table) continue;
+      for (const h of table.headers) {
+        allSheetHeaders.push({ sheet: ws.name, column: h });
+      }
+    }
+
+    const unifiedPairs = new Set<string>();
+    for (let i = 0; i < allSheetHeaders.length; i++) {
+      for (let j = i + 1; j < allSheetHeaders.length; j++) {
+        const a = allSheetHeaders[i];
+        const b = allSheetHeaders[j];
+        if (a.sheet === b.sheet) continue;
+        if (a.column.toLowerCase() === b.column.toLowerCase()) continue; // exact match, no unification needed
+        const sim = levenshteinSimilarity(a.column.toLowerCase(), b.column.toLowerCase());
+        if (sim >= 0.7 && sim < 1.0) {
+          const pairKey = [a.column.toLowerCase(), b.column.toLowerCase()].sort().join("||");
+          if (unifiedPairs.has(pairKey)) continue;
+          unifiedPairs.add(pairKey);
+          const suggestedName = a.column.length <= b.column.length ? a.column : b.column;
+          columnUnification.push({
+            columns: [{ sheet: a.sheet, column: a.column }, { sheet: b.sheet, column: b.column }],
+            suggested_name: suggestedName,
+            similarity: Math.round(sim * 1000) / 1000
+          });
+        }
+      }
+    }
+
+    // ── Merge Suggestions Phase ──
+    const mergeSuggestions: SmartAnalysisResult["merge_suggestions"] = [];
+    const sheetNames = worksheets.map((ws) => ws.name);
+
+    for (let i = 0; i < sheetNames.length; i++) {
+      for (let j = i + 1; j < sheetNames.length; j++) {
+        const tableA = sheetTables.get(sheetNames[i]);
+        const tableB = sheetTables.get(sheetNames[j]);
+        if (!tableA || !tableB) continue;
+
+        const headersA = new Set(tableA.headers.map((h) => h.toLowerCase()));
+        const headersB = new Set(tableB.headers.map((h) => h.toLowerCase()));
+        const commonHeaders = [...headersA].filter((h) => headersB.has(h));
+        const overlapRatio = commonHeaders.length / Math.max(headersA.size, headersB.size);
+
+        if (overlapRatio >= 0.8) {
+          // High overlap — suggest append rows
+          mergeSuggestions.push({
+            type: "append_rows",
+            sheets: [sheetNames[i], sheetNames[j]],
+            reason: `${Math.round(overlapRatio * 100)}% column overlap — sheets have compatible schemas for row appending`
+          });
+        } else if (commonHeaders.length >= 1 && commonHeaders.length < Math.max(headersA.size, headersB.size) * 0.5) {
+          // Some overlap with a potential key — suggest join
+          const potentialKey = commonHeaders.find((h) => {
+            const colA = tableA.headers.find((th) => th.toLowerCase() === h);
+            const colB = tableB.headers.find((th) => th.toLowerCase() === h);
+            if (!colA || !colB) return false;
+            const uniqueA = new Set(tableA.rows.map((r) => `${r[colA] ?? ""}`)).size;
+            const uniqueB = new Set(tableB.rows.map((r) => `${r[colB] ?? ""}`)).size;
+            return uniqueA > tableA.rows.length * 0.5 && uniqueB > tableB.rows.length * 0.5;
+          });
+          if (potentialKey) {
+            const origKey = tableA.headers.find((h2) => h2.toLowerCase() === potentialKey) ?? potentialKey;
+            mergeSuggestions.push({
+              type: "join_by_key",
+              sheets: [sheetNames[i], sheetNames[j]],
+              key_column: origKey,
+              reason: `Common key column '${origKey}' with high uniqueness can serve as join key`
+            });
+          }
+        } else if (commonHeaders.length === 0 && tableA.rows.length === tableB.rows.length) {
+          // No overlap but same row count — suggest side column
+          mergeSuggestions.push({
+            type: "add_side_column",
+            sheets: [sheetNames[i], sheetNames[j]],
+            reason: `No column overlap but matching row counts (${tableA.rows.length}) — can be merged side-by-side`
+          });
+        }
+      }
+    }
+
+    // ── Master Table Building ──
+    let masterTable: SmartAnalysisResult["master_table"] = null;
+    if (worksheets.length > 1) {
+      // Find sheets that can be appended (high overlap)
+      const appendable = mergeSuggestions.filter((s) => s.type === "append_rows");
+      if (appendable.length > 0) {
+        const involvedSheets = new Set<string>();
+        for (const s of appendable) {
+          for (const sh of s.sheets) involvedSheets.add(sh);
+        }
+        // Union all headers from appendable sheets
+        const allHeaders: string[] = [];
+        const headerSet = new Set<string>();
+        for (const sh of involvedSheets) {
+          const t = sheetTables.get(sh);
+          if (!t) continue;
+          for (const h of t.headers) {
+            const key = h.toLowerCase();
+            if (!headerSet.has(key)) {
+              headerSet.add(key);
+              allHeaders.push(h);
+            }
+          }
+        }
+        const masterRows: string[][] = [];
+        for (const sh of involvedSheets) {
+          const t = sheetTables.get(sh);
+          if (!t) continue;
+          for (const row of t.rows.slice(0, 200)) {
+            masterRows.push(allHeaders.map((h) => {
+              const matchedHeader = t.headers.find((th) => th.toLowerCase() === h.toLowerCase());
+              return matchedHeader ? `${row[matchedHeader] ?? ""}` : "";
+            }));
+          }
+        }
+        masterTable = {
+          headers: allHeaders,
+          rows: masterRows.slice(0, 500),
+          source_sheets: [...involvedSheets]
+        };
+      } else if (worksheets.length === 1) {
+        // Single sheet — just use it
+        const t = sheetTables.get(worksheets[0].name);
+        if (t) {
+          masterTable = {
+            headers: t.headers,
+            rows: t.rows.slice(0, 500).map((r) => t.headers.map((h) => `${r[h] ?? ""}`)),
+            source_sheets: [worksheets[0].name]
+          };
+        }
+      }
+    } else if (worksheets.length === 1) {
+      const t = sheetTables.get(worksheets[0].name);
+      if (t) {
+        masterTable = {
+          headers: t.headers,
+          rows: t.rows.slice(0, 500).map((r) => t.headers.map((h) => `${r[h] ?? ""}`)),
+          source_sheets: [worksheets[0].name]
+        };
+      }
+    }
+
     // Build summary table from first worksheet
     const primarySheet = worksheets[0];
     let summaryTable: SmartSummaryTable = { headers: [], rows: [], row_count: 0 };
     if (primarySheet) {
-      const table = extractTable(primarySheet);
+      const table = sheetTables.get(primarySheet.name) ?? extractTable(primarySheet);
       summaryTable = {
         headers: table.headers,
         rows: table.rows.slice(0, 50).map((row) =>
@@ -8207,7 +8418,7 @@ export class ExcelEngine {
 
     // Analyze all worksheets for KPIs and chart suggestions
     for (const ws of worksheets) {
-      const table = extractTable(ws);
+      const table = sheetTables.get(ws.name) ?? extractTable(ws);
       if (table.headers.length === 0 || table.rows.length === 0) continue;
 
       const numericColumns: string[] = [];
@@ -8302,7 +8513,7 @@ export class ExcelEngine {
     // Pro mode: suggest reports and slides
     if (mode === "pro") {
       for (const ws of worksheets) {
-        const table = extractTable(ws);
+        const table = sheetTables.get(ws.name) ?? extractTable(ws);
         if (table.headers.length === 0) continue;
         suggestedReports.push({
           title: `${ws.name} Analytical Report`,
@@ -8330,7 +8541,11 @@ export class ExcelEngine {
     addAuditEvent(state, "excel_engine.smart_analyze.v1", actorRef, [state.workbookRecord.workbook_id], {
       mode,
       kpi_count: kpis.length,
-      chart_suggestion_count: suggestedCharts.length
+      chart_suggestion_count: suggestedCharts.length,
+      preflight_sheet_count: preflight.length,
+      unification_count: columnUnification.length,
+      merge_suggestion_count: mergeSuggestions.length,
+      has_master_table: masterTable !== null
     });
 
     return {
@@ -8339,7 +8554,11 @@ export class ExcelEngine {
       suggested_charts: suggestedCharts,
       suggested_dashboards: suggestedDashboards,
       suggested_reports: suggestedReports,
-      suggested_slides: suggestedSlides
+      suggested_slides: suggestedSlides,
+      preflight,
+      column_unification: columnUnification,
+      merge_suggestions: mergeSuggestions,
+      master_table: masterTable
     };
   }
 
@@ -9068,7 +9287,165 @@ except Exception as e:
       }
     }
 
-    // ── Normalization ──
+    // ── Spelling Normalization ──
+    const spellingNormalized: DataCleaningResult["spelling_normalized"] = [];
+    for (const header of table.headers) {
+      const textEntries: Array<{ idx: number; value: string }> = [];
+      workingRows.forEach((r, idx) => {
+        const v = r[header];
+        if (typeof v === "string" && v.trim().length > 0) {
+          textEntries.push({ idx, value: v });
+        }
+      });
+      if (textEntries.length < 2) continue;
+
+      let corrections = 0;
+      const examples: Array<{ original: string; normalized: string }> = [];
+
+      // Trim whitespace and collapse multiple spaces
+      for (const entry of textEntries) {
+        const trimmed = entry.value.trim().replace(/\s+/g, " ");
+        if (trimmed !== entry.value) {
+          if (examples.length < 5) examples.push({ original: entry.value, normalized: trimmed });
+          workingRows[entry.idx][header] = trimmed;
+          corrections++;
+        }
+      }
+
+      // Fix case inconsistencies where >80% of values share the same case pattern
+      const refreshedValues = textEntries.map((e) => `${workingRows[e.idx][header]}`);
+      const lowerCount = refreshedValues.filter((v) => v === v.toLowerCase()).length;
+      const upperCount = refreshedValues.filter((v) => v === v.toUpperCase()).length;
+      const titleCount = refreshedValues.filter((v) => v === v.replace(/\b\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())).length;
+
+      const totalText = refreshedValues.length;
+      if (lowerCount > totalText * 0.8 && lowerCount < totalText) {
+        for (const entry of textEntries) {
+          const current = `${workingRows[entry.idx][header]}`;
+          const normalized = current.toLowerCase();
+          if (current !== normalized) {
+            if (examples.length < 5) examples.push({ original: current, normalized });
+            workingRows[entry.idx][header] = normalized;
+            corrections++;
+          }
+        }
+      } else if (upperCount > totalText * 0.8 && upperCount < totalText) {
+        for (const entry of textEntries) {
+          const current = `${workingRows[entry.idx][header]}`;
+          const normalized = current.toUpperCase();
+          if (current !== normalized) {
+            if (examples.length < 5) examples.push({ original: current, normalized });
+            workingRows[entry.idx][header] = normalized;
+            corrections++;
+          }
+        }
+      } else if (titleCount > totalText * 0.8 && titleCount < totalText) {
+        for (const entry of textEntries) {
+          const current = `${workingRows[entry.idx][header]}`;
+          const normalized = current.replace(/\b\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+          if (current !== normalized) {
+            if (examples.length < 5) examples.push({ original: current, normalized });
+            workingRows[entry.idx][header] = normalized;
+            corrections++;
+          }
+        }
+      }
+
+      if (corrections > 0) {
+        spellingNormalized.push({ column: header, corrections, examples });
+        issues.push(`Spelling-normalized ${corrections} value(s) in column '${header}'`);
+      }
+    }
+
+    // ── Unit Normalization ──
+    const unitNormalized: DataCleaningResult["unit_normalized"] = [];
+    for (const header of table.headers) {
+      let conversions = 0;
+      let unitDetected = "";
+      const examples: Array<{ original: string; normalized: string }> = [];
+
+      for (let rowIdx = 0; rowIdx < workingRows.length; rowIdx++) {
+        const v = workingRows[rowIdx][header];
+        if (typeof v !== "string" || v.trim().length === 0) continue;
+        const trimmed = v.trim();
+
+        // Currency symbol removal: $1,000 → 1000
+        const currencyMatch = trimmed.match(/^[$\u20AC\u00A3\u00A5\uFDFC]\s*([\d,]+\.?\d*)$/);
+        if (currencyMatch) {
+          const num = Number(currencyMatch[1].replace(/,/g, ""));
+          if (!isNaN(num)) {
+            if (examples.length < 5) examples.push({ original: trimmed, normalized: `${num}` });
+            workingRows[rowIdx][header] = num;
+            conversions++;
+            unitDetected = "currency";
+            continue;
+          }
+        }
+
+        // Trailing currency: 1,000$ or 1000 USD
+        const trailingCurrency = trimmed.match(/^([\d,]+\.?\d*)\s*[$\u20AC\u00A3\u00A5\uFDFC]|^([\d,]+\.?\d*)\s*(USD|EUR|GBP|SAR|AED|EGP)$/i);
+        if (trailingCurrency) {
+          const rawNum = (trailingCurrency[1] ?? trailingCurrency[2] ?? "").replace(/,/g, "");
+          const num = Number(rawNum);
+          if (!isNaN(num)) {
+            if (examples.length < 5) examples.push({ original: trimmed, normalized: `${num}` });
+            workingRows[rowIdx][header] = num;
+            conversions++;
+            unitDetected = "currency";
+            continue;
+          }
+        }
+
+        // Thousands separator: 1,000 → 1000, 1,000,000 → 1000000
+        const commaNumMatch = trimmed.match(/^([\d,]+\.?\d*)$/);
+        if (commaNumMatch && trimmed.includes(",")) {
+          const num = Number(trimmed.replace(/,/g, ""));
+          if (!isNaN(num)) {
+            if (examples.length < 5) examples.push({ original: trimmed, normalized: `${num}` });
+            workingRows[rowIdx][header] = num;
+            conversions++;
+            if (!unitDetected) unitDetected = "thousands_separator";
+            continue;
+          }
+        }
+
+        // Suffix K/M/B: 1K → 1000, 1.5M → 1500000, 2B → 2000000000
+        const suffixMatch = trimmed.match(/^([\d.]+)\s*([KkMmBb])$/);
+        if (suffixMatch) {
+          const base = Number(suffixMatch[1]);
+          const suffix = suffixMatch[2].toUpperCase();
+          const multiplier = suffix === "K" ? 1000 : suffix === "M" ? 1000000 : 1000000000;
+          const num = base * multiplier;
+          if (!isNaN(num)) {
+            if (examples.length < 5) examples.push({ original: trimmed, normalized: `${num}` });
+            workingRows[rowIdx][header] = num;
+            conversions++;
+            unitDetected = `suffix_${suffix}`;
+            continue;
+          }
+        }
+
+        // Percentage: 50% → 50, 0.5% → 0.5
+        const pctMatch = trimmed.match(/^([\d.]+)\s*%$/);
+        if (pctMatch) {
+          const num = Number(pctMatch[1]);
+          if (!isNaN(num)) {
+            if (examples.length < 5) examples.push({ original: trimmed, normalized: `${num}` });
+            workingRows[rowIdx][header] = num;
+            conversions++;
+            unitDetected = "percentage";
+            continue;
+          }
+        }
+      }
+
+      if (conversions > 0) {
+        unitNormalized.push({ column: header, conversions, unit_detected: unitDetected, examples });
+        issues.push(`Unit-normalized ${conversions} value(s) in column '${header}' (${unitDetected})`);
+      }
+    }
+
+    // ── Normalization (min-max) ──
     const normalized: DataCleaningResult["normalized"] = [];
     if (opts.normalize) {
       for (const header of table.headers) {
@@ -9098,7 +9475,7 @@ except Exception as e:
       writeTable(worksheet, { headers: table.headers, rows: workingRows });
     }
 
-    // ── Quality Report ──
+    // ── Quality Report (0-100 scale) ──
     let totalCells = 0;
     let nonNullCells = 0;
     let validCells = 0;
@@ -9122,12 +9499,18 @@ except Exception as e:
       ? table.headers.reduce((acc, h) => acc + (allValueSets.get(h)?.size ?? 0) / Math.max(workingRows.length, 1), 0) / table.headers.length
       : 0;
 
+    const completeness100 = totalCells > 0 ? Math.round((nonNullCells / totalCells) * 10000) / 100 : 0;
+    const validity100 = totalCells > 0 ? Math.round((validCells / totalCells) * 10000) / 100 : 0;
+    const uniqueness100 = Math.round(totalUniqueRatio * 10000) / 100;
+    const qualityScore = Math.round((completeness100 + validity100 + uniqueness100) / 3);
+
     const qualityReport = {
       total_rows: workingRows.length,
       total_columns: table.headers.length,
-      completeness: totalCells > 0 ? Math.round((nonNullCells / totalCells) * 10000) / 10000 : 0,
-      validity: totalCells > 0 ? Math.round((validCells / totalCells) * 10000) / 10000 : 0,
-      uniqueness: Math.round(totalUniqueRatio * 10000) / 10000,
+      completeness: completeness100,
+      validity: validity100,
+      uniqueness: uniqueness100,
+      quality_score: qualityScore,
       issues
     };
 
@@ -9137,7 +9520,10 @@ except Exception as e:
       fuzzy_match_columns: fuzzyMatches.length,
       outlier_columns: outliers.length,
       imputed_columns: imputed.length,
-      normalized_columns: normalized.length
+      normalized_columns: normalized.length,
+      spelling_normalized_columns: spellingNormalized.length,
+      unit_normalized_columns: unitNormalized.length,
+      quality_score: qualityScore
     });
 
     return {
@@ -9146,7 +9532,9 @@ except Exception as e:
       outliers,
       imputed,
       normalized,
-      quality_report: qualityReport
+      quality_report: qualityReport,
+      spelling_normalized: spellingNormalized,
+      unit_normalized: unitNormalized
     };
   }
 
@@ -9294,36 +9682,62 @@ except Exception as e:
     return manifest.path;
   }
 
-  exportPdfReport(state: ExcelRunState, targetPath: string, actorRef: string): string {
+  exportPdfReport(state: ExcelRunState, targetPath: string, actorRef: string, options?: { arabicNumerals?: boolean }): string {
     const worksheets = state.workbook.worksheets.filter(
       (ws) => !ws.name.startsWith("__") && ws.state !== "veryHidden"
     );
+    const useArabicNumerals = options?.arabicNumerals ?? false;
+    const toAr = (text: string): string => {
+      if (!useArabicNumerals) return text;
+      return text.replace(/[0-9]/g, (d) => String.fromCharCode(0x0660 + parseInt(d, 10)));
+    };
+    const workbookName = state.workbookRecord.workbook_id ?? state.runId;
+    const totalRows = worksheets.reduce((acc, ws) => acc + extractTable(ws).rows.length, 0);
+    const totalCols = worksheets.reduce((acc, ws) => acc + extractTable(ws).headers.length, 0);
 
     let html = `<!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Excel Report — ${state.runId}</title>
+<title>Excel Report — ${workbookName}</title>
+@import url('https://fonts.googleapis.com/css2?family=Amiri&family=Noto+Naskh+Arabic&display=swap');
 <style>
-  body { font-family: 'Segoe UI', Arial, sans-serif; margin: 40px; color: #222; }
+  body { font-family: 'Amiri', 'Noto Naskh Arabic', 'Tahoma', sans-serif; margin: 40px; color: #222; direction: rtl; }
   h1 { color: #1a3a5c; border-bottom: 2px solid #1a3a5c; padding-bottom: 8px; }
   h2 { color: #2a5a8c; margin-top: 32px; }
-  table { border-collapse: collapse; width: 100%; margin-bottom: 24px; }
-  th { background: #e7f0f8; color: #17324d; padding: 8px 12px; border: 1px solid #b6c7d6; text-align: left; }
-  td { padding: 6px 12px; border: 1px solid #ddd; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 24px; direction: rtl; }
+  th { background: #e7f0f8; color: #17324d; padding: 8px 12px; border: 1px solid #b6c7d6; text-align: right; }
+  td { padding: 6px 12px; border: 1px solid #ddd; text-align: right; }
   tr:nth-child(even) td { background: #f9f9f9; }
   .meta { color: #666; font-size: 0.9em; margin-bottom: 24px; }
   .kpi-grid { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
   .kpi-card { background: #f0f6fc; border: 1px solid #c0d4e8; border-radius: 8px; padding: 16px; min-width: 180px; }
   .kpi-value { font-size: 1.6em; font-weight: bold; color: #1a3a5c; }
   .kpi-label { font-size: 0.85em; color: #666; }
+  .cover { text-align: center; padding: 60px 20px; border-bottom: 3px solid #1a3a5c; margin-bottom: 32px; }
+  .cover h1 { border: none; font-size: 2.2em; }
+  .cover .date { font-size: 1.1em; color: #555; margin-top: 12px; }
+  .summary-grid { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 32px; justify-content: center; }
+  .summary-card { background: #1a3a5c; color: #fff; border-radius: 10px; padding: 20px 28px; min-width: 160px; text-align: center; }
+  .summary-card .val { font-size: 2em; font-weight: bold; }
+  .summary-card .lbl { font-size: 0.85em; opacity: 0.85; margin-top: 4px; }
 </style>
 </head>
 <body>
+<div class="cover">
+  <h1>${toAr(workbookName)}</h1>
+  <div class="date">${toAr(ISO())}</div>
+  <div class="date">${toAr(`${worksheets.length}`)} sheets</div>
+</div>
+<div class="summary-grid">
+  <div class="summary-card"><div class="val">${toAr(`${worksheets.length}`)}</div><div class="lbl">Sheets</div></div>
+  <div class="summary-card"><div class="val">${toAr(`${totalRows}`)}</div><div class="lbl">Total Rows</div></div>
+  <div class="summary-card"><div class="val">${toAr(`${totalCols}`)}</div><div class="lbl">Total Columns</div></div>
+</div>
 <h1>Workbook Report</h1>
 <div class="meta">
-  <p>Run ID: ${state.runId} | Generated: ${ISO()}</p>
-  <p>Sheets: ${worksheets.length} | Actor: ${actorRef}</p>
+  <p>Run ID: ${toAr(state.runId)} | Generated: ${toAr(ISO())}</p>
+  <p>Sheets: ${toAr(`${worksheets.length}`)} | Actor: ${actorRef}</p>
 </div>
 `;
 
@@ -9332,7 +9746,7 @@ except Exception as e:
       if (table.headers.length === 0) continue;
 
       html += `<h2>${ws.name}</h2>\n`;
-      html += `<p>${table.rows.length} rows, ${table.headers.length} columns</p>\n`;
+      html += `<p>${toAr(`${table.rows.length}`)} rows, ${toAr(`${table.headers.length}`)} columns</p>\n`;
 
       // KPI cards for numeric columns
       const numericHeaders = table.headers.filter((h) => {
@@ -9346,7 +9760,7 @@ except Exception as e:
           const vals = table.rows.map((r) => r[h]).filter((v): v is number => typeof v === "number");
           const sum = vals.reduce((a, b) => a + b, 0);
           const avg = vals.length > 0 ? sum / vals.length : 0;
-          html += `<div class="kpi-card"><div class="kpi-label">${h}</div><div class="kpi-value">${Math.round(sum * 100) / 100}</div><div class="kpi-label">Avg: ${Math.round(avg * 100) / 100}</div></div>\n`;
+          html += `<div class="kpi-card"><div class="kpi-label">${h}</div><div class="kpi-value">${toAr(`${Math.round(sum * 100) / 100}`)}</div><div class="kpi-label">Avg: ${toAr(`${Math.round(avg * 100) / 100}`)}</div></div>\n`;
         }
         html += `</div>\n`;
       }
@@ -9359,12 +9773,12 @@ except Exception as e:
         html += `<tr>`;
         for (const h of table.headers) {
           const v = row[h];
-          html += `<td>${v !== null && v !== undefined ? v : ""}</td>`;
+          html += `<td>${v !== null && v !== undefined ? toAr(`${v}`) : ""}</td>`;
         }
         html += `</tr>\n`;
       }
       if (table.rows.length > 100) {
-        html += `<tr><td colspan="${table.headers.length}" style="text-align:center;color:#999;">... ${table.rows.length - 100} more rows ...</td></tr>\n`;
+        html += `<tr><td colspan="${table.headers.length}" style="text-align:center;color:#999;">... ${toAr(`${table.rows.length - 100}`)} more rows ...</td></tr>\n`;
       }
       html += `</tbody></table>\n`;
     }
@@ -9377,18 +9791,131 @@ except Exception as e:
 
     addAuditEvent(state, "excel_engine.export_pdf_report.v1", actorRef, [state.workbookRecord.workbook_id], {
       target_path: htmlPath,
-      sheet_count: worksheets.length
+      sheet_count: worksheets.length,
+      arabic_numerals: useArabicNumerals
     });
 
     return htmlPath;
   }
 
-  exportSlidesDeck(state: ExcelRunState, targetPath: string, actorRef: string): string {
-    // Generate a JSON-based slide deck (PPTX generation needs pptxgenjs which may not be available)
+  exportSlidesDeck(state: ExcelRunState, targetPath: string, actorRef: string, options?: { arabicNumerals?: boolean }): string {
     const worksheets = state.workbook.worksheets.filter(
       (ws) => !ws.name.startsWith("__") && ws.state !== "veryHidden"
     );
+    const useArabicNumerals = options?.arabicNumerals ?? false;
+    const toAr = (text: string): string => {
+      if (!useArabicNumerals) return text;
+      return text.replace(/[0-9]/g, (d) => String.fromCharCode(0x0660 + parseInt(d, 10)));
+    };
 
+    // Attempt real PPTX generation via PptxGenJS
+    let PptxGenJS: any = null;
+    try {
+      PptxGenJS = require("pptxgenjs");
+    } catch {
+      // PptxGenJS not available — fall through to JSON fallback
+    }
+
+    if (PptxGenJS) {
+      const pptx = new PptxGenJS();
+      pptx.layout = "LAYOUT_WIDE";
+      pptx.rtlMode = true;
+
+      // Cover slide
+      const coverSlide = pptx.addSlide();
+      coverSlide.addText(toAr("Workbook Analysis"), { x: 0.5, y: 1.5, w: "90%", h: 1.5, fontSize: 36, bold: true, color: "1a3a5c", align: "center", fontFace: "Amiri" });
+      coverSlide.addText(toAr(`Run: ${state.runId}`), { x: 0.5, y: 3.2, w: "90%", h: 0.6, fontSize: 16, color: "555555", align: "center", fontFace: "Amiri" });
+      coverSlide.addText(toAr(ISO()), { x: 0.5, y: 3.8, w: "90%", h: 0.5, fontSize: 14, color: "888888", align: "center", fontFace: "Amiri" });
+      coverSlide.addText(toAr(`${worksheets.length} sheets`), { x: 0.5, y: 4.3, w: "90%", h: 0.5, fontSize: 14, color: "888888", align: "center", fontFace: "Amiri" });
+
+      // Summary slide with KPIs
+      const summarySlide = pptx.addSlide();
+      summarySlide.addText(toAr("Summary"), { x: 0.5, y: 0.3, w: "90%", h: 0.8, fontSize: 28, bold: true, color: "1a3a5c", fontFace: "Amiri" });
+      const totalRows = worksheets.reduce((acc: number, ws: ExcelJS.Worksheet) => acc + extractTable(ws).rows.length, 0);
+      const totalCols = worksheets.reduce((acc: number, ws: ExcelJS.Worksheet) => acc + extractTable(ws).headers.length, 0);
+      const kpiData = [
+        ["Sheets", toAr(`${worksheets.length}`)],
+        ["Total Rows", toAr(`${totalRows}`)],
+        ["Total Columns", toAr(`${totalCols}`)]
+      ];
+      const kpiTableRows = kpiData.map(([label, val]) => [
+        { text: label, options: { bold: true, fontSize: 14, fontFace: "Amiri" } },
+        { text: val, options: { fontSize: 14, fontFace: "Amiri", align: "center" as const } }
+      ]);
+      summarySlide.addTable(kpiTableRows, { x: 1, y: 1.5, w: 8, colW: [4, 4], border: { pt: 1, color: "c0d4e8" }, rowH: 0.6 });
+
+      // Per-sheet slides
+      for (const ws of worksheets) {
+        const table = extractTable(ws);
+        if (table.headers.length === 0) continue;
+
+        const numericHeaders = table.headers.filter((h) => {
+          const vals = table.rows.map((r) => r[h]).filter((v): v is number => typeof v === "number");
+          return vals.length > table.rows.length * 0.3;
+        });
+
+        // KPI slide
+        if (numericHeaders.length > 0) {
+          const kpiSlide = pptx.addSlide();
+          kpiSlide.addText(toAr(`${ws.name} — Key Metrics`), { x: 0.5, y: 0.3, w: "90%", h: 0.7, fontSize: 24, bold: true, color: "1a3a5c", fontFace: "Amiri" });
+          const metricsRows: any[][] = [];
+          for (const h of numericHeaders.slice(0, 8)) {
+            const vals = table.rows.map((r) => r[h]).filter((v): v is number => typeof v === "number");
+            const sum = vals.reduce((a, b) => a + b, 0);
+            metricsRows.push([
+              { text: h, options: { bold: true, fontSize: 12, fontFace: "Amiri" } },
+              { text: toAr(`${Math.round(sum * 100) / 100}`), options: { fontSize: 12, fontFace: "Amiri" } },
+              { text: toAr(`${vals.length > 0 ? Math.round((sum / vals.length) * 100) / 100 : 0}`), options: { fontSize: 12, fontFace: "Amiri" } },
+              { text: toAr(`${vals.length}`), options: { fontSize: 12, fontFace: "Amiri" } }
+            ]);
+          }
+          const headerRow = [
+            { text: "Column", options: { bold: true, fontSize: 12, fill: { color: "e7f0f8" }, fontFace: "Amiri" } },
+            { text: "Sum", options: { bold: true, fontSize: 12, fill: { color: "e7f0f8" }, fontFace: "Amiri" } },
+            { text: "Avg", options: { bold: true, fontSize: 12, fill: { color: "e7f0f8" }, fontFace: "Amiri" } },
+            { text: "Count", options: { bold: true, fontSize: 12, fill: { color: "e7f0f8" }, fontFace: "Amiri" } }
+          ];
+          kpiSlide.addTable([headerRow, ...metricsRows], { x: 0.5, y: 1.2, w: 9, colW: [3, 2, 2, 2], border: { pt: 1, color: "c0d4e8" }, rowH: 0.45 });
+        }
+
+        // Data table slide
+        const dataSlide = pptx.addSlide();
+        dataSlide.addText(toAr(`${ws.name} — Data`), { x: 0.5, y: 0.3, w: "90%", h: 0.7, fontSize: 24, bold: true, color: "1a3a5c", fontFace: "Amiri" });
+        const dataHeaderRow = table.headers.map((h) => ({ text: h, options: { bold: true, fontSize: 10, fill: { color: "e7f0f8" }, fontFace: "Amiri" } }));
+        const dataRows = table.rows.slice(0, 8).map((r) =>
+          table.headers.map((h) => ({ text: toAr(`${r[h] ?? ""}`), options: { fontSize: 9, fontFace: "Amiri" } }))
+        );
+        const colW = table.headers.map(() => 9 / Math.max(table.headers.length, 1));
+        dataSlide.addTable([dataHeaderRow, ...dataRows], { x: 0.3, y: 1.2, w: 9.4, colW, border: { pt: 1, color: "dddddd" }, rowH: 0.4, autoPage: true });
+      }
+
+      const pptxPath = targetPath.replace(/\.(pptx|ppt|json)$/i, ".pptx");
+      ensureDir(path.dirname(pptxPath));
+      pptx.writeFile({ fileName: pptxPath }).catch(() => {
+        // Synchronous fallback — write buffer
+        try {
+          const buf = pptx.write({ outputType: "nodebuffer" });
+          if (buf && typeof buf.then === "function") {
+            buf.then((b: Buffer) => fs.writeFileSync(pptxPath, b));
+          } else if (Buffer.isBuffer(buf)) {
+            fs.writeFileSync(pptxPath, buf);
+          }
+        } catch {
+          // Silently handle — file may already be written
+        }
+      });
+
+      addAuditEvent(state, "excel_engine.export_slides.v1", actorRef, [state.workbookRecord.workbook_id], {
+        target_path: pptxPath,
+        format: "pptx",
+        slide_count: worksheets.length + 2,
+        arabic_numerals: useArabicNumerals
+      });
+
+      return pptxPath;
+    }
+
+    // Fallback: JSON-based slide deck when PptxGenJS is not available
     const slides: Array<{
       slide_number: number;
       title: string;
@@ -9399,11 +9926,11 @@ except Exception as e:
     // Title slide
     slides.push({
       slide_number: 1,
-      title: `Workbook Analysis`,
+      title: toAr(`Workbook Analysis`),
       content_type: "title",
       content: {
-        subtitle: `Run: ${state.runId}`,
-        date: ISO(),
+        subtitle: toAr(`Run: ${state.runId}`),
+        date: toAr(ISO()),
         sheet_count: worksheets.length
       }
     });
@@ -9421,7 +9948,7 @@ except Exception as e:
 
       slides.push({
         slide_number: slideNum++,
-        title: `${ws.name} — Overview`,
+        title: toAr(`${ws.name} — Overview`),
         content_type: "summary",
         content: {
           row_count: table.rows.length,
@@ -9447,7 +9974,7 @@ except Exception as e:
         }
         slides.push({
           slide_number: slideNum++,
-          title: `${ws.name} — Key Metrics`,
+          title: toAr(`${ws.name} — Key Metrics`),
           content_type: "kpi_grid",
           content: kpiContent
         });
@@ -9456,7 +9983,7 @@ except Exception as e:
       // Sample data slide
       slides.push({
         slide_number: slideNum++,
-        title: `${ws.name} — Sample Data`,
+        title: toAr(`${ws.name} — Sample Data`),
         content_type: "data_table",
         content: {
           headers: table.headers,
@@ -9480,46 +10007,72 @@ except Exception as e:
 
     addAuditEvent(state, "excel_engine.export_slides.v1", actorRef, [state.workbookRecord.workbook_id], {
       target_path: jsonPath,
-      slide_count: slides.length
+      format: "json_fallback",
+      slide_count: slides.length,
+      arabic_numerals: useArabicNumerals
     });
 
     return jsonPath;
   }
 
-  exportWebDashboard(state: ExcelRunState, targetPath: string, actorRef: string): string {
+  exportWebDashboard(state: ExcelRunState, targetPath: string, actorRef: string, options?: { arabicNumerals?: boolean }): string {
     const worksheets = state.workbook.worksheets.filter(
       (ws) => !ws.name.startsWith("__") && ws.state !== "veryHidden"
     );
+    const useArabicNumerals = options?.arabicNumerals ?? false;
+    const toAr = (text: string): string => {
+      if (!useArabicNumerals) return text;
+      return text.replace(/[0-9]/g, (d) => String.fromCharCode(0x0660 + parseInt(d, 10)));
+    };
+    const workbookName = state.workbookRecord.workbook_id ?? state.runId;
+    const totalRows = worksheets.reduce((acc, ws) => acc + extractTable(ws).rows.length, 0);
+    const totalCols = worksheets.reduce((acc, ws) => acc + extractTable(ws).headers.length, 0);
 
     let html = `<!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard — ${state.runId}</title>
+<title>Dashboard — ${workbookName}</title>
+@import url('https://fonts.googleapis.com/css2?family=Amiri&family=Noto+Naskh+Arabic&display=swap');
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f8; color: #222; }
+  body { font-family: 'Amiri', 'Noto Naskh Arabic', 'Tahoma', sans-serif; background: #f4f6f8; color: #222; direction: rtl; }
   .header { background: #1a3a5c; color: #fff; padding: 20px 40px; }
   .header h1 { font-size: 1.5em; }
   .header .meta { opacity: 0.7; font-size: 0.85em; margin-top: 4px; }
+  .cover { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #1a3a5c, #2a5a8c); color: #fff; }
+  .cover h1 { font-size: 2em; margin-bottom: 8px; }
+  .cover .sub { opacity: 0.8; font-size: 1em; }
+  .summary-strip { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; padding: 20px; background: #fff; border-bottom: 2px solid #e7f0f8; }
+  .summary-pill { background: #1a3a5c; color: #fff; border-radius: 20px; padding: 10px 24px; font-size: 1em; }
+  .summary-pill .val { font-weight: bold; font-size: 1.3em; }
   .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 32px; }
   .card { background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 20px; }
   .card h3 { color: #1a3a5c; margin-bottom: 12px; font-size: 1.1em; }
   .kpi-value { font-size: 2em; font-weight: bold; color: #2a5a8c; }
   .kpi-sub { font-size: 0.8em; color: #888; margin-top: 4px; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
-  th { background: #e7f0f8; padding: 8px; text-align: left; border-bottom: 2px solid #c0d4e8; }
-  td { padding: 6px 8px; border-bottom: 1px solid #eee; }
-  .section-title { font-size: 1.3em; color: #1a3a5c; margin: 24px 0 16px; border-left: 4px solid #2a5a8c; padding-left: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9em; direction: rtl; }
+  th { background: #e7f0f8; padding: 8px; text-align: right; border-bottom: 2px solid #c0d4e8; }
+  td { padding: 6px 8px; border-bottom: 1px solid #eee; text-align: right; }
+  .section-title { font-size: 1.3em; color: #1a3a5c; margin: 24px 0 16px; border-right: 4px solid #2a5a8c; padding-right: 12px; }
   .bar { height: 20px; background: #2a5a8c; border-radius: 3px; display: inline-block; }
 </style>
 </head>
 <body>
+<div class="cover">
+  <h1>${toAr(workbookName)}</h1>
+  <div class="sub">${toAr(ISO())}</div>
+</div>
+<div class="summary-strip">
+  <div class="summary-pill"><span class="val">${toAr(`${worksheets.length}`)}</span> Sheets</div>
+  <div class="summary-pill"><span class="val">${toAr(`${totalRows}`)}</span> Rows</div>
+  <div class="summary-pill"><span class="val">${toAr(`${totalCols}`)}</span> Columns</div>
+</div>
 <div class="header">
   <h1>Workbook Dashboard</h1>
-  <div class="meta">Run: ${state.runId} | Generated: ${ISO()} | Sheets: ${worksheets.length}</div>
+  <div class="meta">Run: ${toAr(state.runId)} | Generated: ${toAr(ISO())} | Sheets: ${toAr(`${worksheets.length}`)}</div>
 </div>
 <div class="container">
 `;
@@ -9545,8 +10098,8 @@ except Exception as e:
           const max = vals.length > 0 ? Math.max(...vals) : 0;
           html += `<div class="card">
   <h3>${h}</h3>
-  <div class="kpi-value">${Math.round(sum * 100) / 100}</div>
-  <div class="kpi-sub">Avg: ${Math.round(avg * 100) / 100} | Max: ${Math.round(max * 100) / 100} | Count: ${vals.length}</div>
+  <div class="kpi-value">${toAr(`${Math.round(sum * 100) / 100}`)}</div>
+  <div class="kpi-sub">Avg: ${toAr(`${Math.round(avg * 100) / 100}`)} | Max: ${toAr(`${Math.round(max * 100) / 100}`)} | Count: ${toAr(`${vals.length}`)}</div>
 </div>\n`;
         }
         html += `</div>\n`;
@@ -9569,22 +10122,22 @@ except Exception as e:
         html += `<div class="card"><h3>${numCol} by ${catCol}</h3><table>\n`;
         for (const [cat, val] of sorted) {
           const pct = maxVal > 0 ? (val / maxVal) * 100 : 0;
-          html += `<tr><td style="width:150px">${cat}</td><td><span class="bar" style="width:${pct}%">&nbsp;</span> ${Math.round(val * 100) / 100}</td></tr>\n`;
+          html += `<tr><td style="width:150px">${cat}</td><td><span class="bar" style="width:${pct}%">&nbsp;</span> ${toAr(`${Math.round(val * 100) / 100}`)}</td></tr>\n`;
         }
         html += `</table></div>\n`;
       }
 
       // Data table
-      html += `<div class="card"><h3>Data (${table.rows.length} rows)</h3>\n<div style="overflow-x:auto"><table>\n<thead><tr>`;
+      html += `<div class="card"><h3>Data (${toAr(`${table.rows.length}`)} rows)</h3>\n<div style="overflow-x:auto"><table>\n<thead><tr>`;
       for (const h of table.headers) html += `<th>${h}</th>`;
       html += `</tr></thead><tbody>\n`;
       for (const row of table.rows.slice(0, 50)) {
         html += `<tr>`;
-        for (const h of table.headers) html += `<td>${row[h] !== null && row[h] !== undefined ? row[h] : ""}</td>`;
+        for (const h of table.headers) html += `<td>${row[h] !== null && row[h] !== undefined ? toAr(`${row[h]}`) : ""}</td>`;
         html += `</tr>\n`;
       }
       if (table.rows.length > 50) {
-        html += `<tr><td colspan="${table.headers.length}" style="text-align:center;color:#999">... ${table.rows.length - 50} more rows</td></tr>\n`;
+        html += `<tr><td colspan="${table.headers.length}" style="text-align:center;color:#999">... ${toAr(`${table.rows.length - 50}`)} more rows</td></tr>\n`;
       }
       html += `</tbody></table></div></div>\n`;
     }
@@ -9597,7 +10150,8 @@ except Exception as e:
 
     addAuditEvent(state, "excel_engine.export_web_dashboard.v1", actorRef, [state.workbookRecord.workbook_id], {
       target_path: htmlPath,
-      sheet_count: worksheets.length
+      sheet_count: worksheets.length,
+      arabic_numerals: useArabicNumerals
     });
 
     return htmlPath;
@@ -9828,12 +10382,36 @@ except Exception as e:
       : state.workbook.worksheets.filter((ws) => !ws.name.startsWith("__") && ws.state !== "veryHidden");
 
     if (worksheets.length === 0) {
-      return { query, interpreted_as: "no_data", sql_equivalent: "", result_rows: [], result_columns: [] };
+      return { query, interpreted_as: "no_data", sql_equivalent: "", result_rows: [], result_columns: [], confidence: 0 };
+    }
+
+    // Arabic query normalization — detect Arabic text and translate common patterns
+    const isArabic = /[\u0600-\u06FF]/.test(query);
+    let normalizedQuery = query;
+    if (isArabic) {
+      const arabicMappings: Array<[RegExp, string]> = [
+        [/\b(مجموع|اجمالي|إجمالي)\b/g, "sum"],
+        [/\b(متوسط|معدل)\b/g, "average"],
+        [/\b(أكبر|أعلى|اقصى|أقصى)\b/g, "max"],
+        [/\b(أصغر|أقل|أدنى)\b/g, "min"],
+        [/\b(عدد|كم)\b/g, "count"],
+        [/\b(تجميع|حسب|لكل)\b/g, "group by"],
+        [/\b(أول|أعلى)\s+(\d+)/g, "top $2"],
+        [/\b(فلتر|تصفية|فقط|حيث)\b/g, "filter"],
+        [/\b(ترتيب|رتب)\b/g, "sort"],
+        [/\b(فريد|مميز|غير مكرر)\b/g, "distinct"],
+        [/\b(ربط|دمج)\b/g, "join"],
+        [/\b(و)\b/g, "and"],
+      ];
+      normalizedQuery = query;
+      for (const [pattern, replacement] of arabicMappings) {
+        normalizedQuery = normalizedQuery.replace(pattern, replacement);
+      }
     }
 
     const ws = worksheets[0];
     const table = extractTable(ws);
-    const queryLower = query.toLowerCase();
+    const queryLower = normalizedQuery.toLowerCase();
 
     // Parse NL query to identify operation and target columns
     const numericHeaders = table.headers.filter((h) => {
@@ -9975,6 +10553,104 @@ except Exception as e:
         resultRows = table.rows.slice(0, 10).map((r) => table.headers.map((h) => `${r[h] ?? ""}`));
         sqlEquivalent = `SELECT * FROM "${ws.name}" LIMIT 10`;
       }
+    } else if (/\b(distinct|unique|unique values)\b/i.test(normalizedQuery)) {
+      operation = "distinct";
+      const cols = mentionedColumns.length > 0 ? mentionedColumns : table.headers.slice(0, 1);
+      resultColumns = ["column", "distinct_values", "count"];
+      resultRows = [];
+      for (const c of cols) {
+        const uniqueVals = [...new Set(table.rows.map((r) => `${r[c] ?? ""}`).filter((v) => v !== ""))];
+        resultRows.push([c, uniqueVals.slice(0, 20).join(", "), `${uniqueVals.length}`]);
+      }
+      interpreted = `Find distinct values in ${cols.join(", ")}`;
+      sqlEquivalent = `SELECT DISTINCT ${cols.map((c) => `"${c}"`).join(", ")} FROM "${ws.name}"`;
+    } else if (/\b(join|merge)\b/i.test(normalizedQuery) && worksheets.length >= 2) {
+      operation = "join";
+      const ws2 = worksheets[1];
+      const table2 = extractTable(ws2);
+      const commonCols = table.headers.filter((h) => table2.headers.map((h2) => h2.toLowerCase()).includes(h.toLowerCase()));
+      if (commonCols.length > 0) {
+        const joinKey = commonCols[0];
+        const joinKey2 = table2.headers.find((h) => h.toLowerCase() === joinKey.toLowerCase()) ?? joinKey;
+        const allHeaders = [...table.headers, ...table2.headers.filter((h) => h.toLowerCase() !== joinKey.toLowerCase())];
+        resultColumns = allHeaders;
+        const lookup = new Map<string, Record<string, unknown>>();
+        for (const row of table2.rows) {
+          lookup.set(`${row[joinKey2] ?? ""}`, row);
+        }
+        resultRows = table.rows.slice(0, 50).map((r) => {
+          const key = `${r[joinKey] ?? ""}`;
+          const matched = lookup.get(key);
+          return allHeaders.map((h) => {
+            if (table.headers.includes(h)) return `${r[h] ?? ""}`;
+            return matched ? `${matched[h] ?? ""}` : "";
+          });
+        });
+        interpreted = `Join '${ws.name}' with '${ws2.name}' on '${joinKey}'`;
+        sqlEquivalent = `SELECT * FROM "${ws.name}" LEFT JOIN "${ws2.name}" ON "${ws.name}"."${joinKey}" = "${ws2.name}"."${joinKey2}"`;
+      } else {
+        interpreted = "No common columns found for join";
+        resultColumns = [];
+        resultRows = [];
+        sqlEquivalent = "";
+      }
+    } else if (/\b(sort|order|rank)\b/i.test(normalizedQuery)) {
+      operation = "sort_by";
+      const sortCol = mentionedColumns.length > 0 ? mentionedColumns[0] : numericHeaders[0] ?? table.headers[0];
+      const desc = /\b(desc|descending|highest|largest|most)\b/i.test(normalizedQuery);
+      if (sortCol) {
+        const sorted = [...table.rows].sort((a, b) => {
+          const va = a[sortCol];
+          const vb = b[sortCol];
+          if (typeof va === "number" && typeof vb === "number") return desc ? vb - va : va - vb;
+          return desc ? `${vb ?? ""}`.localeCompare(`${va ?? ""}`) : `${va ?? ""}`.localeCompare(`${vb ?? ""}`);
+        });
+        resultColumns = table.headers;
+        resultRows = sorted.slice(0, 20).map((r) => table.headers.map((h) => `${r[h] ?? ""}`));
+        interpreted = `Sort by '${sortCol}' ${desc ? "descending" : "ascending"}`;
+        sqlEquivalent = `SELECT * FROM "${ws.name}" ORDER BY "${sortCol}" ${desc ? "DESC" : "ASC"} LIMIT 20`;
+      } else {
+        interpreted = "Could not determine sort column";
+        resultColumns = table.headers;
+        resultRows = table.rows.slice(0, 10).map((r) => table.headers.map((h) => `${r[h] ?? ""}`));
+        sqlEquivalent = `SELECT * FROM "${ws.name}" LIMIT 10`;
+      }
+    } else if (/\bwhere\b.*\band\b/i.test(normalizedQuery)) {
+      operation = "where_and";
+      // Parse multiple conditions: where col1 = val1 and col2 > val2
+      const condPattern = /(\w+)\s*(=|>|<|>=|<=|!=|contains?)\s*['"]?([^'"&]+?)['"]?\s*(?:and|$)/gi;
+      const conditions: Array<{ col: string; op: string; val: string }> = [];
+      let match: RegExpExecArray | null;
+      while ((match = condPattern.exec(normalizedQuery)) !== null) {
+        const col = table.headers.find((h) => h.toLowerCase() === match![1].toLowerCase()) ?? table.headers.find((h) => h.toLowerCase().includes(match![1].toLowerCase()));
+        if (col) conditions.push({ col, op: match[2], val: match[3].trim() });
+      }
+      if (conditions.length > 0) {
+        const filtered = table.rows.filter((r) => {
+          return conditions.every((cond) => {
+            const cellVal = r[cond.col];
+            const cellStr = `${cellVal ?? ""}`.toLowerCase();
+            const targetStr = cond.val.toLowerCase();
+            if (cond.op === "=" || cond.op === "==") return cellStr === targetStr;
+            if (cond.op === "!=" || cond.op === "<>") return cellStr !== targetStr;
+            if (cond.op === ">" && typeof cellVal === "number") return cellVal > Number(cond.val);
+            if (cond.op === "<" && typeof cellVal === "number") return cellVal < Number(cond.val);
+            if (cond.op === ">=" && typeof cellVal === "number") return cellVal >= Number(cond.val);
+            if (cond.op === "<=" && typeof cellVal === "number") return cellVal <= Number(cond.val);
+            if (cond.op.startsWith("contain")) return cellStr.includes(targetStr);
+            return cellStr === targetStr;
+          });
+        });
+        resultColumns = table.headers;
+        resultRows = filtered.slice(0, 100).map((r) => table.headers.map((h) => `${r[h] ?? ""}`));
+        interpreted = `Filter rows where ${conditions.map((c) => `'${c.col}' ${c.op} '${c.val}'`).join(" AND ")}`;
+        sqlEquivalent = `SELECT * FROM "${ws.name}" WHERE ${conditions.map((c) => `"${c.col}" ${c.op} '${c.val}'`).join(" AND ")}`;
+      } else {
+        interpreted = "Could not parse filter conditions";
+        resultColumns = table.headers;
+        resultRows = table.rows.slice(0, 10).map((r) => table.headers.map((h) => `${r[h] ?? ""}`));
+        sqlEquivalent = `SELECT * FROM "${ws.name}" LIMIT 10`;
+      }
     } else {
       // Default: show sample data
       operation = "select";
@@ -9984,12 +10660,21 @@ except Exception as e:
       sqlEquivalent = `SELECT * FROM "${ws.name}" LIMIT 10`;
     }
 
+    // Compute confidence score based on how well the query matched
+    let confidence = 0.5; // base confidence
+    if (operation !== "select") confidence = 0.75; // recognized an operation
+    if (mentionedColumns.length > 0) confidence += 0.15; // found column references
+    if (resultRows.length > 0) confidence += 0.1; // has results
+    if (isArabic && operation !== "select") confidence = Math.max(confidence, 0.7); // Arabic recognition bonus
+    confidence = Math.min(1, Math.round(confidence * 100) / 100);
+
     return {
       query,
       interpreted_as: `${operation}: ${interpreted}`,
       sql_equivalent: sqlEquivalent,
       result_rows: resultRows,
-      result_columns: resultColumns
+      result_columns: resultColumns,
+      confidence
     };
   }
 
@@ -10139,7 +10824,128 @@ except Exception as e:
       }
     }
 
-    return { insights, anomalies };
+    // ── Sensitive column detection (by data value patterns) ──
+    const sensitiveColumns: AutoAnalysisResult["sensitive_columns"] = [];
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const phonePattern = /^[+]?\d[\d\s\-().]{6,}$/;
+    const ssnPattern = /^\d{3}-?\d{2}-?\d{4}$/;
+
+    for (const ws of worksheets) {
+      const table = extractTable(ws);
+      for (const header of table.headers) {
+        const sampleValues = table.rows.slice(0, 100).map((r) => `${r[header] ?? ""}`).filter((v) => v.length > 0);
+        if (sampleValues.length === 0) continue;
+
+        const emailCount = sampleValues.filter((v) => emailPattern.test(v)).length;
+        if (emailCount > sampleValues.length * 0.3) {
+          sensitiveColumns.push({ column: header, sheet: ws.name, pattern: "email", sample_count: emailCount });
+        }
+
+        const phoneCount = sampleValues.filter((v) => phonePattern.test(v)).length;
+        if (phoneCount > sampleValues.length * 0.3) {
+          sensitiveColumns.push({ column: header, sheet: ws.name, pattern: "phone", sample_count: phoneCount });
+        }
+
+        const ssnCount = sampleValues.filter((v) => ssnPattern.test(v)).length;
+        if (ssnCount > sampleValues.length * 0.3) {
+          sensitiveColumns.push({ column: header, sheet: ws.name, pattern: "ssn", sample_count: ssnCount });
+        }
+
+        // Check column name for sensitive patterns
+        const lowerHeader = header.toLowerCase();
+        if (["password", "secret", "token", "card", "cvv", "pin"].some((p) => lowerHeader.includes(p))) {
+          sensitiveColumns.push({ column: header, sheet: ws.name, pattern: "name_match", sample_count: sampleValues.length });
+        }
+      }
+    }
+
+    // ── Time dimension detection ──
+    const timeDimensions: AutoAnalysisResult["time_dimensions"] = [];
+    const dateNamePattern = /^(date|time|timestamp|created|updated|modified|born|expired|deadline|start|end|period|day|month|year)/i;
+
+    for (const ws of worksheets) {
+      const table = extractTable(ws);
+      for (const header of table.headers) {
+        let formatHint = "";
+        if (dateNamePattern.test(header)) {
+          formatHint = "column_name";
+        }
+        // Check values
+        const sampleVals = table.rows.slice(0, 30).map((r) => r[header]).filter((v) => v !== null && v !== undefined && v !== "");
+        const isoCount = sampleVals.filter((v) => /^\d{4}-\d{2}-\d{2}/.test(`${v}`)).length;
+        const slashCount = sampleVals.filter((v) => /^\d{1,2}[/]\d{1,2}[/]\d{2,4}/.test(`${v}`)).length;
+        const dateParseCount = sampleVals.filter((v) => { const s = `${v}`; return s.length > 6 && !isNaN(Date.parse(s)); }).length;
+
+        if (isoCount > sampleVals.length * 0.5) {
+          formatHint = "ISO_8601";
+        } else if (slashCount > sampleVals.length * 0.5) {
+          formatHint = "slash_delimited";
+        } else if (dateParseCount > sampleVals.length * 0.5 && !formatHint) {
+          formatHint = "parseable_date";
+        }
+
+        if (formatHint) {
+          timeDimensions.push({ column: header, sheet: ws.name, format_hint: formatHint });
+        }
+      }
+    }
+
+    // ── Entity key detection (high uniqueness columns as potential PKs) ──
+    const entityKeys: AutoAnalysisResult["entity_keys"] = [];
+    for (const ws of worksheets) {
+      const table = extractTable(ws);
+      if (table.rows.length < 2) continue;
+      for (const header of table.headers) {
+        const values = table.rows.map((r) => r[header]).filter((v) => v !== null && v !== undefined && v !== "");
+        const uniqueCount = new Set(values.map((v) => `${v}`)).size;
+        const uniquenessRatio = values.length > 0 ? uniqueCount / values.length : 0;
+        if (uniquenessRatio >= 0.95 && values.length >= 5) {
+          entityKeys.push({ column: header, sheet: ws.name, uniqueness_ratio: Math.round(uniquenessRatio * 1000) / 1000 });
+        }
+      }
+    }
+
+    // ── Executive summary generation ──
+    const totalSheets = worksheets.length;
+    const totalInsights = insights.length;
+    const totalAnomalies = anomalies.length;
+    const highSeverity = anomalies.filter((a) => a.severity === "high").length;
+    const trendInsights = insights.filter((i) => i.category === "trend");
+    const correlationInsights = insights.filter((i) => i.category === "correlation");
+
+    let executiveSummary = `Analysis of ${totalSheets} sheet(s) yielded ${totalInsights} insight(s) and ${totalAnomalies} anomaly(-ies).`;
+    if (highSeverity > 0) executiveSummary += ` ${highSeverity} high-severity anomaly(-ies) require attention.`;
+    if (trendInsights.length > 0) executiveSummary += ` ${trendInsights.length} trend(s) detected.`;
+    if (correlationInsights.length > 0) executiveSummary += ` ${correlationInsights.length} significant correlation(s) found.`;
+    if (sensitiveColumns.length > 0) executiveSummary += ` WARNING: ${sensitiveColumns.length} column(s) contain potentially sensitive data.`;
+    if (entityKeys.length > 0) executiveSummary += ` ${entityKeys.length} candidate primary key column(s) identified.`;
+    if (timeDimensions.length > 0) executiveSummary += ` ${timeDimensions.length} time-dimension column(s) available for temporal analysis.`;
+
+    // ── Proactive suggestions ──
+    const suggestions: string[] = [];
+    if (sensitiveColumns.length > 0) {
+      suggestions.push(`Consider masking or encrypting sensitive columns: ${sensitiveColumns.map((s) => `${s.sheet}.${s.column}`).join(", ")}`);
+    }
+    if (highSeverity > 0) {
+      suggestions.push(`Investigate ${highSeverity} high-severity anomaly(-ies) before publishing data`);
+    }
+    if (timeDimensions.length > 0 && trendInsights.length === 0) {
+      suggestions.push(`Time columns found but no trends detected — consider running predictive analysis on time-series data`);
+    }
+    if (entityKeys.length >= 2) {
+      suggestions.push(`Multiple candidate keys found — verify which should serve as primary key for joins`);
+    }
+    if (anomalies.filter((a) => a.description.includes("null ratio")).length > 0) {
+      suggestions.push(`Run data cleaning (imputation) to handle missing values before analysis`);
+    }
+    for (const corr of correlationInsights) {
+      suggestions.push(`Explore relationship: ${corr.description}`);
+    }
+    if (suggestions.length === 0) {
+      suggestions.push("Data quality looks good — consider building dashboards and charts for stakeholder review");
+    }
+
+    return { insights, anomalies, sensitive_columns: sensitiveColumns, time_dimensions: timeDimensions, entity_keys: entityKeys, executive_summary: executiveSummary, suggestions };
   }
 
   predictiveAnalysis(state: ExcelRunState, targetColumn: string, sheetName?: string): PredictiveResult {
@@ -10467,6 +11273,161 @@ except Exception as e:
       m_code: mLines.join("\n"),
       exportable_steps: exportableCount,
       non_exportable_steps: nonExportable
+    };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 10. Canvas Column Map
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  buildColumnMap(state: ExcelRunState): {
+    sheets: Array<{ name: string; columns: Array<{ name: string; type: string; sample: string[]; fingerprint: string }> }>;
+    similarity_pairs: Array<{ sheet_a: string; col_a: string; sheet_b: string; col_b: string; similarity: number; match_type: "exact" | "fuzzy" | "semantic" }>;
+    suggested_joins: Array<{ type: string; sheets: string[]; on_column: string; confidence: number }>;
+  } {
+    const worksheets = state.workbook.worksheets.filter(
+      (ws) => !ws.name.startsWith("__") && ws.state !== "veryHidden"
+    );
+
+    // Build per-sheet column metadata
+    const sheets: Array<{ name: string; columns: Array<{ name: string; type: string; sample: string[]; fingerprint: string }> }> = [];
+    const sheetColumnValues = new Map<string, Map<string, Set<string>>>();
+
+    for (const ws of worksheets) {
+      const table = extractTable(ws);
+      const columns: Array<{ name: string; type: string; sample: string[]; fingerprint: string }> = [];
+      const colValueSets = new Map<string, Set<string>>();
+
+      for (const header of table.headers) {
+        const values = table.rows.map((r) => r[header]);
+        const nonNull = values.filter((v) => v !== null && v !== undefined && v !== "");
+        const sample = nonNull.slice(0, 5).map((v) => `${v}`);
+
+        // Infer type
+        const numericCount = nonNull.filter((v) => typeof v === "number").length;
+        const type = numericCount > nonNull.length * 0.5 ? "numeric" : "text";
+
+        // Build fingerprint: sorted unique value hash for overlap comparison
+        const uniqueValues = new Set(nonNull.map((v) => `${v}`.toLowerCase().trim()));
+        const sortedVals = [...uniqueValues].sort().slice(0, 100);
+        const fingerprint = crypto.createHash("md5").update(sortedVals.join("|")).digest("hex").slice(0, 12);
+
+        colValueSets.set(header, uniqueValues);
+        columns.push({ name: header, type, sample, fingerprint });
+      }
+
+      sheetColumnValues.set(ws.name, colValueSets);
+      sheets.push({ name: ws.name, columns });
+    }
+
+    // Compare columns across sheets by name similarity AND value overlap
+    const similarityPairs: Array<{ sheet_a: string; col_a: string; sheet_b: string; col_b: string; similarity: number; match_type: "exact" | "fuzzy" | "semantic" }> = [];
+
+    for (let i = 0; i < sheets.length; i++) {
+      for (let j = i + 1; j < sheets.length; j++) {
+        const sheetA = sheets[i];
+        const sheetB = sheets[j];
+        const valuesA = sheetColumnValues.get(sheetA.name);
+        const valuesB = sheetColumnValues.get(sheetB.name);
+
+        for (const colA of sheetA.columns) {
+          for (const colB of sheetB.columns) {
+            // Name similarity
+            const nameSim = levenshteinSimilarity(colA.name.toLowerCase(), colB.name.toLowerCase());
+
+            // Value overlap (Jaccard similarity)
+            let valueSim = 0;
+            if (valuesA && valuesB) {
+              const setA = valuesA.get(colA.name);
+              const setB = valuesB.get(colB.name);
+              if (setA && setB && setA.size > 0 && setB.size > 0) {
+                let intersectionCount = 0;
+                for (const v of setA) {
+                  if (setB.has(v)) intersectionCount++;
+                }
+                const unionSize = setA.size + setB.size - intersectionCount;
+                valueSim = unionSize > 0 ? intersectionCount / unionSize : 0;
+              }
+            }
+
+            // Combined similarity: weighted average of name and value overlap
+            const combinedSim = nameSim * 0.5 + valueSim * 0.5;
+
+            if (nameSim === 1) {
+              similarityPairs.push({
+                sheet_a: sheetA.name, col_a: colA.name,
+                sheet_b: sheetB.name, col_b: colB.name,
+                similarity: 1,
+                match_type: "exact"
+              });
+            } else if (nameSim >= 0.7) {
+              similarityPairs.push({
+                sheet_a: sheetA.name, col_a: colA.name,
+                sheet_b: sheetB.name, col_b: colB.name,
+                similarity: Math.round(nameSim * 1000) / 1000,
+                match_type: "fuzzy"
+              });
+            } else if (valueSim >= 0.3 && nameSim < 0.7) {
+              // Semantic match: different names but overlapping values
+              similarityPairs.push({
+                sheet_a: sheetA.name, col_a: colA.name,
+                sheet_b: sheetB.name, col_b: colB.name,
+                similarity: Math.round(combinedSim * 1000) / 1000,
+                match_type: "semantic"
+              });
+            }
+          }
+        }
+      }
+    }
+
+    // Sort by similarity descending
+    similarityPairs.sort((a, b) => b.similarity - a.similarity);
+
+    // Suggest joins based on exact/fuzzy matches with high uniqueness
+    const suggestedJoins: Array<{ type: string; sheets: string[]; on_column: string; confidence: number }> = [];
+    const seenJoinPairs = new Set<string>();
+
+    for (const pair of similarityPairs) {
+      if (pair.similarity < 0.7) continue;
+      const pairKey = [pair.sheet_a, pair.sheet_b].sort().join("||");
+      if (seenJoinPairs.has(pairKey)) continue;
+
+      // Check if the column has high uniqueness in both sheets
+      const sheetAData = sheets.find((s) => s.name === pair.sheet_a);
+      const sheetBData = sheets.find((s) => s.name === pair.sheet_b);
+      if (!sheetAData || !sheetBData) continue;
+
+      const valsA = sheetColumnValues.get(pair.sheet_a)?.get(pair.col_a);
+      const valsB = sheetColumnValues.get(pair.sheet_b)?.get(pair.col_b);
+
+      const tableA = extractTable(state.workbook.getWorksheet(pair.sheet_a)!);
+      const tableB = extractTable(state.workbook.getWorksheet(pair.sheet_b)!);
+
+      const uniqueRatioA = valsA && tableA.rows.length > 0 ? valsA.size / tableA.rows.length : 0;
+      const uniqueRatioB = valsB && tableB.rows.length > 0 ? valsB.size / tableB.rows.length : 0;
+
+      if (uniqueRatioA >= 0.5 && uniqueRatioB >= 0.5) {
+        const confidence = Math.round(pair.similarity * Math.min(uniqueRatioA, uniqueRatioB) * 100) / 100;
+        if (confidence >= 0.3) {
+          suggestedJoins.push({
+            type: pair.match_type === "exact" ? "inner_join" : "left_join",
+            sheets: [pair.sheet_a, pair.sheet_b],
+            on_column: pair.col_a,
+            confidence
+          });
+          seenJoinPairs.add(pairKey);
+        }
+      }
+    }
+
+    // Sort joins by confidence descending
+    suggestedJoins.sort((a, b) => b.confidence - a.confidence);
+
+    return {
+      sheets,
+      similarity_pairs: similarityPairs.slice(0, 100),
+      suggested_joins: suggestedJoins
     };
   }
 }
