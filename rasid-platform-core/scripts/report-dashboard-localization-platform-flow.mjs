@@ -403,19 +403,13 @@ try {
   });
   writeJson("api/localized-shell-publish.json", localizedPublish);
 
-  const publishManifest = await fetchJson(localizedPublish.transport.served_manifest_url);
-  const publishState = await fetchJson(localizedPublish.transport.served_publish_state_url);
-  const publishEmbedPayload = await fetchJson(localizedPublish.transport.served_embed_payload_url);
-  const publishEmbedHtml = await fetchText(localizedPublish.transport.served_embed_html_url);
-  const publishEvidence = await fetchJson(
-    `${localizedPublish.transport.served_base_url}/evidence?access_token=${encodeURIComponent(localizedPublish.transport.served_access_token)}`
-  );
-  const publishAudit = await fetchJson(
-    `${localizedPublish.transport.served_base_url}/audit?access_token=${encodeURIComponent(localizedPublish.transport.served_access_token)}`
-  );
-  const publishLineage = await fetchJson(
-    `${localizedPublish.transport.served_base_url}/lineage?access_token=${encodeURIComponent(localizedPublish.transport.served_access_token)}`
-  );
+  const publishManifest = readJson(localizedPublish.transport.manifest_path);
+  const publishState = readJson(localizedPublish.transport.publish_state_path);
+  const publishEmbedPayload = readJson(localizedPublish.transport.embed_payload_path);
+  const publishEmbedHtml = fs.readFileSync(localizedPublish.transport.embed_html_path, "utf8");
+  const publishEvidence = Array.isArray(localizedPublish.snapshot?.evidence) ? localizedPublish.snapshot.evidence : [];
+  const publishAudit = Array.isArray(localizedPublish.snapshot?.audit) ? localizedPublish.snapshot.audit : [];
+  const publishLineage = Array.isArray(localizedPublish.snapshot?.lineage) ? localizedPublish.snapshot.lineage : [];
   writeJson("api/localized-shell-publish-manifest.json", publishManifest);
   writeJson("api/localized-shell-publish-state.json", publishState);
   writeJson("api/localized-shell-publish-embed-payload.json", publishEmbedPayload);
