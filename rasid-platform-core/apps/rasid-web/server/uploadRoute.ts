@@ -1,15 +1,9 @@
 /**
- * File Upload Route — uploads to S3 and registers with Central Engine
- * NO local storage, NO localDb, NO localAuth
- * Everything → S3 + Engine
+ * File Upload Route — registers files with Central Engine
  */
 import { Router } from "express";
 import multer from "multer";
 import { verifyToken } from "./engineAuth";
-// Storage stub — S3 not configured yet
-const storagePut = async (key: string, data: Buffer, contentType: string): Promise<{url: string}> => {
-  throw new Error('Storage not configured — file upload disabled');
-};
 import * as engine from "./platformConnector";
 
 // Use memory storage — files go to S3, not local disk
@@ -69,7 +63,7 @@ uploadRouter.use(async (req, res, next) => {
   next();
 });
 
-// Single file upload → S3 + Engine registration
+// Single file upload → Engine registration
 uploadRouter.post("/single", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
@@ -78,12 +72,6 @@ uploadRouter.post("/single", upload.single("file"), async (req, res) => {
     }
 
     const user = (req as any).user;
-    const randomSuffix = Math.random().toString(36).slice(2, 8);
-    const fileKey = `uploads/${user.sub || "anon"}/${Date.now()}-${randomSuffix}-${file.originalname}`;
-
-    // Upload to S3
-    const { url } = await storagePut(fileKey, file.buffer, file.mimetype);
-
     // Register with engine
     const engineResult = await engine.engineCreateFile({
       title: file.originalname,
@@ -106,7 +94,6 @@ uploadRouter.post("/single", upload.single("file"), async (req, res) => {
         status: "ready",
         icon: getIcon(file.mimetype),
         size: formatSize(file.size),
-        url,
         mimeType: file.mimetype,
       },
     });
@@ -116,7 +103,7 @@ uploadRouter.post("/single", upload.single("file"), async (req, res) => {
   }
 });
 
-// Multiple file upload → S3 + Engine registration
+// Multiple file upload → Engine registration
 uploadRouter.post("/multiple", upload.array("files", 10), async (req, res) => {
   try {
     const files = req.files as Express.Multer.File[];
@@ -128,12 +115,6 @@ uploadRouter.post("/multiple", upload.array("files", 10), async (req, res) => {
     const results = [];
 
     for (const file of files) {
-      const randomSuffix = Math.random().toString(36).slice(2, 8);
-      const fileKey = `uploads/${user.sub || "anon"}/${Date.now()}-${randomSuffix}-${file.originalname}`;
-
-      // Upload to S3
-      const { url } = await storagePut(fileKey, file.buffer, file.mimetype);
-
       // Register with engine
       const engineResult = await engine.engineCreateFile({
         title: file.originalname,
@@ -154,7 +135,6 @@ uploadRouter.post("/multiple", upload.array("files", 10), async (req, res) => {
         status: "ready",
         icon: getIcon(file.mimetype),
         size: formatSize(file.size),
-        url,
         mimeType: file.mimetype,
       });
     }

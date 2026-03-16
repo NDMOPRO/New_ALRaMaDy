@@ -5,7 +5,6 @@
 import { z } from "zod";
 import { publicProcedure, router } from "./_core/trpc";
 import { callAI, callVision, isAIAvailable, SYSTEM_PROMPTS, type ChatMessage, type VisionMessage } from "./openai";
-// DB imports removed — library elements not available without database
 
 // ─── Helper Functions ──────────────────────────────────────────
 function formatTime(seconds: number): string {
@@ -23,141 +22,12 @@ function formatDuration(seconds: number): string {
 // ─── Library Element Fetcher for AI Generation ──────────────────
 
 async function getLibraryElementsForGeneration(layoutTypes: string[]): Promise<string> {
-  try {
-    // Database removed — return empty until library engine is connected
-    return '';
-    
-    const elements = await db.select().from(slideElements).where(eq(slideElements.isActive, true)).orderBy(desc(slideElements.qualityRating));
-    if (elements.length === 0) return '';
-    
-    const categories = await db.select().from(elementCategories);
-    const rules = await db.select().from(elementUsageRules).where(eq(elementUsageRules.isActive, true));
-    
-    const layoutToCategoryMap: Record<string, string[]> = {
-      'title': ['cover_slide'],
-      'toc': ['section_divider'],
-      'executive-summary': ['kpi_card', 'infographic'],
-      'chart': ['horizontal_bars', 'circular_gauge'],
-      'table': ['data_table', 'authority_matrix'],
-      'infographic': ['infographic', 'card_grid', 'colored_pillars'],
-      'kpi': ['kpi_card', 'circular_gauge'],
-      'timeline': ['timeline', 'process_flow'],
-      'pillars': ['colored_pillars', 'card_grid'],
-      'matrix': ['risk_matrix', 'authority_matrix', 'classification_grid'],
-      'two-column': ['comparison', 'colored_pillars'],
-      'content': ['card_grid', 'infographic', 'scope_definition'],
-      'closing': ['closing_slide'],
-      'quote': ['infographic'],
-    };
-    
-    const relevantElements: { layout: string; elements: typeof elements }[] = [];
-    
-    for (const layout of Array.from(new Set(layoutTypes))) {
-      const categorySlugs = layoutToCategoryMap[layout] || [];
-      const matchingCatIds = categories
-        .filter(c => categorySlugs.includes(c.slug))
-        .map(c => c.id);
-      
-      const matching = elements.filter(el => 
-        el.categoryId && matchingCatIds.includes(el.categoryId)
-      ).slice(0, 3);
-      
-      if (matching.length > 0) {
-        relevantElements.push({ layout, elements: matching });
-      }
-    }
-    
-    if (relevantElements.length === 0) return '';
-    
-    let libraryContext = `\n\n=== عناصر مرجعية من عرض NDMO الاحترافي (60 شريحة) — يجب التقيد بها ===\n`;
-    libraryContext += `هذه العناصر مستخرجة من عرض تقديمي حكومي سعودي احترافي حقيقي. يجب أن تتبع نفس الأسلوب والعمق:\n\n`;
-    
-    for (const { layout, elements: elems } of relevantElements) {
-      libraryContext += `=== نماذج مرجعية لشرائح "${layout}" ===\n`;
-      for (const el of elems) {
-        const cat = categories.find(c => c.id === el.categoryId);
-        const elRules = rules.filter(r => r.elementId === el.id);
-        
-        libraryContext += `▸ ${el.name} (${cat?.nameAr || 'عام'})\n`;
-        // Include the FULL description as it contains rich structural info
-        if (el.description) {
-          libraryContext += `  الوصف الكامل: ${el.description}\n`;
-        }
-        if (elRules.length > 0) {
-          libraryContext += `  سياقات الاستخدام: ${elRules.map(r => `${r.triggerContext} (أولوية: ${r.priority})`).join(' | ')}\n`;
-        }
-        libraryContext += `\n`;
-      }
-    }
-    
-    libraryContext += `\n=== تعليمات إلزامية بناءً على المرجع ===\n`;
-    libraryContext += `1. قلّد بنية المحتوى من الأوصاف أعلاه — كل شريحة يجب أن تحتوي على نفس العمق والتفصيل\n`;
-    libraryContext += `2. استخدم أرقاماً ونسباً حقيقية واقعية (مثل: نسبة الامتثال 87.3%، عدد الجهات 156 جهة)\n`;
-    libraryContext += `3. كل بطاقة KPI يجب أن تحتوي: القيمة الحالية + المستهدف + نسبة التغيير + مقارنة بالربع السابق\n`;
-    libraryContext += `4. الجداول يجب أن تحتوي بيانات تفصيلية حقيقية وليست عامة\n`;
-    libraryContext += `5. الإنفوجرافيك يجب أن يحتوي أيقونات Material Design دقيقة ومناسبة للسياق\n`;
-    
-    return libraryContext;
-  } catch (e) {
-    console.error('Failed to fetch library elements:', e);
-    return '';
-  }
+  return '';
 }
 
 /* ─── Fetch HTML Templates for Generation ──────────────────────── */
 async function getHtmlTemplatesForLayouts(layoutTypes: string[]): Promise<Record<string, string>> {
-  try {
-    // Database removed — return empty until library engine is connected
-    return {};
-    
-    const elements = await db.select().from(slideElements)
-      .where(eq(slideElements.isActive, true))
-      .orderBy(desc(slideElements.qualityRating));
-    
-    if (elements.length === 0) return {};
-    
-    const categories = await db.select().from(elementCategories);
-    
-    const layoutToCategoryMap: Record<string, string[]> = {
-      'title': ['cover_slide'],
-      'toc': ['section_divider'],
-      'executive-summary': ['kpi_card', 'infographic'],
-      'chart': ['horizontal_bars', 'circular_gauge'],
-      'table': ['data_table', 'authority_matrix'],
-      'infographic': ['infographic', 'card_grid', 'colored_pillars'],
-      'kpi': ['kpi_card', 'circular_gauge'],
-      'timeline': ['timeline', 'process_flow'],
-      'pillars': ['colored_pillars', 'card_grid'],
-      'matrix': ['risk_matrix', 'authority_matrix', 'classification_grid'],
-      'two-column': ['comparison', 'colored_pillars'],
-      'content': ['card_grid', 'infographic', 'scope_definition'],
-      'closing': ['closing_slide'],
-      'quote': ['infographic'],
-    };
-    
-    const result: Record<string, string> = {};
-    
-    for (const layout of Array.from(new Set(layoutTypes))) {
-      const categorySlugs = layoutToCategoryMap[layout] || [];
-      const matchingCatIds = categories
-        .filter(c => categorySlugs.includes(c.slug))
-        .map(c => c.id);
-      
-      // Find the best matching element with an HTML template
-      const match = elements.find(el => 
-        el.htmlTemplate && el.categoryId && matchingCatIds.includes(el.categoryId)
-      );
-      
-      if (match && match.htmlTemplate) {
-        result[layout] = match.htmlTemplate;
-      }
-    }
-    
-    return result;
-  } catch (e) {
-    console.error('Failed to fetch HTML templates:', e);
-    return {};
-  }
+  return {};
 }
 
 /* ─── Customize HTML Template with AI Content ──────────────────── */
@@ -1473,59 +1343,18 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
       }
     }),
 
-  // ─── Upload file to S3 for processing ──────────────────────
-  uploadFile: publicProcedure
-    .input(z.object({
-      fileName: z.string(),
-      fileBase64: z.string(), // base64 encoded file content
-      contentType: z.string(),
-    }))
-    .mutation(async ({ input }) => {
-      // Storage removed — file upload not available without S3 config
-      throw new Error('File upload not available: storage not configured');
-    }),
-
   // ─── Extract text from any file via AI ─────────────────────
   extractFromFile: publicProcedure
     .input(z.object({
-      fileUrl: z.string().optional(),
       fileBase64: z.string().optional(),
       fileName: z.string(),
       fileType: z.enum(['pdf', 'audio', 'video', 'image', 'document', 'spreadsheet']),
       language: z.string().optional(),
     }))
     .mutation(async ({ input }) => {
-      // For audio/video: use Whisper transcription
+      // For audio/video: not supported without transcription engine
       if (input.fileType === 'audio' || input.fileType === 'video') {
-        if (!input.fileUrl) {
-          return { text: '', error: 'يجب رفع الملف أولاً للحصول على رابط' };
-        }
-        const { transcribeAudio } = await import('./_core/voiceTranscription');
-        const result = await transcribeAudio({
-          audioUrl: input.fileUrl,
-          language: input.language === 'auto' ? undefined : input.language,
-          prompt: input.language === 'ar' ? 'تفريغ صوتي باللغة العربية' : undefined,
-        });
-        if ('error' in result) {
-          return { text: '', error: result.error, code: result.code };
-        }
-        const segments = (result.segments || []).map((s: any) => ({
-          start: formatTime(s.start),
-          end: formatTime(s.end),
-          text: s.text?.trim() || '',
-        }));
-        return {
-          text: result.text,
-          language: result.language || 'unknown',
-          confidence: 96.5,
-          wordCount: result.text.split(/\s+/).filter(Boolean).length,
-          duration: result.duration ? formatDuration(result.duration) : undefined,
-          segments,
-          metadata: {
-            'مصدر التفريغ': 'Whisper API',
-            'اللغة المكتشفة': result.language || 'غير محدد',
-          },
-        };
+        return { text: '', error: 'تفريغ الصوت والفيديو غير متاح حالياً' };
       }
 
       // For images: use Vision API

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════
-   AI Presentation Creator — v3 (Manus/Banana-Pro Level)
+   AI Presentation Creator — v3
    
    3-Phase Generation Experience:
    Phase 1: Slides Outline — shows planned slides before generation
