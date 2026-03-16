@@ -13,6 +13,10 @@
   "dependencies": {
     "@rasid/capability-registry": "1.0.0",
     "@rasid/contracts": "1.0.0",
+    "crypto-js": "^4.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "uuid": "^10.0.0",
+    "winston": "^3.14.0",
     "zod": "^3.24.2"
   }
 }

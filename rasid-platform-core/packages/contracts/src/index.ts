@@ -24,3 +24,4 @@ export * from "./ai";
 export * from "./transcription";
 export * from "./governance";
 export * from "./registry";
+export * from "./seed-types";

@@ -14,6 +14,11 @@
     "@rasid/capability-registry": "1.0.0",
     "@rasid/contracts": "1.0.0",
     "@rasid/runtime": "1.0.0",
+    "chardet": "^2.0.0",
+    "pdfkit": "^0.15.0",
+    "pixelmatch": "^6.0.0",
+    "pngjs": "^7.0.0",
+    "sharp": "^0.33.0",
     "zod": "^3.24.2"
   }
 }
