@@ -2263,3 +2263,19 @@ Append-only.
 - Unresolved items:
   - SVG/PNG diagram exports were not generated because there is no renderer/export step wired in this repository
 - Next exact step: use the completed documentation package as the baseline for implementation, onboarding, and debugging
+
+- Timestamp: 2026-03-16T06:38:42.1597233+03:00
+- Phase: External architecture package copy
+- Scope: Save the generated architecture documentation package into `C:\777`
+- Files/Folders inspected:
+  - C:\ALRaMaDy\docs\
+  - C:\ALRaMaDy\docs\diagrams\
+  - C:\777\
+- Findings added:
+  - created or reused `C:\777\docs\`
+  - copied the architecture document set into `C:\777\docs\`
+  - copied the Mermaid diagrams into `C:\777\docs\diagrams\`
+  - verified the copied file inventory after completion
+- Unresolved items:
+  - none for the current external copy task
+- Next exact step: use `C:\777\docs\` as the saved external copy when needed

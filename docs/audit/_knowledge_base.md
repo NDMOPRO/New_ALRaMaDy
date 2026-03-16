@@ -1770,3 +1770,22 @@
     - `dataflows.mmd`
     - `database-erd.mmd`
   - the earlier C4 documents and supporting diagrams remain present as supplemental detail rather than being replaced
+
+- Date: 2026-03-16T06:38:42.1597233+03:00
+- External architecture package copy:
+  - a direct external copy of the architecture documentation package now exists under `C:\777\docs\`
+  - Mermaid diagram files were copied to `C:\777\docs\diagrams\`
+  - the copied document set includes:
+    - `system-overview.md`
+    - `c4-context.md`
+    - `c4-containers.md`
+    - `c4-components.md`
+    - `c4-code.md`
+    - `dataflows.md`
+    - `database.md`
+    - `apis.md`
+    - `infrastructure.md`
+    - `deployment.md`
+    - `security.md`
+    - `performance.md`
+  - the repository copies remain the source of truth

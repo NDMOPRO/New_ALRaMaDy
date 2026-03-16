@@ -8627,3 +8627,27 @@ export const startDashboardWebApp = (options?: DashboardWebServerOptions): { hos
   }
   return { host, port, base_url: `http://${host}:${port}`, storage_dir: storageDir, publication_base_url: publicationService.base_url };
 };
+
+export const stopDashboardWebApp = async (): Promise<void> => {
+  for (const socket of sockets) {
+    try {
+      socket.destroy();
+    } catch {
+      // best-effort shutdown
+    }
+  }
+  sockets.clear();
+  if (!server) {
+    return;
+  }
+  await new Promise<void>((resolve, reject) => {
+    server?.close((error) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve();
+    });
+  });
+  server = null;
+};

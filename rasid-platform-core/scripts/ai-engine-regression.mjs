@@ -164,21 +164,21 @@ try {
   const transcriptionPage = await browser.newPage({ viewport: { width: 1440, height: 1080 } });
   const presentationsPage = await browser.newPage({ viewport: { width: 1440, height: 1080 } });
 
-  await page.goto(`${baseUrl}/login`, { waitUntil: "networkidle" });
+  await page.goto(`${baseUrl}/login`, { waitUntil: "domcontentloaded" });
   await page.fill("#email", "admin");
   await page.fill("#password", "1500");
   await page.fill("#tenant", "tenant-dashboard-web");
   await page.click("#login");
-  await page.waitForURL(`${baseUrl}/data`);
+  await page.waitForURL(`${baseUrl}/data`, { timeout: 120000, waitUntil: "domcontentloaded" });
 
-  await transcriptionPage.goto(`${transcriptionBaseUrl}/login`, { waitUntil: "networkidle" });
+  await transcriptionPage.goto(`${transcriptionBaseUrl}/login`, { waitUntil: "domcontentloaded" });
   await transcriptionPage.fill('input[name="email"]', "admin");
   await transcriptionPage.fill('input[name="password"]', "1500");
   await transcriptionPage.fill('input[name="tenant_ref"]', "tenant-transcription-web");
   await transcriptionPage.click("button");
-  await transcriptionPage.waitForURL(`${transcriptionBaseUrl}/transcription`);
+  await transcriptionPage.waitForURL(`${transcriptionBaseUrl}/transcription`, { timeout: 120000, waitUntil: "domcontentloaded" });
 
-  await presentationsPage.goto(`${presentationsBaseUrl}/login`, { waitUntil: "networkidle" });
+  await presentationsPage.goto(`${presentationsBaseUrl}/login`, { waitUntil: "domcontentloaded" });
   await presentationsPage.fill('input[name="email"]', "admin");
   await presentationsPage.fill('input[name="password"]', "1500");
   await presentationsPage.fill('input[name="tenantRef"]', "tenant-dashboard-web");
