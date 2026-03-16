@@ -126,24 +126,24 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
   // ==================== AI Chat — Open AI Agent ====================
   // ─── Intent Detection ─── Detects what the user wants and routes to the right engine
   const detectIntent = (text: string): { intent: string; topic: string } => {
-    const t = text.toLowerCase();
+    const t = text;
     // Presentation / عرض
-    if (/\b(عرض|شرائح|سلايد|presentation|slides|pptx)\b/.test(t))
-      return { intent: 'presentation', topic: text.replace(/أنشئ|نفذ|اعمل|سوي|اصنع|لي|عرض تقديمي|عرض|عن/gi, '').trim() || text };
+    if (/عرض|شرائح|سلايد|بريزنتيشن|presentation|slides|pptx/i.test(t))
+      return { intent: 'presentation', topic: t.replace(/أنشئ|نفذ|اعمل|سوي|سو|اصنع|صمم|جهز|حضر|لي|عرض تقديمي|عرض|عن|بعنوان|حول|يتكلم|يتحدث/gi, '').trim() || t };
     // Report / تقرير
-    if (/\b(تقرير|report|تقارير)\b/.test(t))
-      return { intent: 'report', topic: text.replace(/أنشئ|نفذ|اعمل|سوي|اصنع|لي|تقرير|عن/gi, '').trim() || text };
+    if (/تقرير|تقارير|ريبورت|report/i.test(t))
+      return { intent: 'report', topic: t.replace(/أنشئ|نفذ|اعمل|سوي|سو|اصنع|صمم|جهز|حضر|لي|تقرير|عن|بعنوان|حول/gi, '').trim() || t };
     // Dashboard / لوحة
-    if (/\b(لوحة|داشبورد|مؤشر|dashboard|kpi)\b/.test(t))
-      return { intent: 'dashboard', topic: text.replace(/أنشئ|نفذ|اعمل|سوي|اصنع|لي|لوحة مؤشرات|لوحة|عن/gi, '').trim() || text };
+    if (/لوحة|داشبورد|مؤشر|مؤشرات|dashboard|kpi|احصائ/i.test(t))
+      return { intent: 'dashboard', topic: t.replace(/أنشئ|نفذ|اعمل|سوي|سو|اصنع|صمم|جهز|حضر|لي|لوحة مؤشرات|لوحة|عن|بعنوان|حول/gi, '').trim() || t };
     // Translation / ترجمة
-    if (/\b(ترجم|ترجمة|translate)\b/.test(t))
-      return { intent: 'translate', topic: text };
+    if (/ترجم|ترجمة|translate/i.test(t))
+      return { intent: 'translate', topic: t };
     // Summary / تلخيص
-    if (/\b(لخص|تلخيص|ملخص|summarize|summary)\b/.test(t))
-      return { intent: 'summarize', topic: text };
+    if (/لخص|تلخيص|ملخص|summarize|summary/i.test(t))
+      return { intent: 'summarize', topic: t };
     // Default — regular chat
-    return { intent: 'chat', topic: text };
+    return { intent: 'chat', topic: t };
   };
 
   const addAssistantMessage = useCallback((content: string, extras?: Partial<ChatMessage>) => {
@@ -364,9 +364,24 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
     doSend(text);
   }, [input, doSend]);
 
-  // Handle action button clicks — send as new message to AI
+  // Handle action button clicks — route to correct engine
   const handleActionClick = useCallback((action: { id: string; label: string }) => {
-    doSend(action.label);
+    // Direct engine triggers from action buttons
+    if (action.id === 'open-presentation' || action.id === 'presentation') {
+      doSend('أنشئ عرض تقديمي');
+    } else if (action.id === 'open-report' || action.id === 'report') {
+      doSend('أنشئ تقرير');
+    } else if (action.id === 'open-dashboard' || action.id === 'dashboard' || action.id === 'analyze') {
+      doSend('أنشئ لوحة مؤشرات');
+    } else if (action.id === 'new-presentation') {
+      doSend('أنشئ عرض تقديمي آخر');
+    } else if (action.id === 'new-report') {
+      doSend('أنشئ تقرير آخر');
+    } else if (action.id === 'new-dashboard') {
+      doSend('أنشئ لوحة مؤشرات أخرى');
+    } else {
+      doSend(action.label);
+    }
   }, [doSend]);
 
   // Handle new conversation
