@@ -2279,3 +2279,32 @@ Append-only.
 - Unresolved items:
   - none for the current external copy task
 - Next exact step: use `C:\777\docs\` as the saved external copy when needed
+
+- Timestamp: 2026-03-16T06:39:45.1180372+03:00
+- Phase: Designer integration guide and docs mirror
+- Scope: Create a complete designer-facing integration guide and save the current docs package into the requested external folder
+- Files/Folders inspected:
+  - C:\ALRaMaDy\docs\RASID_LITERAL_SERVICE_WIRING_GUIDE.md
+  - C:\ALRaMaDy\docs\RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md
+  - C:\ALRaMaDy\docs\system-overview.md
+  - C:\ALRaMaDy\rasid-platform-core\apps\rasid-web\client\src\App.tsx
+  - C:\ALRaMaDy\rasid-platform-core\apps\rasid-web\client\src\pages\Home.tsx
+  - C:\ALRaMaDy\rasid-platform-core\apps\rasid-web\client\src\pages\AdminPanel.tsx
+  - C:\ALRaMaDy\rasid-platform-core\apps\rasid-web\client\src\pages\SharedPresentation.tsx
+  - C:\ALRaMaDy\rasid-platform-core\apps\rasid-web\client\src\components\DataPanel.tsx
+  - C:\ALRaMaDy\rasid-platform-core\apps\rasid-web\client\src\components\StudioPanel.tsx
+  - C:\ALRaMaDy\rasid-platform-core\apps\rasid-web\client\src\components\WorkspaceView.tsx
+  - C:\ALRaMaDy\rasid-platform-core\apps\rasid-web\client\src\components\ShareDialog.tsx
+  - C:\ALRaMaDy\rasid-platform-core\apps\rasid-web\client\src\components\AnalyticsDialog.tsx
+  - C:\ALRaMaDy\rasid-platform-core\apps\rasid-web\server\routers.ts
+  - C:\ALRaMaDy\rasid-platform-core\apps\rasid-web\server\aiRouter.ts
+  - C:\ALRaMaDy\rasid-platform-core\apps\rasid-web\server\libraryRouter.ts
+  - C:\777\
+- Findings added:
+  - a complete designer-facing integration guide was written at `docs/RASID_DESIGNER_FULL_INTEGRATION_GUIDE.md`
+  - the guide maps routes, workspace tabs, dialogs, drawers, namespaces, procedures, engine ownership, and required surfaced records
+  - the current `docs/` tree was mirrored into `C:\777\docs`
+  - direct external quick-access copies exist for the designer guide and governing procedure-binding spec in `C:\777`
+- Unresolved items:
+  - future documentation updates will require re-syncing `C:\777\docs` if the external mirror must remain current
+- Next exact step: re-sync `C:\777\docs` after any later documentation changes

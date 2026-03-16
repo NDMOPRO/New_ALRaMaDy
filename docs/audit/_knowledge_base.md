@@ -1789,3 +1789,12 @@
     - `security.md`
     - `performance.md`
   - the repository copies remain the source of truth
+
+- Date: 2026-03-16T06:39:45.1180372+03:00
+- Designer integration guide package:
+  - a new designer-facing integration document now exists at `docs/RASID_DESIGNER_FULL_INTEGRATION_GUIDE.md`
+  - the guide consolidates route structure, workspace shells, dialogs/drawers, capability-to-engine mapping, service namespaces, and UI obligations for `artifact`, `job`, `evidence`, `audit`, `lineage`, and `publication`
+  - `C:\777\docs\` now also contains the designer guide alongside the existing architecture package copy
+  - direct external quick-access copies now exist at:
+    - `C:\777\RASID_DESIGNER_FULL_INTEGRATION_GUIDE.md`
+    - `C:\777\RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md`

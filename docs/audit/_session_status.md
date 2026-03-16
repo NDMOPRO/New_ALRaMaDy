@@ -1,9 +1,9 @@
 # Session Status
 
 - Session started: 2026-03-15T01:06:43+03:00
-- Current phase: `engineering_documentation_suite` finalize the repository-wide engineering documentation suite and checkpoint the resulting architecture inventory
-- Last completed checkpoint: The missing suite index, architecture guide, module breakdown, and testing/operations guide were written under `docs/`
-- Current scope: Keep the documentation suite complete and durable for the current repository so new engineers can understand the active monorepo, `apps/rasid-web`, and the engine/persistence/runtime split without prior context
+- Current phase: `designer_integration_guide_export` create the designer-facing full integration guide and preserve the complete docs package in the requested external folder
+- Last completed checkpoint: The designer integration guide was written under `docs/` and the current docs package was mirrored into `C:\777\docs`
+- Current scope: Keep the documentation suite complete and durable for engineering and design review, with the current package preserved both in-repo and in `C:\777`
 - Completed folders/files:
   - docs/audit/
   - docs/audit/phases/
@@ -29,6 +29,8 @@
   - docs/modules.md
   - docs/testing.md
   - docs/RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md
+  - docs/RASID_LITERAL_SERVICE_WIRING_GUIDE.md
+  - docs/RASID_DESIGNER_FULL_INTEGRATION_GUIDE.md
   - docs/diagrams/
   - docs/diagrams/system-context.mmd
   - docs/diagrams/container-architecture.mmd
@@ -41,13 +43,15 @@
   - docs/diagrams/database-erd.mmd
   - docs/diagrams/integration-map.mmd
   - C:\777\RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md
+  - C:\777\RASID_DESIGNER_FULL_INTEGRATION_GUIDE.md
+  - C:\777\docs\
   - rasid-platform-core/apps/contracts-cli/
   - rasid-platform-core/apps/rasid-web/
   - rasid-platform-core/packages/
   - rasid-platform-core/.github/workflows/shared-foundation.yml
   - rasid-platform-core/nixpacks.toml
 - Remaining scope:
-  - Verify that the updated docs set covers the requested architecture, module, API, data-flow, and operations sections together
+  - Refresh `C:\777\docs` if later in-repo documentation changes must be exported again
   - Keep the docs and audit trail in sync if the platform topology changes again
-- Next exact step: append the completed documentation-suite inventory to the log and create a new timestamped phase report for this documentation pass
-- Last update: 2026-03-16T06:24:16.0971530+03:00
+- Next exact step: use `docs/RASID_DESIGNER_FULL_INTEGRATION_GUIDE.md` together with the governing binding spec as the design baseline and re-sync `C:\777\docs` after future doc edits
+- Last update: 2026-03-16T06:39:45.1180372+03:00

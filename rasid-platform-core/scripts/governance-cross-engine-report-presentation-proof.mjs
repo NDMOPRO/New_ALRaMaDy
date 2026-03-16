@@ -29,22 +29,6 @@ const writeJson = (filePath, payload) => {
   fs.writeFileSync(filePath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
 };
 
-const allocatePort = () =>
-  new Promise((resolve, reject) => {
-    const server = net.createServer();
-    server.unref();
-    server.on("error", reject);
-    server.listen(0, host, () => {
-      const address = server.address();
-      if (!address || typeof address === "string") {
-        server.close(() => reject(new Error("failed to allocate port")));
-        return;
-      }
-      const { port } = address;
-      server.close((error) => (error ? reject(error) : resolve(port)));
-    });
-  });
-
 const requestJson = (port, targetPath, { method = "GET", headers = {}, body } = {}) =>
   new Promise((resolve, reject) => {
     const payload = body === undefined ? undefined : JSON.stringify(body);
@@ -142,8 +126,7 @@ const approveBoundary = async (api, approvalId, label) => {
 
 const { ReportEngine } = await import(pathToFileURL(path.join(root, "packages", "report-engine", "dist", "index.js")).href);
 
-const port = await allocatePort();
-const transportPort = await allocatePort();
+const port = 4310;
 const baseUrl = `http://${host}:${port}`;
 const suffix = Date.now();
 const tenantRef = `tenant-governance-report-presentation-${suffix}`;
@@ -205,10 +188,7 @@ const reportWorkflow = reportEngine.createReport({
 const server = spawn(process.execPath, ["apps/contracts-cli/dist/index.js", "dashboard-serve-web"], {
   cwd: root,
   env: {
-    ...process.env,
-    RASID_DASHBOARD_WEB_HOST: host,
-    RASID_DASHBOARD_WEB_PORT: String(port),
-    RASID_DASHBOARD_TRANSPORT_PORT: String(transportPort)
+    ...process.env
   },
   stdio: [
     "ignore",

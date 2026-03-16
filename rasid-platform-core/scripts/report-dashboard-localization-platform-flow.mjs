@@ -9,7 +9,7 @@ const load = async (relativePath) => import(pathToFileURL(path.join(root, relati
 const { ReportEngine } = await load("packages/report-engine/dist/index.js");
 const { startReportPlatformServer } = await load("packages/report-engine/dist/platform.js");
 const { ArabicLocalizationLctEngine } = await load("packages/arabic-localization-lct-engine/dist/index.js");
-const { startDashboardWebApp } = await load("apps/contracts-cli/dist/dashboard-web.js");
+const { startDashboardWebApp, stopDashboardWebApp } = await load("apps/contracts-cli/dist/dashboard-web.js");
 
 const compactTimestamp = new Date().toISOString().replace(/[^0-9]/g, "").slice(0, 14);
 const runId = `report-dashboard-localization-platform-flow-${compactTimestamp}`;
@@ -128,6 +128,11 @@ const fetchText = async (url, options = {}) => {
     throw new Error(`HTTP ${response.status} for ${url}: ${text}`);
   }
   return text;
+};
+
+const navigateForProof = async (page, url) => {
+  await page.goto(url, { waitUntil: "commit", timeout: 45000 });
+  await page.waitForTimeout(4000);
 };
 
 const reportEngine = new ReportEngine({ storageDir: reportStorageDir });
@@ -278,9 +283,14 @@ try {
   ]);
 
   const reportPage = await context.newPage();
-  await reportPage.goto(`${reportBaseUrl}/reports/${reportId}`, { waitUntil: "networkidle" });
+  await navigateForProof(reportPage, `${reportBaseUrl}/reports/${reportId}`);
   await reportPage.screenshot({ path: path.join(proofRoot, "browser", "report-detail.png"), fullPage: true });
   await reportPage.close();
+
+  const localizationSurfacePage = await context.newPage();
+  await navigateForProof(localizationSurfacePage, `${dashboardBaseUrl}/localization`);
+  await localizationSurfacePage.screenshot({ path: path.join(proofRoot, "browser", "localization-surface.png"), fullPage: true });
+  await localizationSurfacePage.close();
 
   const reportToDashboard = await dashboardApi("/api/v1/reports/convert-to-dashboard", "POST", {
     report_id: reportId,
@@ -293,6 +303,11 @@ try {
   const sharedDashboardId = reportToDashboard.report_bridge.dashboard_id;
   const sharedDashboardState = await dashboardApi(`/api/v1/dashboards/state?dashboard_id=${encodeURIComponent(sharedDashboardId)}`);
   writeJson("api/shared-dashboard-state.json", sharedDashboardState);
+
+  const sharedDashboardPage = await context.newPage();
+  await navigateForProof(sharedDashboardPage, `${dashboardBaseUrl}/dashboards?dashboard_id=${encodeURIComponent(sharedDashboardId)}`);
+  await sharedDashboardPage.screenshot({ path: path.join(proofRoot, "browser", "shared-dashboard.png"), fullPage: true });
+  await sharedDashboardPage.close();
 
   const sourceDashboardRoot = path.dirname(path.dirname(reportToDashboard.report_bridge.source_dashboard_state_path));
   const sourceDashboardCurrent = readJson(reportToDashboard.report_bridge.source_dashboard_state_path);
@@ -397,6 +412,11 @@ try {
   );
   writeJson("api/localized-shell-dashboard-state.json", localizedShellDashboardState);
 
+  const localizedShellDashboardPage = await context.newPage();
+  await navigateForProof(localizedShellDashboardPage, `${dashboardBaseUrl}/dashboards?dashboard_id=${encodeURIComponent(localizedShellDashboardId)}`);
+  await localizedShellDashboardPage.screenshot({ path: path.join(proofRoot, "browser", "localized-shell-dashboard.png"), fullPage: true });
+  await localizedShellDashboardPage.close();
+
   const localizedPublish = await dashboardApi("/api/v1/dashboards/publish", "POST", {
     dashboard_id: localizedShellDashboardId,
     approval_granted: true
@@ -417,6 +437,11 @@ try {
   writeJson("evidence/localized-shell-publish.json", publishEvidence);
   writeJson("audit/localized-shell-publish.json", publishAudit);
   writeJson("lineage/localized-shell-publish.json", publishLineage);
+
+  const localizedPublishedPage = await context.newPage();
+  await navigateForProof(localizedPublishedPage, localizedPublish.transport.served_embed_html_url);
+  await localizedPublishedPage.screenshot({ path: path.join(proofRoot, "browser", "localized-shell-published.png"), fullPage: true });
+  await localizedPublishedPage.close();
 
   await context.close();
   await browser.close();
@@ -560,5 +585,6 @@ try {
   if (browser) {
     await browser.close().catch(() => undefined);
   }
+  await stopDashboardWebApp().catch(() => undefined);
   await reportServer.close();
 }

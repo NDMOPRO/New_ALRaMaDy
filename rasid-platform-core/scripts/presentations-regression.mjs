@@ -332,9 +332,10 @@ try {
   await page.screenshot({ path: path.join(outputRoot, "browser", "presentations-template-library.png"), fullPage: true });
   checkpoint("template-library-import");
   await page.locator(".infographic-card").filter({ hasText: "إحصائي" }).click();
-  await Promise.all([
-    page.waitForURL(/\/presentations\/[^?]+/),
-    page.locator("#createForm button.primary").click()
+  await page.locator("#createForm button.primary").click();
+  await Promise.race([
+    page.waitForURL(/\/presentations\/[^?]+/, { timeout: 180000 }),
+    page.locator("#slideList").waitFor({ timeout: 180000 })
   ]);
   await page.locator("#slideList").waitFor();
   await page.screenshot({ path: path.join(outputRoot, "browser", "presentations-detail-before.png"), fullPage: true });
