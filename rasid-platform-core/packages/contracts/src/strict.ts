@@ -53,7 +53,7 @@ export const StrictSourceKindSchema = z.enum([
   "unknown"
 ]);
 
-export const StrictTargetKindSchema = z.enum(["docx", "pptx", "xlsx", "dashboard"]);
+export const StrictTargetKindSchema = z.enum(["docx", "pptx", "xlsx", "dashboard", "png", "pdf"]);
 export const StrictStageSchema = z.enum([
   "classify_source",
   "extract_source",

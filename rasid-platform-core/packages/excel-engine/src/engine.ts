@@ -4815,6 +4815,109 @@ const formattingTemplate = (templateName: FormattingRequest["template_name"]) =>
   return null;
 };
 
+// ─── Smart / Pro Mode Types ───────────────────────────────────────────────────
+type SmartKPI = { name: string; value: number | string; trend: "up" | "down" | "flat"; unit: string };
+type SmartSummaryTable = { headers: string[]; rows: string[][]; row_count: number };
+type SmartChartSuggestion = { chart_type: string; title: string; x_field: string; y_field: string; reason: string };
+type SmartDashboardSuggestion = { title: string; widget_refs: string[]; layout: string };
+type SmartReportSuggestion = { title: string; sections: string[]; data_refs: string[] };
+type SmartSlideSuggestion = { title: string; content_type: string; data_ref: string };
+type SmartAnalysisResult = {
+  kpis: SmartKPI[];
+  summary_table: SmartSummaryTable;
+  suggested_charts: SmartChartSuggestion[];
+  suggested_dashboards: SmartDashboardSuggestion[];
+  suggested_reports: SmartReportSuggestion[];
+  suggested_slides: SmartSlideSuggestion[];
+};
+
+// ─── Arrow / Parquet / Catalog / Semantic Graph Types ─────────────────────────
+type ArrowBuffer = { schema: Array<{ name: string; type: string }>; columns: Record<string, unknown[]>; row_count: number };
+type ParquetManifest = { path: string; schema: Array<{ name: string; type: string }>; row_count: number; created_at: string };
+type CatalogEntry = {
+  entry_id: string;
+  name: string;
+  type: string;
+  source_ref: string;
+  schema: Array<{ name: string; type: string }>;
+  row_count: number;
+  tags: string[];
+  created_at: string;
+};
+type SemanticGraphNode = { node_id: string; label: string; type: "entity" | "attribute" | "relationship"; refs: string[] };
+type SemanticGraph = { nodes: SemanticGraphNode[]; edges: Array<{ from: string; to: string; relation: string }> };
+
+// ─── Data Cleaning Types ──────────────────────────────────────────────────────
+type DataCleaningResult = {
+  deduplicated: { removed_count: number; duplicate_groups: Array<{ key: string; count: number }> };
+  fuzzy_matches: Array<{ column: string; pairs: Array<{ a: string; b: string; similarity: number }> }>;
+  outliers: Array<{ column: string; values: Array<{ row: number; value: number; z_score: number }> }>;
+  imputed: Array<{ column: string; strategy: string; filled_count: number }>;
+  normalized: Array<{ column: string; method: string; min: number; max: number }>;
+  quality_report: { total_rows: number; total_columns: number; completeness: number; validity: number; uniqueness: number; issues: string[] };
+};
+
+// ─── Diff Types ───────────────────────────────────────────────────────────────
+type DiffResult = {
+  diff_type: "file_vs_file" | "table_vs_table" | "column_vs_column" | "across_time";
+  added_rows: number;
+  removed_rows: number;
+  changed_cells: Array<{ row: number; col: string; old_value: string; new_value: string }>;
+  added_columns: string[];
+  removed_columns: string[];
+  summary: string;
+};
+
+// ─── Recipe Types ─────────────────────────────────────────────────────────────
+type Recipe = {
+  recipe_id: string;
+  name: string;
+  version: number;
+  steps: Array<{ action: string; params: Record<string, unknown> }>;
+  created_at: string;
+  updated_at: string;
+};
+
+// ─── AI for Excel Types ───────────────────────────────────────────────────────
+type NLQResult = { query: string; interpreted_as: string; sql_equivalent: string; result_rows: string[][]; result_columns: string[] };
+type AutoAnalysisResult = {
+  insights: Array<{ category: string; description: string; confidence: number; affected_columns: string[] }>;
+  anomalies: Array<{ column: string; description: string; severity: string }>;
+};
+type PredictiveResult = { column: string; predictions: Array<{ row: number; predicted_value: number; confidence: number }>; method: string; r_squared: number };
+type WhatIfResult = {
+  original: Record<string, string>;
+  modified: Record<string, string>;
+  impact: Array<{ metric: string; before: number; after: number; change_pct: number }>;
+};
+
+// ─── Levenshtein distance for fuzzy matching ──────────────────────────────────
+const levenshteinDistance = (a: string, b: string): number => {
+  const lenA = a.length;
+  const lenB = b.length;
+  if (lenA === 0) return lenB;
+  if (lenB === 0) return lenA;
+  const matrix: number[][] = Array.from({ length: lenA + 1 }, (_, i) =>
+    Array.from({ length: lenB + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0))
+  );
+  for (let i = 1; i <= lenA; i++) {
+    for (let j = 1; j <= lenB; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(matrix[i - 1][j] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j - 1] + cost);
+    }
+  }
+  return matrix[lenA][lenB];
+};
+
+const levenshteinSimilarity = (a: string, b: string): number => {
+  const maxLen = Math.max(a.length, b.length);
+  if (maxLen === 0) return 1;
+  return 1 - levenshteinDistance(a, b) / maxLen;
+};
+
+// ─── In-memory recipe store (per engine instance) ─────────────────────────────
+const globalRecipeStore: Recipe[] = [];
+
 export class ExcelEngine {
   async importWorkbook(input: ExcelImportRequest): Promise<ExcelRunState> {
     const request = ExcelImportRequestSchema.parse(input);
@@ -8070,6 +8173,2300 @@ export class ExcelEngine {
         lineage_path: lineagePath,
         artifacts_manifest_path: artifactsManifestPath
       }
+    };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 1. Smart Mode / Pro Mode
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  smartAnalyze(state: ExcelRunState, actorRef: string, mode: "smart" | "pro"): SmartAnalysisResult {
+    const kpis: SmartKPI[] = [];
+    const suggestedCharts: SmartChartSuggestion[] = [];
+    const suggestedDashboards: SmartDashboardSuggestion[] = [];
+    const suggestedReports: SmartReportSuggestion[] = [];
+    const suggestedSlides: SmartSlideSuggestion[] = [];
+
+    const worksheets = state.workbook.worksheets.filter(
+      (ws) => !ws.name.startsWith("__") && ws.state !== "veryHidden"
+    );
+
+    // Build summary table from first worksheet
+    const primarySheet = worksheets[0];
+    let summaryTable: SmartSummaryTable = { headers: [], rows: [], row_count: 0 };
+    if (primarySheet) {
+      const table = extractTable(primarySheet);
+      summaryTable = {
+        headers: table.headers,
+        rows: table.rows.slice(0, 50).map((row) =>
+          table.headers.map((h) => `${row[h] ?? ""}`)
+        ),
+        row_count: table.rows.length
+      };
+    }
+
+    // Analyze all worksheets for KPIs and chart suggestions
+    for (const ws of worksheets) {
+      const table = extractTable(ws);
+      if (table.headers.length === 0 || table.rows.length === 0) continue;
+
+      const numericColumns: string[] = [];
+      const categoricalColumns: string[] = [];
+
+      for (const header of table.headers) {
+        const values = table.rows.map((r) => r[header]).filter((v) => v !== null && v !== undefined && v !== "");
+        const numericValues = values.filter((v) => typeof v === "number");
+        if (numericValues.length > values.length * 0.5) {
+          numericColumns.push(header);
+        } else {
+          categoricalColumns.push(header);
+        }
+      }
+
+      // Compute KPIs for numeric columns
+      for (const col of numericColumns) {
+        const nums = table.rows
+          .map((r) => r[col])
+          .filter((v): v is number => typeof v === "number");
+        if (nums.length === 0) continue;
+        const sum = nums.reduce((a, b) => a + b, 0);
+        const avg = sum / nums.length;
+        const min = Math.min(...nums);
+        const max = Math.max(...nums);
+
+        // Determine trend by comparing first half vs second half
+        const mid = Math.floor(nums.length / 2);
+        const firstHalfAvg = mid > 0 ? nums.slice(0, mid).reduce((a, b) => a + b, 0) / mid : 0;
+        const secondHalfAvg = mid > 0 ? nums.slice(mid).reduce((a, b) => a + b, 0) / (nums.length - mid) : 0;
+        const trend: "up" | "down" | "flat" = secondHalfAvg > firstHalfAvg * 1.05 ? "up" : secondHalfAvg < firstHalfAvg * 0.95 ? "down" : "flat";
+
+        kpis.push({ name: `${col}_sum`, value: Math.round(sum * 100) / 100, trend, unit: "numeric" });
+        kpis.push({ name: `${col}_avg`, value: Math.round(avg * 100) / 100, trend, unit: "numeric" });
+        kpis.push({ name: `${col}_min`, value: min, trend: "flat", unit: "numeric" });
+        kpis.push({ name: `${col}_max`, value: max, trend: "flat", unit: "numeric" });
+        kpis.push({ name: `${col}_count`, value: nums.length, trend: "flat", unit: "count" });
+      }
+
+      // Suggest charts
+      if (categoricalColumns.length > 0 && numericColumns.length > 0) {
+        const catCol = categoricalColumns[0];
+        for (const numCol of numericColumns.slice(0, 3)) {
+          const uniqueCategories = new Set(table.rows.map((r) => `${r[catCol] ?? ""}`)).size;
+          if (uniqueCategories <= 12) {
+            suggestedCharts.push({
+              chart_type: "bar",
+              title: `${numCol} by ${catCol}`,
+              x_field: catCol,
+              y_field: numCol,
+              reason: `Categorical field '${catCol}' has ${uniqueCategories} unique values paired with numeric '${numCol}'`
+            });
+            suggestedCharts.push({
+              chart_type: "pie",
+              title: `${numCol} distribution by ${catCol}`,
+              x_field: catCol,
+              y_field: numCol,
+              reason: `Pie chart effective for ${uniqueCategories} categories in '${catCol}'`
+            });
+          } else {
+            suggestedCharts.push({
+              chart_type: "line",
+              title: `${numCol} trend over ${catCol}`,
+              x_field: catCol,
+              y_field: numCol,
+              reason: `Many unique values in '${catCol}' (${uniqueCategories}) — line chart recommended`
+            });
+          }
+        }
+      }
+
+      if (numericColumns.length >= 2) {
+        suggestedCharts.push({
+          chart_type: "combo",
+          title: `${numericColumns[0]} vs ${numericColumns[1]}`,
+          x_field: categoricalColumns[0] ?? numericColumns[0],
+          y_field: numericColumns[1],
+          reason: `Compare two numeric fields: '${numericColumns[0]}' and '${numericColumns[1]}'`
+        });
+      }
+
+      // Suggest dashboard
+      const widgetRefs = suggestedCharts.slice(0, 4).map((_, idx) => `widget-${ws.name}-${idx}`);
+      const layout = table.rows.length > 100 ? "grid-4x2" : table.rows.length > 20 ? "grid-2x2" : "single-column";
+      suggestedDashboards.push({
+        title: `${ws.name} Dashboard`,
+        widget_refs: widgetRefs,
+        layout
+      });
+    }
+
+    // Pro mode: suggest reports and slides
+    if (mode === "pro") {
+      for (const ws of worksheets) {
+        const table = extractTable(ws);
+        if (table.headers.length === 0) continue;
+        suggestedReports.push({
+          title: `${ws.name} Analytical Report`,
+          sections: ["Executive Summary", "Data Overview", "KPI Analysis", "Trends", "Recommendations"],
+          data_refs: table.headers.map((h) => `${ws.name}::${h}`)
+        });
+        suggestedSlides.push({
+          title: `${ws.name} — KPI Overview`,
+          content_type: "kpi_grid",
+          data_ref: `${ws.name}::kpis`
+        });
+        suggestedSlides.push({
+          title: `${ws.name} — Chart Summary`,
+          content_type: "chart_gallery",
+          data_ref: `${ws.name}::charts`
+        });
+        suggestedSlides.push({
+          title: `${ws.name} — Data Table`,
+          content_type: "summary_table",
+          data_ref: `${ws.name}::table`
+        });
+      }
+    }
+
+    addAuditEvent(state, "excel_engine.smart_analyze.v1", actorRef, [state.workbookRecord.workbook_id], {
+      mode,
+      kpi_count: kpis.length,
+      chart_suggestion_count: suggestedCharts.length
+    });
+
+    return {
+      kpis,
+      summary_table: summaryTable,
+      suggested_charts: suggestedCharts,
+      suggested_dashboards: suggestedDashboards,
+      suggested_reports: suggestedReports,
+      suggested_slides: suggestedSlides
+    };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 2. Universal Intake Enhancement
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  async importFromText(state: ExcelRunState, actorRef: string, content: string, fileName: string): Promise<ExcelRunState> {
+    // Detect delimiter: tab, pipe, or comma
+    const firstLine = content.split(/\r?\n/)[0] ?? "";
+    let delimiter = ",";
+    if (firstLine.includes("\t")) delimiter = "\t";
+    else if (firstLine.includes("|")) delimiter = "|";
+
+    const lines = content.trim().split(/\r?\n/);
+    if (lines.length === 0) return state;
+
+    const sheetName = fileName.replace(/\.[^.]+$/, "").replace(/[^A-Za-z0-9_ ]/g, "_").slice(0, 31) || "TextImport";
+    const worksheet = state.workbook.getWorksheet(sheetName) ?? state.workbook.addWorksheet(sheetName);
+
+    const headers = lines[0].split(delimiter).map((h) => h.trim().replace(/^"|"$/g, ""));
+    worksheet.columns = headers.map((h) => ({ header: h, key: h }));
+
+    for (let i = 1; i < lines.length; i++) {
+      const values = lines[i].split(delimiter).map((v) => v.trim().replace(/^"|"$/g, ""));
+      const row: Record<string, string | number | null> = {};
+      headers.forEach((h, idx) => {
+        const raw = values[idx] ?? "";
+        const num = Number(raw);
+        row[h] = raw === "" ? null : !isNaN(num) && raw !== "" ? num : raw;
+      });
+      worksheet.addRow(headers.map((h) => row[h]));
+    }
+
+    addAuditEvent(state, "excel_engine.import_text.v1", actorRef, [state.workbookRecord.workbook_id], {
+      file_name: fileName,
+      delimiter,
+      row_count: lines.length - 1,
+      column_count: headers.length
+    });
+    addLineage(state, fileName, state.workbookRecord.workbook_id, "excel_engine.import_text.v1");
+    return state;
+  }
+
+  async importFromPdfTables(state: ExcelRunState, actorRef: string, filePath: string): Promise<ExcelRunState> {
+    // Use Python PyMuPDF to extract tables from PDF
+    const pythonScript = `
+import sys, json
+try:
+    import fitz
+    doc = fitz.open(sys.argv[1])
+    tables = []
+    for page_num in range(len(doc)):
+        page = doc[page_num]
+        page_tables = page.find_tables()
+        for t in page_tables:
+            data = t.extract()
+            if len(data) > 1:
+                tables.append({"page": page_num + 1, "headers": data[0], "rows": data[1:]})
+    print(json.dumps(tables))
+except Exception as e:
+    print(json.dumps([{"error": str(e)}]))
+`;
+    const tmpScript = path.join(os.tmpdir(), `rasid_pdf_extract_${Date.now()}.py`);
+    fs.writeFileSync(tmpScript, pythonScript, "utf8");
+
+    let tables: Array<{ page?: number; headers?: string[]; rows?: string[][]; error?: string }> = [];
+    try {
+      const output = execFileSync("python", [tmpScript, filePath], {
+        encoding: "utf8",
+        timeout: 60000
+      });
+      tables = JSON.parse(output.trim()) as typeof tables;
+    } catch {
+      // If Python extraction fails, create empty sheet with error note
+      const ws = state.workbook.addWorksheet("PDF_Import_Error");
+      ws.getCell("A1").value = "PDF table extraction requires Python with PyMuPDF installed";
+      ws.getCell("A2").value = `Source file: ${filePath}`;
+      addAuditEvent(state, "excel_engine.import_pdf.v1", actorRef, [state.workbookRecord.workbook_id], {
+        file_path: filePath,
+        success: false,
+        reason: "Python/PyMuPDF not available"
+      });
+      return state;
+    } finally {
+      try { fs.unlinkSync(tmpScript); } catch { /* ignore */ }
+    }
+
+    let tableIndex = 0;
+    for (const entry of tables) {
+      if (entry.error || !entry.headers || !entry.rows) continue;
+      tableIndex++;
+      const sheetName = `PDF_P${entry.page ?? tableIndex}_T${tableIndex}`.slice(0, 31);
+      const ws = state.workbook.addWorksheet(uniqueWorksheetName(state.workbook, sheetName));
+      const headers = entry.headers.map((h, i) => (h && h.trim()) || `Column_${i + 1}`);
+      ws.columns = headers.map((h) => ({ header: h, key: h }));
+      for (const row of entry.rows) {
+        ws.addRow(row.map((v) => {
+          const num = Number(v);
+          return v === "" || v === null ? null : !isNaN(num) ? num : v;
+        }));
+      }
+    }
+
+    addAuditEvent(state, "excel_engine.import_pdf.v1", actorRef, [state.workbookRecord.workbook_id], {
+      file_path: filePath,
+      success: true,
+      table_count: tableIndex
+    });
+    addLineage(state, filePath, state.workbookRecord.workbook_id, "excel_engine.import_pdf.v1");
+    return state;
+  }
+
+  async importFromImageTables(state: ExcelRunState, actorRef: string, filePath: string): Promise<ExcelRunState> {
+    // Use Python PaddleOCR for table extraction from images
+    const pythonScript = `
+import sys, json
+try:
+    from paddleocr import PaddleOCR
+    ocr = PaddleOCR(use_angle_cls=True, lang='en', show_log=False)
+    result = ocr.ocr(sys.argv[1], cls=True)
+    lines = []
+    if result and result[0]:
+        entries = sorted(result[0], key=lambda x: (x[0][0][1], x[0][0][0]))
+        current_y = -1
+        current_line = []
+        for entry in entries:
+            box, (text, _conf) = entry[0], entry[1]
+            y = box[0][1]
+            if current_y < 0 or abs(y - current_y) > 15:
+                if current_line:
+                    lines.append(current_line)
+                current_line = [text]
+                current_y = y
+            else:
+                current_line.append(text)
+        if current_line:
+            lines.append(current_line)
+    print(json.dumps(lines))
+except Exception as e:
+    print(json.dumps([["error", str(e)]]))
+`;
+    const tmpScript = path.join(os.tmpdir(), `rasid_ocr_extract_${Date.now()}.py`);
+    fs.writeFileSync(tmpScript, pythonScript, "utf8");
+
+    let lines: string[][] = [];
+    try {
+      const output = execFileSync("python", [tmpScript, filePath], {
+        encoding: "utf8",
+        timeout: 120000
+      });
+      lines = JSON.parse(output.trim()) as string[][];
+    } catch {
+      const ws = state.workbook.addWorksheet("Image_Import_Error");
+      ws.getCell("A1").value = "Image table extraction requires Python with PaddleOCR installed";
+      ws.getCell("A2").value = `Source file: ${filePath}`;
+      addAuditEvent(state, "excel_engine.import_image.v1", actorRef, [state.workbookRecord.workbook_id], {
+        file_path: filePath,
+        success: false,
+        reason: "Python/PaddleOCR not available"
+      });
+      return state;
+    } finally {
+      try { fs.unlinkSync(tmpScript); } catch { /* ignore */ }
+    }
+
+    if (lines.length > 0) {
+      const sheetName = uniqueWorksheetName(state.workbook, "ImageTable");
+      const ws = state.workbook.addWorksheet(sheetName);
+      const maxCols = Math.max(...lines.map((l) => l.length));
+      const headers = lines[0].length > 0 ? lines[0].map((h, i) => h || `Column_${i + 1}`) : Array.from({ length: maxCols }, (_, i) => `Column_${i + 1}`);
+      ws.columns = headers.map((h) => ({ header: h, key: h }));
+      for (let i = 1; i < lines.length; i++) {
+        ws.addRow(lines[i].map((v) => {
+          const num = Number(v);
+          return v === "" ? null : !isNaN(num) ? num : v;
+        }));
+      }
+    }
+
+    addAuditEvent(state, "excel_engine.import_image.v1", actorRef, [state.workbookRecord.workbook_id], {
+      file_path: filePath,
+      success: true,
+      line_count: lines.length
+    });
+    addLineage(state, filePath, state.workbookRecord.workbook_id, "excel_engine.import_image.v1");
+    return state;
+  }
+
+  async importFromGoogleSheets(state: ExcelRunState, actorRef: string, spreadsheetId: string, oauthToken: string): Promise<ExcelRunState> {
+    // Use Google Sheets API v4 to read data
+    const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(spreadsheetId)}`;
+
+    // 1. Fetch spreadsheet metadata to get sheet names
+    const metaResponse = await fetch(`${baseUrl}?fields=sheets.properties`, {
+      headers: { Authorization: `Bearer ${oauthToken}` }
+    });
+    if (!metaResponse.ok) {
+      throw new Error(`Google Sheets API error: ${metaResponse.status} ${metaResponse.statusText}`);
+    }
+    const meta = (await metaResponse.json()) as { sheets: Array<{ properties: { title: string; sheetId: number } }> };
+
+    // 2. Fetch data for each sheet
+    for (const sheet of meta.sheets) {
+      const title = sheet.properties.title;
+      const dataResponse = await fetch(
+        `${baseUrl}/values/${encodeURIComponent(title)}?majorDimension=ROWS&valueRenderOption=UNFORMATTED_VALUE`,
+        { headers: { Authorization: `Bearer ${oauthToken}` } }
+      );
+      if (!dataResponse.ok) continue;
+      const data = (await dataResponse.json()) as { values?: unknown[][] };
+      const rows = data.values ?? [];
+      if (rows.length === 0) continue;
+
+      const sheetName = uniqueWorksheetName(state.workbook, title.slice(0, 31));
+      const ws = state.workbook.addWorksheet(sheetName);
+      const headerRow = rows[0].map((v, i) => (v != null && `${v}`.trim() !== "" ? `${v}` : `Column_${i + 1}`));
+      ws.columns = headerRow.map((h) => ({ header: h, key: h }));
+
+      for (let i = 1; i < rows.length; i++) {
+        ws.addRow(rows[i].map((v) => (v === undefined || v === null ? null : v)));
+      }
+    }
+
+    addAuditEvent(state, "excel_engine.import_google_sheets.v1", actorRef, [state.workbookRecord.workbook_id], {
+      spreadsheet_id: spreadsheetId,
+      sheet_count: meta.sheets.length
+    });
+    addLineage(state, `gsheets://${spreadsheetId}`, state.workbookRecord.workbook_id, "excel_engine.import_google_sheets.v1");
+    return state;
+  }
+
+  async importFromDatabase(state: ExcelRunState, actorRef: string, connectionString: string, query: string): Promise<ExcelRunState> {
+    // Generic database import — parse connection string to determine driver
+    // For a generic implementation, we use child_process to call a CLI or script
+    const pythonScript = `
+import sys, json
+conn_str = sys.argv[1]
+query = sys.argv[2]
+try:
+    if 'sqlite' in conn_str.lower() or conn_str.endswith('.db') or conn_str.endswith('.sqlite'):
+        import sqlite3
+        conn = sqlite3.connect(conn_str.replace('sqlite:///', '').replace('sqlite://', ''))
+        cursor = conn.execute(query)
+        columns = [desc[0] for desc in cursor.description] if cursor.description else []
+        rows = cursor.fetchall()
+        conn.close()
+        print(json.dumps({"columns": columns, "rows": [list(r) for r in rows]}))
+    elif 'postgresql' in conn_str.lower() or 'postgres' in conn_str.lower():
+        import psycopg2
+        conn = psycopg2.connect(conn_str)
+        cursor = conn.cursor()
+        cursor.execute(query)
+        columns = [desc[0] for desc in cursor.description] if cursor.description else []
+        rows = cursor.fetchall()
+        conn.close()
+        print(json.dumps({"columns": columns, "rows": [list(r) for r in rows]}, default=str))
+    elif 'mysql' in conn_str.lower():
+        import pymysql
+        parts = conn_str.replace('mysql://', '').split('@')
+        user_pass = parts[0].split(':')
+        host_db = parts[1].split('/')
+        conn = pymysql.connect(host=host_db[0], user=user_pass[0], password=user_pass[1] if len(user_pass)>1 else '', database=host_db[1] if len(host_db)>1 else '')
+        cursor = conn.cursor()
+        cursor.execute(query)
+        columns = [desc[0] for desc in cursor.description] if cursor.description else []
+        rows = cursor.fetchall()
+        conn.close()
+        print(json.dumps({"columns": columns, "rows": [list(r) for r in rows]}, default=str))
+    else:
+        print(json.dumps({"error": "Unsupported database driver. Use sqlite, postgresql, or mysql connection strings."}))
+except Exception as e:
+    print(json.dumps({"error": str(e)}))
+`;
+    const tmpScript = path.join(os.tmpdir(), `rasid_db_query_${Date.now()}.py`);
+    fs.writeFileSync(tmpScript, pythonScript, "utf8");
+
+    let result: { columns?: string[]; rows?: unknown[][]; error?: string } = {};
+    try {
+      const output = execFileSync("python", [tmpScript, connectionString, query], {
+        encoding: "utf8",
+        timeout: 60000
+      });
+      result = JSON.parse(output.trim()) as typeof result;
+    } catch (err) {
+      result = { error: err instanceof Error ? err.message : `${err}` };
+    } finally {
+      try { fs.unlinkSync(tmpScript); } catch { /* ignore */ }
+    }
+
+    if (result.error || !result.columns || !result.rows) {
+      const ws = state.workbook.addWorksheet(uniqueWorksheetName(state.workbook, "DB_Import_Error"));
+      ws.getCell("A1").value = `Database import failed: ${result.error ?? "unknown error"}`;
+      ws.getCell("A2").value = `Connection: ${connectionString.replace(/:[^@]+@/, ":***@")}`;
+      ws.getCell("A3").value = `Query: ${query}`;
+    } else {
+      const sheetName = uniqueWorksheetName(state.workbook, "DB_Query_Result");
+      const ws = state.workbook.addWorksheet(sheetName);
+      ws.columns = result.columns.map((h) => ({ header: h, key: h }));
+      for (const row of result.rows) {
+        ws.addRow(row.map((v) => (v === null || v === undefined ? null : typeof v === "object" ? JSON.stringify(v) : v)));
+      }
+    }
+
+    addAuditEvent(state, "excel_engine.import_database.v1", actorRef, [state.workbookRecord.workbook_id], {
+      connection: connectionString.replace(/:[^@]+@/, ":***@"),
+      query,
+      row_count: result.rows?.length ?? 0
+    });
+    addLineage(state, `db://${connectionString.replace(/:[^@]+@/, ":***@")}`, state.workbookRecord.workbook_id, "excel_engine.import_database.v1");
+    return state;
+  }
+
+  async importFromZip(state: ExcelRunState, actorRef: string, filePath: string): Promise<ExcelRunState> {
+    const zipData = fs.readFileSync(filePath);
+    const zip = await JSZip.loadAsync(zipData);
+    const fileEntries = Object.entries(zip.files).filter(([, f]) => !f.dir);
+    const importedFiles: string[] = [];
+
+    for (const [name, file] of fileEntries) {
+      const ext = path.extname(name).toLowerCase();
+      const content = await file.async("nodebuffer");
+
+      if (ext === ".csv" || ext === ".tsv" || ext === ".txt") {
+        const text = content.toString("utf8");
+        await this.importFromText(state, actorRef, text, path.basename(name));
+        importedFiles.push(name);
+      } else if (ext === ".xlsx" || ext === ".xls" || ext === ".xlsm") {
+        // Import Excel file from zip into new worksheets
+        const tmpPath = path.join(os.tmpdir(), `rasid_zip_${Date.now()}_${path.basename(name)}`);
+        fs.writeFileSync(tmpPath, content);
+        try {
+          const tempWorkbook = new ExcelJS.Workbook();
+          if (ext === ".xls") {
+            const xlsWorkbook = XLSX.read(content, { cellDates: true, dense: false });
+            const tempWb = excelJsWorkbookFromXlsxWorkbook(xlsWorkbook);
+            for (const ws of tempWb.worksheets) {
+              copyWorksheetIntoWorkbook(state.workbook, ws, uniqueWorksheetName(state.workbook, ws.name), "merge");
+            }
+          } else {
+            await tempWorkbook.xlsx.readFile(tmpPath);
+            for (const ws of tempWorkbook.worksheets) {
+              copyWorksheetIntoWorkbook(state.workbook, ws, uniqueWorksheetName(state.workbook, ws.name), "merge");
+            }
+          }
+          importedFiles.push(name);
+        } finally {
+          try { fs.unlinkSync(tmpPath); } catch { /* ignore */ }
+        }
+      } else if (ext === ".json") {
+        try {
+          const jsonData = JSON.parse(content.toString("utf8")) as unknown;
+          const sheetName = uniqueWorksheetName(state.workbook, path.basename(name, ext).slice(0, 31));
+          const ws = state.workbook.addWorksheet(sheetName);
+          const arr = Array.isArray(jsonData) ? jsonData : [jsonData];
+          if (arr.length > 0 && typeof arr[0] === "object" && arr[0] !== null) {
+            const headers = Object.keys(arr[0] as Record<string, unknown>);
+            ws.columns = headers.map((h) => ({ header: h, key: h }));
+            for (const item of arr) {
+              const rec = item as Record<string, unknown>;
+              ws.addRow(headers.map((h) => {
+                const v = rec[h];
+                return v === null || v === undefined ? null : typeof v === "object" ? JSON.stringify(v) : v;
+              }));
+            }
+          }
+          importedFiles.push(name);
+        } catch { /* skip invalid JSON */ }
+      }
+    }
+
+    addAuditEvent(state, "excel_engine.import_zip.v1", actorRef, [state.workbookRecord.workbook_id], {
+      file_path: filePath,
+      total_files: fileEntries.length,
+      imported_files: importedFiles.length
+    });
+    addLineage(state, filePath, state.workbookRecord.workbook_id, "excel_engine.import_zip.v1");
+    return state;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 3. Arrow / Parquet / Catalog / Semantic Graph
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  toArrowBuffer(state: ExcelRunState, sheetName: string): ArrowBuffer {
+    const worksheet = state.workbook.getWorksheet(sheetName);
+    if (!worksheet) throw new Error(`Worksheet '${sheetName}' not found`);
+    const table = extractTable(worksheet);
+    const schema: Array<{ name: string; type: string }> = [];
+    const columns: Record<string, unknown[]> = {};
+
+    for (const header of table.headers) {
+      const values = table.rows.map((r) => r[header]);
+      const colType = inferColumnType(values);
+      schema.push({ name: header, type: colType });
+      columns[header] = values.map((v) => (v === undefined ? null : v));
+    }
+
+    return { schema, columns, row_count: table.rows.length };
+  }
+
+  exportParquet(state: ExcelRunState, sheetName: string, targetPath: string): ParquetManifest {
+    const arrow = this.toArrowBuffer(state, sheetName);
+    // Write a JSON-based Parquet-like file (actual Parquet requires native bindings)
+    const parquetPayload = {
+      format: "parquet-json-compat",
+      version: "1.0.0",
+      schema: arrow.schema,
+      row_count: arrow.row_count,
+      row_groups: [{
+        row_count: arrow.row_count,
+        columns: Object.entries(arrow.columns).map(([name, values]) => ({
+          column_name: name,
+          encoding: "plain",
+          compression: "none",
+          values
+        }))
+      }]
+    };
+
+    ensureDir(path.dirname(targetPath));
+    fs.writeFileSync(targetPath, JSON.stringify(parquetPayload, null, 2), "utf8");
+
+    return {
+      path: targetPath,
+      schema: arrow.schema,
+      row_count: arrow.row_count,
+      created_at: ISO()
+    };
+  }
+
+  buildCatalog(state: ExcelRunState): CatalogEntry[] {
+    const catalog: CatalogEntry[] = [];
+    const worksheets = state.workbook.worksheets.filter(
+      (ws) => !ws.name.startsWith("__") && ws.state !== "veryHidden"
+    );
+
+    for (const ws of worksheets) {
+      const table = extractTable(ws);
+      if (table.headers.length === 0) continue;
+
+      const schemaEntries: Array<{ name: string; type: string }> = [];
+      for (const header of table.headers) {
+        const values = table.rows.map((r) => r[header]);
+        schemaEntries.push({ name: header, type: inferColumnType(values) });
+      }
+
+      const tags: string[] = [];
+      // Auto-tag based on column names and content
+      for (const header of table.headers) {
+        const lower = header.toLowerCase();
+        if (lower.includes("date") || lower.includes("time")) tags.push("temporal");
+        if (lower.includes("amount") || lower.includes("price") || lower.includes("cost") || lower.includes("revenue")) tags.push("financial");
+        if (lower.includes("name") || lower.includes("email") || lower.includes("phone")) tags.push("pii");
+        if (lower.includes("id") || lower.includes("key") || lower.includes("ref")) tags.push("identifier");
+      }
+
+      catalog.push({
+        entry_id: id("catalog", state.runId, safeSheetName(ws.name)),
+        name: ws.name,
+        type: "worksheet",
+        source_ref: state.workbookRecord.workbook_id,
+        schema: schemaEntries,
+        row_count: table.rows.length,
+        tags: [...new Set(tags)],
+        created_at: ISO()
+      });
+    }
+
+    return catalog;
+  }
+
+  buildSemanticGraph(state: ExcelRunState): SemanticGraph {
+    const nodes: SemanticGraphNode[] = [];
+    const edges: Array<{ from: string; to: string; relation: string }> = [];
+    const worksheets = state.workbook.worksheets.filter(
+      (ws) => !ws.name.startsWith("__") && ws.state !== "veryHidden"
+    );
+
+    // Track all column names per sheet for FK detection
+    const sheetColumns: Map<string, { headers: string[]; uniqueSets: Map<string, Set<string>> }> = new Map();
+
+    for (const ws of worksheets) {
+      const table = extractTable(ws);
+      if (table.headers.length === 0) continue;
+
+      // Create entity node for the worksheet
+      const entityNodeId = id("node", "entity", safeSheetName(ws.name));
+      nodes.push({
+        node_id: entityNodeId,
+        label: ws.name,
+        type: "entity",
+        refs: [ws.name]
+      });
+
+      const uniqueSets = new Map<string, Set<string>>();
+      for (const header of table.headers) {
+        // Create attribute node for each column
+        const attrNodeId = id("node", "attr", safeSheetName(ws.name), header.replace(/[^A-Za-z0-9_]/g, "_"));
+        const values = table.rows.map((r) => r[header]);
+        const colType = inferColumnType(values);
+        nodes.push({
+          node_id: attrNodeId,
+          label: header,
+          type: "attribute",
+          refs: [`${ws.name}::${header}`, colType]
+        });
+        edges.push({ from: entityNodeId, to: attrNodeId, relation: "has_attribute" });
+
+        // Collect unique values for FK detection
+        const uniqueVals = new Set<string>();
+        for (const v of values) {
+          if (v !== null && v !== undefined && v !== "") uniqueVals.add(`${v}`);
+        }
+        uniqueSets.set(header, uniqueVals);
+      }
+      sheetColumns.set(ws.name, { headers: table.headers, uniqueSets });
+    }
+
+    // Detect potential foreign key relationships
+    const sheetEntries = [...sheetColumns.entries()];
+    for (let i = 0; i < sheetEntries.length; i++) {
+      for (let j = 0; j < sheetEntries.length; j++) {
+        if (i === j) continue;
+        const [sheetA, dataA] = sheetEntries[i];
+        const [sheetB, dataB] = sheetEntries[j];
+
+        for (const colA of dataA.headers) {
+          const colALower = colA.toLowerCase();
+          if (!colALower.includes("id") && !colALower.includes("key") && !colALower.includes("ref")) continue;
+
+          const valsA = dataA.uniqueSets.get(colA)!;
+          if (valsA.size === 0) continue;
+
+          for (const colB of dataB.headers) {
+            const valsB = dataB.uniqueSets.get(colB)!;
+            if (valsB.size === 0) continue;
+
+            // Check if values in colA are a subset of colB (foreign key pattern)
+            let matchCount = 0;
+            for (const v of valsA) {
+              if (valsB.has(v)) matchCount++;
+            }
+            const overlapRatio = matchCount / valsA.size;
+            if (overlapRatio >= 0.7 && matchCount >= 3) {
+              const relNodeId = id("node", "rel", safeSheetName(sheetA), colA, safeSheetName(sheetB), colB);
+              nodes.push({
+                node_id: relNodeId,
+                label: `${sheetA}.${colA} -> ${sheetB}.${colB}`,
+                type: "relationship",
+                refs: [`${sheetA}::${colA}`, `${sheetB}::${colB}`]
+              });
+              edges.push({
+                from: id("node", "entity", safeSheetName(sheetA)),
+                to: id("node", "entity", safeSheetName(sheetB)),
+                relation: `fk:${colA}->${colB}`
+              });
+            }
+          }
+        }
+      }
+    }
+
+    return { nodes, edges };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 4. Data Cleaning
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  cleanData(
+    state: ExcelRunState,
+    sheetName: string,
+    actorRef: string,
+    options?: { dedupe?: boolean; fuzzy?: boolean; outliers?: boolean; impute?: boolean; normalize?: boolean }
+  ): DataCleaningResult {
+    const worksheet = state.workbook.getWorksheet(sheetName);
+    if (!worksheet) throw new Error(`Worksheet '${sheetName}' not found`);
+    const table = extractTable(worksheet);
+    const opts = {
+      dedupe: options?.dedupe ?? true,
+      fuzzy: options?.fuzzy ?? true,
+      outliers: options?.outliers ?? true,
+      impute: options?.impute ?? true,
+      normalize: options?.normalize ?? true
+    };
+
+    const issues: string[] = [];
+    let workingRows = [...table.rows];
+
+    // ── Deduplication ──
+    const duplicateGroups: Array<{ key: string; count: number }> = [];
+    let removedCount = 0;
+    if (opts.dedupe) {
+      const rowKeys = new Map<string, number>();
+      const deduped: typeof workingRows = [];
+      for (const row of workingRows) {
+        const key = table.headers.map((h) => `${row[h] ?? ""}`).join("||");
+        const count = (rowKeys.get(key) ?? 0) + 1;
+        rowKeys.set(key, count);
+        if (count === 1) {
+          deduped.push(row);
+        }
+      }
+      for (const [key, count] of rowKeys) {
+        if (count > 1) {
+          duplicateGroups.push({ key: key.slice(0, 100), count });
+          removedCount += count - 1;
+        }
+      }
+      if (removedCount > 0) {
+        issues.push(`Removed ${removedCount} duplicate rows across ${duplicateGroups.length} groups`);
+      }
+      workingRows = deduped;
+    }
+
+    // ── Fuzzy Matching ──
+    const fuzzyMatches: DataCleaningResult["fuzzy_matches"] = [];
+    if (opts.fuzzy) {
+      for (const header of table.headers) {
+        const values = workingRows.map((r) => r[header]).filter((v): v is string => typeof v === "string" && v.trim().length > 0);
+        const uniqueValues = [...new Set(values)];
+        if (uniqueValues.length > 500 || uniqueValues.length < 2) continue; // skip very large or trivial columns
+
+        const pairs: Array<{ a: string; b: string; similarity: number }> = [];
+        for (let i = 0; i < uniqueValues.length && i < 200; i++) {
+          for (let j = i + 1; j < uniqueValues.length && j < 200; j++) {
+            const sim = levenshteinSimilarity(uniqueValues[i].toLowerCase(), uniqueValues[j].toLowerCase());
+            if (sim >= 0.75 && sim < 1.0) {
+              pairs.push({ a: uniqueValues[i], b: uniqueValues[j], similarity: Math.round(sim * 1000) / 1000 });
+            }
+          }
+        }
+        if (pairs.length > 0) {
+          fuzzyMatches.push({ column: header, pairs: pairs.slice(0, 20) });
+          issues.push(`Found ${pairs.length} fuzzy match pair(s) in column '${header}'`);
+        }
+      }
+    }
+
+    // ── Outlier Detection ──
+    const outliers: DataCleaningResult["outliers"] = [];
+    if (opts.outliers) {
+      for (const header of table.headers) {
+        const numericEntries: Array<{ row: number; value: number }> = [];
+        workingRows.forEach((r, idx) => {
+          const v = r[header];
+          if (typeof v === "number" && isFinite(v)) {
+            numericEntries.push({ row: idx + 2, value: v }); // +2 for 1-indexed header offset
+          }
+        });
+        if (numericEntries.length < 5) continue;
+
+        const values = numericEntries.map((e) => e.value);
+        const mean = values.reduce((a, b) => a + b, 0) / values.length;
+        const variance = values.reduce((a, b) => a + (b - mean) ** 2, 0) / values.length;
+        const stddev = Math.sqrt(variance);
+        if (stddev === 0) continue;
+
+        const outlierValues: Array<{ row: number; value: number; z_score: number }> = [];
+        for (const entry of numericEntries) {
+          const zScore = Math.abs((entry.value - mean) / stddev);
+          if (zScore > 2) {
+            outlierValues.push({ row: entry.row, value: entry.value, z_score: Math.round(zScore * 100) / 100 });
+          }
+        }
+        if (outlierValues.length > 0) {
+          outliers.push({ column: header, values: outlierValues.slice(0, 50) });
+          issues.push(`Found ${outlierValues.length} outlier(s) in column '${header}' (z-score > 2)`);
+        }
+      }
+    }
+
+    // ── Imputation ──
+    const imputed: DataCleaningResult["imputed"] = [];
+    if (opts.impute) {
+      for (const header of table.headers) {
+        const values = workingRows.map((r) => r[header]);
+        const nullCount = values.filter((v) => v === null || v === undefined || v === "").length;
+        if (nullCount === 0) continue;
+
+        // Determine column type
+        const nonNullValues = values.filter((v) => v !== null && v !== undefined && v !== "");
+        const numericValues = nonNullValues.filter((v): v is number => typeof v === "number");
+
+        if (numericValues.length >= nonNullValues.length * 0.5) {
+          // Numeric: fill with mean
+          const mean = numericValues.reduce((a, b) => a + b, 0) / numericValues.length;
+          const roundedMean = Math.round(mean * 100) / 100;
+          let filled = 0;
+          for (const row of workingRows) {
+            if (row[header] === null || row[header] === undefined || row[header] === "") {
+              row[header] = roundedMean;
+              filled++;
+            }
+          }
+          imputed.push({ column: header, strategy: "mean", filled_count: filled });
+          issues.push(`Imputed ${filled} null(s) in '${header}' with mean (${roundedMean})`);
+        } else {
+          // Text: fill with mode
+          const freq = new Map<string, number>();
+          for (const v of nonNullValues) {
+            const s = `${v}`;
+            freq.set(s, (freq.get(s) ?? 0) + 1);
+          }
+          let modeValue = "";
+          let modeCount = 0;
+          for (const [val, count] of freq) {
+            if (count > modeCount) {
+              modeValue = val;
+              modeCount = count;
+            }
+          }
+          let filled = 0;
+          if (modeValue) {
+            for (const row of workingRows) {
+              if (row[header] === null || row[header] === undefined || row[header] === "") {
+                row[header] = modeValue;
+                filled++;
+              }
+            }
+          }
+          imputed.push({ column: header, strategy: "mode", filled_count: filled });
+          if (filled > 0) issues.push(`Imputed ${filled} null(s) in '${header}' with mode ('${modeValue}')`);
+        }
+      }
+    }
+
+    // ── Normalization ──
+    const normalized: DataCleaningResult["normalized"] = [];
+    if (opts.normalize) {
+      for (const header of table.headers) {
+        const numericEntries: Array<{ idx: number; value: number }> = [];
+        workingRows.forEach((r, idx) => {
+          const v = r[header];
+          if (typeof v === "number" && isFinite(v)) {
+            numericEntries.push({ idx, value: v });
+          }
+        });
+        if (numericEntries.length < 2) continue;
+
+        const values = numericEntries.map((e) => e.value);
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+        if (max === min) continue;
+
+        for (const entry of numericEntries) {
+          workingRows[entry.idx][header] = Math.round(((entry.value - min) / (max - min)) * 10000) / 10000;
+        }
+        normalized.push({ column: header, method: "min_max", min, max });
+      }
+    }
+
+    // Write cleaned data back
+    if (opts.dedupe || opts.impute || opts.normalize) {
+      writeTable(worksheet, { headers: table.headers, rows: workingRows });
+    }
+
+    // ── Quality Report ──
+    let totalCells = 0;
+    let nonNullCells = 0;
+    let validCells = 0;
+    const allValueSets = new Map<string, Set<string>>();
+
+    for (const header of table.headers) {
+      const valueSet = new Set<string>();
+      for (const row of workingRows) {
+        totalCells++;
+        const v = row[header];
+        if (v !== null && v !== undefined && v !== "") {
+          nonNullCells++;
+          validCells++;
+          valueSet.add(`${v}`);
+        }
+      }
+      allValueSets.set(header, valueSet);
+    }
+
+    const totalUniqueRatio = table.headers.length > 0
+      ? table.headers.reduce((acc, h) => acc + (allValueSets.get(h)?.size ?? 0) / Math.max(workingRows.length, 1), 0) / table.headers.length
+      : 0;
+
+    const qualityReport = {
+      total_rows: workingRows.length,
+      total_columns: table.headers.length,
+      completeness: totalCells > 0 ? Math.round((nonNullCells / totalCells) * 10000) / 10000 : 0,
+      validity: totalCells > 0 ? Math.round((validCells / totalCells) * 10000) / 10000 : 0,
+      uniqueness: Math.round(totalUniqueRatio * 10000) / 10000,
+      issues
+    };
+
+    addAuditEvent(state, "excel_engine.clean_data.v1", actorRef, [state.workbookRecord.workbook_id], {
+      sheet_name: sheetName,
+      removed_duplicates: removedCount,
+      fuzzy_match_columns: fuzzyMatches.length,
+      outlier_columns: outliers.length,
+      imputed_columns: imputed.length,
+      normalized_columns: normalized.length
+    });
+
+    return {
+      deduplicated: { removed_count: removedCount, duplicate_groups: duplicateGroups },
+      fuzzy_matches: fuzzyMatches,
+      outliers,
+      imputed,
+      normalized,
+      quality_report: qualityReport
+    };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 5. Comparison / Diff
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  compareWorkbooks(stateA: ExcelRunState, stateB: ExcelRunState, sheetNameA?: string, sheetNameB?: string): DiffResult {
+    const wsA = sheetNameA
+      ? stateA.workbook.getWorksheet(sheetNameA)
+      : stateA.workbook.worksheets.find((ws) => !ws.name.startsWith("__") && ws.state !== "veryHidden");
+    const wsB = sheetNameB
+      ? stateB.workbook.getWorksheet(sheetNameB)
+      : stateB.workbook.worksheets.find((ws) => !ws.name.startsWith("__") && ws.state !== "veryHidden");
+
+    if (!wsA || !wsB) {
+      return {
+        diff_type: "file_vs_file",
+        added_rows: 0,
+        removed_rows: 0,
+        changed_cells: [],
+        added_columns: [],
+        removed_columns: [],
+        summary: "One or both worksheets not found"
+      };
+    }
+
+    const tableA = extractTable(wsA);
+    const tableB = extractTable(wsB);
+
+    const headersA = new Set(tableA.headers);
+    const headersB = new Set(tableB.headers);
+    const addedColumns = tableB.headers.filter((h) => !headersA.has(h));
+    const removedColumns = tableA.headers.filter((h) => !headersB.has(h));
+    const commonHeaders = tableA.headers.filter((h) => headersB.has(h));
+
+    // Build row signature maps for matching
+    const rowKeyA = (row: Record<string, unknown>) => commonHeaders.map((h) => `${row[h] ?? ""}`).join("||");
+    const rowKeyB = (row: Record<string, unknown>) => commonHeaders.map((h) => `${row[h] ?? ""}`).join("||");
+
+    const rowsAMap = new Map<string, { row: Record<string, unknown>; index: number }>();
+    tableA.rows.forEach((row, idx) => {
+      const key = rowKeyA(row);
+      if (!rowsAMap.has(key)) rowsAMap.set(key, { row, index: idx });
+    });
+
+    const rowsBMap = new Map<string, { row: Record<string, unknown>; index: number }>();
+    tableB.rows.forEach((row, idx) => {
+      const key = rowKeyB(row);
+      if (!rowsBMap.has(key)) rowsBMap.set(key, { row, index: idx });
+    });
+
+    // Compare cell by cell for matching rows by index
+    const changedCells: DiffResult["changed_cells"] = [];
+    const maxRows = Math.min(tableA.rows.length, tableB.rows.length);
+
+    for (let i = 0; i < maxRows; i++) {
+      const rowA = tableA.rows[i];
+      const rowB = tableB.rows[i];
+      for (const header of commonHeaders) {
+        const valA = `${rowA[header] ?? ""}`;
+        const valB = `${rowB[header] ?? ""}`;
+        if (valA !== valB) {
+          changedCells.push({ row: i + 2, col: header, old_value: valA, new_value: valB });
+        }
+      }
+    }
+
+    const addedRows = Math.max(0, tableB.rows.length - tableA.rows.length);
+    const removedRows = Math.max(0, tableA.rows.length - tableB.rows.length);
+
+    const summary = [
+      `Compared '${wsA.name}' (${tableA.rows.length} rows, ${tableA.headers.length} cols) vs '${wsB.name}' (${tableB.rows.length} rows, ${tableB.headers.length} cols)`,
+      `Changed cells: ${changedCells.length}`,
+      addedColumns.length > 0 ? `Added columns: ${addedColumns.join(", ")}` : null,
+      removedColumns.length > 0 ? `Removed columns: ${removedColumns.join(", ")}` : null,
+      addedRows > 0 ? `Added rows: ${addedRows}` : null,
+      removedRows > 0 ? `Removed rows: ${removedRows}` : null
+    ].filter(Boolean).join(". ");
+
+    return {
+      diff_type: "file_vs_file",
+      added_rows: addedRows,
+      removed_rows: removedRows,
+      changed_cells: changedCells.slice(0, 1000),
+      added_columns: addedColumns,
+      removed_columns: removedColumns,
+      summary
+    };
+  }
+
+  compareColumns(state: ExcelRunState, sheetName: string, colA: string, colB: string): DiffResult {
+    const worksheet = state.workbook.getWorksheet(sheetName);
+    if (!worksheet) {
+      return {
+        diff_type: "column_vs_column",
+        added_rows: 0,
+        removed_rows: 0,
+        changed_cells: [],
+        added_columns: [],
+        removed_columns: [],
+        summary: `Worksheet '${sheetName}' not found`
+      };
+    }
+
+    const table = extractTable(worksheet);
+    if (!table.headers.includes(colA) || !table.headers.includes(colB)) {
+      return {
+        diff_type: "column_vs_column",
+        added_rows: 0,
+        removed_rows: 0,
+        changed_cells: [],
+        added_columns: [],
+        removed_columns: [],
+        summary: `One or both columns ('${colA}', '${colB}') not found in '${sheetName}'`
+      };
+    }
+
+    const changedCells: DiffResult["changed_cells"] = [];
+    for (let i = 0; i < table.rows.length; i++) {
+      const valA = `${table.rows[i][colA] ?? ""}`;
+      const valB = `${table.rows[i][colB] ?? ""}`;
+      if (valA !== valB) {
+        changedCells.push({ row: i + 2, col: `${colA} vs ${colB}`, old_value: valA, new_value: valB });
+      }
+    }
+
+    return {
+      diff_type: "column_vs_column",
+      added_rows: 0,
+      removed_rows: 0,
+      changed_cells: changedCells.slice(0, 1000),
+      added_columns: [],
+      removed_columns: [],
+      summary: `Compared columns '${colA}' and '${colB}' in '${sheetName}': ${changedCells.length} differences out of ${table.rows.length} rows`
+    };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 6. Outputs Enhancement
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  exportParquetFile(state: ExcelRunState, sheetName: string, targetPath: string): string {
+    const manifest = this.exportParquet(state, sheetName, targetPath);
+    return manifest.path;
+  }
+
+  exportPdfReport(state: ExcelRunState, targetPath: string, actorRef: string): string {
+    const worksheets = state.workbook.worksheets.filter(
+      (ws) => !ws.name.startsWith("__") && ws.state !== "veryHidden"
+    );
+
+    let html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Excel Report — ${state.runId}</title>
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; margin: 40px; color: #222; }
+  h1 { color: #1a3a5c; border-bottom: 2px solid #1a3a5c; padding-bottom: 8px; }
+  h2 { color: #2a5a8c; margin-top: 32px; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 24px; }
+  th { background: #e7f0f8; color: #17324d; padding: 8px 12px; border: 1px solid #b6c7d6; text-align: left; }
+  td { padding: 6px 12px; border: 1px solid #ddd; }
+  tr:nth-child(even) td { background: #f9f9f9; }
+  .meta { color: #666; font-size: 0.9em; margin-bottom: 24px; }
+  .kpi-grid { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
+  .kpi-card { background: #f0f6fc; border: 1px solid #c0d4e8; border-radius: 8px; padding: 16px; min-width: 180px; }
+  .kpi-value { font-size: 1.6em; font-weight: bold; color: #1a3a5c; }
+  .kpi-label { font-size: 0.85em; color: #666; }
+</style>
+</head>
+<body>
+<h1>Workbook Report</h1>
+<div class="meta">
+  <p>Run ID: ${state.runId} | Generated: ${ISO()}</p>
+  <p>Sheets: ${worksheets.length} | Actor: ${actorRef}</p>
+</div>
+`;
+
+    for (const ws of worksheets) {
+      const table = extractTable(ws);
+      if (table.headers.length === 0) continue;
+
+      html += `<h2>${ws.name}</h2>\n`;
+      html += `<p>${table.rows.length} rows, ${table.headers.length} columns</p>\n`;
+
+      // KPI cards for numeric columns
+      const numericHeaders = table.headers.filter((h) => {
+        const vals = table.rows.map((r) => r[h]).filter((v): v is number => typeof v === "number");
+        return vals.length > table.rows.length * 0.3;
+      });
+
+      if (numericHeaders.length > 0) {
+        html += `<div class="kpi-grid">\n`;
+        for (const h of numericHeaders.slice(0, 6)) {
+          const vals = table.rows.map((r) => r[h]).filter((v): v is number => typeof v === "number");
+          const sum = vals.reduce((a, b) => a + b, 0);
+          const avg = vals.length > 0 ? sum / vals.length : 0;
+          html += `<div class="kpi-card"><div class="kpi-label">${h}</div><div class="kpi-value">${Math.round(sum * 100) / 100}</div><div class="kpi-label">Avg: ${Math.round(avg * 100) / 100}</div></div>\n`;
+        }
+        html += `</div>\n`;
+      }
+
+      // Data table (limited to 100 rows)
+      html += `<table>\n<thead><tr>`;
+      for (const h of table.headers) html += `<th>${h}</th>`;
+      html += `</tr></thead>\n<tbody>\n`;
+      for (const row of table.rows.slice(0, 100)) {
+        html += `<tr>`;
+        for (const h of table.headers) {
+          const v = row[h];
+          html += `<td>${v !== null && v !== undefined ? v : ""}</td>`;
+        }
+        html += `</tr>\n`;
+      }
+      if (table.rows.length > 100) {
+        html += `<tr><td colspan="${table.headers.length}" style="text-align:center;color:#999;">... ${table.rows.length - 100} more rows ...</td></tr>\n`;
+      }
+      html += `</tbody></table>\n`;
+    }
+
+    html += `</body></html>`;
+
+    const htmlPath = targetPath.replace(/\.pdf$/i, ".html");
+    ensureDir(path.dirname(htmlPath));
+    fs.writeFileSync(htmlPath, html, "utf8");
+
+    addAuditEvent(state, "excel_engine.export_pdf_report.v1", actorRef, [state.workbookRecord.workbook_id], {
+      target_path: htmlPath,
+      sheet_count: worksheets.length
+    });
+
+    return htmlPath;
+  }
+
+  exportSlidesDeck(state: ExcelRunState, targetPath: string, actorRef: string): string {
+    // Generate a JSON-based slide deck (PPTX generation needs pptxgenjs which may not be available)
+    const worksheets = state.workbook.worksheets.filter(
+      (ws) => !ws.name.startsWith("__") && ws.state !== "veryHidden"
+    );
+
+    const slides: Array<{
+      slide_number: number;
+      title: string;
+      content_type: string;
+      content: Record<string, unknown>;
+    }> = [];
+
+    // Title slide
+    slides.push({
+      slide_number: 1,
+      title: `Workbook Analysis`,
+      content_type: "title",
+      content: {
+        subtitle: `Run: ${state.runId}`,
+        date: ISO(),
+        sheet_count: worksheets.length
+      }
+    });
+
+    let slideNum = 2;
+    for (const ws of worksheets) {
+      const table = extractTable(ws);
+      if (table.headers.length === 0) continue;
+
+      // Overview slide
+      const numericHeaders = table.headers.filter((h) => {
+        const vals = table.rows.map((r) => r[h]).filter((v): v is number => typeof v === "number");
+        return vals.length > table.rows.length * 0.3;
+      });
+
+      slides.push({
+        slide_number: slideNum++,
+        title: `${ws.name} — Overview`,
+        content_type: "summary",
+        content: {
+          row_count: table.rows.length,
+          column_count: table.headers.length,
+          numeric_columns: numericHeaders.length,
+          headers: table.headers
+        }
+      });
+
+      // KPI slide for numeric columns
+      if (numericHeaders.length > 0) {
+        const kpiContent: Record<string, unknown> = {};
+        for (const h of numericHeaders.slice(0, 8)) {
+          const vals = table.rows.map((r) => r[h]).filter((v): v is number => typeof v === "number");
+          const sum = vals.reduce((a, b) => a + b, 0);
+          kpiContent[h] = {
+            sum: Math.round(sum * 100) / 100,
+            avg: Math.round((sum / vals.length) * 100) / 100,
+            min: Math.min(...vals),
+            max: Math.max(...vals),
+            count: vals.length
+          };
+        }
+        slides.push({
+          slide_number: slideNum++,
+          title: `${ws.name} — Key Metrics`,
+          content_type: "kpi_grid",
+          content: kpiContent
+        });
+      }
+
+      // Sample data slide
+      slides.push({
+        slide_number: slideNum++,
+        title: `${ws.name} — Sample Data`,
+        content_type: "data_table",
+        content: {
+          headers: table.headers,
+          rows: table.rows.slice(0, 10).map((r) => table.headers.map((h) => `${r[h] ?? ""}`))
+        }
+      });
+    }
+
+    const deckPayload = {
+      format: "rasid-slide-deck",
+      version: "1.0.0",
+      created_at: ISO(),
+      run_id: state.runId,
+      slide_count: slides.length,
+      slides
+    };
+
+    const jsonPath = targetPath.replace(/\.(pptx|ppt)$/i, ".slides.json");
+    ensureDir(path.dirname(jsonPath));
+    fs.writeFileSync(jsonPath, JSON.stringify(deckPayload, null, 2), "utf8");
+
+    addAuditEvent(state, "excel_engine.export_slides.v1", actorRef, [state.workbookRecord.workbook_id], {
+      target_path: jsonPath,
+      slide_count: slides.length
+    });
+
+    return jsonPath;
+  }
+
+  exportWebDashboard(state: ExcelRunState, targetPath: string, actorRef: string): string {
+    const worksheets = state.workbook.worksheets.filter(
+      (ws) => !ws.name.startsWith("__") && ws.state !== "veryHidden"
+    );
+
+    let html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — ${state.runId}</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f8; color: #222; }
+  .header { background: #1a3a5c; color: #fff; padding: 20px 40px; }
+  .header h1 { font-size: 1.5em; }
+  .header .meta { opacity: 0.7; font-size: 0.85em; margin-top: 4px; }
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 32px; }
+  .card { background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 20px; }
+  .card h3 { color: #1a3a5c; margin-bottom: 12px; font-size: 1.1em; }
+  .kpi-value { font-size: 2em; font-weight: bold; color: #2a5a8c; }
+  .kpi-sub { font-size: 0.8em; color: #888; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+  th { background: #e7f0f8; padding: 8px; text-align: left; border-bottom: 2px solid #c0d4e8; }
+  td { padding: 6px 8px; border-bottom: 1px solid #eee; }
+  .section-title { font-size: 1.3em; color: #1a3a5c; margin: 24px 0 16px; border-left: 4px solid #2a5a8c; padding-left: 12px; }
+  .bar { height: 20px; background: #2a5a8c; border-radius: 3px; display: inline-block; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Workbook Dashboard</h1>
+  <div class="meta">Run: ${state.runId} | Generated: ${ISO()} | Sheets: ${worksheets.length}</div>
+</div>
+<div class="container">
+`;
+
+    for (const ws of worksheets) {
+      const table = extractTable(ws);
+      if (table.headers.length === 0) continue;
+
+      html += `<div class="section-title">${ws.name}</div>\n`;
+
+      // KPI cards
+      const numericHeaders = table.headers.filter((h) => {
+        const vals = table.rows.map((r) => r[h]).filter((v): v is number => typeof v === "number");
+        return vals.length > table.rows.length * 0.3;
+      });
+
+      if (numericHeaders.length > 0) {
+        html += `<div class="grid">\n`;
+        for (const h of numericHeaders.slice(0, 8)) {
+          const vals = table.rows.map((r) => r[h]).filter((v): v is number => typeof v === "number");
+          const sum = vals.reduce((a, b) => a + b, 0);
+          const avg = vals.length > 0 ? sum / vals.length : 0;
+          const max = vals.length > 0 ? Math.max(...vals) : 0;
+          html += `<div class="card">
+  <h3>${h}</h3>
+  <div class="kpi-value">${Math.round(sum * 100) / 100}</div>
+  <div class="kpi-sub">Avg: ${Math.round(avg * 100) / 100} | Max: ${Math.round(max * 100) / 100} | Count: ${vals.length}</div>
+</div>\n`;
+        }
+        html += `</div>\n`;
+      }
+
+      // Horizontal bar chart (CSS-based) for top categorical breakdowns
+      const catHeaders = table.headers.filter((h) => !numericHeaders.includes(h));
+      if (catHeaders.length > 0 && numericHeaders.length > 0) {
+        const catCol = catHeaders[0];
+        const numCol = numericHeaders[0];
+        const agg = new Map<string, number>();
+        for (const row of table.rows) {
+          const cat = `${row[catCol] ?? "Other"}`;
+          const val = typeof row[numCol] === "number" ? row[numCol] as number : 0;
+          agg.set(cat, (agg.get(cat) ?? 0) + val);
+        }
+        const sorted = [...agg.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
+        const maxVal = sorted.length > 0 ? sorted[0][1] : 1;
+
+        html += `<div class="card"><h3>${numCol} by ${catCol}</h3><table>\n`;
+        for (const [cat, val] of sorted) {
+          const pct = maxVal > 0 ? (val / maxVal) * 100 : 0;
+          html += `<tr><td style="width:150px">${cat}</td><td><span class="bar" style="width:${pct}%">&nbsp;</span> ${Math.round(val * 100) / 100}</td></tr>\n`;
+        }
+        html += `</table></div>\n`;
+      }
+
+      // Data table
+      html += `<div class="card"><h3>Data (${table.rows.length} rows)</h3>\n<div style="overflow-x:auto"><table>\n<thead><tr>`;
+      for (const h of table.headers) html += `<th>${h}</th>`;
+      html += `</tr></thead><tbody>\n`;
+      for (const row of table.rows.slice(0, 50)) {
+        html += `<tr>`;
+        for (const h of table.headers) html += `<td>${row[h] !== null && row[h] !== undefined ? row[h] : ""}</td>`;
+        html += `</tr>\n`;
+      }
+      if (table.rows.length > 50) {
+        html += `<tr><td colspan="${table.headers.length}" style="text-align:center;color:#999">... ${table.rows.length - 50} more rows</td></tr>\n`;
+      }
+      html += `</tbody></table></div></div>\n`;
+    }
+
+    html += `</div></body></html>`;
+
+    const htmlPath = targetPath.replace(/\.(html?)$/i, "") + ".html";
+    ensureDir(path.dirname(htmlPath));
+    fs.writeFileSync(htmlPath, html, "utf8");
+
+    addAuditEvent(state, "excel_engine.export_web_dashboard.v1", actorRef, [state.workbookRecord.workbook_id], {
+      target_path: htmlPath,
+      sheet_count: worksheets.length
+    });
+
+    return htmlPath;
+  }
+
+  exportLineageMetadata(state: ExcelRunState, targetPath: string): string {
+    const payload = {
+      format: "rasid-lineage",
+      version: "1.0.0",
+      run_id: state.runId,
+      workbook_ref: state.workbookRecord.workbook_id,
+      edge_count: state.lineageEdges.length,
+      edges: state.lineageEdges,
+      generated_at: ISO()
+    };
+
+    ensureDir(path.dirname(targetPath));
+    fs.writeFileSync(targetPath, JSON.stringify(payload, null, 2), "utf8");
+    return targetPath;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 7. Recipes (Operation Memory)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  saveRecipe(state: ExcelRunState, name: string, actorRef: string): Recipe {
+    // Build recipe from the transformation plans and audit events
+    const steps: Recipe["steps"] = [];
+
+    for (const plan of state.transformationPlans) {
+      for (const step of plan.action_sequence) {
+        steps.push({
+          action: step.operation,
+          params: {
+            step_id: step.step_id,
+            ...(step.config as Record<string, unknown>)
+          }
+        });
+      }
+    }
+
+    // Also capture pivot, chart, and formatting operations from audit events
+    for (const event of state.auditEvents) {
+      if (event.action_ref.includes("pivot")) {
+        steps.push({ action: "generate_pivot", params: event.metadata as Record<string, unknown> });
+      } else if (event.action_ref.includes("chart")) {
+        steps.push({ action: "generate_chart", params: event.metadata as Record<string, unknown> });
+      } else if (event.action_ref.includes("format")) {
+        steps.push({ action: "apply_formatting", params: event.metadata as Record<string, unknown> });
+      }
+    }
+
+    const existing = globalRecipeStore.find((r) => r.name === name);
+    const now = ISO();
+    const recipe: Recipe = {
+      recipe_id: existing ? existing.recipe_id : id("recipe", state.runId, name.replace(/[^A-Za-z0-9_]/g, "_")),
+      name,
+      version: existing ? existing.version + 1 : 1,
+      steps,
+      created_at: existing ? existing.created_at : now,
+      updated_at: now
+    };
+
+    if (existing) {
+      const idx = globalRecipeStore.indexOf(existing);
+      globalRecipeStore[idx] = recipe;
+    } else {
+      globalRecipeStore.push(recipe);
+    }
+
+    // Persist recipe to output root
+    const recipePath = path.join(state.outputRoot, "recipes", `${recipe.recipe_id}.json`);
+    writeJson(recipePath, recipe);
+
+    addAuditEvent(state, "excel_engine.save_recipe.v1", actorRef, [recipe.recipe_id], {
+      recipe_name: name,
+      step_count: steps.length,
+      version: recipe.version
+    });
+
+    return recipe;
+  }
+
+  listRecipes(state: ExcelRunState): Recipe[] {
+    // Merge in-memory recipes with any persisted on disk
+    const recipesDir = path.join(state.outputRoot, "recipes");
+    const diskRecipes: Recipe[] = [];
+    if (fs.existsSync(recipesDir)) {
+      for (const file of fs.readdirSync(recipesDir)) {
+        if (!file.endsWith(".json")) continue;
+        try {
+          const content = fs.readFileSync(path.join(recipesDir, file), "utf8");
+          diskRecipes.push(JSON.parse(content) as Recipe);
+        } catch { /* skip invalid */ }
+      }
+    }
+
+    // Merge: prefer in-memory if same ID
+    const merged = new Map<string, Recipe>();
+    for (const r of diskRecipes) merged.set(r.recipe_id, r);
+    for (const r of globalRecipeStore) merged.set(r.recipe_id, r);
+    return [...merged.values()];
+  }
+
+  async replayRecipe(state: ExcelRunState, recipeId: string, actorRef: string): Promise<ExcelRunState> {
+    const recipes = this.listRecipes(state);
+    const recipe = recipes.find((r) => r.recipe_id === recipeId);
+    if (!recipe) throw new Error(`Recipe '${recipeId}' not found`);
+
+    for (const step of recipe.steps) {
+      if (step.action === "generate_pivot" || step.action === "generate_chart" || step.action === "apply_formatting") {
+        // These are metadata-only steps recorded from audit events; skip replay for now
+        continue;
+      }
+
+      // Replay as a transformation step — validate via schema to ensure correct shape
+      const validOps = [
+        "merge_columns", "split_column", "rename_column", "derive_column",
+        "reorder_columns", "append_table", "join_tables", "filter_rows",
+        "sort_range", "group_aggregate", "pivot_generate", "unpivot_range",
+        "normalize_sheet", "split_sheet", "merge_sheets", "merge_workbooks"
+      ] as const;
+      const mappedOp = validOps.find((op) => op === step.action) ?? "rename_column";
+      const plan = TransformationPlanSchema.parse({
+        contract: EXCEL_CONTRACT,
+        ...Meta,
+        plan_id: id("plan", "recipe-replay", recipeId, step.action),
+        workbook_ref: state.workbookRecord.workbook_id,
+        requested_mode: state.mode,
+        action_sequence: [{
+          schema_namespace: EXCEL_SCHEMA_NAMESPACE,
+          schema_version: EXCEL_SCHEMA_VERSION,
+          step_id: id("step", "replay", step.action),
+          operation: mappedOp,
+          input_refs: [],
+          output_target_refs: [],
+          config: step.params,
+          preview_required: false,
+          approval_required: false
+        }],
+        execution_strategy: "serial",
+        created_by: actorRef,
+        created_at: ISO()
+      });
+
+      try {
+        await this.applyTransformation(state, plan, actorRef);
+      } catch {
+        // If a step fails during replay, continue with remaining steps
+      }
+    }
+
+    addAuditEvent(state, "excel_engine.replay_recipe.v1", actorRef, [recipeId], {
+      recipe_name: recipe.name,
+      step_count: recipe.steps.length
+    });
+
+    return state;
+  }
+
+  async applyRecipeToFolder(
+    state: ExcelRunState,
+    recipeId: string,
+    folderPath: string,
+    actorRef: string
+  ): Promise<Array<{ file: string; success: boolean; error?: string }>> {
+    const results: Array<{ file: string; success: boolean; error?: string }> = [];
+
+    if (!fs.existsSync(folderPath) || !fs.statSync(folderPath).isDirectory()) {
+      return [{ file: folderPath, success: false, error: "Folder not found" }];
+    }
+
+    const files = fs.readdirSync(folderPath).filter((f) => {
+      const ext = path.extname(f).toLowerCase();
+      return [".xlsx", ".xls", ".xlsm", ".csv", ".tsv"].includes(ext);
+    });
+
+    for (const file of files) {
+      const filePath = path.join(folderPath, file);
+      try {
+        const ext = path.extname(file).toLowerCase();
+        const mediaTypeMap: Record<string, string> = {
+          ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          ".xls": "application/vnd.ms-excel",
+          ".xlsm": "application/vnd.ms-excel.sheet.macroEnabled.12",
+          ".csv": "text/csv",
+          ".tsv": "text/tab-separated-values"
+        };
+        const mediaType = mediaTypeMap[ext] ?? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        const fileOutputRoot = path.join(state.outputRoot, "recipe-batch", path.basename(file, ext));
+        const importedState = await this.importWorkbook({
+          run_id: id("run", "batch", path.basename(file, ext)),
+          tenant_ref: state.tenantRef,
+          workspace_id: state.workspaceId,
+          project_id: state.projectId,
+          created_by: actorRef,
+          requested_mode: state.mode,
+          media_type: mediaType as ExcelImportRequest["media_type"],
+          input_path: filePath,
+          output_root: fileOutputRoot
+        });
+
+        await this.replayRecipe(importedState, recipeId, actorRef);
+        results.push({ file, success: true });
+      } catch (err) {
+        results.push({ file, success: false, error: err instanceof Error ? err.message : `${err}` });
+      }
+    }
+
+    addAuditEvent(state, "excel_engine.apply_recipe_to_folder.v1", actorRef, [recipeId], {
+      folder_path: folderPath,
+      total_files: files.length,
+      success_count: results.filter((r) => r.success).length,
+      failure_count: results.filter((r) => !r.success).length
+    });
+
+    return results;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 8. AI for Excel
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  naturalLanguageQuery(state: ExcelRunState, query: string, sheetName?: string): NLQResult {
+    const worksheets = sheetName
+      ? [state.workbook.getWorksheet(sheetName)].filter(Boolean) as ExcelJS.Worksheet[]
+      : state.workbook.worksheets.filter((ws) => !ws.name.startsWith("__") && ws.state !== "veryHidden");
+
+    if (worksheets.length === 0) {
+      return { query, interpreted_as: "no_data", sql_equivalent: "", result_rows: [], result_columns: [] };
+    }
+
+    const ws = worksheets[0];
+    const table = extractTable(ws);
+    const queryLower = query.toLowerCase();
+
+    // Parse NL query to identify operation and target columns
+    const numericHeaders = table.headers.filter((h) => {
+      const vals = table.rows.map((r) => r[h]).filter((v): v is number => typeof v === "number");
+      return vals.length > table.rows.length * 0.3;
+    });
+
+    // Find columns mentioned in the query
+    const mentionedColumns = table.headers.filter((h) => queryLower.includes(h.toLowerCase()));
+    const targetColumns = mentionedColumns.length > 0 ? mentionedColumns : numericHeaders.slice(0, 3);
+
+    // Detect operation
+    let operation = "select";
+    let interpreted = "";
+    let sqlEquivalent = "";
+    let resultRows: string[][] = [];
+    let resultColumns: string[] = [];
+
+    if (/\b(sum|total|summation)\b/i.test(query)) {
+      operation = "sum";
+      const cols = targetColumns.filter((c) => numericHeaders.includes(c));
+      resultColumns = ["column", "sum"];
+      resultRows = cols.map((c) => {
+        const vals = table.rows.map((r) => r[c]).filter((v): v is number => typeof v === "number");
+        const sum = vals.reduce((a, b) => a + b, 0);
+        return [c, `${Math.round(sum * 100) / 100}`];
+      });
+      interpreted = `Calculate sum of ${cols.join(", ")}`;
+      sqlEquivalent = `SELECT ${cols.map((c) => `SUM("${c}")`).join(", ")} FROM "${ws.name}"`;
+    } else if (/\b(average|avg|mean)\b/i.test(query)) {
+      operation = "average";
+      const cols = targetColumns.filter((c) => numericHeaders.includes(c));
+      resultColumns = ["column", "average"];
+      resultRows = cols.map((c) => {
+        const vals = table.rows.map((r) => r[c]).filter((v): v is number => typeof v === "number");
+        const avg = vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+        return [c, `${Math.round(avg * 100) / 100}`];
+      });
+      interpreted = `Calculate average of ${cols.join(", ")}`;
+      sqlEquivalent = `SELECT ${cols.map((c) => `AVG("${c}")`).join(", ")} FROM "${ws.name}"`;
+    } else if (/\b(max|maximum|highest|largest)\b/i.test(query)) {
+      operation = "max";
+      const cols = targetColumns.filter((c) => numericHeaders.includes(c));
+      resultColumns = ["column", "max"];
+      resultRows = cols.map((c) => {
+        const vals = table.rows.map((r) => r[c]).filter((v): v is number => typeof v === "number");
+        return [c, `${vals.length > 0 ? Math.max(...vals) : 0}`];
+      });
+      interpreted = `Find maximum of ${cols.join(", ")}`;
+      sqlEquivalent = `SELECT ${cols.map((c) => `MAX("${c}")`).join(", ")} FROM "${ws.name}"`;
+    } else if (/\b(min|minimum|lowest|smallest)\b/i.test(query)) {
+      operation = "min";
+      const cols = targetColumns.filter((c) => numericHeaders.includes(c));
+      resultColumns = ["column", "min"];
+      resultRows = cols.map((c) => {
+        const vals = table.rows.map((r) => r[c]).filter((v): v is number => typeof v === "number");
+        return [c, `${vals.length > 0 ? Math.min(...vals) : 0}`];
+      });
+      interpreted = `Find minimum of ${cols.join(", ")}`;
+      sqlEquivalent = `SELECT ${cols.map((c) => `MIN("${c}")`).join(", ")} FROM "${ws.name}"`;
+    } else if (/\b(count|how many)\b/i.test(query)) {
+      operation = "count";
+      resultColumns = ["metric", "value"];
+      resultRows = [["row_count", `${table.rows.length}`]];
+      if (targetColumns.length > 0) {
+        for (const c of targetColumns) {
+          const nonNull = table.rows.filter((r) => r[c] !== null && r[c] !== undefined && r[c] !== "").length;
+          resultRows.push([`${c}_non_null`, `${nonNull}`]);
+        }
+      }
+      interpreted = `Count rows${targetColumns.length > 0 ? ` and non-null values in ${targetColumns.join(", ")}` : ""}`;
+      sqlEquivalent = `SELECT COUNT(*) FROM "${ws.name}"`;
+    } else if (/\b(group|by|per|each)\b/i.test(query)) {
+      operation = "group_by";
+      const catCols = table.headers.filter((h) => !numericHeaders.includes(h));
+      const groupCol = mentionedColumns.find((c) => catCols.includes(c)) ?? catCols[0];
+      const valueCol = mentionedColumns.find((c) => numericHeaders.includes(c)) ?? numericHeaders[0];
+
+      if (groupCol && valueCol) {
+        const groups = new Map<string, number[]>();
+        for (const row of table.rows) {
+          const key = `${row[groupCol] ?? "NULL"}`;
+          const val = typeof row[valueCol] === "number" ? row[valueCol] as number : 0;
+          const arr = groups.get(key) ?? [];
+          arr.push(val);
+          groups.set(key, arr);
+        }
+        resultColumns = [groupCol, `sum_${valueCol}`, `avg_${valueCol}`, "count"];
+        resultRows = [...groups.entries()].map(([key, vals]) => {
+          const sum = vals.reduce((a, b) => a + b, 0);
+          return [key, `${Math.round(sum * 100) / 100}`, `${Math.round((sum / vals.length) * 100) / 100}`, `${vals.length}`];
+        });
+        interpreted = `Group by '${groupCol}' and aggregate '${valueCol}'`;
+        sqlEquivalent = `SELECT "${groupCol}", SUM("${valueCol}"), AVG("${valueCol}"), COUNT(*) FROM "${ws.name}" GROUP BY "${groupCol}"`;
+      } else {
+        interpreted = "Could not determine grouping columns";
+        sqlEquivalent = "";
+        resultColumns = [];
+        resultRows = [];
+      }
+    } else if (/\b(top|first|head)\b/i.test(query)) {
+      const numMatch = query.match(/\b(\d+)\b/);
+      const limit = numMatch ? parseInt(numMatch[1], 10) : 5;
+      operation = "top_n";
+      resultColumns = table.headers;
+      resultRows = table.rows.slice(0, limit).map((r) => table.headers.map((h) => `${r[h] ?? ""}`));
+      interpreted = `Show top ${limit} rows`;
+      sqlEquivalent = `SELECT * FROM "${ws.name}" LIMIT ${limit}`;
+    } else if (/\b(filter|where|only|with)\b/i.test(query)) {
+      operation = "filter";
+      // Try to find a filter pattern: column = value or column > value
+      const filterMatch = query.match(/(?:filter|where|only|with)\s+(\w+)\s*(=|>|<|>=|<=|!=|contains?)\s*['"]?([^'"]+?)['"]?\s*$/i);
+      if (filterMatch) {
+        const [, colHint, op, val] = filterMatch;
+        const matchedCol = table.headers.find((h) => h.toLowerCase() === colHint.toLowerCase()) ?? table.headers.find((h) => h.toLowerCase().includes(colHint.toLowerCase()));
+        if (matchedCol) {
+          const filtered = table.rows.filter((r) => {
+            const cellVal = r[matchedCol];
+            const cellStr = `${cellVal ?? ""}`.toLowerCase();
+            const targetStr = val.toLowerCase();
+            if (op === "=" || op === "==") return cellStr === targetStr;
+            if (op === "!=" || op === "<>") return cellStr !== targetStr;
+            if (op === ">" && typeof cellVal === "number") return cellVal > Number(val);
+            if (op === "<" && typeof cellVal === "number") return cellVal < Number(val);
+            if (op === ">=" && typeof cellVal === "number") return cellVal >= Number(val);
+            if (op === "<=" && typeof cellVal === "number") return cellVal <= Number(val);
+            if (op.startsWith("contain")) return cellStr.includes(targetStr);
+            return cellStr === targetStr;
+          });
+          resultColumns = table.headers;
+          resultRows = filtered.slice(0, 100).map((r) => table.headers.map((h) => `${r[h] ?? ""}`));
+          interpreted = `Filter rows where '${matchedCol}' ${op} '${val}'`;
+          sqlEquivalent = `SELECT * FROM "${ws.name}" WHERE "${matchedCol}" ${op} '${val}'`;
+        }
+      }
+      if (resultColumns.length === 0) {
+        interpreted = `Could not parse filter from query`;
+        resultColumns = table.headers;
+        resultRows = table.rows.slice(0, 10).map((r) => table.headers.map((h) => `${r[h] ?? ""}`));
+        sqlEquivalent = `SELECT * FROM "${ws.name}" LIMIT 10`;
+      }
+    } else {
+      // Default: show sample data
+      operation = "select";
+      resultColumns = table.headers;
+      resultRows = table.rows.slice(0, 10).map((r) => table.headers.map((h) => `${r[h] ?? ""}`));
+      interpreted = `Show data from '${ws.name}'`;
+      sqlEquivalent = `SELECT * FROM "${ws.name}" LIMIT 10`;
+    }
+
+    return {
+      query,
+      interpreted_as: `${operation}: ${interpreted}`,
+      sql_equivalent: sqlEquivalent,
+      result_rows: resultRows,
+      result_columns: resultColumns
+    };
+  }
+
+  autoAnalyze(state: ExcelRunState, sheetName?: string): AutoAnalysisResult {
+    const worksheets = sheetName
+      ? [state.workbook.getWorksheet(sheetName)].filter(Boolean) as ExcelJS.Worksheet[]
+      : state.workbook.worksheets.filter((ws) => !ws.name.startsWith("__") && ws.state !== "veryHidden");
+
+    const insights: AutoAnalysisResult["insights"] = [];
+    const anomalies: AutoAnalysisResult["anomalies"] = [];
+
+    for (const ws of worksheets) {
+      const table = extractTable(ws);
+      if (table.headers.length === 0 || table.rows.length === 0) continue;
+
+      // Analyze each column
+      for (const header of table.headers) {
+        const values = table.rows.map((r) => r[header]);
+        const nonNull = values.filter((v) => v !== null && v !== undefined && v !== "");
+        const nullRatio = 1 - nonNull.length / values.length;
+
+        // High null ratio
+        if (nullRatio > 0.3) {
+          anomalies.push({
+            column: header,
+            description: `High null ratio: ${Math.round(nullRatio * 100)}% of values are missing`,
+            severity: nullRatio > 0.7 ? "high" : "medium"
+          });
+        }
+
+        const numericValues = nonNull.filter((v): v is number => typeof v === "number");
+        if (numericValues.length >= nonNull.length * 0.5 && numericValues.length >= 5) {
+          // Distribution analysis
+          const mean = numericValues.reduce((a, b) => a + b, 0) / numericValues.length;
+          const variance = numericValues.reduce((a, b) => a + (b - mean) ** 2, 0) / numericValues.length;
+          const stddev = Math.sqrt(variance);
+          const cv = mean !== 0 ? stddev / Math.abs(mean) : 0;
+
+          // High variance
+          if (cv > 1.5) {
+            insights.push({
+              category: "distribution",
+              description: `Column '${header}' has very high variability (CV=${Math.round(cv * 100) / 100})`,
+              confidence: 0.85,
+              affected_columns: [header]
+            });
+          }
+
+          // Trend detection
+          if (numericValues.length >= 10) {
+            const firstThird = numericValues.slice(0, Math.floor(numericValues.length / 3));
+            const lastThird = numericValues.slice(-Math.floor(numericValues.length / 3));
+            const firstAvg = firstThird.reduce((a, b) => a + b, 0) / firstThird.length;
+            const lastAvg = lastThird.reduce((a, b) => a + b, 0) / lastThird.length;
+            if (firstAvg !== 0) {
+              const changePct = ((lastAvg - firstAvg) / Math.abs(firstAvg)) * 100;
+              if (Math.abs(changePct) > 20) {
+                insights.push({
+                  category: "trend",
+                  description: `Column '${header}' shows a ${changePct > 0 ? "positive" : "negative"} trend of ${Math.round(Math.abs(changePct))}%`,
+                  confidence: 0.7,
+                  affected_columns: [header]
+                });
+              }
+            }
+          }
+
+          // Outlier detection
+          const outlierCount = numericValues.filter((v) => Math.abs((v - mean) / (stddev || 1)) > 3).length;
+          if (outlierCount > 0) {
+            anomalies.push({
+              column: header,
+              description: `${outlierCount} extreme outlier(s) detected (z-score > 3)`,
+              severity: outlierCount > numericValues.length * 0.05 ? "high" : "low"
+            });
+          }
+        }
+
+        // Text column analysis
+        const textValues = nonNull.filter((v): v is string => typeof v === "string");
+        if (textValues.length >= nonNull.length * 0.5 && textValues.length >= 5) {
+          const uniqueRatio = new Set(textValues).size / textValues.length;
+
+          // Potential categorical column
+          if (uniqueRatio < 0.1 && textValues.length > 20) {
+            insights.push({
+              category: "classification",
+              description: `Column '${header}' appears to be categorical with ${new Set(textValues).size} unique values out of ${textValues.length}`,
+              confidence: 0.9,
+              affected_columns: [header]
+            });
+          }
+
+          // Potential unique identifier
+          if (uniqueRatio >= 0.95) {
+            insights.push({
+              category: "structure",
+              description: `Column '${header}' has ${Math.round(uniqueRatio * 100)}% unique values — likely an identifier/key`,
+              confidence: 0.8,
+              affected_columns: [header]
+            });
+          }
+        }
+      }
+
+      // Cross-column correlation analysis (for numeric columns)
+      const numericCols = table.headers.filter((h) => {
+        const vals = table.rows.map((r) => r[h]).filter((v): v is number => typeof v === "number");
+        return vals.length > table.rows.length * 0.5;
+      });
+
+      for (let i = 0; i < numericCols.length; i++) {
+        for (let j = i + 1; j < numericCols.length; j++) {
+          const colA = numericCols[i];
+          const colB = numericCols[j];
+          // Compute Pearson correlation
+          const pairs: Array<[number, number]> = [];
+          for (const row of table.rows) {
+            const a = row[colA];
+            const b = row[colB];
+            if (typeof a === "number" && typeof b === "number") {
+              pairs.push([a, b]);
+            }
+          }
+          if (pairs.length < 5) continue;
+
+          const meanA = pairs.reduce((s, p) => s + p[0], 0) / pairs.length;
+          const meanB = pairs.reduce((s, p) => s + p[1], 0) / pairs.length;
+          let covAB = 0, varA = 0, varB = 0;
+          for (const [a, b] of pairs) {
+            covAB += (a - meanA) * (b - meanB);
+            varA += (a - meanA) ** 2;
+            varB += (b - meanB) ** 2;
+          }
+          const denom = Math.sqrt(varA * varB);
+          const corr = denom > 0 ? covAB / denom : 0;
+
+          if (Math.abs(corr) > 0.7) {
+            insights.push({
+              category: "correlation",
+              description: `Strong ${corr > 0 ? "positive" : "negative"} correlation (r=${Math.round(corr * 100) / 100}) between '${colA}' and '${colB}'`,
+              confidence: Math.abs(corr),
+              affected_columns: [colA, colB]
+            });
+          }
+        }
+      }
+    }
+
+    return { insights, anomalies };
+  }
+
+  predictiveAnalysis(state: ExcelRunState, targetColumn: string, sheetName?: string): PredictiveResult {
+    const ws = sheetName
+      ? state.workbook.getWorksheet(sheetName)
+      : state.workbook.worksheets.find((w) => !w.name.startsWith("__") && w.state !== "veryHidden");
+
+    if (!ws) throw new Error("No worksheet found");
+    const table = extractTable(ws);
+    if (!table.headers.includes(targetColumn)) throw new Error(`Column '${targetColumn}' not found`);
+
+    // Simple linear regression using row index as X
+    const yValues: Array<{ row: number; value: number }> = [];
+    table.rows.forEach((r, idx) => {
+      const v = r[targetColumn];
+      if (typeof v === "number" && isFinite(v)) {
+        yValues.push({ row: idx, value: v });
+      }
+    });
+
+    if (yValues.length < 3) {
+      return {
+        column: targetColumn,
+        predictions: [],
+        method: "linear_regression",
+        r_squared: 0
+      };
+    }
+
+    // Compute linear regression: y = mx + b
+    const n = yValues.length;
+    const sumX = yValues.reduce((s, e) => s + e.row, 0);
+    const sumY = yValues.reduce((s, e) => s + e.value, 0);
+    const sumXY = yValues.reduce((s, e) => s + e.row * e.value, 0);
+    const sumX2 = yValues.reduce((s, e) => s + e.row * e.row, 0);
+
+    const denom = n * sumX2 - sumX * sumX;
+    const slope = denom !== 0 ? (n * sumXY - sumX * sumY) / denom : 0;
+    const intercept = (sumY - slope * sumX) / n;
+
+    // R-squared
+    const meanY = sumY / n;
+    const ssTotal = yValues.reduce((s, e) => s + (e.value - meanY) ** 2, 0);
+    const ssResidual = yValues.reduce((s, e) => {
+      const predicted = slope * e.row + intercept;
+      return s + (e.value - predicted) ** 2;
+    }, 0);
+    const rSquared = ssTotal > 0 ? Math.round((1 - ssResidual / ssTotal) * 10000) / 10000 : 0;
+
+    // Generate predictions for next 5 rows and any null rows
+    const predictions: PredictiveResult["predictions"] = [];
+    const maxRow = table.rows.length;
+
+    // Predict for null values in existing data
+    table.rows.forEach((r, idx) => {
+      const v = r[targetColumn];
+      if (v === null || v === undefined || v === "") {
+        const predicted = slope * idx + intercept;
+        predictions.push({
+          row: idx + 2, // 1-indexed with header offset
+          predicted_value: Math.round(predicted * 100) / 100,
+          confidence: Math.max(0, Math.min(1, rSquared))
+        });
+      }
+    });
+
+    // Predict next 5 rows
+    for (let i = 0; i < 5; i++) {
+      const rowIdx = maxRow + i;
+      const predicted = slope * rowIdx + intercept;
+      predictions.push({
+        row: rowIdx + 2,
+        predicted_value: Math.round(predicted * 100) / 100,
+        confidence: Math.max(0, Math.min(1, rSquared * (1 - i * 0.05))) // confidence decays with distance
+      });
+    }
+
+    return {
+      column: targetColumn,
+      predictions,
+      method: "linear_regression",
+      r_squared: rSquared
+    };
+  }
+
+  whatIfAnalysis(
+    state: ExcelRunState,
+    sheetName: string,
+    changes: Array<{ column: string; row: number; new_value: string }>
+  ): WhatIfResult {
+    const worksheet = state.workbook.getWorksheet(sheetName);
+    if (!worksheet) throw new Error(`Worksheet '${sheetName}' not found`);
+    const table = extractTable(worksheet);
+
+    // Identify numeric columns for impact metrics
+    const numericHeaders = table.headers.filter((h) => {
+      const vals = table.rows.map((r) => r[h]).filter((v): v is number => typeof v === "number");
+      return vals.length > table.rows.length * 0.3;
+    });
+
+    // Compute original aggregates
+    const originalAggregates: Record<string, number> = {};
+    for (const h of numericHeaders) {
+      const vals = table.rows.map((r) => r[h]).filter((v): v is number => typeof v === "number");
+      originalAggregates[`${h}_sum`] = vals.reduce((a, b) => a + b, 0);
+      originalAggregates[`${h}_avg`] = vals.length > 0 ? originalAggregates[`${h}_sum`] / vals.length : 0;
+    }
+
+    // Apply hypothetical changes (deep copy)
+    const modifiedRows = table.rows.map((r) => ({ ...r }));
+    for (const change of changes) {
+      const rowIdx = change.row - 2; // Convert from 1-indexed with header
+      if (rowIdx >= 0 && rowIdx < modifiedRows.length && table.headers.includes(change.column)) {
+        const num = Number(change.new_value);
+        modifiedRows[rowIdx][change.column] = isNaN(num) ? change.new_value : num;
+      }
+    }
+
+    // Compute modified aggregates
+    const modifiedAggregates: Record<string, number> = {};
+    for (const h of numericHeaders) {
+      const vals = modifiedRows.map((r) => r[h]).filter((v): v is number => typeof v === "number");
+      modifiedAggregates[`${h}_sum`] = vals.reduce((a, b) => a + b, 0);
+      modifiedAggregates[`${h}_avg`] = vals.length > 0 ? modifiedAggregates[`${h}_sum`] / vals.length : 0;
+    }
+
+    // Compute impact
+    const impact: WhatIfResult["impact"] = [];
+    for (const metric of Object.keys(originalAggregates)) {
+      const before = originalAggregates[metric];
+      const after = modifiedAggregates[metric];
+      const changePct = before !== 0 ? Math.round(((after - before) / Math.abs(before)) * 10000) / 100 : 0;
+      if (before !== after) {
+        impact.push({
+          metric,
+          before: Math.round(before * 100) / 100,
+          after: Math.round(after * 100) / 100,
+          change_pct: changePct
+        });
+      }
+    }
+
+    // Build original/modified snapshots for changed cells
+    const original: Record<string, string> = {};
+    const modified: Record<string, string> = {};
+    for (const change of changes) {
+      const rowIdx = change.row - 2;
+      const key = `${change.column}[${change.row}]`;
+      original[key] = rowIdx >= 0 && rowIdx < table.rows.length ? `${table.rows[rowIdx][change.column] ?? ""}` : "";
+      modified[key] = change.new_value;
+    }
+
+    return { original, modified, impact };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 9. Power Query M Export
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  exportPowerQueryM(
+    state: ExcelRunState,
+    transformations: TransformationPlan
+  ): { m_code: string; exportable_steps: number; non_exportable_steps: Array<{ step_index: number; reason: string }> } {
+    const mLines: string[] = [];
+    const nonExportable: Array<{ step_index: number; reason: string }> = [];
+    let exportableCount = 0;
+
+    // M code preamble
+    mLines.push("let");
+
+    const steps = transformations.action_sequence;
+    let sourceAdded = false;
+
+    for (let i = 0; i < steps.length; i++) {
+      const step = steps[i];
+      const config = step.config as Record<string, unknown>;
+      const op = step.operation as string;
+      const stepName = `Step${i + 1}_${op}`.replace(/[^A-Za-z0-9_]/g, "_");
+      const prevStep = i === 0 ? "Source" : `Step${i}_${(steps[i - 1].operation as string)}`.replace(/[^A-Za-z0-9_]/g, "_");
+
+      if (!sourceAdded) {
+        // Add source reference
+        const worksheet = `${config.worksheet ?? config.leftWorksheet ?? "Sheet1"}`;
+        mLines.push(`    Source = Excel.CurrentWorkbook(){[Name="${worksheet}"]}[Content],`);
+        sourceAdded = true;
+      }
+
+      if (op === "rename_column") {
+        const from = `${config.from ?? ""}`;
+        const to = `${config.to ?? ""}`;
+        if (from && to) {
+          mLines.push(`    ${stepName} = Table.RenameColumns(${prevStep}, {{"${from}", "${to}"}}),`);
+          exportableCount++;
+        } else {
+          nonExportable.push({ step_index: i, reason: "Missing from/to column names" });
+        }
+      } else if (op === "merge_columns") {
+        const columns = `${config.columns ?? ""}`.split(",").map((c) => c.trim()).filter(Boolean);
+        const targetColumn = `${config.targetColumn ?? "MergedColumn"}`;
+        const separator = `${config.separator ?? " "}`;
+        if (columns.length >= 2) {
+          const colRefs = columns.map((c) => `[${c}]`).join(` & "${separator}" & `);
+          mLines.push(`    ${stepName} = Table.AddColumn(${prevStep}, "${targetColumn}", each ${colRefs}),`);
+          exportableCount++;
+        } else {
+          nonExportable.push({ step_index: i, reason: "Merge requires at least 2 columns" });
+        }
+      } else if (op === "split_column") {
+        const sourceColumn = `${config.sourceColumn ?? ""}`;
+        const delimiter = `${config.delimiter ?? "-"}`;
+        if (sourceColumn) {
+          mLines.push(`    ${stepName} = Table.SplitColumn(${prevStep}, "${sourceColumn}", Splitter.SplitTextByDelimiter("${delimiter}"), {"${sourceColumn}.1", "${sourceColumn}.2"}),`);
+          exportableCount++;
+        } else {
+          nonExportable.push({ step_index: i, reason: "Missing source column name" });
+        }
+      } else if (op === "filter_rows") {
+        const column = `${config.column ?? ""}`;
+        const operator = `${config.operator ?? "equals"}`;
+        const value = `${config.value ?? ""}`;
+        if (column) {
+          let filterExpr = `[${column}] = "${value}"`;
+          if (operator === "greater_than") filterExpr = `[${column}] > ${value}`;
+          else if (operator === "less_than") filterExpr = `[${column}] < ${value}`;
+          else if (operator === "not_equals") filterExpr = `[${column}] <> "${value}"`;
+          else if (operator === "contains") filterExpr = `Text.Contains([${column}], "${value}")`;
+          mLines.push(`    ${stepName} = Table.SelectRows(${prevStep}, each ${filterExpr}),`);
+          exportableCount++;
+        } else {
+          nonExportable.push({ step_index: i, reason: "Missing filter column" });
+        }
+      } else if (op === "sort_range") {
+        const column = `${config.column ?? ""}`;
+        const direction = `${config.direction ?? "ascending"}`;
+        if (column) {
+          const order = direction === "descending" ? "Order.Descending" : "Order.Ascending";
+          mLines.push(`    ${stepName} = Table.Sort(${prevStep}, {{"${column}", ${order}}}),`);
+          exportableCount++;
+        } else {
+          nonExportable.push({ step_index: i, reason: "Missing sort column" });
+        }
+      } else if (op === "reorder_columns") {
+        const columns = `${config.columns ?? ""}`.split(",").map((c) => c.trim()).filter(Boolean);
+        if (columns.length > 0) {
+          const colList = columns.map((c) => `"${c}"`).join(", ");
+          mLines.push(`    ${stepName} = Table.ReorderColumns(${prevStep}, {${colList}}),`);
+          exportableCount++;
+        } else {
+          nonExportable.push({ step_index: i, reason: "Missing column list" });
+        }
+      } else if (op === "derive_column") {
+        const columnName = `${config.columnName ?? config.column ?? "NewColumn"}`;
+        const expression = `${config.expression ?? config.defaultValue ?? "null"}`;
+        mLines.push(`    ${stepName} = Table.AddColumn(${prevStep}, "${columnName}", each ${expression}),`);
+        exportableCount++;
+      } else if (op === "group_aggregate") {
+        const groupBy = `${config.groupBy ?? config.column ?? ""}`;
+        const aggregateCol = `${config.aggregateColumn ?? config.valueColumn ?? ""}`;
+        const aggFunc = `${config.aggregation ?? "sum"}`;
+        if (groupBy && aggregateCol) {
+          const mAggFunc = aggFunc === "count" ? "List.Count" : aggFunc === "average" ? "List.Average" : aggFunc === "min" ? "List.Min" : aggFunc === "max" ? "List.Max" : "List.Sum";
+          mLines.push(`    ${stepName} = Table.Group(${prevStep}, {"${groupBy}"}, {{"${aggregateCol}_${aggFunc}", each ${mAggFunc}([${aggregateCol}]), type number}}),`);
+          exportableCount++;
+        } else {
+          nonExportable.push({ step_index: i, reason: "Missing group/aggregate columns" });
+        }
+      } else if (op === "join_tables") {
+        const leftKey = `${config.leftKey ?? ""}`;
+        const rightKey = `${config.rightKey ?? ""}`;
+        const rightWorksheet = `${config.rightWorksheet ?? ""}`;
+        if (leftKey && rightKey && rightWorksheet) {
+          mLines.push(`    RightSource_${i} = Excel.CurrentWorkbook(){[Name="${rightWorksheet}"]}[Content],`);
+          mLines.push(`    ${stepName} = Table.NestedJoin(${prevStep}, {"${leftKey}"}, RightSource_${i}, {"${rightKey}"}, "Joined", JoinKind.LeftOuter),`);
+          exportableCount++;
+        } else {
+          nonExportable.push({ step_index: i, reason: "Missing join keys or right worksheet" });
+        }
+      } else if (op === "append_table") {
+        const sourceWorksheet = `${config.sourceWorksheet ?? ""}`;
+        if (sourceWorksheet) {
+          mLines.push(`    AppendSource_${i} = Excel.CurrentWorkbook(){[Name="${sourceWorksheet}"]}[Content],`);
+          mLines.push(`    ${stepName} = Table.Combine({${prevStep}, AppendSource_${i}}),`);
+          exportableCount++;
+        } else {
+          nonExportable.push({ step_index: i, reason: "Missing source worksheet for append" });
+        }
+      } else if (op === "unpivot_range") {
+        const columns = `${config.columns ?? ""}`.split(",").map((c) => c.trim()).filter(Boolean);
+        if (columns.length > 0) {
+          const colList = columns.map((c) => `"${c}"`).join(", ");
+          mLines.push(`    ${stepName} = Table.UnpivotOtherColumns(${prevStep}, {${colList}}, "Attribute", "Value"),`);
+          exportableCount++;
+        } else {
+          nonExportable.push({ step_index: i, reason: "Missing columns for unpivot" });
+        }
+      } else {
+        // Complex or unsupported operations
+        nonExportable.push({ step_index: i, reason: `Operation '${op}' has no direct Power Query M equivalent` });
+        mLines.push(`    // ${stepName}: Not exportable — ${op}`);
+      }
+    }
+
+    // Final result reference
+    if (steps.length > 0) {
+      const lastOp = steps[steps.length - 1].operation as string;
+      const lastStep = `Step${steps.length}_${lastOp}`.replace(/[^A-Za-z0-9_]/g, "_");
+      // Remove trailing comma from last step
+      if (mLines.length > 0) {
+        const lastLine = mLines[mLines.length - 1];
+        if (lastLine.endsWith(",")) {
+          mLines[mLines.length - 1] = lastLine.slice(0, -1);
+        }
+      }
+      mLines.push(`in`);
+      mLines.push(`    ${lastStep}`);
+    } else {
+      if (!sourceAdded) {
+        mLines.push(`    Source = Excel.CurrentWorkbook(){[Name="Sheet1"]}[Content]`);
+      }
+      mLines.push(`in`);
+      mLines.push(`    Source`);
+    }
+
+    return {
+      m_code: mLines.join("\n"),
+      exportable_steps: exportableCount,
+      non_exportable_steps: nonExportable
     };
   }
 }

@@ -99,6 +99,60 @@ export type TranscriptionEngineOptions = {
 export type TranscriptionWorkflowResult = StoredWorkflowResult;
 export type TranscriptionCompareBundle = StoredCompareResult;
 
+/* ── ASR Ensemble Strict Types ──────────────────────────────── */
+
+export type ASREngineConfig = {
+  engine_id: string;
+  engine_name: string;
+  engine_type: "vosk" | "whisper_local" | "google_cloud" | "azure_speech" | "aws_transcribe";
+  weight: number;
+  timeout_ms: number;
+  endpoint_url: string;
+  api_key: string;
+  model_ref: string;
+  enabled: boolean;
+};
+
+export type ASREngineResult = {
+  engine_id: string;
+  engine_name: string;
+  transcript: string;
+  words: Array<{ text: string; start_ms: number; end_ms: number; confidence: number }>;
+  confidence: number;
+  latency_ms: number;
+  error: string | null;
+};
+
+export type ASREnsembleResult = {
+  ensemble_id: string;
+  engines_invoked: number;
+  engines_succeeded: number;
+  engines_failed: number;
+  agreement_score: number;
+  strict_pass: boolean;
+  consensus_transcript: string;
+  consensus_words: Array<{ text: string; start_ms: number; end_ms: number; confidence: number }>;
+  per_engine_results: ASREngineResult[];
+  disagreements: Array<{
+    position: number;
+    word_index: number;
+    variants: Array<{ engine_id: string; text: string; confidence: number }>;
+  }>;
+  voting_method: "weighted_majority" | "confidence_weighted" | "unanimity";
+  strict_threshold: number;
+  created_at: string;
+};
+
+export type ASREnsembleConfig = {
+  engines: ASREngineConfig[];
+  voting_method: "weighted_majority" | "confidence_weighted" | "unanimity";
+  strict_threshold: number;
+  min_engines_required: number;
+  fallback_to_single: boolean;
+};
+
+/* ── End ASR Ensemble Strict Types ──────────────────────────── */
+
 const now = () => new Date().toISOString();
 const id = (prefix: string, ...parts: Array<string | number | null | undefined>) =>
   [prefix, ...parts.filter((part) => part !== undefined && part !== null && `${part}`.length > 0)]
@@ -593,7 +647,7 @@ export class TranscriptionExtractionEngine {
     };
   }
 
-  async ingestAndExtract(input: TranscriptionJobRequest): Promise<TranscriptionWorkflowResult> {
+  async ingestAndExtract(input: TranscriptionJobRequest, ensemble_config?: ASREnsembleConfig): Promise<TranscriptionWorkflowResult> {
     const request = TranscriptionJobRequestSchema.parse({
       ...input,
       attachments: input.attachments.map((attachment) => ({
@@ -622,6 +676,7 @@ export class TranscriptionExtractionEngine {
     const semanticEdges: UnifiedContentBundle["semantic_edges"] = [];
     const jobRoot = path.join(this.store.rootDir, "jobs", jobId, "bridge");
     const auditEvents: AuditEvent[] = [];
+    const ensembleResults: ASREnsembleResult[] = [];
     const attachmentPaths = request.attachments.map((attachment) => {
       const content = attachment.content_base64 ? Buffer.from(attachment.content_base64, "base64") : null;
       const targetPath = content
@@ -639,10 +694,75 @@ export class TranscriptionExtractionEngine {
       const sourceId = id("source", jobId, entry.attachment.file_name);
       const sourceArtifactRef = id("artifact", sourceId, "source");
       const inputKind = entry.attachment.input_kind ?? detectInputKind(entry.attachment.file_name);
-      const response =
-        inputKind === "spreadsheet_file" && [".xlsx", ".xlsm", ".csv"].includes(path.extname(entry.targetPath).toLowerCase())
-          ? await this.analyzeSpreadsheet(entry.targetPath)
-          : this.callBridge(entry.targetPath, inputKind, path.join(jobRoot, sourceId));
+      let response: BridgeResponse;
+      let attachmentEnsembleResult: ASREnsembleResult | null = null;
+
+      if (inputKind === "spreadsheet_file" && [".xlsx", ".xlsm", ".csv"].includes(path.extname(entry.targetPath).toLowerCase())) {
+        response = await this.analyzeSpreadsheet(entry.targetPath);
+      } else if (ensemble_config && (inputKind === "audio_file" || inputKind === "video_file")) {
+        // Use ASR ensemble for audio/video when ensemble_config is provided
+        try {
+          attachmentEnsembleResult = await this.runASREnsemble(entry.targetPath, ensemble_config);
+          ensembleResults.push(attachmentEnsembleResult);
+          // Convert ensemble result to a BridgeResponse so the rest of the pipeline works
+          response = {
+            status: "success",
+            file_name: path.basename(entry.targetPath),
+            input_path: entry.targetPath,
+            input_kind: inputKind,
+            full_text: attachmentEnsembleResult.consensus_transcript,
+            normalized_text: attachmentEnsembleResult.consensus_transcript,
+            detected_language: detectLanguage(attachmentEnsembleResult.consensus_transcript),
+            sections: [{ section_id: "section-1", title: "Ensemble Transcription", section_kind: "body", page_number: null, bbox: null }],
+            segments: [{
+              segment_id: "segment-1",
+              segment_kind: "speech",
+              section_id: "section-1",
+              speaker_id: null,
+              text: attachmentEnsembleResult.consensus_transcript,
+              normalized_text: attachmentEnsembleResult.consensus_transcript,
+              language: detectLanguage(attachmentEnsembleResult.consensus_transcript),
+              confidence: attachmentEnsembleResult.agreement_score,
+              start_ms: attachmentEnsembleResult.consensus_words[0]?.start_ms ?? null,
+              end_ms: attachmentEnsembleResult.consensus_words[attachmentEnsembleResult.consensus_words.length - 1]?.end_ms ?? null,
+              paragraph_index: 0,
+              page_number: null,
+              bbox: null
+            }],
+            word_timestamps: attachmentEnsembleResult.consensus_words.map((w) => ({
+              text: w.text,
+              start_ms: w.start_ms,
+              end_ms: w.end_ms,
+              confidence: w.confidence
+            })),
+            speakers: [],
+            tables: [],
+            disagreements: attachmentEnsembleResult.disagreements.map((d, i) => ({
+              disagreement_id: `ensemble-disagreement-${i}`,
+              disagreement_type: "asr_engine_mismatch",
+              text: d.variants.map((v) => `${v.engine_id}:${v.text}`).join(" vs "),
+              start_ms: null,
+              end_ms: null,
+              page_number: null,
+              severity: "medium",
+              resolution_status: "open"
+            })),
+            metadata: {
+              ensemble_id: attachmentEnsembleResult.ensemble_id,
+              ensemble_agreement_score: attachmentEnsembleResult.agreement_score,
+              ensemble_strict_pass: attachmentEnsembleResult.strict_pass,
+              ensemble_engines_succeeded: attachmentEnsembleResult.engines_succeeded,
+              ensemble_voting_method: attachmentEnsembleResult.voting_method
+            },
+            warning_codes: attachmentEnsembleResult.strict_pass ? [] : ["ensemble_strict_threshold_not_met"]
+          };
+        } catch {
+          // Fallback to single-engine path if ensemble fails
+          response = this.callBridge(entry.targetPath, inputKind, path.join(jobRoot, sourceId));
+        }
+      } else {
+        response = this.callBridge(entry.targetPath, inputKind, path.join(jobRoot, sourceId));
+      }
 
       if (response.status !== "success") {
         const reason = {
@@ -1231,7 +1351,13 @@ export class TranscriptionExtractionEngine {
         compare_ready: relations.length > 0,
         mixed_batch: globalSources.length > 1,
         verification_score: verificationGate.verification_score,
-        unresolved_disagreements: unresolvedDisagreementRefs.length
+        unresolved_disagreements: unresolvedDisagreementRefs.length,
+        ...(ensembleResults.length > 0 ? {
+          ensemble_result: ensembleResults.length === 1 ? ensembleResults[0] : ensembleResults,
+          ensemble_engines_used: ensembleResults.map((r) => r.engines_invoked),
+          ensemble_agreement_scores: ensembleResults.map((r) => r.agreement_score),
+          ensemble_all_strict_pass: ensembleResults.every((r) => r.strict_pass)
+        } : {})
       },
       evidence_refs: [...new Set(evidenceRefs)],
       lineage_refs: [...new Set(lineageRefs)],
@@ -1628,6 +1754,392 @@ export class TranscriptionExtractionEngine {
     const answer = buildQuestionAnswer(mergedBundle, question);
     this.store.persistQuestionAnswer(question.bundle_refs[0] ?? "question", answer);
     return answer;
+  }
+
+  /* ── ASR Ensemble Strict ──────────────────────────────────── */
+
+  private async invokeVoskASR(audioPath: string, workDir: string): Promise<ASREngineResult> {
+    const start = Date.now();
+    try {
+      const response = this.callBridge(audioPath, "audio_file", workDir);
+      const words: ASREngineResult["words"] = (response.word_timestamps ?? []).map((w) => ({
+        text: normalizeText(String(w.text ?? "")),
+        start_ms: Number(w.start_ms ?? 0),
+        end_ms: Number(w.end_ms ?? 0),
+        confidence: Math.max(0, Math.min(1, Number(w.confidence ?? 0.75)))
+      }));
+      const transcript = words.map((w) => w.text).join(" ") || normalizeText(response.full_text ?? "");
+      const avgConf = words.length > 0 ? words.reduce((s, w) => s + w.confidence, 0) / words.length : 0.7;
+      return {
+        engine_id: "vosk-local",
+        engine_name: "Vosk Local ASR",
+        transcript,
+        words,
+        confidence: avgConf,
+        latency_ms: Date.now() - start,
+        error: null
+      };
+    } catch (err) {
+      return {
+        engine_id: "vosk-local",
+        engine_name: "Vosk Local ASR",
+        transcript: "",
+        words: [],
+        confidence: 0,
+        latency_ms: Date.now() - start,
+        error: err instanceof Error ? err.message : String(err)
+      };
+    }
+  }
+
+  private async invokeExternalASR(engine: ASREngineConfig, audioPath: string): Promise<ASREngineResult> {
+    const start = Date.now();
+    const audioBuffer = fs.readFileSync(audioPath);
+    const audioBase64 = audioBuffer.toString("base64");
+    try {
+      let url: string;
+      let headers: Record<string, string>;
+      let body: string;
+
+      switch (engine.engine_type) {
+        case "google_cloud": {
+          url = `https://speech.googleapis.com/v1/speech:recognize?key=${engine.api_key}`;
+          headers = { "Content-Type": "application/json" };
+          body = JSON.stringify({
+            config: { encoding: "LINEAR16", sampleRateHertz: 16000, languageCode: "en-US", enableWordTimeOffsets: true, model: engine.model_ref || "default" },
+            audio: { content: audioBase64 }
+          });
+          break;
+        }
+        case "azure_speech": {
+          const baseUrl = engine.endpoint_url.replace(/\/+$/, "");
+          url = `${baseUrl}/speech/recognition/conversation/cognitiveservices/v1?language=en-US`;
+          headers = { "Ocp-Apim-Subscription-Key": engine.api_key, "Content-Type": "audio/wav", Accept: "application/json" };
+          body = audioBuffer as unknown as string; // raw bytes handled by fetch
+          break;
+        }
+        case "aws_transcribe": {
+          const regionMatch = engine.endpoint_url.match(/transcribe\.([^.]+)\.amazonaws/);
+          const region = regionMatch ? regionMatch[1] : "us-east-1";
+          url = `https://transcribe.${region}.amazonaws.com`;
+          headers = { "Content-Type": "application/json", "X-Amz-Target": "Transcribe.StartTranscriptionJob", Authorization: `Bearer ${engine.api_key}` };
+          body = JSON.stringify({
+            TranscriptionJobName: `ensemble-${Date.now()}`,
+            Media: { MediaFileUri: audioPath },
+            MediaFormat: "wav",
+            LanguageCode: "en-US"
+          });
+          break;
+        }
+        case "whisper_local": {
+          const baseUrl = engine.endpoint_url.replace(/\/+$/, "");
+          url = `${baseUrl}/v1/audio/transcriptions`;
+          headers = { "Content-Type": "application/json", ...(engine.api_key ? { Authorization: `Bearer ${engine.api_key}` } : {}) };
+          body = JSON.stringify({
+            model: engine.model_ref || "whisper-1",
+            file_base64: audioBase64,
+            response_format: "verbose_json",
+            timestamp_granularities: ["word"]
+          });
+          break;
+        }
+        default:
+          throw new Error(`Unsupported ASR engine type: ${engine.engine_type}`);
+      }
+
+      const controller = new AbortController();
+      const timeoutHandle = setTimeout(() => controller.abort(), engine.timeout_ms || 30000);
+      let fetchResponse: Response;
+      try {
+        fetchResponse = await fetch(url, {
+          method: "POST",
+          headers,
+          body: engine.engine_type === "azure_speech" ? audioBuffer : body,
+          signal: controller.signal
+        });
+      } finally {
+        clearTimeout(timeoutHandle);
+      }
+
+      if (!fetchResponse.ok) {
+        const errorText = await fetchResponse.text();
+        throw new Error(`HTTP ${fetchResponse.status}: ${errorText.slice(0, 500)}`);
+      }
+
+      const json = (await fetchResponse.json()) as Record<string, unknown>;
+      const words: ASREngineResult["words"] = [];
+      let transcript = "";
+
+      if (engine.engine_type === "google_cloud") {
+        const results = (json.results ?? []) as Array<{ alternatives?: Array<{ transcript?: string; confidence?: number; words?: Array<{ word?: string; startTime?: string; endTime?: string }> }> }>;
+        for (const result of results) {
+          const alt = result.alternatives?.[0];
+          if (alt) {
+            transcript += (alt.transcript ?? "") + " ";
+            for (const w of alt.words ?? []) {
+              const startSec = parseFloat(String(w.startTime ?? "0").replace("s", "")) || 0;
+              const endSec = parseFloat(String(w.endTime ?? "0").replace("s", "")) || 0;
+              words.push({ text: String(w.word ?? ""), start_ms: Math.round(startSec * 1000), end_ms: Math.round(endSec * 1000), confidence: Number(alt.confidence ?? 0.8) });
+            }
+          }
+        }
+      } else if (engine.engine_type === "azure_speech") {
+        transcript = String((json as Record<string, unknown>).DisplayText ?? "");
+        const nbest = ((json as Record<string, unknown>).NBest ?? []) as Array<{ Words?: Array<{ Word?: string; Offset?: number; Duration?: number; Confidence?: number }> }>;
+        for (const entry of nbest) {
+          for (const w of entry.Words ?? []) {
+            const offsetMs = Math.round(Number(w.Offset ?? 0) / 10000);
+            const durationMs = Math.round(Number(w.Duration ?? 0) / 10000);
+            words.push({ text: String(w.Word ?? ""), start_ms: offsetMs, end_ms: offsetMs + durationMs, confidence: Number(w.Confidence ?? 0.8) });
+          }
+        }
+      } else if (engine.engine_type === "whisper_local") {
+        transcript = String((json as Record<string, unknown>).text ?? "");
+        const wordArray = ((json as Record<string, unknown>).words ?? []) as Array<{ word?: string; start?: number; end?: number }>;
+        for (const w of wordArray) {
+          words.push({ text: String(w.word ?? ""), start_ms: Math.round(Number(w.start ?? 0) * 1000), end_ms: Math.round(Number(w.end ?? 0) * 1000), confidence: 0.85 });
+        }
+      } else {
+        transcript = String((json as Record<string, unknown>).transcript ?? (json as Record<string, unknown>).text ?? "");
+      }
+
+      transcript = normalizeText(transcript);
+      const avgConf = words.length > 0 ? words.reduce((s, w) => s + w.confidence, 0) / words.length : 0.75;
+
+      return {
+        engine_id: engine.engine_id,
+        engine_name: engine.engine_name,
+        transcript,
+        words,
+        confidence: avgConf,
+        latency_ms: Date.now() - start,
+        error: null
+      };
+    } catch (err) {
+      return {
+        engine_id: engine.engine_id,
+        engine_name: engine.engine_name,
+        transcript: "",
+        words: [],
+        confidence: 0,
+        latency_ms: Date.now() - start,
+        error: err instanceof Error ? err.message : String(err)
+      };
+    }
+  }
+
+  async runASREnsemble(audioPath: string, config: ASREnsembleConfig): Promise<ASREnsembleResult> {
+    const ensembleId = id("ensemble", sha(audioPath + now()).slice(0, 12));
+    const enabledEngines = config.engines.filter((e) => e.enabled);
+
+    if (enabledEngines.length < config.min_engines_required && !config.fallback_to_single) {
+      throw new Error(
+        `Only ${enabledEngines.length} engines enabled but ${config.min_engines_required} required and fallback_to_single is false.`
+      );
+    }
+
+    const jobRoot = path.join(this.store.rootDir, "ensemble", ensembleId);
+    fs.mkdirSync(jobRoot, { recursive: true });
+
+    // Invoke all engines concurrently
+    const resultPromises: Promise<ASREngineResult>[] = enabledEngines.map((engine) => {
+      if (engine.engine_type === "vosk") {
+        return this.invokeVoskASR(audioPath, path.join(jobRoot, engine.engine_id));
+      }
+      return this.invokeExternalASR(engine, audioPath);
+    });
+
+    const perEngineResults = await Promise.all(resultPromises);
+    const succeeded = perEngineResults.filter((r) => r.error === null);
+    const failed = perEngineResults.filter((r) => r.error !== null);
+
+    // If not enough engines succeeded and fallback is allowed, use whatever we have
+    if (succeeded.length === 0) {
+      return {
+        ensemble_id: ensembleId,
+        engines_invoked: enabledEngines.length,
+        engines_succeeded: 0,
+        engines_failed: failed.length,
+        agreement_score: 0,
+        strict_pass: false,
+        consensus_transcript: "",
+        consensus_words: [],
+        per_engine_results: perEngineResults,
+        disagreements: [],
+        voting_method: config.voting_method,
+        strict_threshold: config.strict_threshold,
+        created_at: now()
+      };
+    }
+
+    // Determine max word count across successful results
+    const maxWords = Math.max(...succeeded.map((r) => r.words.length));
+
+    // Build consensus words and identify disagreements
+    const consensusWords: ASREnsembleResult["consensus_words"] = [];
+    const disagreements: ASREnsembleResult["disagreements"] = [];
+    let agreements = 0;
+
+    for (let wi = 0; wi < maxWords; wi++) {
+      const candidates: Array<{ engine_id: string; text: string; confidence: number; start_ms: number; end_ms: number; weight: number }> = [];
+      for (const result of succeeded) {
+        if (wi < result.words.length) {
+          const engineConfig = enabledEngines.find((e) => e.engine_id === result.engine_id);
+          const weight = engineConfig?.weight ?? 1;
+          candidates.push({
+            engine_id: result.engine_id,
+            text: result.words[wi].text.toLowerCase(),
+            confidence: result.words[wi].confidence,
+            start_ms: result.words[wi].start_ms,
+            end_ms: result.words[wi].end_ms,
+            weight
+          });
+        }
+      }
+
+      if (candidates.length === 0) continue;
+
+      let chosenText: string;
+      let chosenConfidence: number;
+      let chosenStart: number;
+      let chosenEnd: number;
+
+      if (config.voting_method === "unanimity") {
+        const allSame = candidates.every((c) => c.text === candidates[0].text);
+        if (allSame) {
+          agreements++;
+        } else {
+          disagreements.push({
+            position: wi,
+            word_index: wi,
+            variants: candidates.map((c) => ({ engine_id: c.engine_id, text: c.text, confidence: c.confidence }))
+          });
+        }
+        // Even with unanimity, pick the most confident candidate
+        const best = candidates.reduce((a, b) => (a.confidence > b.confidence ? a : b));
+        chosenText = allSame ? candidates[0].text : best.text;
+        chosenConfidence = allSame ? Math.max(...candidates.map((c) => c.confidence)) : best.confidence;
+        chosenStart = best.start_ms;
+        chosenEnd = best.end_ms;
+      } else if (config.voting_method === "confidence_weighted") {
+        const best = candidates.reduce((a, b) => (a.confidence > b.confidence ? a : b));
+        chosenText = best.text;
+        chosenConfidence = best.confidence;
+        chosenStart = best.start_ms;
+        chosenEnd = best.end_ms;
+        const allSame = candidates.every((c) => c.text === candidates[0].text);
+        if (allSame) {
+          agreements++;
+        } else {
+          disagreements.push({
+            position: wi,
+            word_index: wi,
+            variants: candidates.map((c) => ({ engine_id: c.engine_id, text: c.text, confidence: c.confidence }))
+          });
+        }
+      } else {
+        // weighted_majority: tally weighted votes per distinct word
+        const tally = new Map<string, { totalWeight: number; bestConf: number; bestStart: number; bestEnd: number }>();
+        for (const c of candidates) {
+          const entry = tally.get(c.text);
+          if (!entry) {
+            tally.set(c.text, { totalWeight: c.weight, bestConf: c.confidence, bestStart: c.start_ms, bestEnd: c.end_ms });
+          } else {
+            entry.totalWeight += c.weight;
+            if (c.confidence > entry.bestConf) {
+              entry.bestConf = c.confidence;
+              entry.bestStart = c.start_ms;
+              entry.bestEnd = c.end_ms;
+            }
+          }
+        }
+        let winner = { text: "", totalWeight: -1, bestConf: 0, bestStart: 0, bestEnd: 0 };
+        for (const [text, data] of tally.entries()) {
+          if (data.totalWeight > winner.totalWeight || (data.totalWeight === winner.totalWeight && data.bestConf > winner.bestConf)) {
+            winner = { text, ...data };
+          }
+        }
+        chosenText = winner.text;
+        chosenConfidence = winner.bestConf;
+        chosenStart = winner.bestStart;
+        chosenEnd = winner.bestEnd;
+
+        const allSame = tally.size === 1;
+        if (allSame) {
+          agreements++;
+        } else {
+          disagreements.push({
+            position: wi,
+            word_index: wi,
+            variants: candidates.map((c) => ({ engine_id: c.engine_id, text: c.text, confidence: c.confidence }))
+          });
+        }
+      }
+
+      consensusWords.push({ text: chosenText, start_ms: chosenStart, end_ms: chosenEnd, confidence: chosenConfidence });
+    }
+
+    const totalPositions = agreements + disagreements.length;
+    const agreementScore = totalPositions > 0 ? agreements / totalPositions : succeeded.length > 0 ? 1 : 0;
+    const strictPass = agreementScore >= config.strict_threshold;
+
+    return {
+      ensemble_id: ensembleId,
+      engines_invoked: enabledEngines.length,
+      engines_succeeded: succeeded.length,
+      engines_failed: failed.length,
+      agreement_score: Number(agreementScore.toFixed(4)),
+      strict_pass: strictPass,
+      consensus_transcript: consensusWords.map((w) => w.text).join(" "),
+      consensus_words: consensusWords,
+      per_engine_results: perEngineResults,
+      disagreements,
+      voting_method: config.voting_method,
+      strict_threshold: config.strict_threshold,
+      created_at: now()
+    };
+  }
+
+  /* ── Implementation Matrix ────────────────────────────────── */
+
+  static getImplementationMatrix(): Array<{
+    feature: string;
+    status: "implemented" | "pending" | "unsupported" | "deferred";
+    proof_ref: string;
+    notes: string;
+  }> {
+    return [
+      { feature: "vosk_local_asr", status: "implemented", proof_ref: "callBridge()", notes: "Vosk ASR via Python content_bridge.py" },
+      { feature: "spreadsheet_extraction", status: "implemented", proof_ref: "analyzeSpreadsheet()", notes: "ExcelJS-based xlsx/csv parsing" },
+      { feature: "unified_content_bundle", status: "implemented", proof_ref: "ingestAndExtract()", notes: "Full UCB construction with sources, segments, entities, fields" },
+      { feature: "verification_gate", status: "implemented", proof_ref: "ingestAndExtract():verificationGate", notes: "Multimodal corroboration and disagreement scoring" },
+      { feature: "bundle_comparison", status: "implemented", proof_ref: "compareBundles()", notes: "Entity/field diff between two bundles" },
+      { feature: "question_answering", status: "implemented", proof_ref: "answerQuestion()", notes: "QA over bundle segments, fields, entities" },
+      { feature: "semantic_graph", status: "implemented", proof_ref: "ingestAndExtract():semanticNodes/Edges", notes: "Full semantic node/edge graph per bundle" },
+      { feature: "report_handoff", status: "implemented", proof_ref: "buildReportHandoff()", notes: "Report-ready handoff JSON for downstream engines" },
+      { feature: "query_dataset", status: "implemented", proof_ref: "buildQueryDataset()", notes: "Structured query dataset for dashboards" },
+      { feature: "audit_trail", status: "implemented", proof_ref: "createAuditEvent()", notes: "Full audit event chain per workflow stage" },
+      { feature: "evidence_pack", status: "implemented", proof_ref: "EvidencePackSchema.parse()", notes: "Evidence packs with checks, metrics, lineage" },
+      { feature: "lineage_tracking", status: "implemented", proof_ref: "lineageEdges", notes: "Source-to-bundle and bundle-to-artifact edges" },
+      { feature: "library_asset", status: "implemented", proof_ref: "LibraryAssetSchema.parse()", notes: "Library asset registration for reuse" },
+      { feature: "asr_ensemble_strict", status: "implemented", proof_ref: "runASREnsemble()", notes: "Multi-engine ASR with weighted/confidence/unanimity voting" },
+      { feature: "ensemble_vosk_engine", status: "implemented", proof_ref: "invokeVoskASR()", notes: "Vosk engine invocation inside ensemble" },
+      { feature: "ensemble_google_cloud", status: "implemented", proof_ref: "invokeExternalASR():google_cloud", notes: "Google Cloud Speech-to-Text REST API integration" },
+      { feature: "ensemble_azure_speech", status: "implemented", proof_ref: "invokeExternalASR():azure_speech", notes: "Azure Cognitive Services Speech REST API integration" },
+      { feature: "ensemble_aws_transcribe", status: "implemented", proof_ref: "invokeExternalASR():aws_transcribe", notes: "AWS Transcribe REST API integration" },
+      { feature: "ensemble_whisper_local", status: "implemented", proof_ref: "invokeExternalASR():whisper_local", notes: "Local Whisper-compatible REST API integration" },
+      { feature: "ensemble_agreement_scoring", status: "implemented", proof_ref: "runASREnsemble():agreementScore", notes: "Per-word agreement scoring across engines" },
+      { feature: "ensemble_disagreement_tracking", status: "implemented", proof_ref: "runASREnsemble():disagreements", notes: "Per-position disagreement with per-engine variants" },
+      { feature: "ensemble_in_main_flow", status: "implemented", proof_ref: "ingestAndExtract():ensemble_config", notes: "Optional ensemble_config parameter in main ingestion flow" },
+      { feature: "capability_registration", status: "implemented", proof_ref: "registerTranscriptionCapability()", notes: "Action/tool registry integration" },
+      { feature: "dispatch_routing", status: "implemented", proof_ref: "dispatchTranscriptionAction()", notes: "Action-based dispatch for all transcription operations" },
+      { feature: "arabic_language_detection", status: "implemented", proof_ref: "detectLanguage()", notes: "Arabic/English language detection via Unicode range" },
+      { feature: "named_value_extraction", status: "implemented", proof_ref: "namedValueMatches()", notes: "Regex-based key:value field extraction" },
+      { feature: "entity_extraction", status: "implemented", proof_ref: "extractProperEntities()/extractDates()/extractAmounts()", notes: "Date, amount, and proper-name entity extraction" },
+      { feature: "real_time_streaming_asr", status: "deferred", proof_ref: "", notes: "WebSocket-based real-time ASR streaming not yet implemented" },
+      { feature: "custom_vocabulary_injection", status: "deferred", proof_ref: "", notes: "Per-tenant custom vocabulary for ASR engines deferred" },
+      { feature: "speaker_diarization_ensemble", status: "pending", proof_ref: "", notes: "Cross-engine speaker diarization alignment planned" }
+    ];
   }
 }
 

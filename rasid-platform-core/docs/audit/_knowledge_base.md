@@ -198,6 +198,14 @@
   - `screenshot_fresh = true`
 - The hostile rerun did not detect a live reopen on `/transcription`
 
+- Date: 2026-03-16T09:40:57.2355221+03:00
+- `packages/transcription-extraction-engine/tools/content_bridge.py` currently drives ASR through a single concrete backend:
+  - `from vosk import KaldiRecognizer, Model`
+  - bridge output marks `transcription_engine = "vosk"`
+- Based on direct source inspection, `ASR ensemble strict` is not implemented in the current tree yet.
+- `packages/excel-engine/src/engine.ts` exposes a real `merge_workbooks` transformation that accepts arbitrary `sourceWorkbookPath` plus `sourceWorkbookPaths`, but the built-in sample proof currently exercises four source workbooks only.
+- `packages/arabic-localization-lct-engine/src/index.ts` already contains provider-backed translation capability through `provider_mode = "http_json"` with retry/fallback traces, in addition to deterministic local and filesystem glossary paths.
+
 - Date: 2026-03-15T22:31:00+03:00
 - `scripts/smoke/localization-external-provider-validation.mjs` now validates a real commercial translation path through the official `claude` client and persists repository-local request/response/debug artifacts for:
   - `commercial_auth_success`

@@ -12,6 +12,38 @@ Append-only.
 - Next exact step:
 
 ## Entry
+- Timestamp: 2026-03-16T09:40:57.2355221+03:00
+- Phase: scoped requirement closure audit
+- Scope: assess the current tree against the user-limited Excel / Transcription / Arabic localization requirement set, then add fresh matrices and only current-tree proofs
+- Files/Folders inspected:
+  - `C:\ALRaMaDy\rasid-platform-core\packages\excel-engine\src\engine.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\excel-engine\src\backend-service.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\excel-engine\src\store.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\transcription-extraction-engine\src\index.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\transcription-extraction-engine\tools\content_bridge.py`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\arabic-localization-lct-engine\src\index.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\transcription-engine-regression.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\transcription-report-presentation-dashboard-proof.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\transcription-report-dashboard-localization-platform-flow.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\excel-engine-sample.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\excel-engine-hostile-audit.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\excel-cross-engine-consumability.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\excel-dashboard-cross-engine.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\localization-engine-sample.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\localization-live-visual-proof.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\localization-remote-gateway-proof.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\localization-external-provider-validation.mjs`
+- Findings added:
+  - direct source evidence confirms `transcription-extraction-engine` is still single-backend `vosk`, so `ASR ensemble strict` remains unclosed
+  - direct source evidence confirms `excel-engine` has a real `merge_workbooks` transformation but its built-in proof stops below the required `50 files merge proof`
+  - direct source evidence confirms `arabic-localization-lct-engine` already has provider-backed `http_json` integration plus deterministic/glossary fallback paths
+- Unresolved items:
+  - whether commercial provider auth is available for a fresh localization provider rerun
+  - whether a repository-local `50 files merge proof` can be added without changing engine internals
+- Next exact step:
+  - add the new proof/matrix scripts, then execute fresh reruns and persist their outputs
+
+## Entry
 - Timestamp: 2026-03-16T07:57:20.7973902+03:00
 - Phase: `excel_engine` shared-shell continuity to dashboards
 - Scope: add a live shared-shell `/excel` intake route, materialize workbook -> report handoff manifests inside `dashboard-web`, and prove `/excel -> report -> dashboard -> publish/share/export` from the current tree only

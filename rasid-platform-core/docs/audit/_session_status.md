@@ -1,20 +1,32 @@
 # Session Status
 
 - Session started: 2026-03-15T22:11:00.4296103+03:00
-- Current phase: `arabic-localization-lct-engine` cross-engine flow proof for `excel -> reports -> dashboards -> localization -> publish`
+- Current phase: scoped requirement closure audit and fresh proof reruns for `excel-engine`, `transcription-extraction-engine`, and `arabic-localization-lct-engine`
 - Last completed checkpoint: fresh repository-local `excel -> reports -> dashboards -> localization -> publish` proof persisted under `C:\ALRaMaDy\rasid-platform-core\packages\arabic-localization-lct-engine\output\excel-report-dashboard-localization-platform-flow-20260316055422\records\flow-proof.json`
-- Current scope: keep advancing localization-owned shared-platform flows and return only strict proof fields for each verified flow
+- Current scope: execute only the remaining verifiable requirement slices inside Excel, Transcription, and Arabic localization; emit fresh repository-local matrices and new proof roots without reusing stale evidence
 - Completed folders/files:
-  - `C:\ALRaMaDy\rasid-platform-core\scripts\excel-report-dashboard-localization-platform-flow.mjs`
-  - `C:\ALRaMaDy\rasid-platform-core\scripts\presentation-dashboard-localization-platform-flow.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\excel-engine\src\engine.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\excel-engine\src\backend-service.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\excel-engine\src\store.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\transcription-extraction-engine\src\index.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\transcription-extraction-engine\tools\content_bridge.py`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\arabic-localization-lct-engine\src\index.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\transcription-engine-regression.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\transcription-report-presentation-dashboard-proof.mjs`
   - `C:\ALRaMaDy\rasid-platform-core\scripts\transcription-report-dashboard-localization-platform-flow.mjs`
-  - `C:\ALRaMaDy\rasid-platform-core\scripts\report-dashboard-localization-platform-flow.mjs`
-  - `C:\ALRaMaDy\rasid-platform-core\packages\arabic-localization-lct-engine\output\excel-report-dashboard-localization-platform-flow-20260316055422\`
-  - `C:\ALRaMaDy\rasid-platform-core\packages\arabic-localization-lct-engine\output\presentation-dashboard-localization-platform-flow-20260316054754\`
-  - `C:\ALRaMaDy\rasid-platform-core\packages\arabic-localization-lct-engine\output\transcription-report-dashboard-localization-platform-flow-20260316054325\`
-  - `C:\ALRaMaDy\rasid-platform-core\packages\arabic-localization-lct-engine\output\report-dashboard-localization-platform-flow-20260316035850\`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\excel-engine-sample.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\excel-engine-hostile-audit.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\excel-cross-engine-consumability.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\excel-dashboard-cross-engine.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\localization-engine-sample.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\localization-live-visual-proof.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\localization-remote-gateway-proof.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\localization-external-provider-validation.mjs`
 - Remaining scope:
-  - continue to the next live localization-owned cross-engine flow without reusing old proof roots
+  - add fresh requirement matrices for the three scoped engines
+  - add a real `50 files merge proof` artifact for `excel-engine`
+  - rerun fresh proof chains for transcription and localization from current-tree scripts only
+  - classify unresolved requirement slices as `pending`, `unsupported`, `degraded`, `partial`, or `reopen` using direct source evidence only
 - Next exact step:
-  - return the fresh `excel -> reports -> dashboards -> localization -> publish` proof in the required strict field order with repository-local runtime, artifacts, evidence, audit, lineage, and tests only
-- Last update: 2026-03-16T08:57:54.0133395+03:00
+  - add scoped proof/matrix scripts and package entries, then execute them to generate fresh repository-local artifacts
+- Last update: 2026-03-16T09:40:57.2355221+03:00

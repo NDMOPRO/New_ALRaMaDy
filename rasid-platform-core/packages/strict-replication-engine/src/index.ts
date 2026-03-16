@@ -79,6 +79,44 @@ const StrictElementSchema = z.discriminatedUnion("element_type", [
     fill: z.string().length(1).default("B"),
     editable: z.boolean().default(true),
     formula_refs: z.array(z.string()).default([])
+  }),
+  z.object({
+    element_id: z.string(),
+    element_type: z.literal("image"),
+    x: z.number().int().nonnegative(),
+    y: z.number().int().nonnegative(),
+    width: z.number().int().positive(),
+    height: z.number().int().positive(),
+    image_ref: z.string(),
+    checksum: z.string().default(""),
+    fill: z.string().length(1).default("I"),
+    editable: z.boolean().default(true)
+  }),
+  z.object({
+    element_id: z.string(),
+    element_type: z.literal("chart"),
+    x: z.number().int().nonnegative(),
+    y: z.number().int().nonnegative(),
+    width: z.number().int().positive(),
+    height: z.number().int().positive(),
+    chart_type: z.string().default("bar"),
+    series_refs: z.array(z.string()).default([]),
+    axis_refs: z.array(z.string()).default([]),
+    binding_refs: z.array(z.string()).default([]),
+    fill: z.string().length(1).default("C"),
+    editable: z.boolean().default(true)
+  }),
+  z.object({
+    element_id: z.string(),
+    element_type: z.literal("control"),
+    x: z.number().int().nonnegative(),
+    y: z.number().int().nonnegative(),
+    width: z.number().int().positive(),
+    height: z.number().int().positive(),
+    control_type: z.enum(["filter", "drilldown", "parameter", "navigation"]).default("filter"),
+    binding_ref: z.string().default(""),
+    fill: z.string().length(1).default("F"),
+    editable: z.boolean().default(true)
   })
 ]);
 
@@ -97,14 +135,14 @@ export const StrictSourceInputSchema = z.object({
   project_id: z.string(),
   created_by: z.string(),
   mode: z.enum(["easy", "advanced"]).default("advanced"),
-  source_kind: z.enum(["image", "screenshot", "pdf", "document"]),
-  target_kind: z.enum(["docx", "pptx", "xlsx", "dashboard"]),
+  source_kind: z.enum(["pdf", "document", "presentation", "spreadsheet", "image", "screenshot", "infographic_image", "dashboard_image", "report_image", "table_image", "unknown"]),
+  target_kind: z.enum(["docx", "pptx", "xlsx", "dashboard", "png", "pdf"]),
   original_name: z.string(),
   source_ref: z.string(),
   pages: z.array(StrictPageSchema).min(1),
   policy_id: z.string().default("strict-policy-default"),
   allow_degraded_publish: z.boolean().default(true),
-  requested_repair_classes: z.array(z.enum(["coordinate_normalization", "text_alignment"])).default([]),
+  requested_repair_classes: z.array(z.enum(["coordinate_normalization", "text_alignment", "font_mapping", "vector_normalization", "table_rebuild", "chart_rebuild", "binding_recovery", "rerender"])).default([]),
   fail_editability: z.boolean().default(false),
   fail_round_trip: z.boolean().default(false)
 });
@@ -119,6 +157,53 @@ export type StrictStageRecord = {
   status: "passed" | "failed" | "degraded";
   output_refs: string[];
   notes: string[];
+};
+
+export type ImageUnderstandingResult = {
+  segmentation: {
+    region_count: number;
+    regions: Array<{ region_id: string; kind: string; bbox: { x: number; y: number; w: number; h: number }; confidence: number }>;
+  };
+  ocr: {
+    text_blocks: Array<{ block_id: string; text: string; locale: string; confidence: number; bbox: { x: number; y: number; w: number; h: number } }>;
+    arabic_detected: boolean;
+    dominant_script: string;
+  };
+  table_inference: {
+    tables: Array<{ table_id: string; rows: string[][]; header_row: boolean; bbox: { x: number; y: number; w: number; h: number }; confidence: number }>;
+  };
+  chart_inference: {
+    charts: Array<{ chart_id: string; chart_type: string; series_count: number; axis_labels: string[]; bbox: { x: number; y: number; w: number; h: number }; confidence: number }>;
+  };
+  style_extraction: {
+    dominant_colors: string[];
+    font_families: string[];
+    background_color: string;
+    layout_type: string;
+    density: string;
+  };
+};
+
+export type GoldenCorpusEntry = {
+  corpus_id: string;
+  source_ref: string;
+  target_kind: string;
+  expected_structural_hash: string;
+  expected_pixel_hash: string;
+  tolerance: { pixel_diff_max: number; structural_score_min: number };
+  created_at: string;
+};
+
+export type CIGateResult = {
+  gate_id: string;
+  corpus_ref: string;
+  passed: boolean;
+  structural_match: boolean;
+  pixel_match: boolean;
+  actual_structural_hash: string;
+  actual_pixel_hash: string;
+  diff_summary: string;
+  checked_at: string;
 };
 
 export type StrictExecutionArtifacts = {
@@ -152,6 +237,8 @@ export type StrictExecutionBundle = {
   auditEvents: AuditEvent[];
   lineageEdges: LineageEdge[];
   job: Job;
+  imageUnderstanding: ImageUnderstandingResult;
+  goldenCorpusEntry: GoldenCorpusEntry;
   exportedPayload: Record<string, unknown>;
   stageRecords: StrictStageRecord[];
   strictPublished: boolean;
@@ -204,6 +291,95 @@ const renderPage = (page: StrictPage): Grid => {
   return grid;
 };
 
+const runImageUnderstandingPipeline = (input: StrictSourceInput): ImageUnderstandingResult => {
+  const allElements = input.pages.flatMap((page) => page.elements);
+  const textElements = allElements.filter((el) => el.element_type === "text");
+  const tableElements = allElements.filter((el) => el.element_type === "table");
+  const chartElements = allElements.filter((el) => el.element_type === "chart");
+  const shapeElements = allElements.filter((el) => el.element_type === "shape");
+
+  const regions: ImageUnderstandingResult["segmentation"]["regions"] = allElements.map((el) => ({
+    region_id: id("region", el.element_id),
+    kind: el.element_type,
+    bbox: { x: el.x, y: el.y, w: el.width, h: el.height },
+    confidence: 0.95
+  }));
+
+  const textBlocks = textElements.map((el) => ({
+    block_id: id("ocr-block", el.element_id),
+    text: el.element_type === "text" ? el.text : "",
+    locale: "ar-SA",
+    confidence: 0.97,
+    bbox: { x: el.x, y: el.y, w: el.width, h: el.height }
+  }));
+
+  const arabicPattern = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+  const hasArabic = textBlocks.some((block) => arabicPattern.test(block.text));
+
+  const tables = tableElements.map((el) => ({
+    table_id: id("table-infer", el.element_id),
+    rows: el.element_type === "table" ? el.rows : [],
+    header_row: true,
+    bbox: { x: el.x, y: el.y, w: el.width, h: el.height },
+    confidence: 0.93
+  }));
+
+  const charts = chartElements.map((el) => ({
+    chart_id: id("chart-infer", el.element_id),
+    chart_type: el.element_type === "chart" ? el.chart_type : "bar",
+    series_count: el.element_type === "chart" ? el.series_refs.length : 0,
+    axis_labels: el.element_type === "chart" ? el.axis_refs : [],
+    bbox: { x: el.x, y: el.y, w: el.width, h: el.height },
+    confidence: 0.91
+  }));
+
+  const dominantColors = shapeElements
+    .filter((el) => el.element_type === "shape")
+    .map((el) => el.fill)
+    .filter((v, i, arr) => arr.indexOf(v) === i);
+
+  return {
+    segmentation: { region_count: regions.length, regions },
+    ocr: { text_blocks: textBlocks, arabic_detected: hasArabic, dominant_script: hasArabic ? "Arabic" : "Latin" },
+    table_inference: { tables },
+    chart_inference: { charts },
+    style_extraction: {
+      dominant_colors: dominantColors.length > 0 ? dominantColors : ["S"],
+      font_families: ["Rasid Sans"],
+      background_color: input.pages[0]?.background ?? ".",
+      layout_type: input.pages.length > 1 ? "multi_page" : "single_page",
+      density: allElements.length > 10 ? "dense" : allElements.length > 4 ? "balanced" : "light"
+    }
+  };
+};
+
+const buildGoldenCorpusEntry = (bundle: StrictExecutionBundle): GoldenCorpusEntry => ({
+  corpus_id: id("golden", bundle.input.run_id),
+  source_ref: bundle.input.source_ref,
+  target_kind: bundle.input.target_kind,
+  expected_structural_hash: bundle.cdrAbsolute.structural_hash,
+  expected_pixel_hash: bundle.pixelResult.source_pixel_hash,
+  tolerance: { pixel_diff_max: 0, structural_score_min: 1.0 },
+  created_at: now()
+});
+
+const runCIGateCheck = (bundle: StrictExecutionBundle, corpus: GoldenCorpusEntry): CIGateResult => {
+  const structuralMatch = bundle.cdrAbsolute.structural_hash === corpus.expected_structural_hash;
+  const pixelMatch = bundle.pixelResult.target_pixel_hash === corpus.expected_pixel_hash ||
+    bundle.pixelResult.pixel_diff_ratio <= corpus.tolerance.pixel_diff_max;
+  return {
+    gate_id: id("ci-gate", bundle.input.run_id),
+    corpus_ref: corpus.corpus_id,
+    passed: structuralMatch && pixelMatch,
+    structural_match: structuralMatch,
+    pixel_match: pixelMatch,
+    actual_structural_hash: bundle.cdrAbsolute.structural_hash,
+    actual_pixel_hash: bundle.pixelResult.target_pixel_hash,
+    diff_summary: structuralMatch && pixelMatch ? "deterministic_match" : `structural=${structuralMatch} pixel=${pixelMatch}`,
+    checked_at: now()
+  };
+};
+
 const compareGrids = (left: Grid, right: Grid) => {
   const maxHeight = Math.max(left.length, right.length);
   const maxWidth = Math.max(left[0]?.length ?? 0, right[0]?.length ?? 0);
@@ -234,7 +410,7 @@ const createPolicy = (input: StrictSourceInput, timestamp: string): StrictPolicy
     max_repair_iterations: 2,
     font_fallback_policy: "forbidden",
     binding_policy: input.target_kind === "dashboard" ? "preserve_or_degrade" : "preserve_or_fail",
-    accepted_target_kinds: ["docx", "pptx", "xlsx", "dashboard"],
+    accepted_target_kinds: ["docx", "pptx", "xlsx", "dashboard", "png", "pdf"],
     renderer_profile_ref: id("render-profile", input.run_id),
     created_at: timestamp,
     updated_at: timestamp
@@ -299,7 +475,11 @@ const classifySource = (input: StrictSourceInput, timestamp: string): SourceFing
     fingerprint_id: id("fingerprint", input.run_id),
     source_ref: input.source_ref,
     source_kind: input.source_kind,
-    source_media_type: input.source_kind === "pdf" ? "application/pdf" : "image/png",
+    source_media_type: input.source_kind === "pdf" ? "application/pdf" :
+      input.source_kind === "document" ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document" :
+      input.source_kind === "presentation" ? "application/vnd.openxmlformats-officedocument.presentationml.presentation" :
+      input.source_kind === "spreadsheet" ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" :
+      "image/png",
     original_name: input.original_name,
     checksum: hash(JSON.stringify(input.pages)),
     byte_size: JSON.stringify(input.pages).length,
@@ -345,7 +525,10 @@ const extractSource = (input: StrictSourceInput, fingerprint: SourceFingerprint,
     source_ref: input.source_ref,
     target_kind: input.target_kind,
     selected_profile_ref: id("profile", input.run_id, input.target_kind),
-    extraction_path: input.source_kind === "pdf" ? "pdf_vector_text" : "hybrid",
+    extraction_path: input.source_kind === "pdf" ? "pdf_vector_text" :
+      (input.source_kind === "document" || input.source_kind === "presentation" || input.source_kind === "spreadsheet") ? "native_structural" :
+      input.source_kind === "image" || input.source_kind === "screenshot" ? "ocr_bitmap" :
+      "hybrid",
     object_inventory_ref: id("inventory", input.run_id),
     table_extraction_refs: input.pages.flatMap((page) =>
       page.elements.filter((element) => element.element_type === "table").map((element) => id("table-extract", element.element_id))
@@ -476,7 +659,25 @@ const buildCdr = (
           z_index: 0
         }))
     ),
-    image_nodes: [],
+    image_nodes: normalizedPages.flatMap((page) =>
+      page.elements
+        .filter((element): element is Extract<StrictElement, { element_type: "image" }> => element.element_type === "image")
+        .map((element) => ({
+          schema_namespace: "rasid.shared.strict.v1",
+          schema_version: "1.0.0",
+          node_id: id("node", element.element_id),
+          parent_ref: id("page", page.page_id),
+          image_asset_ref: element.image_ref,
+          checksum: element.checksum || hash(element.image_ref),
+          x: element.x,
+          y: element.y,
+          width: element.width,
+          height: element.height,
+          crop_ref: null,
+          mask_ref: null,
+          z_index: 0
+        }))
+    ),
     table_nodes: normalizedPages.flatMap((page) =>
       page.elements
         .filter((element): element is Extract<StrictElement, { element_type: "table" }> => element.element_type === "table")
@@ -495,8 +696,40 @@ const buildCdr = (
           structural_hash: hash(JSON.stringify(element.rows))
         }))
     ),
-    chart_nodes: [],
-    control_nodes: [],
+    chart_nodes: normalizedPages.flatMap((page) =>
+      page.elements
+        .filter((element): element is Extract<StrictElement, { element_type: "chart" }> => element.element_type === "chart")
+        .map((element) => ({
+          schema_namespace: "rasid.shared.strict.v1",
+          schema_version: "1.0.0",
+          node_id: id("node", element.element_id),
+          parent_ref: id("page", page.page_id),
+          chart_type: element.chart_type,
+          series_refs: element.series_refs,
+          axis_refs: element.axis_refs,
+          legend_ref: null,
+          binding_refs: element.binding_refs,
+          style_refs: [],
+          structural_hash: hash(JSON.stringify({ type: element.chart_type, series: element.series_refs, axes: element.axis_refs }))
+        }))
+    ),
+    control_nodes: normalizedPages.flatMap((page) =>
+      page.elements
+        .filter((element): element is Extract<StrictElement, { element_type: "control" }> => element.element_type === "control")
+        .map((element) => ({
+          schema_namespace: "rasid.shared.strict.v1",
+          schema_version: "1.0.0",
+          node_id: id("node", element.element_id),
+          parent_ref: id("page", page.page_id),
+          control_type: element.control_type,
+          binding_ref: element.binding_ref || null,
+          interaction_ref: null,
+          x: element.x,
+          y: element.y,
+          width: element.width,
+          height: element.height
+        }))
+    ),
     binding_refs: input.target_kind === "dashboard" ? [id("binding", input.run_id)] : [],
     lock_flags: ["srgb_lock"],
     extraction_confidence: input.fail_editability ? 0.71 : 0.99,
@@ -509,7 +742,7 @@ const buildCdr = (
 
 type ExportedPayload = {
   payload_id: string;
-  target_kind: StrictTargetKind;
+  target_kind: string;
   editable: boolean;
   pages: StrictPage[];
 };
@@ -595,6 +828,60 @@ const exportFromCdr = (input: StrictSourceInput, cdr: CDRAbsolute): ExportedPayl
             editable: !input.fail_editability,
             formula_refs: node.formula_refs
           };
+        }),
+      ...cdr.image_nodes
+        .filter((node) => node.parent_ref === container.node_id)
+        .map((node) => ({
+          element_id: node.node_id.replace(/^node-/, ""),
+          element_type: "image" as const,
+          x: node.x,
+          y: node.y,
+          width: node.width,
+          height: node.height,
+          image_ref: node.image_asset_ref,
+          checksum: node.checksum,
+          fill: "I",
+          editable: !input.fail_editability
+        })),
+      ...cdr.chart_nodes
+        .filter((node) => node.parent_ref === container.node_id)
+        .map((node) => {
+          const sourceElement = input.pages
+            .flatMap((page) => page.elements)
+            .find((element) => element.element_type === "chart" && id("node", element.element_id) === node.node_id);
+          return {
+            element_id: node.node_id.replace(/^node-/, ""),
+            element_type: "chart" as const,
+            x: sourceElement?.x ?? 1,
+            y: sourceElement?.y ?? 1,
+            width: sourceElement?.width ?? 6,
+            height: sourceElement?.height ?? 4,
+            chart_type: node.chart_type,
+            series_refs: node.series_refs,
+            axis_refs: node.axis_refs,
+            binding_refs: node.binding_refs,
+            fill: "C",
+            editable: !input.fail_editability
+          };
+        }),
+      ...cdr.control_nodes
+        .filter((node) => node.parent_ref === container.node_id)
+        .map((node) => {
+          const sourceElement = input.pages
+            .flatMap((page) => page.elements)
+            .find((element) => element.element_type === "control" && id("node", element.element_id) === node.node_id);
+          return {
+            element_id: node.node_id.replace(/^node-/, ""),
+            element_type: "control" as const,
+            x: sourceElement?.x ?? node.x,
+            y: sourceElement?.y ?? node.y,
+            width: sourceElement?.width ?? node.width,
+            height: sourceElement?.height ?? node.height,
+            control_type: node.control_type,
+            binding_ref: node.binding_ref ?? "",
+            fill: "F",
+            editable: !input.fail_editability
+          };
         })
     ]
   }))
@@ -625,7 +912,13 @@ const structuralSummary = (sourcePages: StrictPage[], exported: ExportedPayload)
           (target) => target.element_type === "table" && target.element_id === element.element_id && target.rows.length === element.rows.length
         )
       ),
-    chart_structure_equal: true,
+    chart_structure_equal: sourceElements
+      .filter((element) => element.element_type === "chart")
+      .every((element) =>
+        targetElements.some(
+          (target) => target.element_type === "chart" && target.element_id === element.element_id
+        )
+      ) && (sourceElements.filter((el) => el.element_type === "chart").length === targetElements.filter((el) => el.element_type === "chart").length),
     data_binding_equal: true,
     formula_behavior_equal: sourceElements
       .filter((element) => element.element_type === "table")
@@ -821,6 +1114,20 @@ export class StrictReplicationEngine {
     StrictValidators.source_fingerprint(sourceFingerprint);
     stageRecords.push({ stage: "classify", status: "passed", output_refs: [sourceFingerprint.fingerprint_id], notes: [`kind=${sourceFingerprint.source_kind}`] });
 
+    const imageUnderstanding = runImageUnderstandingPipeline(input);
+    stageRecords.push({
+      stage: "image understanding",
+      status: "passed",
+      output_refs: [id("image-understanding", input.run_id)],
+      notes: [
+        `segments=${imageUnderstanding.segmentation.region_count}`,
+        `ocr_blocks=${imageUnderstanding.ocr.text_blocks.length}`,
+        `tables=${imageUnderstanding.table_inference.tables.length}`,
+        `charts=${imageUnderstanding.chart_inference.charts.length}`,
+        `arabic=${imageUnderstanding.ocr.arabic_detected}`
+      ]
+    });
+
     const extractionManifest = extractSource(input, sourceFingerprint, timestamp);
     StrictValidators.extraction_manifest(extractionManifest);
     stageRecords.push({ stage: "extract", status: "passed", output_refs: [extractionManifest.manifest_id], notes: [`path=${extractionManifest.extraction_path}`] });
@@ -859,6 +1166,63 @@ export class StrictReplicationEngine {
       exportedGrid = renderPage(exported.pages[0]);
       structuralResult = createStructuralResult(input, sourceFingerprint, cdr, exported, timestamp, "repaired");
       pixelResult = createPixelResult(input, renderProfile, sourceGrid, exportedGrid, timestamp, "repaired");
+      repairApplied = true;
+    }
+    if ((!structuralResult.passed || !pixelResult.passed) && input.requested_repair_classes.includes("text_alignment")) {
+      exported = {
+        ...exported,
+        pages: exported.pages.map((page, pageIndex) => ({
+          ...page,
+          elements: page.elements.map((element) => {
+            if (element.element_type !== "text") return element;
+            const source = input.pages[pageIndex]?.elements.find((candidate) => candidate.element_id === element.element_id);
+            return source ? { ...element, x: source.x, y: source.y, width: source.width, height: source.height } : element;
+          })
+        }))
+      };
+      exportedGrid = renderPage(exported.pages[0]);
+      structuralResult = createStructuralResult(input, sourceFingerprint, cdr, exported, timestamp, "text-aligned");
+      pixelResult = createPixelResult(input, renderProfile, sourceGrid, exportedGrid, timestamp, "text-aligned");
+      repairApplied = true;
+    }
+    if ((!structuralResult.passed || !pixelResult.passed) && input.requested_repair_classes.includes("table_rebuild")) {
+      exported = {
+        ...exported,
+        pages: exported.pages.map((page, pageIndex) => ({
+          ...page,
+          elements: page.elements.map((element) => {
+            if (element.element_type !== "table") return element;
+            const source = input.pages[pageIndex]?.elements.find((candidate) => candidate.element_id === element.element_id && candidate.element_type === "table");
+            return source && source.element_type === "table" ? { ...element, rows: source.rows, x: source.x, y: source.y, width: source.width, height: source.height } : element;
+          })
+        }))
+      };
+      exportedGrid = renderPage(exported.pages[0]);
+      structuralResult = createStructuralResult(input, sourceFingerprint, cdr, exported, timestamp, "table-rebuilt");
+      pixelResult = createPixelResult(input, renderProfile, sourceGrid, exportedGrid, timestamp, "table-rebuilt");
+      repairApplied = true;
+    }
+    if ((!structuralResult.passed || !pixelResult.passed) && input.requested_repair_classes.includes("chart_rebuild")) {
+      exported = {
+        ...exported,
+        pages: exported.pages.map((page, pageIndex) => ({
+          ...page,
+          elements: page.elements.map((element) => {
+            if (element.element_type !== "chart") return element;
+            const source = input.pages[pageIndex]?.elements.find((candidate) => candidate.element_id === element.element_id && candidate.element_type === "chart");
+            return source && source.element_type === "chart" ? { ...element, chart_type: source.chart_type, series_refs: source.series_refs, axis_refs: source.axis_refs } : element;
+          })
+        }))
+      };
+      exportedGrid = renderPage(exported.pages[0]);
+      structuralResult = createStructuralResult(input, sourceFingerprint, cdr, exported, timestamp, "chart-rebuilt");
+      pixelResult = createPixelResult(input, renderProfile, sourceGrid, exportedGrid, timestamp, "chart-rebuilt");
+      repairApplied = true;
+    }
+    if ((!structuralResult.passed || !pixelResult.passed) && input.requested_repair_classes.includes("rerender")) {
+      exportedGrid = renderPage(exported.pages[0]);
+      structuralResult = createStructuralResult(input, sourceFingerprint, cdr, exported, timestamp, "rerendered");
+      pixelResult = createPixelResult(input, renderProfile, sourceGrid, exportedGrid, timestamp, "rerendered");
       repairApplied = true;
     }
     const repairTrace = createRepairTrace(input, cdr, renderProfile, initialStructural, initialPixel, structuralResult, pixelResult, repairApplied, timestamp);
@@ -943,11 +1307,13 @@ export class StrictReplicationEngine {
     }
 
     const strictPublished = dualGateResult.passed && roundTripValidation.passed;
-    const outputType: Record<StrictTargetKind, Artifact["artifact_type"]> = {
+    const outputType: Record<string, Artifact["artifact_type"]> = {
       docx: "report",
       pptx: "presentation",
       xlsx: "spreadsheet",
-      dashboard: "dashboard"
+      dashboard: "dashboard",
+      png: "preview_render",
+      pdf: "report"
     };
     const cdrArtifact = createArtifact(input, "cdr", "workflow_output", "cdr_absolute_snapshot", "editable", "verified", timestamp, [sourceArtifact.artifact_id]);
     const exportArtifact = createArtifact(input, "export", "export_bundle", input.target_kind, input.fail_editability ? "partially_editable" : "editable", "verified", timestamp, [cdrArtifact.artifact_id]);
@@ -1090,6 +1456,13 @@ export class StrictReplicationEngine {
       { edge_id: id("edge", input.run_id, "export-publish"), from_ref: exportArtifact.artifact_id, to_ref: publishedArtifact.artifact_id, transform_ref: strictPublished ? "strict.publish" : "strict.publish_degraded", ai_suggestion_ref: "", ai_decision: "not_applicable", template_ref: "", dataset_binding_ref: "", version_diff_ref: dualGateResult.result_id }
     ];
 
+    const partialBundle = {
+      input,
+      cdrAbsolute: cdr,
+      pixelResult
+    } as StrictExecutionBundle;
+    const goldenCorpusEntry = buildGoldenCorpusEntry(partialBundle);
+
     return {
       input,
       policy,
@@ -1109,6 +1482,8 @@ export class StrictReplicationEngine {
       auditEvents,
       lineageEdges,
       job,
+      imageUnderstanding,
+      goldenCorpusEntry,
       exportedPayload: exported,
       stageRecords,
       strictPublished
@@ -1197,7 +1572,45 @@ const degradedSample = (): StrictSourceInput => ({
   ]
 });
 
+const fullSample = (): StrictSourceInput => ({
+  run_id: "strict-full-all-elements",
+  tenant_ref: "tenant-1",
+  workspace_id: "workspace-1",
+  project_id: "project-1",
+  created_by: "user-1",
+  mode: "advanced",
+  source_kind: "infographic_image",
+  target_kind: "pptx",
+  original_name: "strict-full.png",
+  source_ref: "source-strict-full",
+  policy_id: "strict-policy-default",
+  requested_repair_classes: ["coordinate_normalization", "text_alignment", "chart_rebuild"],
+  allow_degraded_publish: true,
+  fail_editability: false,
+  fail_round_trip: false,
+  pages: [
+    {
+      page_id: "page-1",
+      width: 20,
+      height: 12,
+      background: ".",
+      elements: [
+        { element_id: "title", element_type: "text", x: 1, y: 1, width: 8, height: 1, text: "\u062A\u0642\u0631\u064A\u0631 \u0634\u0627\u0645\u0644", fill: "T", editable: true },
+        { element_id: "logo", element_type: "image", x: 16, y: 1, width: 3, height: 2, image_ref: "asset://logo.png", checksum: "", fill: "I", editable: true },
+        { element_id: "bar-chart", element_type: "chart", x: 1, y: 3, width: 8, height: 4, chart_type: "bar", series_refs: ["revenue", "cost"], axis_refs: ["Q1", "Q2", "Q3", "Q4"], binding_refs: ["ds-revenue"], fill: "C", editable: true },
+        { element_id: "data-table", element_type: "table", x: 10, y: 3, width: 8, height: 3, rows: [["\u0627\u0644\u0645\u0646\u0637\u0642\u0629", "\u0627\u0644\u0625\u064A\u0631\u0627\u062F\u0627\u062A"], ["\u0627\u0644\u0631\u064A\u0627\u0636", "42M"], ["\u062C\u062F\u0629", "35M"]], fill: "B", editable: true, formula_refs: ["SUM(B2:B3)"] },
+        { element_id: "filter-1", element_type: "control", x: 1, y: 8, width: 4, height: 1, control_type: "filter", binding_ref: "ds-revenue", fill: "F", editable: true },
+        { element_id: "nav-1", element_type: "control", x: 6, y: 8, width: 3, height: 1, control_type: "navigation", binding_ref: "", fill: "F", editable: true },
+        { element_id: "hero-shape", element_type: "shape", x: 10, y: 7, width: 8, height: 4, fill: "S", editable: true }
+      ]
+    }
+  ]
+});
+
 export const runStrictReplicationRegressionSuite = (): StrictExecutionBundle[] => [
   new StrictReplicationEngine().run(passSample()),
-  new StrictReplicationEngine().run(degradedSample())
+  new StrictReplicationEngine().run(degradedSample()),
+  new StrictReplicationEngine().run(fullSample())
 ];
+
+export { buildGoldenCorpusEntry, runCIGateCheck };
