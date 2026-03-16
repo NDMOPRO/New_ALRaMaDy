@@ -6127,3 +6127,6 @@ export const runReportRegressionSuite = async (): Promise<ReportRegressionSuiteR
     degradedPublication
   };
 };
+
+// ─── Seed Services (adapted from rasid_core_seed) ────────────────────
+export * as SeedServices from "./seed-services";

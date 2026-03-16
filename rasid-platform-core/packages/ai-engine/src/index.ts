@@ -2010,3 +2010,6 @@ export const registerAiCapability = (runtime: RegistryBootstrap): void => {
   runtime.registerApprovalHook("approval.ai", async (action) => ({ approval_state: action.action_id === "intelligent_operator.execute_approved_plan.v1" ? "pending" : "approved", reasons: action.action_id === "intelligent_operator.execute_approved_plan.v1" ? ["ai_apply_requires_explicit_approval"] : ["ai_default"] }));
   runtime.registerEvidenceHook("evidence.ai", async (pack) => EvidencePackSchema.parse(pack));
 };
+
+// ─── Seed Services (adapted from rasid_core_seed) ────────────────────
+export * as SeedServices from "./seed-services";

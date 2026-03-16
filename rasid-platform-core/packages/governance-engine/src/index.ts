@@ -1603,3 +1603,6 @@ export const registerGovernanceCapability = (runtime: RegistryBootstrap): void =
   });
   runtime.registerManifest(createActionManifest(GOVERNANCE_CAPABILITY_ID, "1.0.0", GovernanceActionRegistry, ["approval.default"], ["evidence.default"]));
 };
+
+// ─── Seed Services (adapted from rasid_core_seed) ────────────────────
+export * as SeedServices from "./seed-services";

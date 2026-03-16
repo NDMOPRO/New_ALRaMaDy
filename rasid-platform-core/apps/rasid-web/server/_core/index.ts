@@ -11,6 +11,7 @@ import { serveStatic, setupVite } from "./vite";
 import { uploadRouter } from "../uploadRoute";
 import { wsManager } from "../websocket";
 import { seedAdminAccount } from "../localDb";
+import { runSeedMigrations } from "../seedMigrations";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -69,6 +70,8 @@ async function startServer() {
   // Initialize WebSocket server for real-time updates
   wsManager.init(server);
 
+  // Run seed table migrations
+  await runSeedMigrations().catch((e) => console.error("[SeedMigrations] Failed:", e));
   // Seed admin account on startup
   await seedAdminAccount().catch(() => {});
 
