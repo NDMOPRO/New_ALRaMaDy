@@ -189,7 +189,12 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
       // ═══ PRESENTATION ENGINE ═══
       if (intent === 'presentation') {
-        addAssistantMessage('جاري إنشاء العرض التقديمي... ⏳', {
+        // Must have a real topic — don't generate without one
+        if (!topic || topic.length < 3 || /^(عرض|شرائح|presentation|slides)$/i.test(topic.trim())) {
+          addAssistantMessage('📝 ما موضوع العرض التقديمي؟\n\nاكتب الموضوع وسأنشئ لك عرضًا احترافيًا. مثال:\n• "أنشئ عرض عن رؤية 2030"\n• "أنشئ عرض عن الأمن السيبراني"\n• "أنشئ عرض عن التحول الرقمي في القطاع الصحي"');
+          return;
+        }
+        addAssistantMessage(`جاري إنشاء عرض عن **${topic}**... ⏳`, {
           stages: [
             { name: 'تحليل الموضوع', status: 'completed', progress: 100 },
             { name: 'توليد الشرائح', status: 'running', progress: 50 },
@@ -237,7 +242,11 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
       // ═══ REPORT ENGINE ═══
       if (intent === 'report') {
-        addAssistantMessage('جاري إنشاء التقرير... ⏳', {
+        if (!topic || topic.length < 3 || /^(تقرير|report)$/i.test(topic.trim())) {
+          addAssistantMessage('📝 ما موضوع التقرير؟\n\nاكتب الموضوع وسأنشئ لك تقريرًا احترافيًا. مثال:\n• "أنشئ تقرير عن أداء الربع الأول"\n• "أنشئ تقرير عن نضج البيانات"\n• "أنشئ تقرير عن رضا العملاء"');
+          return;
+        }
+        addAssistantMessage(`جاري إنشاء تقرير عن **${topic}**... ⏳`, {
           stages: [
             { name: 'تحليل المتطلبات', status: 'completed', progress: 100 },
             { name: 'كتابة الأقسام', status: 'running', progress: 40 },
@@ -284,7 +293,11 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
       // ═══ DASHBOARD ENGINE ═══
       if (intent === 'dashboard') {
-        addAssistantMessage('جاري إنشاء لوحة المؤشرات... ⏳', {
+        if (!topic || topic.length < 3 || /^(لوحة|داشبورد|dashboard)$/i.test(topic.trim())) {
+          addAssistantMessage('📝 ما موضوع لوحة المؤشرات؟\n\nاكتب الموضوع وسأنشئ لك لوحة مؤشرات احترافية. مثال:\n• "أنشئ لوحة مؤشرات للمبيعات"\n• "أنشئ لوحة مؤشرات لأداء الموظفين"\n• "أنشئ لوحة مؤشرات تشغيلية"');
+          return;
+        }
+        addAssistantMessage(`جاري إنشاء لوحة مؤشرات عن **${topic}**... ⏳`, {
           stages: [
             { name: 'تحليل المؤشرات', status: 'completed', progress: 100 },
             { name: 'تصميم الودجات', status: 'running', progress: 50 },
