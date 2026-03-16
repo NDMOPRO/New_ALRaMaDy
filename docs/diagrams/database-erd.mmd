@@ -1,0 +1,109 @@
+erDiagram
+  USERS {
+    int id PK
+    text userId UK
+    text role
+    text permissions
+  }
+  FILES {
+    int id PK
+    int userId FK
+    text title
+    text filePath
+    text mimeType
+  }
+  REPORTS {
+    int id PK
+    int userId FK
+    text title
+    text status
+  }
+  PRESENTATIONS {
+    int id PK
+    int userId FK
+    text title
+    text theme
+    text status
+  }
+  DASHBOARDS {
+    int id PK
+    int userId FK
+    text title
+    text status
+  }
+  SPREADSHEETS {
+    int id PK
+    int userId FK
+    text title
+    text status
+  }
+  CHAT_HISTORY {
+    int id PK
+    int userId FK
+    text sessionId
+    text role
+  }
+  TRANSLATIONS {
+    int id PK
+    int userId FK
+    text sourceLang
+    text targetLang
+  }
+  EXTRACTIONS {
+    int id PK
+    int userId FK
+    text sourceType
+    text status
+  }
+  SHARED_PRESENTATIONS {
+    int id PK
+    int presentationId FK
+    int userId FK
+    text shareToken UK
+    int viewCount
+  }
+
+  OAUTH_USERS {
+    int id PK
+    varchar openId UK
+    varchar role
+  }
+  SLIDE_TEMPLATES {
+    int id PK
+    int uploadedBy FK
+    varchar name
+    varchar status
+  }
+  ELEMENT_CATEGORIES {
+    int id PK
+    varchar slug UK
+    varchar nameAr
+  }
+  SLIDE_ELEMENTS {
+    int id PK
+    int templateId FK
+    int categoryId FK
+    varchar name
+  }
+  ELEMENT_USAGE_RULES {
+    int id PK
+    int elementId FK
+    varchar triggerContext
+  }
+
+  USERS ||--o{ FILES : owns
+  USERS ||--o{ REPORTS : owns
+  USERS ||--o{ PRESENTATIONS : owns
+  USERS ||--o{ DASHBOARDS : owns
+  USERS ||--o{ SPREADSHEETS : owns
+  USERS ||--o{ CHAT_HISTORY : creates
+  USERS ||--o{ TRANSLATIONS : creates
+  USERS ||--o{ EXTRACTIONS : creates
+  USERS ||--o{ SHARED_PRESENTATIONS : shares
+  PRESENTATIONS ||--o{ SHARED_PRESENTATIONS : publishes
+
+  OAUTH_USERS ||--o{ SLIDE_TEMPLATES : uploads
+  SLIDE_TEMPLATES ||--o{ SLIDE_ELEMENTS : contains
+  ELEMENT_CATEGORIES ||--o{ SLIDE_ELEMENTS : classifies
+  SLIDE_ELEMENTS ||--o{ ELEMENT_USAGE_RULES : matches
+

@@ -1,0 +1,17 @@
+flowchart LR
+  browser["Browser"]
+  route["Page JS / fetch('/api/v1/...')"]
+  auth["Gateway Auth"]
+  gov["Governance Decision"]
+  engine["Domain Engine"]
+  store["Engine Store\n.runtime/*"]
+  response["JSON response\nstate + ids + open_path"]
+
+  browser --> route
+  route --> auth
+  auth --> gov
+  gov --> engine
+  engine --> store
+  store --> response
+  response --> browser
+

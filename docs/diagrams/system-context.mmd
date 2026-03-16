@@ -1,0 +1,25 @@
+flowchart LR
+  analyst["Data Analyst / Operator"]
+  author["Report or Presentation Author"]
+  admin["Governance / Admin User"]
+  viewer["Public Viewer"]
+  engineer["Platform Engineer"]
+
+  rasid["Rasid Platform\n(active runtime centered on rasid-platform-core)"]
+
+  openai["OpenAI Chat Completions API"]
+  forge["Forge APIs\nLLM, storage, data API, audio transcription"]
+  mysql["Optional MySQL Database"]
+  railway["Railway / Nixpacks Runtime"]
+
+  analyst --> rasid
+  author --> rasid
+  admin --> rasid
+  viewer --> rasid
+  engineer --> rasid
+
+  rasid --> openai
+  rasid --> forge
+  rasid --> mysql
+  railway --> rasid
+

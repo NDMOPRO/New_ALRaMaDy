@@ -1,8 +1,30 @@
 # Rasid Procedure-by-Procedure Binding Spec
 
-هذا الملف هو النسخة الأكثر تفصيلاً.
+هذه هي النسخة الحاكمة الآن.
 
 يجب استخدامه عند تنفيذ الربط الفعلي.
+
+سبب الحاكمية:
+- لكل `procedure` يحدد هذا الملف:
+  - الـ component أو hook الذي يستدعيه
+  - الـ input الحالي حرفيًا
+  - نوع العملية الحاكم
+  - المحرك الخلفي المسؤول
+  - السجلات والكيانات الناتجة المطلوبة
+- التغطية الحاكمة تشمل أيضًا:
+  - `slideLibrary.*`
+  - `admin.*`
+  - `ai.*`
+  - `auth.*`
+  - `files.*`
+  - `reports.*`
+  - `presentations.*`
+  - `dashboards.*`
+  - `spreadsheets.*`
+  - `extractions.*`
+  - `translations.*`
+  - `chat.*`
+  - `library.*`
 
 لا يسمح هذا الملف بأي اجتهاد في:
 - أسماء الـ procedures
@@ -19,19 +41,19 @@
 3. ما الـ output الحالي أو المتوقع؟
 4. ما المحرك الخلفي الذي يجب أن يملكه؟
 5. هل الإجراء:
-   - قراءة فقط
-   - كتابة
-   - generate
-   - publish
-   - approve
-   - export
-   - compare
+   - `read`
+   - `write`
+   - `generate`
+   - `publish`
+   - `share`
+   - `analyze`
 6. ما الذي يجب أن ينتج معه من:
    - `artifact`
    - `job`
    - `evidence`
    - `audit`
    - `lineage`
+   - `publication`
 
 ## 2. قاموس الأنواع الحاكمة
 

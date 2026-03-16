@@ -100,26 +100,107 @@ const sha256File = (filePath) =>
 const fileIsFresh = (filePath) =>
   fs.existsSync(filePath) && fs.statSync(filePath).mtimeMs >= startedAtMs - 1_000;
 
-const excelEngine = new excelModule.ExcelEngine();
-checkpoint("excel-engine-run-sample:start");
-const excelSample = await excelEngine.runSample({
-  output_root: path.join(root, "packages", "excel-engine", "output")
-});
-checkpoint("excel-engine-run-sample:done", {
-  excel_output_root: excelSample.artifacts.output_root
+const latestDirectoryByPrefix = (prefix) => {
+  const base = path.join(root, "packages", "excel-engine", "output");
+  if (!fs.existsSync(base)) {
+    return null;
+  }
+  return (
+    fs
+      .readdirSync(base, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory() && entry.name.startsWith(prefix))
+      .map((entry) => path.join(base, entry.name))
+      .sort((left, right) => fs.statSync(right).mtimeMs - fs.statSync(left).mtimeMs)[0] ?? null
+  );
+};
+
+const resolveWorkbookSource = async () => {
+  const workbookOverride = process.env.EXCEL_SOURCE_WORKBOOK;
+  if (workbookOverride && fs.existsSync(workbookOverride)) {
+    const workbookPackagePath = process.env.EXCEL_SOURCE_WORKBOOK_PACKAGE ?? "";
+    const outputRoot = process.env.EXCEL_SOURCE_ROOT ?? path.dirname(path.dirname(workbookOverride));
+    const evidencePath = process.env.EXCEL_SOURCE_EVIDENCE ?? path.join(outputRoot, "evidence", "evidence-pack.json");
+    return {
+      source_kind: "env_override",
+      output_root: outputRoot,
+      workbook_path: workbookOverride,
+      workbook_package_path: workbookPackagePath,
+      evidence_path: evidencePath
+    };
+  }
+
+  const latestDashboardProofRoot = latestDirectoryByPrefix("excel-dashboard-cross-engine-");
+  if (latestDashboardProofRoot) {
+    const dashboardProofPath = path.join(latestDashboardProofRoot, "artifacts", "cross-engine-proof.json");
+    if (fs.existsSync(dashboardProofPath)) {
+      const dashboardProof = JSON.parse(fs.readFileSync(dashboardProofPath, "utf8"));
+      const workbookPath = String(dashboardProof?.workbook?.workbook_path ?? "");
+      const workbookPackagePath = String(dashboardProof?.workbook?.workbook_package_path ?? "");
+      const outputRoot = String(dashboardProof?.workbook?.output_root ?? "");
+      const evidencePath = path.join(outputRoot, "evidence", "evidence-pack.json");
+      if (workbookPath && fs.existsSync(workbookPath)) {
+        return {
+          source_kind: "latest_excel_dashboard_flow",
+          output_root: outputRoot,
+          workbook_path: workbookPath,
+          workbook_package_path: workbookPackagePath,
+          evidence_path: evidencePath
+        };
+      }
+    }
+  }
+
+  const latestSampleRoot = latestDirectoryByPrefix("sample-run-");
+  if (latestSampleRoot) {
+    const workbookPath = path.join(latestSampleRoot, "artifacts", "sample-output.xlsx");
+    const workbookPackagePath = path.join(latestSampleRoot, "artifacts", "workbook-package.json");
+    const evidencePath = path.join(latestSampleRoot, "evidence", "evidence-pack.json");
+    if (fs.existsSync(workbookPath)) {
+      return {
+        source_kind: "latest_sample_run",
+        output_root: latestSampleRoot,
+        workbook_path: workbookPath,
+        workbook_package_path: workbookPackagePath,
+        evidence_path: evidencePath
+      };
+    }
+  }
+
+  checkpoint("excel-engine-run-sample:start");
+  const result = await new excelModule.ExcelEngine().runSample({
+    output_root: path.join(root, "packages", "excel-engine", "output")
+  });
+  checkpoint("excel-engine-run-sample:done", {
+    excel_output_root: result.artifacts.output_root
+  });
+  return {
+    source_kind: "fresh_run_sample",
+    output_root: result.artifacts.output_root,
+    workbook_path: result.artifacts.exported_workbook_path,
+    workbook_package_path: result.artifacts.workbook_package_path,
+    evidence_path: result.artifacts.evidence_path
+  };
+};
+
+const workbookSource = await resolveWorkbookSource();
+checkpoint("excel-source-resolved", {
+  source_kind: workbookSource.source_kind,
+  excel_output_root: workbookSource.output_root
 });
 
-const workbookPath = excelSample.artifacts.exported_workbook_path;
+const workbookPath = workbookSource.workbook_path;
 const workbookSha256 = sha256File(workbookPath);
-const excelEvidence = JSON.parse(
-  fs.readFileSync(excelSample.artifacts.evidence_path, "utf8")
-);
+const excelEvidence = fs.existsSync(workbookSource.evidence_path)
+  ? JSON.parse(fs.readFileSync(workbookSource.evidence_path, "utf8"))
+  : null;
 
 writeJson("records/excel-source.json", {
-  output_root: excelSample.artifacts.output_root,
+  source_kind: workbookSource.source_kind,
+  output_root: workbookSource.output_root,
   workbook_path: workbookPath,
   workbook_sha256: workbookSha256,
-  evidence_path: excelSample.artifacts.evidence_path
+  workbook_package_path: workbookSource.workbook_package_path,
+  evidence_path: workbookSource.evidence_path
 });
 
 const server = await presentationPlatformModule.startPresentationPlatformServer();
@@ -399,7 +480,7 @@ try {
     phase_requirement: "excel-engine cross-engine consumability proof",
     started_at: startedAt,
     finished_at: isoNow(),
-    excel_source_root: excelSample.artifacts.output_root,
+    excel_source_root: workbookSource.output_root,
     excel_workbook_path: workbookPath,
     excel_workbook_sha256: workbookSha256,
     presentations_origin: server.origin,
@@ -440,7 +521,8 @@ try {
       occurred_at: startedAt,
       metadata: {
         workbook_path: workbookPath,
-        output_root: excelSample.artifacts.output_root
+        output_root: workbookSource.output_root,
+        source_kind: workbookSource.source_kind
       }
     },
     {

@@ -1,0 +1,47 @@
+flowchart TB
+  contracts["packages/contracts\nshared schemas, action/tool registries"]
+  runtime["packages/runtime\napproval/evidence hook runtime"]
+  registry["packages/capability-registry\nRegistryBootstrap"]
+
+  dashboard["packages/dashboard-engine\nDashboardEngine + Store"]
+  report["packages/report-engine\nReportEngine + Store + Platform"]
+  presentation["packages/presentations-engine\nPresentationEngine + Store + Platform"]
+  transcription["packages/transcription-extraction-engine\nTranscriptionExtractionEngine + Store"]
+  ai["packages/ai-engine\nRasidAiEngine + Store"]
+  governance["packages/governance-engine\nGovernanceEngine + Store"]
+  localization["packages/arabic-localization-lct-engine\nLocalization engine"]
+  strict["packages/strict-replication-engine\nStrictReplicationEngine"]
+  excel["packages/excel-engine\nExcelEngine + BackendService"]
+
+  cli["apps/contracts-cli\nindex.ts + dashboard-web.ts + transcription-web.ts"]
+  rwclient["apps/rasid-web/client"]
+  rwserver["apps/rasid-web/server"]
+
+  contracts --> runtime
+  contracts --> registry
+
+  contracts --> dashboard
+  contracts --> report
+  contracts --> presentation
+  contracts --> transcription
+  contracts --> ai
+  contracts --> governance
+  contracts --> localization
+  contracts --> strict
+  contracts --> excel
+
+  registry --> cli
+  runtime --> registry
+
+  dashboard --> cli
+  report --> cli
+  presentation --> cli
+  transcription --> cli
+  ai --> cli
+  governance --> cli
+  localization --> cli
+  strict --> cli
+  excel --> cli
+
+  rwclient --> rwserver
+

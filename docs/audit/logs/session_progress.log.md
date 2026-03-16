@@ -2166,3 +2166,20 @@ Append-only.
 - Unresolved items:
   - the push can still fail on GitHub auth, network interruption, or file-size/path constraints until the actual push completes
 - Next exact step: execute `git add -A`, create a full-state commit if needed, and push `main` to `origin/main`
+
+- Timestamp: 2026-03-16T06:24:57.4938066+03:00
+- Phase: Procedure binding governance promotion
+- Scope: Promote the expanded procedure spec from detailed reference to governing version and align its authoritative fields
+- Files/Folders inspected:
+  - C:\ALRaMaDy\docs\RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md
+  - C:\ALRaMaDy\docs\audit\_session_status.md
+  - C:\ALRaMaDy\docs\audit\_knowledge_base.md
+  - C:\ALRaMaDy\docs\audit\logs\session_progress.log.md
+- Findings added:
+  - the procedure-by-procedure binding spec is now explicitly marked as the governing version
+  - the authoritative operation classes were aligned to `read`, `write`, `generate`, `publish`, `share`, and `analyze`
+  - required produced records now explicitly include `publication` alongside `artifact`, `job`, `evidence`, `audit`, and `lineage`
+  - authoritative family coverage was restated for `slideLibrary.*`, `admin.*`, `ai.*`, `auth.*`, `files.*`, `reports.*`, `presentations.*`, `dashboards.*`, `spreadsheets.*`, `extractions.*`, `translations.*`, `chat.*`, and `library.*`
+- Unresolved items:
+  - the spec remains a governance artifact until the adapter layer is implemented against it
+- Next exact step: apply the governing spec directly while replacing the current demo/local router handlers with engine-backed adapters

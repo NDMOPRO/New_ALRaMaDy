@@ -1,9 +1,9 @@
 # Session Status
 
 - Session started: 2026-03-15T01:06:43+03:00
-- Current phase: `full_repository_push` stage the full current repository state, create a full-state commit if needed, and push `main` to `origin/main`
-- Last completed checkpoint: Procedure-by-procedure service binding documentation was written under `docs/` and logged in the audit trail
-- Current scope: Push the entire current repository state from `C:\ALRaMaDy` to `https://github.com/NDMOPRO/New_ALRaMaDy.git`, including the large pending tracked and untracked tree
+- Current phase: `procedure_binding_spec_governance` promote the procedure-by-procedure binding spec to the governing repository reference
+- Last completed checkpoint: The governing procedure-binding spec now explicitly includes authoritative operation classes and produced-record requirements
+- Current scope: Preserve the written integration guides and treat `docs/RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md` as the governing implementation reference
 - Completed folders/files:
   - docs/audit/
   - docs/audit/phases/
@@ -30,10 +30,10 @@
   - C:\ALRaMaDy\.runtime\railway-proof\20260316-presentations-page-live.png
   - C:\ALRaMaDy\.runtime\railway-proof\20260316-governance-page-live.png
   - rasid-platform-core/apps/rasid-web/
+  - docs/RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md
 - Remaining scope:
-  - Stage the full working tree with `git add -A`
-  - Create a commit that captures the current repository state if staged changes exist
-  - Push `main` to `origin/main`
-  - Record the final push result in the audit files and a new timestamped phase report
-- Next exact step: run `git add -A`, commit the full current tree, and push `main` to `origin/main`
-- Last update: 2026-03-16T06:21:42.1928031+03:00
+  - Apply the documented mappings in code
+  - Replace local app storage/runtime adapters with engine-backed procedures
+  - Verify each bound procedure from the calling UI surfaces
+- Next exact step: use `docs/RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md` as the governing checklist while implementing the adapter layer
+- Last update: 2026-03-16T06:24:57.4938066+03:00

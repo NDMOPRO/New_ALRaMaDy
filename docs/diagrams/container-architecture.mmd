@@ -1,0 +1,43 @@
+flowchart TB
+  subgraph repo["Repository: C:\\ALRaMaDy\\rasid-platform-core"]
+    gateway["Container: Unified Gateway\napps/contracts-cli/src/dashboard-web.ts"]
+    transcription["Container: Transcription Web Server\napps/contracts-cli/src/transcription-web.ts"]
+    reports["Container: Report Platform Server\npackages/report-engine/src/platform.ts"]
+    presentations["Container: Presentations Platform Server\npackages/presentations-engine/src/platform.ts"]
+    rasidweb["Container: rasid-web Full-Stack App\nReact + Express + tRPC"]
+
+    engines["In-process Engine Containers\nDashboard, Report, Presentation,\nTranscription, AI, Governance,\nLocalization, Strict, Excel"]
+    runtimefs["Primary Persistence\n.runtime/* filesystem stores"]
+    sqldb["sql.js SQLite\napps/rasid-web/data/rasid.db"]
+    mysqldb["Optional MySQL / Drizzle\nusers + slide library"]
+    uploads["Upload Filesystem\nuploads/"]
+  end
+
+  browser["Browser Clients"]
+  publicviewer["Public Published Viewer"]
+  openai["OpenAI API"]
+  forge["Forge APIs"]
+  railway["Railway Deployment"]
+
+  browser --> gateway
+  browser --> transcription
+  browser --> reports
+  browser --> presentations
+  browser --> rasidweb
+  publicviewer --> reports
+  publicviewer --> presentations
+
+  gateway --> engines
+  transcription --> engines
+  reports --> engines
+  presentations --> engines
+
+  engines --> runtimefs
+  rasidweb --> sqldb
+  rasidweb --> mysqldb
+  rasidweb --> uploads
+  rasidweb --> openai
+  rasidweb --> forge
+
+  railway --> gateway
+

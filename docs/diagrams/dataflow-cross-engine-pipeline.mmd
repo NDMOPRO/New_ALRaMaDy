@@ -1,0 +1,15 @@
+flowchart LR
+  transcription["Transcription bundle"]
+  report["Governed report"]
+  presentation["Presentation deck"]
+  dashboard["Dashboard"]
+  localization["Localized dashboard/output"]
+  strict["Strict replication output"]
+
+  transcription --> report
+  report --> presentation
+  report --> dashboard
+  presentation --> dashboard
+  dashboard --> localization
+  dashboard --> strict
+

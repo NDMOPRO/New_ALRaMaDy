@@ -1,0 +1,55 @@
+flowchart LR
+  browser["Browser"]
+
+  subgraph gateway["Unified Gateway: dashboard-web.ts"]
+    auth["HTTP/Auth Shell"]
+    render["Surface Renderer\n/home /data /transcription /dashboards\n/reports /presentations /library /governance"]
+    gov["Governance Facade"]
+    ai["AI Job Facade"]
+    data["Data Registration Facade"]
+    dash["Dashboard Facade"]
+    bridge["Cross-Engine Bridges"]
+    ws["Dashboard WebSocket"]
+  end
+
+  subgraph engines["Shared Engines"]
+    ge["GovernanceEngine"]
+    ae["RasidAiEngine"]
+    de["DashboardEngine"]
+    re["ReportEngine"]
+    pe["PresentationEngine"]
+    te["TranscriptionExtractionEngine"]
+    le["ArabicLocalizationLctEngine"]
+    se["StrictReplicationEngine"]
+  end
+
+  stores[".runtime Filesystem Stores"]
+
+  browser --> auth
+  auth --> render
+  render --> ai
+  render --> gov
+  render --> data
+  render --> dash
+  render --> bridge
+  render --> ws
+
+  gov --> ge
+  ai --> ae
+  data --> ge
+  dash --> de
+  bridge --> re
+  bridge --> pe
+  bridge --> te
+  bridge --> le
+  bridge --> se
+
+  ge --> stores
+  ae --> stores
+  de --> stores
+  re --> stores
+  pe --> stores
+  te --> stores
+  le --> stores
+  se --> stores
+

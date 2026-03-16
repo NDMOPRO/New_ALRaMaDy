@@ -1,4 +1,5 @@
 import { spawn, spawnSync } from "node:child_process";
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import net from "node:net";
 import path from "node:path";
@@ -7,7 +8,10 @@ import { pathToFileURL } from "node:url";
 const root = process.cwd();
 const tscCommand = process.platform === "win32" ? path.join(root, "node_modules", ".bin", "tsc.cmd") : path.join(root, "node_modules", ".bin", "tsc");
 const ensureBuilt = (label, args) => {
-  const result = spawnSync(tscCommand, args, { cwd: root, encoding: "utf8" });
+  const result =
+    process.platform === "win32"
+      ? spawnSync(process.env.ComSpec || "cmd.exe", ["/d", "/s", "/c", `"${tscCommand}" ${args.join(" ")}`], { cwd: root, encoding: "utf8" })
+      : spawnSync(tscCommand, args, { cwd: root, encoding: "utf8" });
   if (result.status !== 0) {
     throw new Error(`${label} failed: ${result.error?.message || result.stderr || result.stdout || `exit ${result.status}`}`);
   }
@@ -19,6 +23,7 @@ ensureBuilt("contracts-cli-build", ["-p", "apps/contracts-cli/tsconfig.json"]);
 const load = async (relativePath) => import(pathToFileURL(path.join(root, relativePath)).href);
 const presentationsEngine = await load("packages/presentations-engine/dist/index.js");
 const platformModule = await load("packages/presentations-engine/dist/platform.js");
+const dashboardWebModule = await load("apps/contracts-cli/dist/dashboard-web.js");
 const { chromium } = await import("playwright-core");
 const commandStartedAt = new Date().toISOString();
 
@@ -101,19 +106,6 @@ const waitForServer = async (baseUrl) => {
   }
   throw new Error(`server did not start: ${baseUrl}`);
 };
-const startNodeServer = (command, payload, stem, env = {}) => {
-  const payloadPath = path.join(outputRoot, "records", `${stem}.payload.json`);
-  fs.mkdirSync(path.dirname(payloadPath), { recursive: true });
-  fs.writeFileSync(payloadPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
-  const stdoutPath = path.join(outputRoot, "records", `${stem}.stdout.log`);
-  const stderrPath = path.join(outputRoot, "records", `${stem}.stderr.log`);
-  const child = spawn("node", ["apps/contracts-cli/dist/index.js", command, payloadPath], {
-    cwd: root,
-    env: { ...process.env, ...env },
-    stdio: ["ignore", fs.openSync(stdoutPath, "a"), fs.openSync(stderrPath, "a")]
-  });
-  return { child, stdoutPath, stderrPath };
-};
 const closeWithTimeout = async (label, callback, timeoutMs = 10000) => {
   try {
     await Promise.race([
@@ -126,16 +118,6 @@ const closeWithTimeout = async (label, callback, timeoutMs = 10000) => {
       error: error instanceof Error ? error.message : String(error)
     });
   }
-};
-const stopServer = (handle) => {
-  if (!handle?.child || handle.child.killed) return;
-  try {
-    if (process.platform === "win32") {
-      spawnSync("taskkill", ["/PID", String(handle.child.pid), "/T", "/F"], { stdio: "ignore" });
-    } else {
-      handle.child.kill("SIGTERM");
-    }
-  } catch {}
 };
 const pageJson = (pageHandle, target, method = "GET", body = undefined) =>
   pageHandle.evaluate(
@@ -221,7 +203,6 @@ if (!fs.existsSync(canvaPath)) {
 }
 
 let server;
-let dashboardServer;
 let browser;
 let context;
 let page;
@@ -237,11 +218,8 @@ let failureMessage = null;
 try {
   server = await platformModule.startPresentationPlatformServer();
   const dashboardPort = await getFreePort();
-  const dashboardBaseUrl = `http://127.0.0.1:${dashboardPort}`;
-  dashboardServer = startNodeServer("dashboard-serve-web", { host: "127.0.0.1", port: dashboardPort }, "dashboard-web", {
-    RASID_DASHBOARD_WEB_HOST: "127.0.0.1",
-    RASID_DASHBOARD_WEB_PORT: String(dashboardPort)
-  });
+  const dashboardWeb = dashboardWebModule.startDashboardWebApp({ host: "127.0.0.1", port: dashboardPort });
+  const dashboardBaseUrl = dashboardWeb.base_url;
   await waitForServer(dashboardBaseUrl);
   const loginPayload = await fetchJson(`${server.origin}/api/v1/governance/auth/login`, {
     method: "POST",
@@ -786,7 +764,6 @@ try {
   if (context) await closeWithTimeout("browser-context", () => context.close());
   if (browser) await closeWithTimeout("browser", () => browser.close());
   if (server) await closeWithTimeout("presentation-server", () => server.close());
-  if (dashboardServer) stopServer(dashboardServer);
 }
 
 process.stdout.write(`${outputRoot}\n`);

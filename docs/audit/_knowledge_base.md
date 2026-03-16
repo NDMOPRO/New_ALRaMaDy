@@ -1712,3 +1712,23 @@
   - implication:
     - the live-verified unified-canvas/report bridge work currently exists in the dirty working tree, not in a clean committed branch history
     - the next pushable batch requires deliberate porting/reconstruction into the clean worktree, not just conflict resolution
+
+- Date: 2026-03-16T06:24:57.4938066+03:00
+- Governing procedure-binding spec update:
+- `docs/RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md` is the governing reference now
+  - the governing operation classes are `read`, `write`, `generate`, `publish`, `share`, and `analyze`
+  - every governed procedure must explicitly declare whether it produces `artifact`, `job`, `evidence`, `audit`, `lineage`, and `publication`
+  - authoritative family coverage explicitly includes:
+    - `slideLibrary.*`
+    - `admin.*`
+    - `ai.*`
+    - `auth.*`
+    - `files.*`
+    - `reports.*`
+    - `presentations.*`
+    - `dashboards.*`
+    - `spreadsheets.*`
+    - `extractions.*`
+    - `translations.*`
+    - `chat.*`
+    - `library.*`

@@ -1,0 +1,49 @@
+flowchart LR
+  user["Browser"]
+
+  subgraph client["apps/rasid-web client"]
+    app["App.tsx Router + Providers"]
+    home["Home.tsx Workspace Shell"]
+    workspace["WorkspaceContext"]
+    panels["Engine Panels and Dialogs"]
+    trpcclient["tRPC Client"]
+  end
+
+  subgraph server["apps/rasid-web server"]
+    express["Express Bootstrap"]
+    trpc["tRPC Routers"]
+    airouter["aiRouter"]
+    library["libraryRouter"]
+    auth["localAuth"]
+    localdb["localDb sql.js layer"]
+    drizzle["db.ts + Drizzle MySQL"]
+    upload["uploadRoute"]
+  end
+
+  openai["OpenAI API"]
+  forge["Forge APIs"]
+  sqlite["sql.js SQLite file"]
+  mysql["Optional MySQL"]
+  files["uploads/ filesystem"]
+
+  user --> app
+  app --> home
+  home --> workspace
+  home --> panels
+  panels --> trpcclient
+  trpcclient --> express
+  express --> trpc
+  express --> upload
+  trpc --> auth
+  trpc --> localdb
+  trpc --> airouter
+  trpc --> library
+  airouter --> drizzle
+  library --> drizzle
+  localdb --> sqlite
+  drizzle --> mysql
+  upload --> files
+  airouter --> openai
+  airouter --> forge
+  library --> forge
+

@@ -1,0 +1,16 @@
+flowchart TD
+  source["Source File / Attachment"]
+  intake["TranscriptionExtractionEngine"]
+  bridge["Python/content bridge and normalization"]
+  bundle["Unified content bundle\nsegments, summaries, fields, entities"]
+  tstore["TranscriptionExtractionStore"]
+  report["ReportEngine create-from-transcription"]
+  rstore["ReportEngineStore"]
+
+  source --> intake
+  intake --> bridge
+  bridge --> bundle
+  bundle --> tstore
+  tstore --> report
+  report --> rstore
+

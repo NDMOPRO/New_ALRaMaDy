@@ -39,7 +39,6 @@ const reportPort = await findFreePort();
 const dashboardBaseUrl = `http://127.0.0.1:${dashboardPort}`;
 const reportBaseUrl = `http://127.0.0.1:${reportPort}`;
 const dashboardRuntimeRoot = path.join(root, ".runtime", "dashboard-web");
-const dashboardStorageDir = path.join(runtimeRoot, "dashboard-web", "dashboard-engine");
 const reportId = `report-localization-platform-${Date.now()}`;
 const marker = `FLOWMARK-${Date.now()}`;
 
@@ -134,8 +133,7 @@ const fetchText = async (url, options = {}) => {
 const reportEngine = new ReportEngine({ storageDir: reportStorageDir });
 const dashboardServer = startDashboardWebApp({
   host: "127.0.0.1",
-  port: dashboardPort,
-  storageDir: dashboardStorageDir
+  port: dashboardPort
 });
 const reportServer = await startReportPlatformServer({
   host: "127.0.0.1",

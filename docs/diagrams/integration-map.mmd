@@ -1,0 +1,27 @@
+flowchart LR
+  gateway["Unified Gateway"]
+  rwserver["rasid-web Server"]
+  report["Report Platform"]
+  presentation["Presentations Platform"]
+  transcription["Transcription Server"]
+  excel["Excel Backend Service"]
+
+  openai["OpenAI API"]
+  forge["Forge APIs"]
+  mysql["Optional MySQL"]
+  uploads["Local uploads/"]
+  runtime[".runtime filesystem stores"]
+  railway["Railway/Nixpacks"]
+
+  railway --> gateway
+  gateway --> runtime
+  report --> runtime
+  presentation --> runtime
+  transcription --> runtime
+  excel --> runtime
+
+  rwserver --> openai
+  rwserver --> forge
+  rwserver --> mysql
+  rwserver --> uploads
+
