@@ -25,16 +25,14 @@ export default function WorkspaceView({ viewId }: WorkspaceViewProps) {
   const renderEngine = () => {
     switch (viewId) {
       case 'data': return <ExcelEngine />;
-      case 'library': return <LibraryEngine />;
-      // All other engines are accessed via Chat wizards in the simplified UI.
-      // If a direct viewId is passed (e.g. from navigateTo), render the engine inline.
       case 'presentations': return <PresentationsEngine />;
       case 'reports': return <ReportsEngine />;
       case 'dashboard': return <DashboardEngine />;
       case 'matching': return <VisualMatchEngine />;
+      case 'library': return <LibraryEngine />;
       case 'extraction': return <ExtractionEngine />;
       case 'translation': return <TranslationEngine />;
-      default: return <LibraryEngine />;
+      default: return <ExcelEngine />;
     }
   };
   return (

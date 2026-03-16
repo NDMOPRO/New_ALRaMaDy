@@ -102,9 +102,9 @@ tmp/
 temp/
 
 # Database
-*.db
 *.sqlite
 *.sqlite3
+data/rasid.db
 
 # Webdev artifacts (checkpoint zips, migrations, etc.)
 .webdev/
@@ -112,3 +112,15 @@ temp/
 # Debug logs
 .manus-logs/
 .manus/
+
+# Test files
+test-reference.pptx
+test-e2e-output.log
+test-full-decomposition.json
+test-parse-results.json
+
+# Large docs
+RASID_Developer_Handoff.pdf
+
+# Uploads
+uploads/

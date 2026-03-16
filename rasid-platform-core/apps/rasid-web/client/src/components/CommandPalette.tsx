@@ -147,15 +147,15 @@ export default function CommandPalette({ isOpen, onClose, onNavigate }: CommandP
       });
     });
 
-    // Engine quick actions — all engines route through Chat wizards for simplicity
+    // Engine quick actions
     const engines = [
-      { id: 'new-presentation', title: 'إنشاء عرض تقديمي جديد', icon: 'slideshow', view: 'chat' },
-      { id: 'new-report', title: 'إنشاء تقرير جديد', icon: 'article', view: 'chat' },
-      { id: 'new-dashboard', title: 'إنشاء لوحة مؤشرات', icon: 'dashboard', view: 'chat' },
+      { id: 'new-presentation', title: 'إنشاء عرض تقديمي جديد', icon: 'slideshow', view: 'presentations' },
+      { id: 'new-report', title: 'إنشاء تقرير جديد', icon: 'article', view: 'reports' },
+      { id: 'new-dashboard', title: 'إنشاء لوحة مؤشرات', icon: 'dashboard', view: 'dashboard' },
       { id: 'upload-data', title: 'رفع بيانات جديدة', icon: 'upload_file', view: 'data' },
-      { id: 'translate', title: 'ترجمة مستند', icon: 'translate', view: 'chat' },
-      { id: 'extract', title: 'تفريغ مستند', icon: 'document_scanner', view: 'chat' },
-      { id: 'match', title: 'مطابقة بصرية', icon: 'compare', view: 'chat' },
+      { id: 'translate', title: 'ترجمة مستند', icon: 'translate', view: 'translation' },
+      { id: 'extract', title: 'تفريغ مستند', icon: 'document_scanner', view: 'extraction' },
+      { id: 'match', title: 'مطابقة بصرية', icon: 'compare', view: 'matching' },
     ];
     engines.forEach(eng => {
       items.push({

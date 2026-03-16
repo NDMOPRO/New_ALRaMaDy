@@ -21,6 +21,8 @@ import EvidenceDrawer, { type EvidenceData } from '@/components/EvidenceDrawer';
 import ExecutionTimeline, { type TimelineJob } from '@/components/ExecutionTimeline';
 import CompareView from '@/components/CompareView';
 import { trpc } from '@/lib/trpc';
+import { usePlatformGovernanceEngine, usePlatformDataEngine } from '@/hooks/usePlatformEngines';
+import { usePlatformHealth } from '@/hooks/usePlatform';
 import OnboardingTour from '@/components/OnboardingTour';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import CommandPalette, { useCommandPalette } from '@/components/CommandPalette';
@@ -401,6 +403,19 @@ export default function Home() {
   const { data: dbPresentations } = trpc.presentations.list.useQuery();
   const { data: dbDashboards } = trpc.dashboards.list.useQuery();
 
+  // Platform backend integration (ALRaMaDy)
+  const { connected: platformConnected } = usePlatformHealth();
+  const platformGovernance = usePlatformGovernanceEngine();
+  const platformData = usePlatformDataEngine();
+
+  // Load platform data when connected
+  useEffect(() => {
+    if (platformConnected) {
+      platformData.fetchPlatformDatasets();
+      platformGovernance.fetchState();
+    }
+  }, [platformConnected]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const dataItems: DataItem[] = useMemo(() => {
     const items: DataItem[] = [];
     if (dbFiles) {
@@ -487,14 +502,42 @@ export default function Home() {
     setInspectorOpen(true);
   }, []);
 
-  const openEvidence = useCallback((jobId: string) => {
-    setEvidenceData({
-      jobId, capability: 'تحليل البيانات', status: 'verified',
-      entries: [],
-      auditTrail: [],
-    });
+  const openEvidence = useCallback(async (jobId: string) => {
+    // Try to load real evidence from platform if connected
+    if (platformConnected) {
+      try {
+        const [evidenceResult, auditResult] = await Promise.all([
+          platformGovernance.fetchEvidence(),
+          platformGovernance.fetchAudit(),
+        ]);
+        const evidence = evidenceResult?.data;
+        const audit = auditResult?.data;
+        setEvidenceData({
+          jobId,
+          capability: 'تحليل البيانات',
+          status: 'verified',
+          entries: Array.isArray(evidence) ? evidence.map((e: any, i: number) => ({
+            id: `e-${i}`, type: e.type || 'metric', label: e.label || e.name || '',
+            value: String(e.value || ''), timestamp: e.timestamp || '', icon: e.icon || 'info',
+          })) : [],
+          auditTrail: Array.isArray(audit) ? audit.map((a: any) => ({
+            action: a.action || '', actor: a.actor || '', time: a.time || '', detail: a.detail,
+          })) : [],
+        });
+      } catch {
+        setEvidenceData({
+          jobId, capability: 'تحليل البيانات', status: 'verified',
+          entries: [], auditTrail: [],
+        });
+      }
+    } else {
+      setEvidenceData({
+        jobId, capability: 'تحليل البيانات', status: 'verified',
+        entries: [], auditTrail: [],
+      });
+    }
     setEvidenceOpen(true);
-  }, []);
+  }, [platformConnected, platformGovernance]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* ===== Toggle handlers ===== */
   const toggleData = useCallback(() => {
@@ -553,7 +596,7 @@ export default function Home() {
       setActiveView('chat');
     }
     setTimeout(() => {
-      chatCanvasRef.current?.activateWizard(tool.id);
+      chatCanvasRef.current?.sendMessage(tool.label);
     }, 100);
   }, [activeView]);
 

@@ -11,6 +11,8 @@
    ═══════════════════════════════════════════════════════════════ */
 import { useState, useRef, useCallback } from 'react';
 import { trpc } from '@/lib/trpc';
+import { usePlatformReplicationEngine } from '@/hooks/usePlatformEngines';
+import { usePlatformHealth } from '@/hooks/usePlatform';
 import MaterialIcon from './MaterialIcon';
 import RasedLoader from '@/components/RasedLoader';
 import ModeSwitcher from './ModeSwitcher';
@@ -196,6 +198,9 @@ export default function VisualMatchEngine() {
   const createReport = trpc.reports.create.useMutation();
   const createPresentation = trpc.presentations.create.useMutation();
   const createSpreadsheet = trpc.spreadsheets.create.useMutation();
+  // Platform backend integration (ALRaMaDy)
+  const platformReplication = usePlatformReplicationEngine();
+  const { connected: platformConnected } = usePlatformHealth();
 
   // Store file references for real Vision API calls
   const pendingFilesRef = useRef<Map<string, File>>(new Map());

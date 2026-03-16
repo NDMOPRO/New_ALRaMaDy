@@ -17,6 +17,7 @@ import NotificationBell from './NotificationBell';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { playSound, isSoundEnabled, toggleSound } from '@/lib/sounds';
 import { useCompactMode } from '@/contexts/CompactModeContext';
+import PlatformStatus from './PlatformStatus';
 
 interface NotebookHeaderProps {
   onShareClick: () => void;
@@ -201,6 +202,10 @@ export default function NotebookHeader({
 
       {/* ═══ LEFT: Actions ═══ */}
       <div className="flex items-center gap-1 relative z-10">
+        {/* Platform Connection Status */}
+        <div className="hidden md:flex ml-1">
+          <PlatformStatus />
+        </div>
         {/* New workspace */}
         <ActionButton
           mounted={headerMounted}

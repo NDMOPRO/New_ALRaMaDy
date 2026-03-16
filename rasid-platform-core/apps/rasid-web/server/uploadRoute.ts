@@ -1,47 +1,22 @@
 /**
- * File Upload Route — stores files locally in uploads/ directory
- * Supports: images, PDFs, Excel, Word, PowerPoint, audio, video
+ * File Upload Route — uploads to S3 and registers with Central Engine
+ * NO local storage, NO localDb, NO localAuth
+ * Everything → S3 + Engine
  */
 import { Router } from "express";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
-import { verifyToken } from "./localAuth";
-import { createFile } from "./localDb";
+import { verifyToken } from "./engineAuth";
+import { storagePut } from "./storage";
+import * as engine from "./platformConnector";
 
-const UPLOADS_DIR = path.join(process.cwd(), "uploads");
-
-// Ensure subdirectories exist
-const SUBDIRS = ["images", "documents", "spreadsheets", "audio", "video", "other"];
-SUBDIRS.forEach((dir) => {
-  const fullPath = path.join(UPLOADS_DIR, dir);
-  if (!fs.existsSync(fullPath)) {
-    fs.mkdirSync(fullPath, { recursive: true });
-  }
+// Use memory storage — files go to S3, not local disk
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 100 * 1024 * 1024, // 100MB max
+    files: 10,
+  },
 });
-
-// Determine subdirectory based on MIME type
-function getSubDir(mimeType: string): string {
-  if (mimeType.startsWith("image/")) return "images";
-  if (mimeType.startsWith("audio/")) return "audio";
-  if (mimeType.startsWith("video/")) return "video";
-  if (
-    mimeType.includes("spreadsheet") ||
-    mimeType.includes("excel") ||
-    mimeType === "text/csv" ||
-    mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  )
-    return "spreadsheets";
-  if (
-    mimeType.includes("pdf") ||
-    mimeType.includes("word") ||
-    mimeType.includes("document") ||
-    mimeType.includes("presentation") ||
-    mimeType.includes("powerpoint")
-  )
-    return "documents";
-  return "other";
-}
 
 // Get icon based on MIME type
 function getIcon(mimeType: string): string {
@@ -74,62 +49,6 @@ function formatSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-// Configure multer storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const subDir = getSubDir(file.mimetype);
-    const dest = path.join(UPLOADS_DIR, subDir);
-    cb(null, dest);
-  },
-  filename: (req, file, cb) => {
-    // Generate unique filename: timestamp-random-originalname
-    const ext = path.extname(file.originalname);
-    const baseName = path.basename(file.originalname, ext);
-    const safeName = baseName.replace(/[^a-zA-Z0-9\u0600-\u06FF_-]/g, "_");
-    const uniqueName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${safeName}${ext}`;
-    cb(null, uniqueName);
-  },
-});
-
-// File filter — allow common file types
-const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  const allowedMimes = [
-    // Images
-    "image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml", "image/bmp", "image/tiff",
-    // Documents
-    "application/pdf",
-    "application/msword",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    // Spreadsheets
-    "application/vnd.ms-excel",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    "text/csv",
-    // Presentations
-    "application/vnd.ms-powerpoint",
-    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-    // Audio
-    "audio/mpeg", "audio/wav", "audio/ogg", "audio/webm", "audio/mp4", "audio/m4a",
-    // Video
-    "video/mp4", "video/webm", "video/ogg", "video/quicktime",
-    // Text
-    "text/plain", "text/html", "application/json",
-  ];
-  if (allowedMimes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(null, true); // Allow all for now, just categorize as "other"
-  }
-};
-
-const upload = multer({
-  storage,
-  fileFilter,
-  limits: {
-    fileSize: 100 * 1024 * 1024, // 100MB max
-    files: 10, // Max 10 files at once
-  },
-});
-
 export const uploadRouter = Router();
 
 // Auth middleware for upload routes
@@ -147,7 +66,7 @@ uploadRouter.use(async (req, res, next) => {
   next();
 });
 
-// Single file upload
+// Single file upload → S3 + Engine registration
 uploadRouter.post("/single", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
@@ -156,32 +75,36 @@ uploadRouter.post("/single", upload.single("file"), async (req, res) => {
     }
 
     const user = (req as any).user;
-    const subDir = getSubDir(file.mimetype);
-    const relativePath = `/uploads/${subDir}/${file.filename}`;
+    const randomSuffix = Math.random().toString(36).slice(2, 8);
+    const fileKey = `uploads/${user.sub || "anon"}/${Date.now()}-${randomSuffix}-${file.originalname}`;
 
-    // Save file record to database
-    const dbFile = await createFile({
-      userId: user.id,
+    // Upload to S3
+    const { url } = await storagePut(fileKey, file.buffer, file.mimetype);
+
+    // Register with engine
+    const engineResult = await engine.engineCreateFile({
       title: file.originalname,
       type: "file",
       category: getCategory(file.mimetype),
       status: "ready",
       icon: getIcon(file.mimetype),
       size: formatSize(file.size),
-      filePath: relativePath,
-      mimeType: file.mimetype,
-      metadata: {
-        originalName: file.originalname,
-        encoding: file.encoding,
-        sizeBytes: file.size,
-      },
     });
+
+    const engineFile = engineResult.ok ? (engineResult.data as any) : null;
 
     return res.json({
       success: true,
       file: {
-        ...dbFile,
-        url: relativePath,
+        id: engineFile?.id || engineFile?.data?.id || Date.now().toString(),
+        title: file.originalname,
+        type: "file",
+        category: getCategory(file.mimetype),
+        status: "ready",
+        icon: getIcon(file.mimetype),
+        size: formatSize(file.size),
+        url,
+        mimeType: file.mimetype,
       },
     });
   } catch (error: any) {
@@ -190,7 +113,7 @@ uploadRouter.post("/single", upload.single("file"), async (req, res) => {
   }
 });
 
-// Multiple file upload
+// Multiple file upload → S3 + Engine registration
 uploadRouter.post("/multiple", upload.array("files", 10), async (req, res) => {
   try {
     const files = req.files as Express.Multer.File[];
@@ -202,29 +125,34 @@ uploadRouter.post("/multiple", upload.array("files", 10), async (req, res) => {
     const results = [];
 
     for (const file of files) {
-      const subDir = getSubDir(file.mimetype);
-      const relativePath = `/uploads/${subDir}/${file.filename}`;
+      const randomSuffix = Math.random().toString(36).slice(2, 8);
+      const fileKey = `uploads/${user.sub || "anon"}/${Date.now()}-${randomSuffix}-${file.originalname}`;
 
-      const dbFile = await createFile({
-        userId: user.id,
+      // Upload to S3
+      const { url } = await storagePut(fileKey, file.buffer, file.mimetype);
+
+      // Register with engine
+      const engineResult = await engine.engineCreateFile({
         title: file.originalname,
         type: "file",
         category: getCategory(file.mimetype),
         status: "ready",
         icon: getIcon(file.mimetype),
         size: formatSize(file.size),
-        filePath: relativePath,
-        mimeType: file.mimetype,
-        metadata: {
-          originalName: file.originalname,
-          encoding: file.encoding,
-          sizeBytes: file.size,
-        },
       });
 
+      const engineFile = engineResult.ok ? (engineResult.data as any) : null;
+
       results.push({
-        ...dbFile,
-        url: relativePath,
+        id: engineFile?.id || engineFile?.data?.id || Date.now().toString(),
+        title: file.originalname,
+        type: "file",
+        category: getCategory(file.mimetype),
+        status: "ready",
+        icon: getIcon(file.mimetype),
+        size: formatSize(file.size),
+        url,
+        mimeType: file.mimetype,
       });
     }
 
@@ -239,29 +167,16 @@ uploadRouter.post("/multiple", upload.array("files", 10), async (req, res) => {
   }
 });
 
-// Delete uploaded file
+// Delete file — via engine
 uploadRouter.delete("/:fileId", async (req, res) => {
   try {
-    const user = (req as any).user;
-    const fileId = parseInt(req.params.fileId);
+    const fileId = req.params.fileId;
 
-    // Get file info from DB
-    const { getFileById, deleteFile } = await import("./localDb");
-    const file = await getFileById(fileId, user.id);
-    if (!file) {
-      return res.status(404).json({ error: "الملف غير موجود" });
+    // Delete from engine
+    const result = await engine.engineDeleteFile(fileId);
+    if (!result.ok) {
+      return res.status(404).json({ error: "الملف غير موجود أو لا يمكن حذفه" });
     }
-
-    // Delete physical file
-    if (file.filePath) {
-      const fullPath = path.join(process.cwd(), file.filePath as string);
-      if (fs.existsSync(fullPath)) {
-        fs.unlinkSync(fullPath);
-      }
-    }
-
-    // Delete from DB
-    await deleteFile(fileId, user.id);
 
     return res.json({ success: true });
   } catch (error: any) {

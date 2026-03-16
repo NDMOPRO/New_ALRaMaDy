@@ -6,12 +6,15 @@
 import { useState, useRef, useCallback, useEffect, createContext, useContext, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { trpc } from '@/lib/trpc';
+import { usePlatformPresentationEngine } from '@/hooks/usePlatformEngines';
+import { usePlatformHealth } from '@/hooks/usePlatform';
 import { useAutoSave, SaveStatusIndicator } from '@/hooks/useAutoSave';
 import MaterialIcon from './MaterialIcon';
 import ModeSwitcher from './ModeSwitcher';
 import { CHARACTERS, PRESENTATION_ACTIONS } from '@/lib/assets';
 import { RASED_USAGE } from '@/lib/rasedAssets';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
 
 // ─── Types ───────────────────────────────────────────────────
 export interface SlideElement {
@@ -638,6 +641,37 @@ export default function PresentationsEngine() {
   const createPresentationMutation = trpc.presentations.create.useMutation();
   const updatePresentationMutation = trpc.presentations.update.useMutation();
   const shareMutation = trpc.presentations.share.useMutation();
+  const deletePresentationMutation = trpc.presentations.delete.useMutation();
+  // Load saved presentations from DB
+  const { data: savedPresentations, refetch: refetchPresentations } = trpc.presentations.list.useQuery(undefined, { staleTime: 30_000 });
+  // Cross-engine navigation
+  const { navigateTo, pendingNavigation, clearPendingNavigation } = useWorkspace();
+  // Platform backend integration (ALRaMaDy)
+  const platformPres = usePlatformPresentationEngine();
+  const { connected: platformConnected } = usePlatformHealth();
+
+  // Handle incoming navigation data (e.g., from ChatCanvas or ReportsEngine)
+  useEffect(() => {
+    if (pendingNavigation?.targetView === 'presentations' && pendingNavigation.data) {
+      const navData = pendingNavigation.data;
+      if (navData.slides && Array.isArray(navData.slides)) {
+        pushUndo();
+        const newSlides: Slide[] = navData.slides.map((s: any, i: number) => ({
+          id: `nav-${Date.now()}-${i}`,
+          elements: [
+            { id: `h-${i}`, type: 'heading' as const, x: 10, y: 10, width: 80, height: 15, content: s.title || '', style: { fontSize: 32, fontWeight: 'bold', color: '#1a1a2e', textAlign: 'center' as const }, locked: false, visible: true },
+            { id: `p-${i}`, type: 'text' as const, x: 10, y: 30, width: 80, height: 50, content: s.content || '', style: { fontSize: 18, color: '#333', textAlign: 'right' as const }, locked: false, visible: true },
+          ],
+          background: '#ffffff',
+          transition: 'fade' as const,
+          notes: s.notes || '',
+          layout: 'blank' as const,
+        }));
+        setSlides(prev => [...prev, ...newSlides]);
+      }
+      clearPendingNavigation();
+    }
+  }, [pendingNavigation]);
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [sharePassword, setSharePassword] = useState('');
   const [shareLink, setShareLink] = useState<string | null>(null);
@@ -663,7 +697,7 @@ export default function PresentationsEngine() {
           slides: data.slides,
           theme: data.activeTemplate,
         });
-        if (result?.id) setCurrentPresentationId(result.id);
+        if ((result as any)?.id) setCurrentPresentationId((result as any).id);
       }
     },
   });
@@ -1204,10 +1238,10 @@ export default function PresentationsEngine() {
           slides: slides as any[],
           theme: activeTemplate,
         });
-        if (created?.id) setCurrentPresentationId(created.id);
+        if ((created as any)?.id) setCurrentPresentationId((created as any).id);
         setShareLoading(true);
         const result = await shareMutation.mutateAsync({
-          presentationId: created?.id as number,
+          presentationId: (created as any)?.id as number,
           password: sharePassword || undefined,
         });
         const token = (result as any)?.shareToken;

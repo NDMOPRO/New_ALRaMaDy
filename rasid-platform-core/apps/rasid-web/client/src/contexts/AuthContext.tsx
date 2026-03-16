@@ -5,7 +5,7 @@ import { trpc } from '@/lib/trpc';
 export type UserRole = 'admin' | 'editor' | 'viewer' | 'analyst' | 'user';
 
 export interface User {
-  id: number;
+  id: string;
   userId: string;
   displayName: string;
   email: string | null;

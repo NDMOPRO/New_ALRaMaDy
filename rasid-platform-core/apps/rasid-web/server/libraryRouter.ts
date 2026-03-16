@@ -455,7 +455,7 @@ export const libraryRouter = router({
         fileUrl,
         fileKey,
         status: "processing",
-        uploadedBy: ctx.user.id,
+        uploadedBy: typeof ctx.user.id === 'string' ? parseInt(ctx.user.id, 10) || null : ctx.user.id,
       }).$returningId();
       
       const templateId = inserted.id;

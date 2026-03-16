@@ -12,11 +12,14 @@
    ═══════════════════════════════════════════════════════════════ */
 import { useState, useRef, useCallback } from 'react';
 import { trpc } from '@/lib/trpc';
+import { usePlatformTranscriptionEngine } from '@/hooks/usePlatformEngines';
+import { usePlatformHealth } from '@/hooks/usePlatform';
 import MaterialIcon from './MaterialIcon';
 import RasedLoader from '@/components/RasedLoader';
 import ModeSwitcher from './ModeSwitcher';
 import { CHARACTERS } from '@/lib/assets';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
 
 /* ---------- Types ---------- */
 interface ExtractionJob {
@@ -255,6 +258,14 @@ export default function ExtractionEngine() {
   const extractMutation = trpc.ai.extractFromImage.useMutation();
   const extractFileMutation = trpc.ai.extractFromFile.useMutation();
   const uploadFileMutation = trpc.ai.uploadFile.useMutation();
+  const createExtractionMutation = trpc.extractions.create.useMutation();
+  // Load saved extractions from DB
+  const { data: savedExtractions, refetch: refetchExtractions } = trpc.extractions.list.useQuery(undefined, { staleTime: 30_000 });
+  // Cross-engine navigation
+  const { navigateTo } = useWorkspace();
+  // Platform backend integration (ALRaMaDy)
+  const platformTranscription = usePlatformTranscriptionEngine();
+  const { connected: platformConnected } = usePlatformHealth();
 
   // Helper: convert File to base64 data URL
   const fileToBase64 = (file: File): Promise<string> => {

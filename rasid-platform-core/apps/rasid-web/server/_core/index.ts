@@ -10,6 +10,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { uploadRouter } from "../uploadRoute";
+import { wsManager } from "../websocket";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -65,15 +66,29 @@ async function startServer() {
     serveStatic(app);
   }
 
+  // Initialize WebSocket server for real-time updates
+  wsManager.init(server);
+
   const preferredPort = parseInt(process.env.PORT || "3000");
-  const port = await findAvailablePort(preferredPort);
+  
+  // In production (Railway), use the assigned PORT directly
+  // In development, find an available port
+  const port = process.env.NODE_ENV === "production" 
+    ? preferredPort 
+    : await findAvailablePort(preferredPort);
 
   if (port !== preferredPort) {
     console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
   }
 
-  server.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}/`);
+  server.listen(port, "0.0.0.0", () => {
+    console.log(`Server running on http://0.0.0.0:${port}/`);
+  });
+
+  // Graceful shutdown
+  process.on("SIGTERM", () => {
+    wsManager.shutdown();
+    server.close();
   });
 }
 

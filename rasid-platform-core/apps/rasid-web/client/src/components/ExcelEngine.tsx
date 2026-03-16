@@ -15,11 +15,14 @@
    ═══════════════════════════════════════════════════════════════ */
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { trpc } from '@/lib/trpc';
+import { usePlatformDataEngine } from '@/hooks/usePlatformEngines';
+import { usePlatformHealth } from '@/hooks/usePlatform';
 import { useAutoSave, SaveStatusIndicator } from '@/hooks/useAutoSave';
 import MaterialIcon from './MaterialIcon';
 import ModeSwitcher from './ModeSwitcher';
 import { CHARACTERS } from '@/lib/assets';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
 
 /* ---------- Types ---------- */
 interface CellValue {
@@ -255,6 +258,39 @@ export default function ExcelEngine() {
   const [aiResult, setAiResult] = useState<{ analysis?: string; suggestions?: string[]; formulas?: string[]; issues?: string[] } | null>(null);
   const createSpreadsheetMutation = trpc.spreadsheets.create.useMutation();
   const updateSpreadsheetMutation = trpc.spreadsheets.update.useMutation();
+  const deleteSpreadsheetMutation = trpc.spreadsheets.delete.useMutation();
+  // Load saved spreadsheets from DB
+  const { data: savedSpreadsheets, refetch: refetchSpreadsheets } = trpc.spreadsheets.list.useQuery(undefined, { staleTime: 30_000 });
+  // Cross-engine navigation
+  const { navigateTo, pendingNavigation, clearPendingNavigation } = useWorkspace();
+  // Platform backend integration (ALRaMaDy)
+  const platformData = usePlatformDataEngine();
+  const { connected: platformConnected } = usePlatformHealth();
+
+  // Handle incoming navigation data (e.g., from ChatCanvas or other engines)
+  useEffect(() => {
+    if (pendingNavigation?.targetView === 'data' && pendingNavigation.data) {
+      const navData = pendingNavigation.data;
+      if (navData.table) {
+        // Received table data from another engine
+        const newSheet = createDefaultSheet();
+        newSheet.name = navData.title || 'بيانات مستوردة';
+        if (Array.isArray(navData.table.headers)) {
+          newSheet.columns = navData.table.headers.map((h: string, i: number) => ({
+            id: uid(), name: h, width: 120, pinned: false, type: 'auto' as const, hidden: false,
+          }));
+        }
+        if (Array.isArray(navData.table.rows)) {
+          newSheet.rows = navData.table.rows.map((row: any[]) =>
+            row.map((cell: any) => ({ raw: String(cell ?? ''), type: 'text' as const }))
+          );
+        }
+        setSheets(prev => [...prev, newSheet]);
+        setActiveSheetIndex(sheets.length);
+      }
+      clearPendingNavigation();
+    }
+  }, [pendingNavigation]);
 
   // Auto-save every 30 seconds
   const { status: saveStatus, lastSaved, save: forceSave } = useAutoSave({

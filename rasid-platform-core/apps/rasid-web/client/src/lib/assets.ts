@@ -72,8 +72,14 @@ export const CHAT_OPTIONS: Array<{ id: string; label: string; icon: string; dang
 
 // ===== WORKSPACE VIEWS =====
 export const WORKSPACE_VIEWS = [
-  { id: 'chat', label: 'راصد الذكي', icon: 'smart_toy' },
+  { id: 'chat', label: 'المحادثة', icon: 'chat_bubble_outline' },
   { id: 'data', label: 'بياناتي', icon: 'table_chart' },
+  { id: 'presentations', label: 'عروضي', icon: 'slideshow' },
+  { id: 'reports', label: 'تقاريري', icon: 'article' },
+  { id: 'dashboard', label: 'لوحاتي', icon: 'dashboard' },
+  { id: 'extraction', label: 'تفريغ', icon: 'document_scanner' },
+  { id: 'translation', label: 'ترجمة', icon: 'translate' },
+  { id: 'matching', label: 'مطابقة', icon: 'compare' },
   { id: 'library', label: 'مكتبتي', icon: 'folder_open' },
 ] as const;
 

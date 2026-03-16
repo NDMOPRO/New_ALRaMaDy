@@ -13,6 +13,10 @@
    ═══════════════════════════════════════════════════════════════ */
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { trpc } from '@/lib/trpc';
+import { usePlatformDashboardEngine } from '@/hooks/usePlatformEngines';
+import { usePlatformHealth } from '@/hooks/usePlatform';
+import { useDashboardWebSocket, type DashboardUpdateEvent } from '@/hooks/useWebSocket';
+import { toast } from 'sonner';
 import { useAutoSave, SaveStatusIndicator } from '@/hooks/useAutoSave';
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
@@ -24,6 +28,7 @@ import MaterialIcon from './MaterialIcon';
 import ModeSwitcher from './ModeSwitcher';
 import { CHARACTERS } from '@/lib/assets';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
 
 /* ---------- Types ---------- */
 interface Widget {
@@ -158,6 +163,48 @@ export default function DashboardEngine() {
   const dashboardMutation = trpc.ai.analyzeDashboard.useMutation();
   const createDashboardMutation = trpc.dashboards.create.useMutation();
   const updateDashboardMutation = trpc.dashboards.update.useMutation();
+  const deleteDashboardMutation = trpc.dashboards.delete.useMutation();
+  // Load saved dashboards from DB
+  const { data: savedDashboards, refetch: refetchDashboards } = trpc.dashboards.list.useQuery(undefined, { staleTime: 30_000 });
+  // Cross-engine navigation
+  const { navigateTo, pendingNavigation, clearPendingNavigation } = useWorkspace();
+  // Platform backend integration (ALRaMaDy)
+  const platformDash = usePlatformDashboardEngine();
+  const { connected: platformConnected } = usePlatformHealth();
+
+  // Handle incoming navigation data (e.g., from ExcelEngine sending KPIs)
+  useEffect(() => {
+    if (pendingNavigation?.targetView === 'dashboard' && pendingNavigation.data) {
+      const navData = pendingNavigation.data;
+      if (navData.widgets && Array.isArray(navData.widgets)) {
+        pushUndo();
+        const newWidgets: Widget[] = navData.widgets.map((w: any, i: number) => ({
+          id: `nav-${Date.now()}-${i}`,
+          type: w.type || 'kpi',
+          title: w.title || 'ودجت جديد',
+          col: (i % 4) * 3, row: Math.floor(i / 4) * 2,
+          colSpan: 3, rowSpan: 2,
+          data: w.data, config: w.config,
+        }));
+        setWidgets(prev => [...prev, ...newWidgets]);
+        toast.success(`تم إضافة ${newWidgets.length} ودجت من محرك آخر`);
+      }
+      clearPendingNavigation();
+    }
+  }, [pendingNavigation]);
+
+  // WebSocket for real-time dashboard updates
+  const handleDashboardWsUpdate = useCallback((event: DashboardUpdateEvent) => {
+    if (event.dashboardId === String(currentDashboardId)) {
+      if (event.widgetRef && event.payload) {
+        setWidgets(prev => prev.map(w =>
+          w.id === event.widgetRef ? { ...w, data: event.payload as any } : w
+        ));
+        toast.info('تم تحديث بيانات الودجت تلقائياً', { duration: 2000 });
+      }
+    }
+  }, [currentDashboardId]);
+  const { connected: wsConnected } = useDashboardWebSocket(handleDashboardWsUpdate);
 
   // Auto-save every 30 seconds
   const { status: saveStatus, lastSaved, save: forceSave } = useAutoSave({
@@ -166,6 +213,7 @@ export default function DashboardEngine() {
     onSave: async (data) => {
       if (data.widgets.length === 0) return;
       const title = 'لوحة مؤشرات';
+      // Save to local DB
       if (currentDashboardId) {
         await updateDashboardMutation.mutateAsync({
           id: currentDashboardId,
@@ -176,7 +224,17 @@ export default function DashboardEngine() {
           title,
           widgets: data.widgets,
         });
-        if (result?.id) setCurrentDashboardId(result.id);
+        if ((result as any)?.id) setCurrentDashboardId((result as any).id);
+      }
+      // Sync to platform backend if connected
+      if (platformConnected) {
+        try {
+          await platformDash.platformCreate({
+            title,
+            mode: mode as 'easy' | 'advanced',
+            datasetRefs: [],
+          });
+        } catch { /* Platform sync is best-effort */ }
       }
     },
   });

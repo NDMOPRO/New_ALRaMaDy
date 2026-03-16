@@ -15,12 +15,20 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { id: 'chat', label: 'راصد الذكي', icon: 'smart_toy', activeIcon: 'smart_toy' },
+  { id: 'chat', label: 'المحادثة', icon: 'chat_bubble_outline', activeIcon: 'chat_bubble' },
   { id: 'data', label: 'بياناتي', icon: 'table_chart', activeIcon: 'table_chart' },
-  { id: 'library', label: 'مكتبتي', icon: 'folder_open', activeIcon: 'folder' },
+  { id: 'presentations', label: 'عروضي', icon: 'slideshow', activeIcon: 'slideshow' },
+  { id: 'reports', label: 'تقاريري', icon: 'article', activeIcon: 'article' },
+  { id: 'more', label: 'المزيد', icon: 'grid_view', activeIcon: 'grid_view' },
 ];
 
-const MORE_ITEMS: { id: string; label: string; icon: string }[] = [];
+const MORE_ITEMS = [
+  { id: 'dashboard', label: 'لوحاتي', icon: 'dashboard' },
+  { id: 'extraction', label: 'تفريغ', icon: 'document_scanner' },
+  { id: 'translation', label: 'ترجمة', icon: 'translate' },
+  { id: 'matching', label: 'مطابقة', icon: 'compare' },
+  { id: 'library', label: 'مكتبتي', icon: 'folder_open' },
+];
 
 interface MobileBottomNavProps {
   activeView: string;

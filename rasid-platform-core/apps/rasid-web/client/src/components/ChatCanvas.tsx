@@ -1,25 +1,16 @@
 /* ═══════════════════════════════════════════════════════════════════
-   ChatCanvas — Ultra Premium Chat + Wizard Engine Integration
-   - Chat mode with AI responses
-   - States demo (15 interactive states)
-   - Wizard mode: triggered by studio tool clicks, replaces old setup panels
-   - All flows happen INSIDE the canvas, no popups/dialogs
+   ChatCanvas — راصد الذكي — AI مفتوح بالكامل
+   - كل طلب يُرسل مباشرة للذكاء الاصطناعي
+   - الذكاء يفهم الطلب ويختار المحرك المناسب تلقائياً
+   - لا wizards، لا خطوات يدوية — AI كامل مفتوح
    ═══════════════════════════════════════════════════════════════════ */
 import { useState, useRef, useEffect, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { trpc } from '@/lib/trpc';
+import { useJobWebSocket, type JobUpdateEvent } from '@/hooks/useWebSocket';
+import { toast } from 'sonner';
 import MaterialIcon from './MaterialIcon';
-import { CHARACTERS, QUICK_ACTIONS, CHAT_OPTIONS } from '@/lib/assets';
+import { CHARACTERS, QUICK_ACTIONS } from '@/lib/assets';
 import { useTheme } from '@/contexts/ThemeContext';
-import type { ChatStateType } from './ChatStates';
-import {
-  EmptyState, LoadingState, MultiFileState, SuggestedActionsState,
-  PlanState, RunningState, SuccessState, WarningState, FailureState,
-  CompareState, EvidenceDrawerState, InspectorState, ExportState,
-  TemplateLockState, FixRetryState
-} from './ChatStates';
-import WizardEngine, { type EngineId } from './WizardEngine';
-import AIPresentationCreator from './AIPresentationCreator';
-import type { Slide, BrandKit } from './PresentationsEngine';
 
 interface ChatMessage {
   id: string;
@@ -35,23 +26,9 @@ interface ChatMessage {
   artifacts?: Array<{ id: string; type: 'dashboard' | 'report' | 'presentation' | 'data' | 'match'; label: string; icon: string }>;
 }
 
-type CanvasMode = 'chat' | 'states-demo' | 'wizard' | 'ai-presentation';
-
-/* ─── Tool-to-Engine mapping ─── */
-const TOOL_ENGINE_MAP: Record<string, EngineId> = {
-  dashboard: 'dashboard',
-  report: 'report',
-  presentation: 'presentation',
-  matching: 'matching',
-  arabization: 'arabization',
-  extraction: 'extraction',
-  translation: 'translation',
-  excel: 'excel',
-};
-
-/* ─── Public handle for parent to trigger wizard ─── */
+/* ─── Public handle for parent ─── */
 export interface ChatCanvasHandle {
-  activateWizard: (toolId: string) => void;
+  sendMessage: (text: string) => void;
 }
 
 const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref) {
@@ -61,17 +38,12 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
   const [chatMenuOpen, setChatMenuOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
-  const [canvasMode, setCanvasMode] = useState<CanvasMode>('chat');
   const [dragOver, setDragOver] = useState(false);
   const [dropSnap, setDropSnap] = useState(false);
-  const [conversationId, setConversationId] = useState<number | null>(null);
-  const [activeState, setActiveState] = useState<ChatStateType | null>(null);
-  const [activeEngine, setActiveEngine] = useState<EngineId | null>(null);
-  const [presentationTopic, setPresentationTopic] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatMenuRef = useRef<HTMLDivElement>(null);
 
-  // AI chat mutation via tRPC
+  // AI chat mutation via tRPC — sends to the AI Agent
   const chatMutation = trpc.ai.chat.useMutation();
 
   const character = theme === 'dark' ? CHARACTERS.char3_dark : CHARACTERS.char1_waving;
@@ -79,21 +51,40 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const canvasRef = useRef<HTMLDivElement>(null);
 
-  // Expose activateWizard to parent via ref
+  // Expose sendMessage to parent via ref
   useImperativeHandle(ref, () => ({
-    activateWizard: (toolId: string) => {
-      const engineId = TOOL_ENGINE_MAP[toolId];
-      if (engineId) {
-        // Route presentations to the new AI creator
-        if (engineId === 'presentation') {
-          setCanvasMode('ai-presentation');
-          return;
-        }
-        setActiveEngine(engineId);
-        setCanvasMode('wizard');
-      }
+    sendMessage: (text: string) => {
+      setInput(text);
+      // Trigger send after state update
+      setTimeout(() => {
+        const fakeInput = text;
+        doSend(fakeInput);
+      }, 100);
     },
   }));
+
+  // WebSocket for real-time job progress tracking
+  const handleJobWsUpdate = useCallback((event: JobUpdateEvent) => {
+    if (event.progress !== undefined) {
+      setMessages(prev => {
+        const last = prev[prev.length - 1];
+        if (last?.role === 'assistant' && last.stages) {
+          const updated = { ...last, stages: last.stages.map(s =>
+            s.status === 'running' ? { ...s, progress: event.progress ?? s.progress } : s
+          ) };
+          return [...prev.slice(0, -1), updated];
+        }
+        return prev;
+      });
+    }
+    if (event.result) {
+      toast.success('تم إكمال المهمة بنجاح', { duration: 3000 });
+    }
+    if (event.error) {
+      toast.error(`فشلت المهمة: ${event.error}`, { duration: 5000 });
+    }
+  }, []);
+  useJobWebSocket(handleJobWsUpdate);
 
   // Welcome entrance animation
   useEffect(() => {
@@ -124,57 +115,10 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
-  // ==================== AI Chat with Streaming ====================
-  const handleSend = useCallback(async () => {
-    if (!input.trim()) return;
-    const userText = input.trim();
-    setInput('');
-
-    // Check for wizard triggers from text input
-    const lower = userText;
-    const triggerMap: Record<string, EngineId> = {
-      'تقرير': 'report',
-      'لوحة': 'dashboard',
-      'مؤشرات': 'dashboard',
-      'عرض': 'presentation',
-      'شرائح': 'presentation',
-      'مطابقة': 'matching',
-      'تعريب': 'arabization',
-      'تفريغ': 'extraction',
-      'استخراج': 'extraction',
-      'ترجمة': 'translation',
-      'إكسل': 'excel',
-      'جدول': 'excel',
-    };
-
-    for (const [keyword, engineId] of Object.entries(triggerMap)) {
-      if (lower.includes(keyword) && lower.length < 120) {
-        // Add user message first
-        const userMsg: ChatMessage = {
-          id: Date.now().toString(),
-          role: 'user',
-          content: userText,
-          time: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' }),
-        };
-        setMessages(prev => [...prev, userMsg]);
-        // For presentations, use the new AI creator with the topic from chat
-        if (engineId === 'presentation') {
-          // Extract topic: remove the trigger keyword and use the rest as topic
-          const topicText = userText.replace(/\b(عرض|شرائح|تقديمي|عن|أنشئ|اعمل|اعملي|اعمل لي|اعمللي)\b/gi, '').trim();
-          setPresentationTopic(topicText || '');
-          setTimeout(() => {
-            setCanvasMode('ai-presentation');
-          }, 300);
-          return;
-        }
-        // Activate wizard for other engines
-        setTimeout(() => {
-          setActiveEngine(engineId);
-          setCanvasMode('wizard');
-        }, 300);
-        return;
-      }
-    }
+  // ==================== AI Chat — Open AI Agent ====================
+  const doSend = useCallback(async (text: string) => {
+    if (!text.trim()) return;
+    const userText = text.trim();
 
     // Add user message to UI
     const userMsg: ChatMessage = {
@@ -186,105 +130,88 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
     setMessages(prev => [...prev, userMsg]);
     setIsTyping(true);
 
-    // Call real AI via tRPC
     try {
+      // Send to AI Agent — it understands intent and calls the right engine
       const chatHistory = messages.map(m => ({ role: m.role, content: m.content }));
       chatHistory.push({ role: 'user' as const, content: userText });
-      
-      const result = await chatMutation.mutateAsync({
-        messages: chatHistory,
-      });
-      
-      setIsTyping(false);
-      setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: result.content,
-        time: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' }),
-        actions: [
+      const result = await chatMutation.mutateAsync({ messages: chatHistory });
+
+      let responseContent = result.content || 'تم تنفيذ الطلب بنجاح.';
+      let responseActions: ChatMessage['actions'] = [];
+      let responseStages: ChatMessage['stages'] = undefined;
+      let responseArtifacts: ChatMessage['artifacts'] = undefined;
+
+      // Parse structured response if available
+      try {
+        const parsed = JSON.parse(responseContent);
+        if (parsed.message) {
+          responseContent = parsed.message;
+        }
+        if (parsed.actions) {
+          responseActions = parsed.actions;
+        }
+        if (parsed.stages) {
+          responseStages = parsed.stages;
+        }
+        if (parsed.artifacts) {
+          responseArtifacts = parsed.artifacts;
+        }
+      } catch {
+        // Not JSON — plain text response, that's fine
+      }
+
+      // Add default actions if none provided
+      if (!responseActions || responseActions.length === 0) {
+        responseActions = [
           { id: 'analyze', label: 'تحليل البيانات', icon: 'analytics', variant: 'primary' },
           { id: 'dashboard', label: 'إنشاء لوحة', icon: 'dashboard', variant: 'secondary' },
           { id: 'report', label: 'إنشاء تقرير', icon: 'description', variant: 'secondary' },
-        ],
-      }]);
-    } catch (error: any) {
+        ];
+      }
+
       setIsTyping(false);
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: error?.message?.includes('API') 
-          ? 'عذراً، لم يتم تكوين مفتاح OpenAI بعد. يرجى إضافة المفتاح في الإعدادات أولاً.'
-          : 'عذراً، حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى.',
+        content: responseContent,
+        time: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' }),
+        actions: responseActions,
+        stages: responseStages,
+        artifacts: responseArtifacts,
+      }]);
+    } catch (error: any) {
+      setIsTyping(false);
+      const errorMsg = error?.message?.includes('API')
+        ? 'عذراً، لم يتم تكوين مفتاح الذكاء الاصطناعي بعد. يرجى إضافة المفتاح في الإعدادات أولاً.'
+        : 'عذراً، حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى.';
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: errorMsg,
         time: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' }),
       }]);
     }
-  }, [input, conversationId, messages, chatMutation]);
+  }, [messages, chatMutation]);
+
+  const handleSend = useCallback(() => {
+    if (!input.trim()) return;
+    const text = input.trim();
+    setInput('');
+    doSend(text);
+  }, [input, doSend]);
+
+  // Handle action button clicks — send as new message to AI
+  const handleActionClick = useCallback((action: { id: string; label: string }) => {
+    doSend(action.label);
+  }, [doSend]);
 
   // Handle new conversation
   const handleNewConversation = useCallback(() => {
     setMessages([]);
-    setConversationId(null);
-    setCanvasMode('chat');
-    setActiveState(null);
-    setActiveEngine(null);
     setChatMenuOpen(false);
   }, []);
 
-  // Handle state change from child states
-  const handleStateChange = useCallback((state: ChatStateType) => {
-    setActiveState(state);
-    setCanvasMode('states-demo');
-  }, []);
-
-  // Handle wizard back
-  const handleWizardBack = useCallback(() => {
-    setActiveEngine(null);
-    setCanvasMode('chat');
-  }, []);
-
-  // All 15 states for the demo navigation bar
-  const ALL_STATES: { id: ChatStateType; label: string; icon: string }[] = [
-    { id: 'empty', label: 'فارغة', icon: 'chat_bubble_outline' },
-    { id: 'loading', label: 'تحميل', icon: 'progress_activity' },
-    { id: 'multi-file', label: 'ملفات', icon: 'folder_open' },
-    { id: 'suggested-actions', label: 'مقترحات', icon: 'lightbulb' },
-    { id: 'plan', label: 'خطة', icon: 'route' },
-    { id: 'running', label: 'تشغيل', icon: 'settings' },
-    { id: 'success', label: 'نجاح', icon: 'check_circle' },
-    { id: 'warning', label: 'تحذير', icon: 'warning' },
-    { id: 'failure', label: 'فشل', icon: 'error' },
-    { id: 'compare', label: 'مقارنة', icon: 'compare' },
-    { id: 'evidence', label: 'أدلة', icon: 'source' },
-    { id: 'inspector', label: 'مفتش', icon: 'manage_search' },
-    { id: 'export', label: 'تصدير', icon: 'download' },
-    { id: 'template-lock', label: 'قفل', icon: 'lock' },
-    { id: 'fix-retry', label: 'إصلاح', icon: 'build' },
-  ];
-
-  // Render the active state component
-  const renderActiveState = () => {
-    const props = { onStateChange: handleStateChange, onBack: () => { setActiveState(null); setCanvasMode('chat'); } };
-    switch (activeState) {
-      case 'empty': return <EmptyState {...props} />;
-      case 'loading': return <LoadingState {...props} />;
-      case 'multi-file': return <MultiFileState {...props} />;
-      case 'suggested-actions': return <SuggestedActionsState {...props} />;
-      case 'plan': return <PlanState {...props} />;
-      case 'running': return <RunningState {...props} />;
-      case 'success': return <SuccessState {...props} />;
-      case 'warning': return <WarningState {...props} />;
-      case 'failure': return <FailureState {...props} />;
-      case 'compare': return <CompareState {...props} />;
-      case 'evidence': return <EvidenceDrawerState {...props} />;
-      case 'inspector': return <InspectorState {...props} />;
-      case 'export': return <ExportState {...props} />;
-      case 'template-lock': return <TemplateLockState {...props} />;
-      case 'fix-retry': return <FixRetryState {...props} />;
-      default: return <EmptyState {...props} />;
-    }
-  };
-
-  const isEmpty = messages.length === 0 && canvasMode === 'chat';
+  const isEmpty = messages.length === 0;
 
   return (
     <div
@@ -300,14 +227,12 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
       onDrop={(e) => {
         e.preventDefault();
         setDragOver(false);
-        // Handle RASID data item drop from DataPanel
         const rasidData = e.dataTransfer.getData('application/rasid-item');
         if (rasidData) {
           try {
             const item = JSON.parse(rasidData);
             const dropText = `تحليل: ${item.title}`;
             setInput(prev => prev ? `${prev}\n${dropText}` : dropText);
-            // Show drop snap animation
             setDropSnap(true);
             setTimeout(() => setDropSnap(false), 400);
           } catch { /* ignore parse errors */ }
@@ -315,14 +240,13 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
       }}
       onMouseMove={isEmpty ? handleMouseMove : undefined}
     >
-      {/* Top accent line — subtle primary */}
+      {/* Top accent line */}
       <div className="absolute top-0 left-8 right-8 h-[1px] rounded-full z-10" style={{ background: 'linear-gradient(90deg, transparent, var(--primary) / 0.15, transparent)' }} />
+      
       {/* Header */}
       <div
         className="h-10 sm:h-11 flex items-center justify-between px-3 sm:px-4 shrink-0 relative"
-        style={{
-          borderBottom: '1px solid var(--border)',
-        }}
+        style={{ borderBottom: '1px solid var(--border)' }}
       >
         <div className="flex items-center gap-2">
           <div className="relative">
@@ -331,19 +255,10 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           </div>
           <span className="text-[13px] sm:text-[14px] font-bold text-foreground" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>راصد الذكي</span>
           {isTyping && (
-            <span className="text-[10px] text-primary animate-pulse-soft mr-1">يكتب...</span>
+            <span className="text-[10px] text-primary animate-pulse-soft mr-1">يفكر...</span>
           )}
         </div>
         <div className="flex items-center gap-0.5">
-          {canvasMode !== 'chat' && (
-            <button
-              onClick={() => { setCanvasMode('chat'); setActiveEngine(null); setActiveState(null); }}
-              className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium text-primary hover:bg-primary/10 transition-all"
-            >
-              <MaterialIcon icon="arrow_back" size={14} />
-              <span className="hidden sm:inline">المحادثة</span>
-            </button>
-          )}
           <div className="relative" ref={chatMenuRef}>
             <button
               onClick={() => setChatMenuOpen(!chatMenuOpen)}
@@ -360,27 +275,6 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                   <MaterialIcon icon="add" size={15} />
                   محادثة جديدة
                 </button>
-                <button
-                  onClick={() => { setCanvasMode('states-demo'); setActiveState('empty'); setChatMenuOpen(false); }}
-                  className="w-full flex items-center gap-2 px-3 py-1.5 text-[11px] text-primary hover:bg-primary/10 transition-all"
-                >
-                  <MaterialIcon icon="view_carousel" size={15} />
-                  عرض الحالات
-                </button>
-                {CHAT_OPTIONS.map(opt => (
-                  <button
-                    key={opt.id}
-                    onClick={() => setChatMenuOpen(false)}
-                    className={`w-full flex items-center gap-2 px-3 py-1.5 text-[11px] transition-all ${
-                      opt.danger
-                        ? 'text-destructive hover:bg-destructive/10'
-                        : 'text-foreground hover:bg-accent'
-                    }`}
-                  >
-                    <MaterialIcon icon={opt.icon} size={15} />
-                    {opt.label}
-                  </button>
-                ))}
               </div>
             )}
           </div>
@@ -389,84 +283,8 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
       {/* Content Area */}
       <div className="flex-1 overflow-y-auto">
-        {/* ═══ Wizard Mode — Sequential step-by-step engine flows ═══ */}
-        {canvasMode === 'wizard' && activeEngine && (
-          <WizardEngine
-            engineId={activeEngine}
-            onBack={handleWizardBack}
-            onComplete={() => {
-              // After wizard completes, add a success message to chat
-              const engineNames: Record<EngineId, string> = {
-                dashboard: 'لوحة المؤشرات',
-                report: 'التقرير',
-                presentation: 'العرض التقديمي',
-                matching: 'المطابقة الحرفية',
-                arabization: 'التعريب',
-                extraction: 'التفريغ',
-                translation: 'الترجمة',
-                excel: 'الإكسل',
-              };
-              setMessages(prev => [...prev, {
-                id: Date.now().toString(),
-                role: 'assistant',
-                content: `تم إنشاء ${engineNames[activeEngine]} بنجاح! يمكنك تحميله أو معاينته من أزرار التصدير.`,
-                time: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' }),
-              }]);
-            }}
-          />
-        )}
-
-        {/* ═══ AI Presentation Creator Mode ═══ */}
-        {canvasMode === 'ai-presentation' && (
-          <AIPresentationCreator
-            initialTopic={presentationTopic}
-            onComplete={(slides: Slide[], brandKit: BrandKit, title: string) => {
-              // Add success message to chat
-              setMessages(prev => [...prev, {
-                id: Date.now().toString(),
-                role: 'assistant',
-                content: `تم إنشاء العرض التقديمي "${title}" بنجاح! (${slides.length} شريحة) — يمكنك فتحه في المحرر للتعديل والتصدير.`,
-                time: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' }),
-              }]);
-              setCanvasMode('chat');
-            }}
-            onBack={() => {
-              setCanvasMode('chat');
-            }}
-          />
-        )}
-
-        {/* ═══ States Demo Mode — shows the 15 interactive states ═══ */}
-        {canvasMode === 'states-demo' && (
-          <div className="flex flex-col h-full">
-            {/* States navigation bar */}
-            <div className="shrink-0 border-b border-border bg-accent/30 backdrop-blur-sm">
-              <div className="flex items-center gap-1 px-2 py-1.5 overflow-x-auto scrollbar-thin">
-                {ALL_STATES.map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => setActiveState(s.id)}
-                    className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-medium whitespace-nowrap transition-all shrink-0 ${
-                      activeState === s.id
-                        ? 'bg-primary text-primary-foreground shadow-sm'
-                        : 'text-muted-foreground hover:bg-accent hover:text-foreground'
-                    }`}
-                  >
-                    <MaterialIcon icon={s.icon} size={12} />
-                    {s.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-            {/* Active state content */}
-            <div className="flex-1 overflow-y-auto" key={activeState}>
-              {renderActiveState()}
-            </div>
-          </div>
-        )}
-
-        {/* ═══ Chat Mode — Empty Welcome ═══ */}
-        {canvasMode === 'chat' && isEmpty && (
+        {/* ═══ Empty Welcome Screen ═══ */}
+        {isEmpty && (
           <div className="flex flex-col items-center justify-center h-full px-4 sm:px-6 relative overflow-hidden">
             {/* Ambient background effects */}
             <div className="absolute inset-0 pointer-events-none">
@@ -504,7 +322,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
               <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-16 sm:w-20 h-3 bg-foreground/[0.04] rounded-full blur-md animate-pulse-soft" />
             </div>
 
-            {/* Title with staggered entrance */}
+            {/* Title */}
             <h2
               className={`text-[18px] sm:text-[22px] font-extrabold text-foreground mb-1.5 transition-all duration-700 delay-200 ${welcomeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             >
@@ -516,15 +334,15 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             <p
               className={`text-[11px] sm:text-[13px] text-muted-foreground text-center max-w-[380px] mb-5 sm:mb-7 transition-all duration-700 delay-300 ${welcomeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             >
-              اكتب طلبك بلغتك الطبيعية أو اختر من الأزرار أدناه
+              اكتب طلبك بلغتك الطبيعية — راصد يفهم ويُنفذ مباشرة
             </p>
 
-            {/* Quick actions with staggered entrance */}
+            {/* Quick actions */}
             <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 max-w-[480px]">
               {QUICK_ACTIONS.map((action, i) => (
                 <button
                   key={action.id}
-                  onClick={() => setInput(action.label)}
+                  onClick={() => doSend(action.label)}
                   className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl border border-border bg-card hover:bg-accent hover:border-primary/20 hover:shadow-lg transition-all duration-300 active:scale-[0.96] text-[10px] sm:text-[11px] font-medium text-foreground btn-hover-lift group ${welcomeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}
                   style={{ transitionDelay: `${400 + i * 60}ms` }}
                 >
@@ -534,7 +352,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
               ))}
             </div>
 
-            {/* Keyboard hint at bottom */}
+            {/* Keyboard hint */}
             <div className={`mt-6 sm:mt-8 flex items-center gap-2 transition-all duration-700 delay-[800ms] ${welcomeVisible ? 'opacity-60 translate-y-0' : 'opacity-0 translate-y-2'}`}>
               <MaterialIcon icon="keyboard" size={14} className="text-muted-foreground/40" />
               <span className="text-[9px] text-muted-foreground/40">Enter للإرسال — Shift+Enter لسطر جديد</span>
@@ -542,8 +360,8 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           </div>
         )}
 
-        {/* ═══ Chat Mode — Messages ═══ */}
-        {canvasMode === 'chat' && !isEmpty && (
+        {/* ═══ Chat Messages ═══ */}
+        {!isEmpty && (
           <div className="flex flex-col gap-3 p-3 sm:p-4">
             {messages.map((msg, i) => (
               <div
@@ -562,7 +380,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                     </div>
                   </div>
                 )}
-                <div className={`max-w-[85%] sm:max-w-[80%] ${msg.role === 'user' ? '' : ''}`}>
+                <div className={`max-w-[85%] sm:max-w-[80%]`}>
                   <div
                     className={`px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-2xl text-[12px] sm:text-[13px] leading-relaxed shadow-sm ${
                       msg.role === 'user'
@@ -575,7 +393,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                       <span className="inline-block w-1.5 h-4 bg-primary/60 animate-pulse ml-0.5 align-middle rounded-sm" />
                     )}
 
-                    {/* Execution Stages (5-stage pipeline) */}
+                    {/* Execution Stages */}
                     {msg.stages && msg.stages.length > 0 && (
                       <div className="mt-3 p-2.5 rounded-xl bg-card/60 border border-border/30">
                         <div className="flex items-center gap-1 mb-2">
@@ -640,7 +458,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                     </div>
                   </div>
 
-                  {/* Dynamic Context Action Buttons */}
+                  {/* Action Buttons */}
                   {msg.actions && msg.actions.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-1.5 pr-1">
                       {msg.actions.map((action, ai) => {
@@ -654,6 +472,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                         return (
                           <button
                             key={action.id}
+                            onClick={() => handleActionClick(action)}
                             className={`flex items-center gap-1 px-2 py-1 rounded-lg border text-[10px] font-medium transition-all active:scale-95 animate-stagger-in ${variantClass}`}
                             style={{ animationDelay: `${ai * 0.06}s` }}
                           >
@@ -686,76 +505,74 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
         )}
       </div>
 
-      {/* Input Bar — visible in chat mode only */}
-      {canvasMode === 'chat' && (
-        <div className="px-1.5 sm:px-2.5 md:px-4 pb-1.5 sm:pb-2.5 md:pb-3 pt-1.5 sm:pt-2 shrink-0 mobile-safe-bottom">
-          <div className={`relative flex items-end gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 border-2 transition-all duration-300 ${
-            inputFocused
-              ? 'border-primary/30 shadow-[0_0_20px_-4px_var(--glow)]'
-              : 'border-transparent hover:border-border/40'
-          }`}
-          style={{
-            background: theme === 'dark'
-              ? 'rgba(255,255,255,0.92)'
-              : 'rgba(0,0,0,0.03)',
-          }}
-          >
-            {/* Glow line on focus */}
-            {inputFocused && (
-              <div className="absolute top-0 left-[10%] right-[10%] h-[2px] bg-gradient-to-l from-transparent via-primary/40 to-transparent animate-fade-in" />
-            )}
-            <div className="flex items-center gap-0.5 shrink-0 pb-0.5">
-              <button className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all active:scale-95 group ${theme === 'dark' ? 'hover:bg-gray-200' : 'hover:bg-accent'}`} title="إرفاق ملف">
-                <MaterialIcon icon="attach_file" size={19} className={`transition-colors ${theme === 'dark' ? 'text-gray-500 group-hover:text-gray-800' : 'text-muted-foreground group-hover:text-primary'}`} />
-              </button>
-              <button className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all active:scale-95 hidden sm:flex group ${theme === 'dark' ? 'hover:bg-gray-200' : 'hover:bg-accent'}`} title="تسجيل صوتي">
-                <MaterialIcon icon="mic" size={19} className={`transition-colors ${theme === 'dark' ? 'text-gray-500 group-hover:text-gray-800' : 'text-muted-foreground group-hover:text-primary'}`} />
-              </button>
-            </div>
-            <textarea
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSend();
-                }
-              }}
-              onFocus={() => setInputFocused(true)}
-              onBlur={() => setInputFocused(false)}
-              placeholder="اكتب طلبك هنا... أو اسحب ملفاً"
-              rows={1}
-              className={`flex-1 bg-transparent text-[13px] sm:text-[14px] outline-none resize-none min-h-[32px] max-h-[120px] py-1.5 leading-relaxed ${theme === 'dark' ? 'text-gray-800 placeholder:text-gray-400' : 'text-foreground placeholder:text-muted-foreground/50'}`}
-              style={{ height: 'auto' }}
-              onInput={(e) => {
-                const target = e.target as HTMLTextAreaElement;
-                target.style.height = 'auto';
-                target.style.height = Math.min(target.scrollHeight, 120) + 'px';
-              }}
-            />
-            <button
-              onClick={handleSend}
-              disabled={!input.trim() || isTyping}
-              className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-300 shrink-0 mb-0.5 ${
-                input.trim() && !isTyping
-                  ? theme === 'dark'
-                    ? 'bg-[#0f2744] text-white hover:opacity-90 active:scale-90 shadow-md shadow-[#0f2744]/30'
-                    : 'bg-primary text-primary-foreground hover:opacity-90 active:scale-90 shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30'
-                  : theme === 'dark'
-                    ? 'bg-gray-200 text-gray-400'
-                    : 'bg-muted text-muted-foreground'
-              }`}
-            >
-              <MaterialIcon icon="arrow_upward" size={19} />
+      {/* Input Bar */}
+      <div className="px-1.5 sm:px-2.5 md:px-4 pb-1.5 sm:pb-2.5 md:pb-3 pt-1.5 sm:pt-2 shrink-0 mobile-safe-bottom">
+        <div className={`relative flex items-end gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 border-2 transition-all duration-300 ${
+          inputFocused
+            ? 'border-primary/30 shadow-[0_0_20px_-4px_var(--glow)]'
+            : 'border-transparent hover:border-border/40'
+        }`}
+        style={{
+          background: theme === 'dark'
+            ? 'rgba(255,255,255,0.92)'
+            : 'rgba(0,0,0,0.03)',
+        }}
+        >
+          {/* Glow line on focus */}
+          {inputFocused && (
+            <div className="absolute top-0 left-[10%] right-[10%] h-[2px] bg-gradient-to-l from-transparent via-primary/40 to-transparent animate-fade-in" />
+          )}
+          <div className="flex items-center gap-0.5 shrink-0 pb-0.5">
+            <button className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all active:scale-95 group ${theme === 'dark' ? 'hover:bg-gray-200' : 'hover:bg-accent'}`} title="إرفاق ملف">
+              <MaterialIcon icon="attach_file" size={19} className={`transition-colors ${theme === 'dark' ? 'text-gray-500 group-hover:text-gray-800' : 'text-muted-foreground group-hover:text-primary'}`} />
+            </button>
+            <button className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all active:scale-95 hidden sm:flex group ${theme === 'dark' ? 'hover:bg-gray-200' : 'hover:bg-accent'}`} title="تسجيل صوتي">
+              <MaterialIcon icon="mic" size={19} className={`transition-colors ${theme === 'dark' ? 'text-gray-500 group-hover:text-gray-800' : 'text-muted-foreground group-hover:text-primary'}`} />
             </button>
           </div>
-          <p className="text-[8px] sm:text-[9px] text-muted-foreground/70 text-center mt-1.5">
-            منصة <span className="font-extrabold" style={{ color: 'oklch(0.78 0.12 75)', textShadow: '0 0 8px oklch(0.78 0.12 75 / 0.3)' }}>راصد</span> الذكي — مكتب إدارة البيانات الوطنية
-          </p>
+          <textarea
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+              }
+            }}
+            onFocus={() => setInputFocused(true)}
+            onBlur={() => setInputFocused(false)}
+            placeholder="اكتب طلبك هنا... راصد يفهم ويُنفذ مباشرة"
+            rows={1}
+            className={`flex-1 bg-transparent text-[13px] sm:text-[14px] outline-none resize-none min-h-[32px] max-h-[120px] py-1.5 leading-relaxed ${theme === 'dark' ? 'text-gray-800 placeholder:text-gray-400' : 'text-foreground placeholder:text-muted-foreground/50'}`}
+            style={{ height: 'auto' }}
+            onInput={(e) => {
+              const target = e.target as HTMLTextAreaElement;
+              target.style.height = 'auto';
+              target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+            }}
+          />
+          <button
+            onClick={handleSend}
+            disabled={!input.trim() || isTyping}
+            className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-300 shrink-0 mb-0.5 ${
+              input.trim() && !isTyping
+                ? theme === 'dark'
+                  ? 'bg-[#0f2744] text-white hover:opacity-90 active:scale-90 shadow-md shadow-[#0f2744]/30'
+                  : 'bg-primary text-primary-foreground hover:opacity-90 active:scale-90 shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30'
+                : theme === 'dark'
+                  ? 'bg-gray-200 text-gray-400'
+                  : 'bg-muted text-muted-foreground'
+            }`}
+          >
+            <MaterialIcon icon="arrow_upward" size={19} />
+          </button>
         </div>
-      )}
+        <p className="text-[8px] sm:text-[9px] text-muted-foreground/70 text-center mt-1.5">
+          منصة <span className="font-extrabold" style={{ color: 'oklch(0.78 0.12 75)', textShadow: '0 0 8px oklch(0.78 0.12 75 / 0.3)' }}>راصد</span> الذكي — مكتب إدارة البيانات الوطنية
+        </p>
+      </div>
 
-      {/* Drag overlay — enhanced with glow trail */}
+      {/* Drag overlay */}
       {dragOver && (
         <div className="absolute inset-0 rounded-xl flex items-center justify-center z-10 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 50%, rgba(100,160,255,0.08) 0%, transparent 70%)' }}>
           <div className="flex flex-col items-center gap-3">
@@ -763,7 +580,6 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
               <div className="w-16 h-16 rounded-2xl bg-primary/10 border-2 border-dashed border-primary/40 flex items-center justify-center" style={{ animation: 'drop-zone-pulse 1.5s ease-in-out infinite' }}>
                 <MaterialIcon icon="add_circle" size={28} className="text-primary" />
               </div>
-              {/* Glow rings */}
               <div className="absolute inset-0 rounded-2xl animate-ping-slow" style={{ border: '2px solid rgba(100,160,255,0.2)' }} />
               <div className="absolute -inset-2 rounded-3xl animate-ping-slower" style={{ border: '1px solid rgba(100,160,255,0.1)' }} />
             </div>

@@ -13,11 +13,14 @@
    ═══════════════════════════════════════════════════════════════ */
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { trpc } from '@/lib/trpc';
+import { usePlatformReportEngine } from '@/hooks/usePlatformEngines';
+import { usePlatformHealth } from '@/hooks/usePlatform';
 import { useAutoSave, SaveStatusIndicator } from '@/hooks/useAutoSave';
 import MaterialIcon from './MaterialIcon';
 import ModeSwitcher from './ModeSwitcher';
 import { CHARACTERS } from '@/lib/assets';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
 
 /* ---------- Types ---------- */
 interface ReportSection {
@@ -121,6 +124,36 @@ export default function ReportsEngine() {
   const generateSectionsMutation = trpc.ai.generateReportSections.useMutation();
   const createReportMutation = trpc.reports.create.useMutation();
   const updateReportMutation = trpc.reports.update.useMutation();
+  const deleteReportMutation = trpc.reports.delete.useMutation();
+  // Load saved reports from DB
+  const { data: savedReports, refetch: refetchReports } = trpc.reports.list.useQuery(undefined, { staleTime: 30_000 });
+  // Cross-engine navigation
+  const { navigateTo, pendingNavigation, clearPendingNavigation } = useWorkspace();
+  // Platform backend integration (ALRaMaDy)
+  const platformReport = usePlatformReportEngine();
+  const { connected: platformConnected } = usePlatformHealth();
+
+  // Handle incoming navigation data (e.g., from ExtractionEngine or ChatCanvas)
+  useEffect(() => {
+    if (pendingNavigation?.targetView === 'reports' && pendingNavigation.data) {
+      const navData = pendingNavigation.data;
+      if (navData.sections && Array.isArray(navData.sections)) {
+        pushUndo();
+        const newSections: ReportSection[] = navData.sections.map((s: any) => ({
+          id: uid(),
+          type: s.type || 'paragraph',
+          content: s.content || '',
+          subContent: s.subContent,
+          level: s.level,
+        }));
+        setSections(prev => [...prev, ...newSections]);
+        if (navData.title) {
+          setMeta(prev => ({ ...prev, title: navData.title }));
+        }
+      }
+      clearPendingNavigation();
+    }
+  }, [pendingNavigation]);
 
   // Auto-save every 30 seconds
   const { status: saveStatus, lastSaved, save: forceSave } = useAutoSave({
@@ -143,7 +176,7 @@ export default function ReportsEngine() {
           classification: data.meta.classification,
           entity: data.meta.author,
         });
-        if (result?.id) setCurrentReportId(result.id);
+        if ((result as any)?.id) setCurrentReportId((result as any).id);
       }
     },
   });

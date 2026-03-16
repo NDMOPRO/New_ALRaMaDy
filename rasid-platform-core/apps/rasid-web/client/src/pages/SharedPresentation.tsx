@@ -85,9 +85,12 @@ export default function SharedPresentation() {
   );
 
   const slides: Slide[] = (() => {
-    if (!data || 'error' in data || 'needsPassword' in data) return [];
+    if (!data || typeof data !== 'object') return [];
+    const d = data as Record<string, unknown>;
+    if ('error' in d || 'needsPassword' in d) return [];
     try {
-      return typeof data.slides === 'string' ? JSON.parse(data.slides) : (data.slides || []);
+      const raw = (d as any).slides;
+      return typeof raw === 'string' ? JSON.parse(raw) : (raw || []);
     } catch { return []; }
   })();
 
@@ -128,7 +131,7 @@ export default function SharedPresentation() {
   }
 
   // Error state
-  if (error || (data && 'error' in data)) {
+  if (error || (data && typeof data === 'object' && data !== null && 'error' in (data as Record<string, unknown>))) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background" dir="rtl">
         <div className="text-center max-w-md mx-auto p-8">
@@ -141,7 +144,7 @@ export default function SharedPresentation() {
   }
 
   // Password required
-  if (data && 'needsPassword' in data && data.needsPassword) {
+  if (data && typeof data === 'object' && data !== null && 'needsPassword' in (data as Record<string, unknown>) && (data as any).needsPassword) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background" dir="rtl">
         <div className="max-w-sm w-full mx-auto p-8">

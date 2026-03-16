@@ -13,11 +13,14 @@
    ═══════════════════════════════════════════════════════════════ */
 import { useState, useCallback, useRef } from 'react';
 import { trpc } from '@/lib/trpc';
+import { usePlatformTranslationEngine } from '@/hooks/usePlatformEngines';
+import { usePlatformHealth } from '@/hooks/usePlatform';
 import RasedLoader from '@/components/RasedLoader';
 import MaterialIcon from './MaterialIcon';
 import ModeSwitcher from './ModeSwitcher';
 import { CHARACTERS } from '@/lib/assets';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
 
 /* ---------- Types ---------- */
 interface TranslationJob {
@@ -161,6 +164,14 @@ export default function TranslationEngine() {
   const [aiLoading, setAiLoading] = useState(false);
 
   const aiMutation = trpc.ai.translate.useMutation();
+  const createTranslationMutation = trpc.translations.create.useMutation();
+  // Load saved translations from DB
+  const { data: savedTranslations, refetch: refetchTranslations } = trpc.translations.list.useQuery(undefined, { staleTime: 30_000 });
+  // Cross-engine navigation
+  const { navigateTo } = useWorkspace();
+  // Platform backend integration (ALRaMaDy)
+  const platformTranslation = usePlatformTranslationEngine();
+  const { connected: platformConnected } = usePlatformHealth();
   const sourceLangObj = LANGUAGES.find(l => l.code === sourceLang);
   const targetLangObj = LANGUAGES.find(l => l.code === targetLang);
 

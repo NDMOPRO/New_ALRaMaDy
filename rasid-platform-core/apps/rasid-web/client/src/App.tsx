@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Route, Switch, Redirect } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
+import PlatformErrorBoundary from "./components/PlatformErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { WorkspaceProvider } from "./contexts/WorkspaceContext";
@@ -76,8 +77,10 @@ function App() {
           <WorkspaceProvider>
           <NotificationProvider>
           <TooltipProvider>
-            <Toaster />
-            <Router />
+            <Toaster richColors position="top-center" dir="rtl" />
+            <PlatformErrorBoundary>
+              <Router />
+            </PlatformErrorBoundary>
           </TooltipProvider>
           </NotificationProvider>
           </WorkspaceProvider>
