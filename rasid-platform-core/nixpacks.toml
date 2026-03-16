@@ -1,8 +1,15 @@
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+
 [phases.install]
-cmds = ["npm ci"]
+cmds = ["cd apps/rasid-web && npm install --legacy-peer-deps"]
 
 [phases.build]
-cmds = ["npx tsc -b tsconfig.json"]
+cmds = ["cd apps/rasid-web && npm run build"]
 
 [start]
-cmd = "node apps/contracts-cli/dist/index.js dashboard-serve-web"
+cmd = "cd apps/rasid-web && npm run start"
+
+[variables]
+NODE_ENV = "production"
+PORT = "3000"
