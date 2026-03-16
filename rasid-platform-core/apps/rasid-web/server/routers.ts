@@ -10,6 +10,7 @@ import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { aiRouter } from "./aiRouter";
 import { libraryRouter } from "./libraryRouter";
 import { platformRouter } from "./platformRouter";
+import { strictEngineRouter } from "./strictEngineRouter";
 import { loginUser, registerUser, setAuthCookie, clearAuthCookie } from "./localAuth";
 import * as localDb from "./localDb";
 import * as engine from "./platformConnector";
@@ -735,6 +736,11 @@ export const appRouter = router({
   // PLATFORM — direct engine access (KEPT AS-IS)
   // ═══════════════════════════════════════════════════════════════
   platform: platformRouter,
+
+  // ═══════════════════════════════════════════════════════════════
+  // STRICT ENGINE — Visual Matching Engine 1:1
+  // ═══════════════════════════════════════════════════════════════
+  strictEngine: strictEngineRouter,
 
   // ═══════════════════════════════════════════════════════════════
   // ADMIN — via Local SQLite DB
