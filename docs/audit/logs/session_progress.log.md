@@ -2206,3 +2206,19 @@ Append-only.
 - Unresolved items:
   - none for the current documentation deliverable
 - Next exact step: use the generated architecture package as the durable baseline for implementation and review
+
+- Timestamp: 2026-03-16T06:31:28.8457393+03:00
+- Phase: Procedure binding external save
+- Scope: Save the governing procedure-binding spec into the user-requested external folder
+- Files/Folders inspected:
+  - C:\ALRaMaDy\docs\RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md
+  - C:\777\
+  - C:\ALRaMaDy\docs\audit\_session_status.md
+  - C:\ALRaMaDy\docs\audit\_knowledge_base.md
+  - C:\ALRaMaDy\docs\audit\logs\session_progress.log.md
+- Findings added:
+  - the governing spec was copied successfully to `C:\777\RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md`
+  - the external copy preserves the same filename and acts as a saved export, not a new source of truth
+- Unresolved items:
+  - any future edits must still be applied first to the in-repo governing file if the external copy needs to remain current
+- Next exact step: refresh the external copy again only if the governing in-repo file changes

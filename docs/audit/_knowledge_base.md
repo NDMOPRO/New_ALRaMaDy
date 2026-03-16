@@ -1732,3 +1732,9 @@
     - `translations.*`
     - `chat.*`
     - `library.*`
+
+- Date: 2026-03-16T06:31:28.8457393+03:00
+- Governing spec external save:
+  - a direct external copy of the governing spec now exists at `C:\777\RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md`
+  - the external saved copy was produced from `docs/RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md`
+  - the repository copy remains the source of truth

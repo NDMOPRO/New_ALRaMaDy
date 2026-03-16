@@ -1,9 +1,9 @@
 # Session Status
 
 - Session started: 2026-03-15T01:06:43+03:00
-- Current phase: `c4_architecture_documentation` completed the repository architecture documentation suite and Mermaid diagram package
-- Last completed checkpoint: The requested C4, dataflow, database, API, infrastructure, deployment, security, and performance documentation set has been written under `docs/`
-- Current scope: Preserve the generated architecture package as the durable baseline for future implementation and review
+- Current phase: `procedure_binding_spec_export` saved the governing procedure-binding spec into the requested external folder
+- Last completed checkpoint: The governing procedure-binding spec was copied to `C:\777\RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md`
+- Current scope: Preserve the governing procedure-binding spec in-repo and in the requested external folder
 - Completed folders/files:
   - docs/audit/
   - docs/audit/phases/
@@ -54,7 +54,9 @@
   - docs/diagrams/dataflow-cross-engine-pipeline.mmd
   - docs/diagrams/database-erd.mmd
   - docs/diagrams/integration-map.mmd
+  - C:\777\RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md
 - Remaining scope:
-  - None for the current architecture-documentation deliverable
-- Next exact step: use the generated architecture package as the durable baseline for implementation and review
-- Last update: 2026-03-16T06:27:04.0346223+03:00
+  - Refresh the external saved copy if the governing spec changes later
+  - Apply the governing spec in code when implementation resumes
+- Next exact step: continue using `docs/RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md` as the source of truth and refresh `C:\777` only after future spec changes
+- Last update: 2026-03-16T06:31:28.8457393+03:00
