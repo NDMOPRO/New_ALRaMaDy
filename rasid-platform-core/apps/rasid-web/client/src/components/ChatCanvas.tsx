@@ -205,15 +205,17 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
         const slides = slidesResult.slides || [];
         let savedId = '';
-        if (slides.length > 0) {
-          const saved = await createPresentation.mutateAsync({
-            title: slides[0]?.title || topic || 'عرض تقديمي جديد',
-            description: topic,
-            slides: slides,
-            theme: 'ndmo',
-          });
-          savedId = saved?.id ? String(saved.id) : '';
-        }
+        try {
+          if (slides.length > 0) {
+            const saved = await createPresentation.mutateAsync({
+              title: slides[0]?.title || topic || 'عرض تقديمي جديد',
+              description: topic,
+              slides: slides,
+              theme: 'ndmo',
+            });
+            savedId = saved?.id ? String(saved.id) : '';
+          }
+        } catch { /* save failed — show results anyway */ }
 
         addAssistantMessage(
           `تم إنشاء العرض التقديمي بنجاح! 🎉\n\n**${slides[0]?.title || 'العرض'}**\n\nيحتوي على **${slides.length} شرائح** جاهزة.\n\n${slides.map((s: any, i: number) => `${i + 1}. ${s.title}`).join('\n')}`,
@@ -250,15 +252,17 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
         const sections = reportResult.sections || [];
         let savedId = '';
-        if (sections.length > 0) {
-          const saved = await createReport.mutateAsync({
-            title: topic || 'تقرير جديد',
-            description: topic,
-            reportType: 'general',
-            sections: sections,
-          });
-          savedId = saved?.id ? String(saved.id) : '';
-        }
+        try {
+          if (sections.length > 0) {
+            const saved = await createReport.mutateAsync({
+              title: topic || 'تقرير جديد',
+              description: topic,
+              reportType: 'general',
+              sections: sections,
+            });
+            savedId = saved?.id ? String(saved.id) : '';
+          }
+        } catch { /* save failed — show results anyway */ }
 
         addAssistantMessage(
           `تم إنشاء التقرير بنجاح! 📄\n\n**${topic || 'التقرير'}**\n\nيحتوي على **${sections.length} أقسام**:\n\n${sections.map((s: any, i: number) => `${i + 1}. ${s.title || s.type || 'قسم'}`).join('\n')}`,
@@ -294,15 +298,17 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
         const widgets = dashResult.widgets || [];
         let savedId = '';
-        if (widgets.length > 0) {
-          const saved = await createDashboard.mutateAsync({
-            title: topic || 'لوحة مؤشرات جديدة',
-            description: topic,
-            widgets: widgets,
-            layout: '{}',
-          });
-          savedId = saved?.id ? String(saved.id) : '';
-        }
+        try {
+          if (widgets.length > 0) {
+            const saved = await createDashboard.mutateAsync({
+              title: topic || 'لوحة مؤشرات جديدة',
+              description: topic,
+              widgets: widgets,
+              layout: '{}',
+            });
+            savedId = saved?.id ? String(saved.id) : '';
+          }
+        } catch { /* save failed — show results anyway */ }
 
         addAssistantMessage(
           `تم إنشاء لوحة المؤشرات بنجاح! 📊\n\n**${topic || 'لوحة المؤشرات'}**\n\nتحتوي على **${widgets.length} ودجات**:\n\n${widgets.map((w: any, i: number) => `${i + 1}. ${w.title || w.type || 'ودجة'}`).join('\n')}`,
@@ -381,16 +387,18 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           return;
         }
 
-        // Save the artifact
-        if (targetGuess === 'presentation' && repResult.cdr?.slides) {
-          await createPresentation.mutateAsync({ title: repResult.cdr.title || 'عرض مُطابَق', slides: JSON.stringify(repResult.cdr.slides), theme: 'ndmo' });
-        } else if (targetGuess === 'report' && repResult.cdr?.sections) {
-          await createReport.mutateAsync({ title: repResult.cdr.title || 'تقرير مُطابَق', sections: JSON.stringify(repResult.cdr.sections) });
-        } else if (targetGuess === 'dashboard' && repResult.cdr?.widgets) {
-          await createDashboard.mutateAsync({ title: repResult.cdr.title || 'لوحة مُطابَقة', widgets: JSON.stringify(repResult.cdr.widgets), layout: '{}' });
-        } else if (targetGuess === 'spreadsheet' && repResult.cdr?.sheets) {
-          await createSpreadsheet.mutateAsync({ title: repResult.cdr.title || 'جدول مُطابَق', sheets: JSON.stringify(repResult.cdr.sheets) });
-        }
+        // Save the artifact (optional — may fail if engine not running)
+        try {
+          if (targetGuess === 'presentation' && repResult.cdr?.slides) {
+            await createPresentation.mutateAsync({ title: repResult.cdr.title || 'عرض مُطابَق', slides: repResult.cdr.slides, theme: 'ndmo' });
+          } else if (targetGuess === 'report' && repResult.cdr?.sections) {
+            await createReport.mutateAsync({ title: repResult.cdr.title || 'تقرير مُطابَق', sections: repResult.cdr.sections });
+          } else if (targetGuess === 'dashboard' && repResult.cdr?.widgets) {
+            await createDashboard.mutateAsync({ title: repResult.cdr.title || 'لوحة مُطابَقة', widgets: repResult.cdr.widgets, layout: '{}' });
+          } else if (targetGuess === 'spreadsheet' && repResult.cdr?.sheets) {
+            await createSpreadsheet.mutateAsync({ title: repResult.cdr.title || 'جدول مُطابَق', sheets: repResult.cdr.sheets });
+          }
+        } catch { /* save failed — show results anyway */ }
 
         addAssistantMessage(
           `✅ تمت المطابقة البصرية بنجاح!\n\n**${repResult.cdr?.title || 'المخرج'}**\n\nتم استخراج **${repResult.elementCount || 0} عنصر** وحفظها.`,
@@ -444,12 +452,14 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           return;
         }
 
-        // Save
-        if (pdfTarget === 'presentation') {
-          await createPresentation.mutateAsync({ title: pdfResult.title || 'عرض من PDF', slides: pdfResult.artifact?.slides || '[]', theme: 'ndmo' });
-        } else {
-          await createReport.mutateAsync({ title: pdfResult.title || 'تقرير من PDF', sections: pdfResult.artifact?.sections || '[]' });
-        }
+        // Save (optional)
+        try {
+          if (pdfTarget === 'presentation') {
+            await createPresentation.mutateAsync({ title: pdfResult.title || 'عرض من PDF', slides: pdfResult.artifact?.slides || [], theme: 'ndmo' });
+          } else {
+            await createReport.mutateAsync({ title: pdfResult.title || 'تقرير من PDF', sections: pdfResult.artifact?.sections || [] });
+          }
+        } catch { /* save failed — show results anyway */ }
 
         addAssistantMessage(
           `✅ تم تحويل PDF بنجاح!\n\n**${pdfResult.title}**\n\n📄 ${pdfResult.totalSourcePages} صفحة أصلية → 📊 ${pdfResult.processedPages} ${pdfTarget === 'presentation' ? 'شريحة' : 'قسم'}`,
