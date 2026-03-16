@@ -137,7 +137,7 @@ function CatalogTab() {
   );
   const familiesQuery = trpc.presentationAddendum.catalogFamilies.useQuery({ kind });
   const variantsQuery = trpc.presentationAddendum.catalogVariants.useQuery(
-    { asset_id: selectedAssetId, count: 6, direction: variantDirection },
+    { asset_id: selectedAssetId, kind, count: 6, direction: variantDirection },
     { enabled: !!selectedAssetId }
   );
 
@@ -148,12 +148,16 @@ function CatalogTab() {
         {statsQuery.isLoading && <p className="text-slate-400 text-sm">جاري التحميل...</p>}
         {statsQuery.data && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {Object.entries(statsQuery.data).map(([k, v]) => (
-              <div key={k} className="bg-slate-50 rounded-xl p-3 text-center">
-                <div className="text-2xl font-bold text-orange-600">{typeof v === "number" ? v.toLocaleString("ar-SA") : String(v)}</div>
-                <div className="text-xs text-slate-500 mt-1">{k}</div>
-              </div>
-            ))}
+            {Object.entries(statsQuery.data).map(([k, v]) => {
+              const stat = v as { base_count: number; families: number };
+              return (
+                <div key={k} className="bg-slate-50 rounded-xl p-3 text-center">
+                  <div className="text-2xl font-bold text-orange-600">{stat.base_count?.toLocaleString("ar-SA") ?? 0}</div>
+                  <div className="text-xs text-slate-500 mt-1">{k}</div>
+                  <div className="text-[10px] text-slate-400">{stat.families} عائلة</div>
+                </div>
+              );
+            })}
           </div>
         )}
         {statsQuery.error && <p className="text-red-500 text-sm">{statsQuery.error.message}</p>}
@@ -187,26 +191,26 @@ function CatalogTab() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {searchQuery.data.assets.map((asset: any) => (
                 <div
-                  key={asset.id}
-                  onClick={() => setSelectedAssetId(asset.id)}
+                  key={asset.asset_id}
+                  onClick={() => setSelectedAssetId(asset.asset_id)}
                   className={`border rounded-xl p-3 cursor-pointer transition-all hover:shadow-md ${
-                    selectedAssetId === asset.id ? "border-orange-500 bg-orange-50" : "border-slate-200 bg-white"
+                    selectedAssetId === asset.asset_id ? "border-orange-500 bg-orange-50" : "border-slate-200 bg-white"
                   }`}
                 >
                   {/* SVG/CSS preview */}
-                  {asset.preview_svg && (
+                  {asset.svg_template && (
                     <div
                       className="h-24 rounded-lg overflow-hidden mb-2 bg-slate-50 flex items-center justify-center"
-                      dangerouslySetInnerHTML={{ __html: asset.preview_svg }}
+                      dangerouslySetInnerHTML={{ __html: asset.svg_template }}
                     />
                   )}
-                  {asset.preview_css && !asset.preview_svg && (
+                  {asset.css_template && !asset.svg_template && (
                     <div
                       className="h-24 rounded-lg overflow-hidden mb-2"
                       style={(() => {
                         try {
                           const styles: Record<string, string> = {};
-                          asset.preview_css.split(";").forEach((s: string) => {
+                          asset.css_template.split(";").forEach((s: string) => {
                             const [k, v] = s.split(":");
                             if (k && v) styles[k.trim().replace(/-([a-z])/g, (_: string, c: string) => c.toUpperCase())] = v.trim();
                           });
@@ -215,7 +219,7 @@ function CatalogTab() {
                       })()}
                     />
                   )}
-                  <div className="font-medium text-sm">{asset.name}</div>
+                  <div className="font-medium text-sm">{asset.name_ar || asset.name}</div>
                   <div className="text-xs text-slate-400 mt-1">{asset.family} · {asset.tags?.join("، ")}</div>
                 </div>
               ))}
