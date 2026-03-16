@@ -11,6 +11,7 @@ import { aiRouter } from "./aiRouter";
 import { libraryRouter } from "./libraryRouter";
 import { platformRouter } from "./platformRouter";
 import { strictEngineRouter } from "./strictEngineRouter";
+import { presentationAddendumRouter } from "./presentationAddendumRouter";
 import { loginUser, registerUser, setAuthCookie, clearAuthCookie } from "./localAuth";
 import * as localDb from "./localDb";
 import * as engine from "./platformConnector";
@@ -741,6 +742,11 @@ export const appRouter = router({
   // STRICT ENGINE — Visual Matching Engine 1:1
   // ═══════════════════════════════════════════════════════════════
   strictEngine: strictEngineRouter,
+
+  // ═══════════════════════════════════════════════════════════════
+  // PRESENTATION ADDENDUM — Catalog, Controls, Transforms, Data, Dashboard
+  // ═══════════════════════════════════════════════════════════════
+  presentationAddendum: presentationAddendumRouter,
 
   // ═══════════════════════════════════════════════════════════════
   // ADMIN — via Local SQLite DB

@@ -17,6 +17,7 @@ import Profile from "./pages/Profile";
 import SharedPresentation from "./pages/SharedPresentation";
 import About from "./pages/About";
 import StrictEngineTest from "./pages/StrictEngineTest";
+import PresentationAddendumTest from "./pages/PresentationAddendumTest";
 import MaterialIcon from "./components/MaterialIcon";
 
 /** Loading spinner while checking auth */
@@ -60,6 +61,9 @@ function Router() {
       
       {/* Strict Engine Test */}
       <Route path="/strict-engine-test" component={StrictEngineTest} />
+
+      {/* Presentation Addendum Test */}
+      <Route path="/presentation-addendum-test" component={PresentationAddendumTest} />
 
       {/* Protected routes */}
       <Route path="/profile">{() => <ProtectedRoute component={Profile} />}</Route>
