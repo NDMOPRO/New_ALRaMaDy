@@ -265,226 +265,6 @@ function StatCard({ label, value, icon, color = "blue" }: { label: string; value
   );
 }
 
-  // §12 Compare
-  const renderCompare = () => {
-    if (tables.length < 2) return <SectionCard title="مقارنة البيانات" icon="compare_arrows"><p className="text-gray-400">يرجى تحميل جدولين على الأقل</p></SectionCard>;
-    const runCompare = () => {
-      const t1 = tables.find((t) => t.id === compareT1);
-      const t2 = tables.find((t) => t.id === compareT2);
-      if (!t1 || !t2) return;
-      const diffs: DiffCell[] = [];
-      const sharedCols = t1.columns.filter((c) => t2.columns.some((c2) => c2.name === c.name)).map((c) => c.name);
-      const maxRows = Math.max(t1.rows.length, t2.rows.length);
-      for (let r = 0; r < maxRows; r++) {
-        for (const col of sharedCols) {
-          const v1 = r < t1.rows.length ? t1.rows[r][col] : undefined;
-          const v2 = r < t2.rows.length ? t2.rows[r][col] : undefined;
-          if (String(v1 ?? "") !== String(v2 ?? "")) diffs.push({ row: r, col, oldVal: v1 ?? null, newVal: v2 ?? null });
-        }
-      }
-      setDiffCells(diffs);
-      addLog(`مقارنة: ${diffs.length} اختلاف في ${sharedCols.length} عمود مشترك`);
-    };
-    return (
-      <SectionCard title="مقارنة البيانات" icon="compare_arrows">
-        <div className="space-y-4">
-          <div className="flex gap-2 items-end flex-wrap">
-            <div><label className="block text-xs text-gray-500 mb-1">الجدول الأول</label>
-              <select className="border rounded-lg px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-700" value={compareT1} onChange={(e) => setCompareT1(e.target.value)}>
-                <option value="">اختر</option>{tables.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
-              </select></div>
-            <div><label className="block text-xs text-gray-500 mb-1">الجدول الثاني</label>
-              <select className="border rounded-lg px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-700" value={compareT2} onChange={(e) => setCompareT2(e.target.value)}>
-                <option value="">اختر</option>{tables.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
-              </select></div>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700" onClick={runCompare}>
-              <MIcon name="compare" className="text-lg align-middle ml-1" /> مقارنة
-            </button>
-          </div>
-          {diffCells.length > 0 && (
-            <div className="overflow-x-auto border rounded-lg dark:border-gray-700">
-              <table className="w-full text-sm">
-                <thead><tr className="bg-gray-50 dark:bg-gray-800"><th className="px-3 py-2 text-right">الصف</th><th className="px-3 py-2 text-right">العمود</th><th className="px-3 py-2 text-right">القيمة القديمة</th><th className="px-3 py-2 text-right">القيمة الجديدة</th></tr></thead>
-                <tbody>{diffCells.slice(0, 50).map((d, i) => (
-                  <tr key={i} className="border-t dark:border-gray-700">
-                    <td className="px-3 py-1.5">{d.row + 1}</td><td className="px-3 py-1.5">{d.col}</td>
-                    <td className="px-3 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-600">{String(d.oldVal ?? "—")}</td>
-                    <td className="px-3 py-1.5 bg-green-50 dark:bg-green-900/20 text-green-600">{String(d.newVal ?? "—")}</td>
-                  </tr>
-                ))}</tbody>
-              </table>
-              <p className="text-xs text-gray-400 p-2">إجمالي الاختلافات: {diffCells.length}</p>
-            </div>
-          )}
-        </div>
-      </SectionCard>
-    );
-  };
-
-  // §13 KPI Dashboard
-  const renderKPI = () => (
-    <SectionCard title="مؤشرات الأداء ولوحات المعلومات" icon="dashboard">
-      <div className="space-y-4">
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700" onClick={computeKPIs} disabled={!activeTable}>
-          <MIcon name="calculate" className="text-lg align-middle ml-1" /> حساب مؤشرات الأداء
-        </button>
-        {!activeTable && <p className="text-gray-400 text-sm">يرجى تحميل بيانات أولاً</p>}
-        {kpiCards.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {kpiCards.map((kpi, i) => <StatCard key={i} label={kpi.label} value={kpi.value} icon={kpi.icon} color={kpi.color} />)}
-          </div>
-        )}
-        {activeTable && kpiCards.length > 0 && (
-          <div className="border rounded-xl p-4 dark:border-gray-700">
-            <h4 className="text-sm font-medium mb-3">توزيع القيم العددية</h4>
-            <div className="space-y-3">
-              {activeTable.columns.filter((c) => c.dtype === "int" || c.dtype === "float").slice(0, 3).map((c) => {
-                const vals = activeTable.rows.map((r) => Number(r[c.name]) || 0);
-                const max = Math.max(...vals);
-                const buckets = Array(10).fill(0);
-                vals.forEach((v) => { const idx = Math.min(Math.floor((v / (max || 1)) * 10), 9); buckets[idx]++; });
-                const maxBucket = Math.max(...buckets);
-                return (
-                  <div key={c.name}>
-                    <p className="text-xs text-gray-500 mb-1">{c.name}</p>
-                    <div className="flex items-end gap-0.5 h-12">
-                      {buckets.map((b, bi) => (
-                        <div key={bi} className="flex-1 bg-blue-400 dark:bg-blue-600 rounded-t" title={`${b} قيمة`} style={{ height: `${maxBucket ? (b / maxBucket) * 100 : 0}%`, minHeight: b > 0 ? "2px" : "0" }} />
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </div>
-    </SectionCard>
-  );
-
-  // §14 AI Analyst (NLQ)
-  const renderAI = () => {
-    if (!activeTable) return <SectionCard title="محلل ذكي AI" icon="smart_toy"><p className="text-gray-400">يرجى تحميل بيانات أولاً</p></SectionCard>;
-    const t = activeTable;
-    const runNLQ = () => {
-      const result = naturalLanguageQuery(nlqInput, t.rows, cols);
-      setNlqResult(result);
-      addLog(`استعلام NLQ: "${nlqInput}" → ${result.answer}`);
-    };
-    return (
-      <SectionCard title="محلل ذكي AI (NLQ)" icon="smart_toy">
-        <div className="space-y-4">
-          <div className="flex gap-2 items-end">
-            <div className="flex-1">
-              <label className="block text-xs text-gray-500 mb-1">اسأل عن البيانات بالعربية</label>
-              <input className="border rounded-lg px-3 py-2 text-sm w-full dark:bg-gray-800 dark:border-gray-700" value={nlqInput} onChange={(e) => setNlqInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") runNLQ(); }} placeholder="مثال: ما مجموع المبيعات؟" />
-            </div>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700" onClick={runNLQ}>
-              <MIcon name="send" className="text-lg align-middle ml-1" /> استعلام
-            </button>
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            {["ما مجموع المبيعات؟", "ما متوسط الأسعار؟", "ما أعلى قيمة؟", "كم عدد الصفوف؟"].map((q) => (
-              <button key={q} className="text-xs px-2 py-1 rounded border dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { setNlqInput(q); }}>{q}</button>
-            ))}
-          </div>
-          {nlqResult && (
-            <div className="border rounded-xl p-4 dark:border-gray-700 space-y-2">
-              <div className="flex items-center gap-2"><Badge color="purple">{nlqResult.method}</Badge><span className="text-2xl font-bold text-blue-600">{nlqResult.answer}</span></div>
-              <p className="text-sm text-gray-500">{nlqResult.details}</p>
-            </div>
-          )}
-        </div>
-      </SectionCard>
-    );
-  };
-
-  // §15 Recipes
-  const renderRecipes = () => (
-    <SectionCard title="الوصفات (Recipes)" icon="receipt_long">
-      <div className="space-y-4">
-        {recipeSteps.length === 0 ? <p className="text-gray-400 text-sm">لم يتم تسجيل أي خطوات بعد. استخدم عمليات الأعمدة والجداول لبناء وصفة.</p> : (
-          <div className="space-y-2">
-            {recipeSteps.map((s, i) => (
-              <div key={s.id} className="flex items-center gap-3 p-3 border rounded-lg dark:border-gray-700">
-                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 flex items-center justify-center text-sm font-bold">{i + 1}</div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">{s.label}</p>
-                  <p className="text-xs text-gray-400">{s.type} — {new Date(s.timestamp).toLocaleTimeString("ar-SA")}</p>
-                </div>
-                <Badge color="blue">{s.type}</Badge>
-                <button className="text-red-400 hover:text-red-600" onClick={() => setRecipeSteps((p) => p.filter((_, idx) => idx !== i))}>
-                  <MIcon name="delete" className="text-lg" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-        {recipeSteps.length > 0 && (
-          <div className="flex gap-2">
-            <button className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700" onClick={() => { addLog(`تم حفظ الوصفة (${recipeSteps.length} خطوة)`); }}>
-              <MIcon name="save" className="text-lg align-middle ml-1" /> حفظ الوصفة
-            </button>
-            <button className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700" onClick={() => { setRecipeSteps([]); addLog("تم مسح الوصفة"); }}>
-              <MIcon name="delete_sweep" className="text-lg align-middle ml-1" /> مسح الكل
-            </button>
-          </div>
-        )}
-      </div>
-    </SectionCard>
-  );
-
-  // §16 Formatting
-  const renderFormatting = () => {
-    if (!activeTable) return <SectionCard title="التنسيق والتجميل" icon="format_paint"><p className="text-gray-400">يرجى تحميل بيانات أولاً</p></SectionCard>;
-    const applyFormat = () => {
-      if (!fmtCol || !activeTableId) return;
-      const t = activeTable!;
-      switch (fmtType) {
-        case "number": {
-          updateTable(activeTableId, (tbl) => ({ ...tbl, rows: tbl.rows.map((r) => ({ ...r, [fmtCol]: Number(r[fmtCol]) ? formatNum(Number(r[fmtCol])) : r[fmtCol] })) }));
-          setFmtResult(`تم تنسيق "${fmtCol}" كأرقام`);
-          break;
-        }
-        case "currency": {
-          updateTable(activeTableId, (tbl) => ({ ...tbl, rows: tbl.rows.map((r) => ({ ...r, [fmtCol]: Number(r[fmtCol]) ? `${formatNum(Number(r[fmtCol]))} ر.س` : r[fmtCol] })) }));
-          setFmtResult(`تم تنسيق "${fmtCol}" كعملة`);
-          break;
-        }
-        case "percent": {
-          updateTable(activeTableId, (tbl) => ({ ...tbl, rows: tbl.rows.map((r) => ({ ...r, [fmtCol]: Number(r[fmtCol]) ? `${(Number(r[fmtCol]) * 100).toFixed(1)}%` : r[fmtCol] })) }));
-          setFmtResult(`تم تنسيق "${fmtCol}" كنسبة مئوية`);
-          break;
-        }
-        default: setFmtResult(`تم تطبيق تنسيق "${fmtType}" على "${fmtCol}"`);
-      }
-      addLog(`تنسيق: ${fmtType} → "${fmtCol}"`);
-    };
-    return (
-      <SectionCard title="التنسيق والتجميل" icon="format_paint">
-        <div className="space-y-4">
-          <div className="flex gap-2 flex-wrap">
-            {(["number", "currency", "percent", "date", "bold", "highlight"] as const).map((f) => (
-              <button key={f} onClick={() => setFmtType(f)} className={`px-3 py-1.5 rounded-lg text-sm ${fmtType === f ? "bg-blue-600 text-white" : "bg-gray-100 dark:bg-gray-800"}`}>
-                {{ number: "أرقام", currency: "عملة", percent: "نسبة %", date: "تاريخ", bold: "عريض", highlight: "تمييز" }[f]}
-              </button>
-            ))}
-          </div>
-          <div className="flex gap-2 items-end">
-            <div><label className="block text-xs text-gray-500 mb-1">العمود</label>
-              <select className="border rounded-lg px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-700" value={fmtCol} onChange={(e) => setFmtCol(e.target.value)}>
-                <option value="">اختر</option>{cols.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select></div>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700" onClick={applyFormat}>
-              <MIcon name="format_paint" className="text-lg align-middle ml-1" /> تطبيق
-            </button>
-          </div>
-          {fmtResult && <p className="text-sm text-green-600"><MIcon name="check_circle" className="text-sm align-middle ml-1" />{fmtResult}</p>}
-        </div>
-      </SectionCard>
-    );
-  };
 
 // ═══════════════════════════════════════════════════════════════
 // MAIN COMPONENT
@@ -1073,3 +853,288 @@ export default function ExcelEngineTest() {
               })()}
             </SectionCard>
           )}
+
+          {/* === SECTION 10: Formula Engine === */}
+          {activeSection === "formula" && (
+            <SectionCard title="محرك المعادلات SVM" icon="functions" defaultOpen>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
+                  <LocalBadge color="blue">{formulaActiveCell}</LocalBadge><span className="text-gray-400">fx</span>
+                  <input className="flex-1 border rounded-lg px-3 py-2 text-sm font-mono dark:bg-gray-900" dir="ltr"
+                    value={formulaInput || formulaCells[formulaActiveCell]?.formula || ""} onChange={(e) => setFormulaInput(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter" && formulaInput) { const deps = [...formulaInput.matchAll(/[A-Z]+\d+/gi)].map((m) => m[0].toUpperCase()); setFormulaCells((p) => recalcFormulas({ ...p, [formulaActiveCell]: { id: formulaActiveCell, formula: formulaInput, value: null, dependsOn: deps } })); setFormulaInput(""); addLog(`Formula ${formulaActiveCell}: ${formulaInput}`); } }}
+                    placeholder="=SUM(A1,A2,A3)" />
+                  <button className="bg-green-600 text-white px-3 py-2 rounded-lg text-sm" onClick={() => { if (formulaInput) { const deps = [...formulaInput.matchAll(/[A-Z]+\d+/gi)].map((m) => m[0].toUpperCase()); setFormulaCells((p) => recalcFormulas({ ...p, [formulaActiveCell]: { id: formulaActiveCell, formula: formulaInput, value: null, dependsOn: deps } })); setFormulaInput(""); } }}><MIcon name="check" className="text-lg" /></button>
+                </div>
+                <div className="overflow-x-auto border rounded-lg">
+                  <table className="w-full text-sm"><thead><tr className="bg-gray-100 dark:bg-gray-800"><th className="w-10 px-2 py-2"></th>{["A", "B", "C"].map((c) => <th key={c} className="px-4 py-2 text-center font-medium">{c}</th>)}</tr></thead>
+                    <tbody>{[1, 2, 3].map((r) => (<tr key={r} className="border-t border-gray-100"><td className="px-2 py-2 text-center text-xs text-gray-500 bg-gray-50">{r}</td>
+                      {["A", "B", "C"].map((c) => { const cid = `${c}${r}`; const cell = formulaCells[cid]; const isA = formulaActiveCell === cid;
+                        return (<td key={cid} className={`px-2 py-1 cursor-pointer border ${isA ? "ring-2 ring-blue-500 bg-blue-50" : "hover:bg-gray-50"}`} onClick={() => { setFormulaActiveCell(cid); setFormulaInput(cell?.formula || ""); }}>
+                          <div className="min-w-[80px]"><div className="font-medium text-sm">{cell?.value != null ? String(cell.value) : ""}</div>{cell?.formula.startsWith("=") && <div className="text-xs text-gray-400 font-mono" dir="ltr">{cell.formula}</div>}</div></td>); })}</tr>))}</tbody></table>
+                </div>
+                <div><h4 className="font-medium text-sm mb-2 text-gray-600"><MIcon name="account_tree" className="text-lg align-middle ml-1" /> رسم التبعيات (DAG)</h4>
+                  <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-1">{Object.values(formulaCells).flatMap((cell) => cell.dependsOn.map((dep) => ({ from: dep, to: cell.id }))).map((e, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm"><LocalBadge color="green">{e.from}</LocalBadge><MIcon name="arrow_forward" className="text-gray-400 text-sm" /><LocalBadge color="blue">{e.to}</LocalBadge><span className="text-xs text-gray-400">({formulaCells[e.to]?.formula})</span></div>
+                  ))}</div></div>
+                <p className="text-xs text-gray-500">المعادلات: SUM, AVG, MAX, MIN, COUNT, IF + عمليات حسابية</p>
+              </div>
+            </SectionCard>
+          )}
+
+          {/* === SECTION 11: Data Cleaning === */}
+          {activeSection === "cleaning" && (
+            <SectionCard title="تنظيف البيانات" icon="cleaning_services" defaultOpen>
+              {!activeTable ? <p className="text-gray-400">يرجى تحميل بيانات أولاً</p> : (() => {
+                const t = activeTable; const cols = t.columns.map((c) => c.name);
+                const run = () => {
+                  if (cleanOp === "dedup") { const keys = cleanCol ? [cleanCol] : cols; const { unique, duplicates } = deduplicateRows(t.rows, keys); if (duplicates > 0) updateTable(t.id, (p) => ({ ...p, rows: unique })); setCleanResult({ type: "dedup", duplicates, remaining: unique.length }); addLog(`Dedup: ${duplicates} removed`); }
+                  else if (cleanOp === "fuzzy" && cleanCol) { setCleanResult({ type: "fuzzy", pairs: fuzzyMatch(t.rows, cleanCol), column: cleanCol }); }
+                  else if (cleanOp === "outlier" && cleanCol) { const nums = t.rows.map((r) => r[cleanCol]).filter((v): v is number => typeof v === "number"); const res = detectOutliers(nums); setCleanResult({ type: "outlier", ...res, total: nums.length }); }
+                  else if (cleanOp === "impute" && cleanCol) { const before = t.rows.filter((r) => r[cleanCol] == null).length; updateTable(t.id, (p) => ({ ...p, rows: imputeNulls(p.rows, cleanCol, cleanStrategy) })); setCleanResult({ type: "impute", filled: before, strategy: cleanStrategy }); }
+                  else if (cleanOp === "normalize" && cleanCol) { updateTable(t.id, (p) => ({ ...p, rows: normalizeColumn(p.rows, cleanCol) })); setCleanResult({ type: "normalize", column: cleanCol }); }
+                  else if (cleanOp === "quality") { const score = qualityScore(t.rows, cols); const cs = cols.map((c) => ({ name: c, score: qualityScore(t.rows, [c]), nulls: t.rows.filter((r) => r[c] == null || r[c] === "").length })); setCleanResult({ type: "quality", score, colScores: cs }); }
+                };
+                return (
+                  <div className="space-y-4">
+                    <div className="flex gap-2 flex-wrap">{(["dedup", "fuzzy", "outlier", "impute", "normalize", "quality"] as const).map((op) => (<button key={op} onClick={() => { setCleanOp(op); setCleanResult(null); }} className={`px-3 py-1.5 rounded-lg text-sm ${cleanOp === op ? "bg-blue-600 text-white" : "bg-gray-100 dark:bg-gray-800"}`}>{{ dedup: "إزالة التكرار", fuzzy: "مطابقة ضبابية", outlier: "قيم شاذة", impute: "إكمال فراغات", normalize: "تطبيع", quality: "تقييم جودة" }[op]}</button>))}</div>
+                    <div className="flex gap-2 items-end flex-wrap">
+                      {cleanOp !== "quality" && <div><label className="block text-xs text-gray-500 mb-1">العمود</label><select className="border rounded-lg px-3 py-2 text-sm dark:bg-gray-800" value={cleanCol} onChange={(e) => setCleanCol(e.target.value)}><option value="">اختر</option>{cols.map((c) => <option key={c} value={c}>{c}</option>)}</select></div>}
+                      {cleanOp === "impute" && <div><label className="block text-xs text-gray-500 mb-1">طريقة</label><select className="border rounded-lg px-3 py-2 text-sm dark:bg-gray-800" value={cleanStrategy} onChange={(e) => setCleanStrategy(e.target.value as any)}><option value="mean">متوسط</option><option value="median">وسيط</option><option value="mode">منوال</option></select></div>}
+                      <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700" onClick={run}><MIcon name="play_arrow" className="text-lg align-middle ml-1" /> تنفيذ</button>
+                    </div>
+                    {cleanResult && (
+                      <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
+                        {cleanResult.type === "dedup" && <div className="flex gap-4"><StatCard label="مكرر محذوف" value={cleanResult.duplicates} icon="delete_sweep" color="red" /><StatCard label="متبقي" value={cleanResult.remaining} icon="check_circle" color="green" /></div>}
+                        {cleanResult.type === "fuzzy" && <div className="space-y-2"><p className="text-sm font-medium">أزواج متشابهة:</p>{cleanResult.pairs.length === 0 ? <p className="text-gray-400 text-sm">لا يوجد</p> : cleanResult.pairs.slice(0, 10).map((p: any, i: number) => (<div key={i} className="flex items-center gap-2 text-sm"><span>{String(t.rows[p.i]?.[cleanResult.column] ?? "")}</span><MIcon name="compare_arrows" className="text-gray-400" /><span>{String(t.rows[p.j]?.[cleanResult.column] ?? "")}</span><LocalBadge color={p.sim > 0.8 ? "red" : "yellow"}>{(p.sim * 100).toFixed(0)}%</LocalBadge></div>))}</div>}
+                        {cleanResult.type === "outlier" && <div><p className="text-sm">الحدود: [{fmtNum(cleanResult.bounds.lower)} - {fmtNum(cleanResult.bounds.upper)}]</p><p className="text-sm">شاذة: {cleanResult.outliers.length} من {cleanResult.total}</p>{cleanResult.outliers.length > 0 && <div className="flex flex-wrap gap-1 mt-2">{cleanResult.outliers.slice(0, 15).map((v: number, i: number) => <LocalBadge key={i} color="red">{fmtNum(v)}</LocalBadge>)}</div>}</div>}
+                        {cleanResult.type === "impute" && <p className="text-green-600">تم إكمال {cleanResult.filled} قيمة بـ {cleanResult.strategy}</p>}
+                        {cleanResult.type === "normalize" && <p className="text-green-600">تم تطبيع {cleanResult.column} (0-1)</p>}
+                        {cleanResult.type === "quality" && <div className="space-y-3"><div className="flex items-center gap-3"><span className="text-3xl font-bold text-blue-600">{cleanResult.score}%</span><div><p className="text-sm font-medium">درجة الجودة</p><div className="w-48 h-3 bg-gray-200 rounded-full overflow-hidden mt-1"><div className={`h-full rounded-full ${cleanResult.score >= 80 ? "bg-green-500" : cleanResult.score >= 50 ? "bg-yellow-500" : "bg-red-500"}`} style={{ width: `${cleanResult.score}%` }} /></div></div></div>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">{cleanResult.colScores.map((cs: any) => (<div key={cs.name} className="text-xs p-2 border rounded-lg"><div className="font-medium">{cs.name}</div><div className="flex items-center gap-1 mt-1"><div className="w-full h-1.5 bg-gray-200 rounded-full"><div className={`h-full rounded-full ${cs.score >= 80 ? "bg-green-500" : "bg-yellow-500"}`} style={{ width: `${cs.score}%` }} /></div><span>{cs.score}%</span></div></div>))}</div></div>}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+            </SectionCard>
+          )}
+
+          {/* === SECTION 12: Compare === */}
+          {activeSection === "compare" && (
+            <SectionCard title="مقارنة البيانات" icon="compare_arrows" defaultOpen>
+              <div className="space-y-4">
+                <div className="flex gap-3 flex-wrap items-end">
+                  <div><label className="block text-xs text-gray-500 mb-1">جدول 1</label><select className="border rounded-lg px-3 py-2 text-sm dark:bg-gray-800" value={compareT1} onChange={(e) => setCompareT1(e.target.value)}><option value="">اختر</option>{tables.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}</select></div>
+                  <div><label className="block text-xs text-gray-500 mb-1">جدول 2</label><select className="border rounded-lg px-3 py-2 text-sm dark:bg-gray-800" value={compareT2} onChange={(e) => setCompareT2(e.target.value)}><option value="">اختر</option>{tables.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}</select></div>
+                  <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm" onClick={() => {
+                    const t1 = tables.find((t) => t.id === compareT1); const t2 = tables.find((t) => t.id === compareT2); if (!t1 || !t2) return;
+                    const diffs: DiffCell[] = []; const cc = t1.columns.filter((c) => t2.columns.some((c2) => c2.name === c.name)).map((c) => c.name);
+                    for (let r = 0; r < Math.max(t1.rows.length, t2.rows.length) && r < 100; r++) for (const col of cc) { const v1 = r < t1.rows.length ? t1.rows[r][col] : undefined; const v2 = r < t2.rows.length ? t2.rows[r][col] : undefined; if (String(v1 ?? "") !== String(v2 ?? "")) diffs.push({ row: r, col, oldVal: v1 ?? null, newVal: v2 ?? null }); }
+                    setCompareDiffs(diffs); setCompareRan(true); addLog(`Compare: ${diffs.length} diffs`);
+                  }}><MIcon name="compare" className="text-lg align-middle ml-1" /> مقارنة</button>
+                </div>
+                {compareRan && <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
+                  <StatCard label="اختلافات" value={compareDiffs.length} icon="difference" color={compareDiffs.length > 0 ? "red" : "green"} />
+                  {compareDiffs.length === 0 ? <p className="text-green-600 mt-3 font-medium">متطابقان</p> : (
+                    <div className="overflow-x-auto border rounded-lg mt-3"><table className="w-full text-sm"><thead><tr className="bg-red-50"><th className="px-3 py-2 text-right">صف</th><th className="px-3 py-2 text-right">عمود</th><th className="px-3 py-2 text-right">قديم</th><th className="px-3 py-2 text-right">جديد</th></tr></thead>
+                      <tbody>{compareDiffs.slice(0, 30).map((d, i) => (<tr key={i} className="border-t"><td className="px-3 py-1.5">{d.row + 1}</td><td className="px-3 py-1.5 font-medium">{d.col}</td><td className="px-3 py-1.5 text-red-600 bg-red-50">{d.oldVal === null ? "null" : String(d.oldVal)}</td><td className="px-3 py-1.5 text-green-600 bg-green-50">{d.newVal === null ? "null" : String(d.newVal)}</td></tr>))}</tbody></table></div>
+                  )}
+                </div>}
+              </div>
+            </SectionCard>
+          )}
+
+          {/* === SECTION 13: KPI === */}
+          {activeSection === "kpi" && (
+            <SectionCard title="مؤشرات ولوحات (KPI)" icon="dashboard" defaultOpen>
+              {!activeTable ? <p className="text-gray-400">يرجى تحميل بيانات أولاً</p> : (() => {
+                const t = activeTable; const numCols = t.columns.filter((c) => ["int", "float", "currency"].includes(c.dtype)); const catCols = t.columns.filter((c) => c.dtype === "string" && new Set(t.rows.map((r) => r[c.name])).size <= 20);
+                const kpis: Array<{ label: string; value: string; icon: string; color: string }> = [{ label: "الصفوف", value: String(t.rows.length), icon: "table_rows", color: "blue" }];
+                for (const col of numCols.slice(0, 3)) { const vs = t.rows.map((r) => r[col.name]).filter((v): v is number => typeof v === "number"); const sum = vs.reduce((a, b) => a + b, 0); kpis.push({ label: `مجموع ${col.name}`, value: fmtNum(sum, 0), icon: "functions", color: "green" }, { label: `متوسط ${col.name}`, value: fmtNum(sum / (vs.length || 1)), icon: "analytics", color: "purple" }); }
+                const barCol = catCols[0]; const valCol = numCols[0]; let barData: Array<{ label: string; value: number }> = [];
+                if (barCol && valCol) { const g = new Map<string, number>(); t.rows.forEach((r) => { const k = String(r[barCol.name] ?? ""); g.set(k, (g.get(k) || 0) + (typeof r[valCol.name] === "number" ? (r[valCol.name] as number) : 0)); }); barData = [...g.entries()].map(([l, v]) => ({ label: l, value: v })).sort((a, b) => b.value - a.value).slice(0, 10); }
+                const maxBar = Math.max(...barData.map((d) => d.value), 1);
+                return (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">{kpis.slice(0, 8).map((k, i) => <StatCard key={i} label={k.label} value={k.value} icon={k.icon} color={k.color} />)}</div>
+                    {barData.length > 0 && <div><h4 className="font-medium text-sm mb-2">{barCol.name} x {valCol.name}</h4><div className="space-y-1">{barData.map((d, i) => (<div key={i} className="flex items-center gap-2"><span className="w-24 text-xs text-left truncate">{d.label}</span><div className="flex-1 h-6 bg-gray-100 rounded-full overflow-hidden"><div className="h-full bg-gradient-to-l from-blue-500 to-blue-400 rounded-full flex items-center justify-end px-2" style={{ width: `${(d.value / maxBar) * 100}%` }}><span className="text-xs text-white font-medium">{fmtNum(d.value, 0)}</span></div></div></div>))}</div></div>}
+                    <div className="flex gap-2 flex-wrap">{numCols.length >= 1 && catCols.length >= 1 && <><div className="flex items-center gap-2 border rounded-lg px-3 py-2 bg-gray-50"><MIcon name="bar_chart" className="text-blue-600" /><div><p className="text-sm font-medium">عمودي</p><p className="text-xs text-gray-500">{catCols[0].name} x {numCols[0].name}</p></div></div><div className="flex items-center gap-2 border rounded-lg px-3 py-2 bg-gray-50"><MIcon name="pie_chart" className="text-blue-600" /><div><p className="text-sm font-medium">دائري</p><p className="text-xs text-gray-500">توزيع {catCols[0].name}</p></div></div></>}
+                      {t.columns.some((c) => c.dtype === "date") && <div className="flex items-center gap-2 border rounded-lg px-3 py-2 bg-gray-50"><MIcon name="show_chart" className="text-blue-600" /><div><p className="text-sm font-medium">خطي</p><p className="text-xs text-gray-500">اتجاه زمني</p></div></div>}</div>
+                  </div>
+                );
+              })()}
+            </SectionCard>
+          )}
+
+          {/* === SECTION 14: AI === */}
+          {activeSection === "ai" && (
+            <SectionCard title="محلل ذكي AI" icon="smart_toy" defaultOpen>
+              <div className="space-y-4">
+                <div className="flex gap-2">{(["smart", "nlq"] as const).map((m) => (<button key={m} onClick={() => setAiMode(m)} className={`px-4 py-2 rounded-lg text-sm ${aiMode === m ? "bg-blue-600 text-white" : "bg-gray-100 dark:bg-gray-800"}`}>{{ smart: "تحليل شامل", nlq: "سؤال طبيعي" }[m]}</button>))}</div>
+                {aiMode === "nlq" && <div className="flex gap-2"><input className="flex-1 border rounded-lg px-4 py-2 text-sm dark:bg-gray-800" placeholder="ما مجموع المبيعات؟" value={aiQuery} onChange={(e) => setAiQuery(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") document.getElementById("ai-run-btn")?.click(); }} /><button id="ai-run-btn" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm" onClick={async () => {
+                  if (!activeTable) { setAiResult("حمّل بيانات أولاً"); return; } setAiLoading(true); const t = activeTable; const q = aiQuery.toLowerCase(); let ans = "";
+                  const nc = t.columns.filter((c) => ["int", "float", "currency"].includes(c.dtype));
+                  if (/مجموع|sum|total/.test(q)) { for (const c of nc) { const s = t.rows.reduce((a, r) => a + (typeof r[c.name] === "number" ? (r[c.name] as number) : 0), 0); ans += `مجموع ${c.name}: ${fmtNum(s)}\n`; } }
+                  else if (/متوسط|avg|mean/.test(q)) { for (const c of nc) { const vs = t.rows.map((r) => r[c.name]).filter((v): v is number => typeof v === "number"); ans += `متوسط ${c.name}: ${fmtNum(vs.reduce((a, b) => a + b, 0) / (vs.length || 1))}\n`; } }
+                  else if (/أعلى|max/.test(q)) { for (const c of nc) { const vs = t.rows.map((r) => r[c.name]).filter((v): v is number => typeof v === "number"); ans += `أعلى ${c.name}: ${fmtNum(Math.max(...vs))}\n`; } }
+                  else if (/عدد|count|كم/.test(q)) { ans = `صفوف: ${t.rows.length}, أعمدة: ${t.columns.length}`; }
+                  else { try { const r = await analyzeData.mutateAsync({ prompt: aiQuery, context: `جدول: ${t.name}` }); ans = r?.result || "لا إجابة"; } catch { ans = "جرب: ما مجموع... / ما متوسط... / كم عدد..."; } }
+                  setAiResult(ans); setAiLoading(false);
+                }} disabled={aiLoading}><MIcon name="send" className="text-lg" /></button></div>}
+                {aiMode === "smart" && <button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-xl text-sm hover:opacity-90 flex items-center gap-2 shadow-lg" disabled={aiLoading} onClick={async () => {
+                  if (!activeTable) { setAiResult("حمّل بيانات أولاً"); return; } setAiLoading(true); const t = activeTable; const lines: string[] = [`=== تحليل: ${t.name} ===`, `${t.rows.length} صف | ${t.columns.length} عمود`, ""];
+                  for (const col of t.columns) { const vs = t.rows.map((r) => r[col.name]); const nums = vs.filter((v): v is number => typeof v === "number"); if (nums.length > 0) { const st = computeStats(nums); lines.push(`[${col.name}] متوسط: ${fmtNum(st.mean)} | أدنى: ${fmtNum(st.min)} | أعلى: ${fmtNum(st.max)} | انحراف: ${fmtNum(st.std)}`); const o = detectOutliers(nums); if (o.outliers.length > 0) lines.push(`  تحذير: ${o.outliers.length} قيمة شاذة`); } else { lines.push(`[${col.name}] فريدة: ${new Set(vs.filter((v) => v != null).map(String)).size}`); } }
+                  lines.push(`\nجودة: ${qualityScore(t.rows, t.columns.map((c) => c.name))}%`);
+                  try { const r = await analyzeData.mutateAsync({ prompt: `حلل: ${JSON.stringify(t.rows.slice(0, 3))}`, context: `أعمدة: ${t.columns.map((c) => c.name).join(",")}` }); if (r?.result) lines.push(`\n=== AI ===\n${r.result}`); } catch { lines.push("\n(AI غير متصل - النتائج محلية)"); }
+                  setAiResult(lines.join("\n")); setAiLoading(false);
+                }}><MIcon name="auto_awesome" className="text-xl" />{aiLoading ? "جاري..." : "تحليل كل شيء"}</button>}
+                {aiResult && <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-sm whitespace-pre-wrap overflow-x-auto font-mono max-h-96 overflow-y-auto" dir="rtl">{aiResult}</pre>}
+              </div>
+            </SectionCard>
+          )}
+
+          {/* === SECTION 15: Recipes === */}
+          {activeSection === "recipes" && (
+            <SectionCard title="الوصفات (Recipes)" icon="receipt_long" defaultOpen>
+              <div className="space-y-4">
+                <div className="flex gap-2">
+                  <button className={`px-4 py-2 rounded-lg text-sm flex items-center gap-1 ${recording ? "bg-red-600 text-white animate-pulse" : "bg-green-600 text-white"}`} onClick={() => { setRecording(!recording); addLog(recording ? "إيقاف التسجيل" : "بدء تسجيل"); }}><MIcon name={recording ? "stop" : "fiber_manual_record"} className="text-lg" />{recording ? "إيقاف" : "تسجيل"}</button>
+                  {recipes.length > 0 && <><button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm" onClick={() => { navigator.clipboard.writeText(JSON.stringify(recipes, null, 2)); }}><MIcon name="content_copy" className="text-lg align-middle ml-1" /> نسخ</button><button className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm" onClick={() => { recipes.forEach((s) => addLog(`إعادة: ${s.label}`)); addLog("تم إعادة التشغيل"); }}><MIcon name="replay" className="text-lg align-middle ml-1" /> إعادة</button></>}
+                </div>
+                {recording && <div className="p-3 rounded-lg bg-red-50 text-red-700 text-sm flex items-center gap-2"><span className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />جاري التسجيل...</div>}
+                {recipes.length > 0 ? <div className="space-y-2">{recipes.map((s, i) => (<div key={s.id} className="flex items-center gap-2 p-3 border rounded-lg bg-gray-50 dark:bg-gray-800"><span className="bg-green-100 text-green-700 rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold">{i + 1}</span><LocalBadge color="blue">{s.type}</LocalBadge><span className="text-sm flex-1">{s.label}</span><span className="text-xs text-gray-400">{new Date(s.timestamp).toLocaleTimeString("ar-SA")}</span></div>))}</div> : <p className="text-gray-400 text-sm">لا وصفات</p>}
+                <button className="bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-lg text-sm flex items-center gap-1" onClick={() => { setRecipes([{ id: "1", type: "import", label: "استيراد CSV", params: {}, timestamp: Date.now() - 60000 }, { id: "2", type: "clean", label: "إزالة تكرار", params: {}, timestamp: Date.now() - 50000 }, { id: "3", type: "derive", label: "عمود الربح", params: {}, timestamp: Date.now() - 40000 }, { id: "4", type: "group", label: "تجميع", params: {}, timestamp: Date.now() - 30000 }, { id: "5", type: "export", label: "تصدير", params: {}, timestamp: Date.now() - 10000 }]); addLog("وصفة تجريبية"); }}><MIcon name="science" className="text-lg" /> وصفة تجريبية</button>
+              </div>
+            </SectionCard>
+          )}
+
+          {/* === SECTION 16: Formatting === */}
+          {activeSection === "formatting" && (
+            <SectionCard title="التنسيق والتجميل" icon="format_paint" defaultOpen>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">{(["standard", "premium", "elite"] as const).map((s) => (
+                  <button key={s} onClick={() => setFmtStyle(s)} className={`p-4 rounded-xl border-2 text-center ${fmtStyle === s ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-blue-300"}`}>
+                    <MIcon name={{ standard: "looks_one", premium: "looks_two", elite: "auto_awesome" }[s]} className="text-3xl text-blue-600 mb-2 block mx-auto" />
+                    <p className="font-semibold">{{ standard: "قياسي", premium: "احترافي", elite: "نخبوي" }[s]}</p>
+                  </button>))}</div>
+                <div className="flex gap-4 flex-wrap">
+                  <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={fmtRTL} onChange={(e) => setFmtRTL(e.target.checked)} className="w-4 h-4 rounded" /><span className="text-sm">RTL عربي</span></label>
+                  <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={fmtCover} onChange={(e) => setFmtCover(e.target.checked)} className="w-4 h-4 rounded" /><span className="text-sm">صفحة غلاف</span></label>
+                  <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={fmtAutoWidth} onChange={(e) => setFmtAutoWidth(e.target.checked)} className="w-4 h-4 rounded" /><span className="text-sm">عرض تلقائي</span></label>
+                </div>
+                {activeTable && <div className="border rounded-xl overflow-hidden">
+                  <div className={`p-3 text-white text-center font-bold ${fmtStyle === "elite" ? "bg-gradient-to-r from-slate-800 to-blue-900" : fmtStyle === "premium" ? "bg-blue-700" : "bg-gray-600"}`}>{fmtCover && <><div className="text-lg mb-1">{activeTable.name}</div><div className="text-xs opacity-75">{new Date().toLocaleDateString("ar-SA")}</div></>}</div>
+                  <table className="w-full text-sm"><thead><tr className={fmtStyle === "elite" ? "bg-gradient-to-r from-blue-800 to-blue-700 text-white" : fmtStyle === "premium" ? "bg-blue-600 text-white" : "bg-gray-200"}>{activeTable.columns.slice(0, 6).map((c) => <th key={c.name} className="px-3 py-2 text-right font-semibold">{c.name}</th>)}</tr></thead>
+                    <tbody>{activeTable.rows.slice(0, 5).map((r, i) => (<tr key={i} className={`border-b ${i % 2 === 0 ? "bg-blue-50/30" : ""}`}>{activeTable.columns.slice(0, 6).map((c) => <td key={c.name} className="px-3 py-1.5">{r[c.name] == null ? "" : String(r[c.name])}</td>)}</tr>))}</tbody></table>
+                </div>}
+              </div>
+            </SectionCard>
+          )}
+
+          {/* === SECTION 17: Export === */}
+          {activeSection === "export" && (
+            <SectionCard title="التصدير" icon="file_download" defaultOpen>
+              <div className="space-y-4">
+                <div className="grid grid-cols-3 md:grid-cols-7 gap-2">{(["xlsx", "csv", "json", "parquet", "pdf", "pptx", "web"] as const).map((fmt) => (
+                  <button key={fmt} onClick={() => setExportFormat(fmt)} className={`p-3 rounded-xl border-2 text-center ${exportFormat === fmt ? "border-blue-500 bg-blue-50" : "border-gray-200"}`}>
+                    <MIcon name={{ xlsx: "table_chart", csv: "description", json: "data_object", parquet: "storage", pdf: "picture_as_pdf", pptx: "slideshow", web: "public" }[fmt]} className="text-2xl text-blue-600 block mx-auto mb-1" /><span className="text-xs font-medium uppercase">{fmt}</span>
+                  </button>))}</div>
+                <button className="bg-green-600 text-white px-6 py-2.5 rounded-lg text-sm hover:bg-green-700 flex items-center gap-2" onClick={() => {
+                  const t = activeTable; if (!t) { setExportStatus("حمّل بيانات أولاً"); return; }
+                  if (exportFormat === "csv") { const cs = t.columns.map((c) => c.name); const csv = [cs.join(","), ...t.rows.map((r) => cs.map((c) => JSON.stringify(r[c] ?? "")).join(","))].join("\n"); const b = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" }); const u = URL.createObjectURL(b); const a = document.createElement("a"); a.href = u; a.download = `${t.name}.csv`; a.click(); URL.revokeObjectURL(u); setExportStatus(`تم: ${t.name}.csv`); }
+                  else if (exportFormat === "json") { const b = new Blob([JSON.stringify(t.rows, null, 2)], { type: "application/json" }); const u = URL.createObjectURL(b); const a = document.createElement("a"); a.href = u; a.download = `${t.name}.json`; a.click(); URL.revokeObjectURL(u); setExportStatus(`تم: ${t.name}.json`); }
+                  else { fetch("/api/excel/export", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ format: exportFormat, data: t.rows.slice(0, 500), columns: t.columns.map((c) => c.name), name: t.name }) }).then(async (res) => { if (res.ok) { const b = await res.blob(); const u = URL.createObjectURL(b); const a = document.createElement("a"); a.href = u; a.download = `${t.name}.${exportFormat}`; a.click(); setExportStatus(`تم: ${t.name}.${exportFormat}`); } else { setExportStatus("الخادم غير متاح - جرب CSV/JSON"); } }).catch(() => setExportStatus("الخادم غير متاح")); }
+                  addLog(`تصدير: ${t.name}.${exportFormat}`);
+                }}><MIcon name="file_download" className="text-lg" /> تصدير الآن</button>
+                {exportStatus && <div className={`p-3 rounded-lg text-sm ${exportStatus.includes("غير") ? "bg-yellow-50 text-yellow-700" : "bg-green-50 text-green-700"}`}>{exportStatus}</div>}
+              </div>
+            </SectionCard>
+          )}
+
+          {/* === SECTION 18: Collaboration === */}
+          {activeSection === "collab" && (
+            <SectionCard title="التعاون" icon="group" defaultOpen>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-medium text-sm mb-3 flex items-center gap-1"><MIcon name="comment" className="text-blue-600" /> التعليقات</h4>
+                  <div className="space-y-2 max-h-64 overflow-y-auto mb-3">{comments.map((c) => (
+                    <div key={c.id} className="p-3 border rounded-lg bg-gray-50 dark:bg-gray-800"><div className="flex items-center justify-between mb-1"><div className="flex items-center gap-2"><span className="w-7 h-7 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">{c.user[0]}</span><span className="font-medium text-sm">{c.user}</span></div><span className="text-xs text-gray-400">{new Date(c.time).toLocaleTimeString("ar-SA")}</span></div><p className="text-sm text-gray-600">{c.text}</p></div>
+                  ))}</div>
+                  <div className="flex gap-2"><input className="flex-1 border rounded-lg px-3 py-2 text-sm dark:bg-gray-800" placeholder="تعليق..." value={newComment} onChange={(e) => setNewComment(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && newComment.trim()) { setComments((p) => [...p, { id: crypto.randomUUID(), user: "أنت", text: newComment, time: Date.now() }]); setNewComment(""); } }} /><button className="bg-blue-600 text-white px-3 py-2 rounded-lg" onClick={() => { if (newComment.trim()) { setComments((p) => [...p, { id: crypto.randomUUID(), user: "أنت", text: newComment, time: Date.now() }]); setNewComment(""); } }}><MIcon name="send" className="text-lg" /></button></div>
+                </div>
+                <div>
+                  <h4 className="font-medium text-sm mb-3 flex items-center gap-1"><MIcon name="shield" className="text-green-600" /> الصلاحيات</h4>
+                  <div className="space-y-2">{[{ user: "أحمد محمد", role: "مالك", avatar: "أ" }, { user: "سارة علي", role: "محرر", avatar: "س" }, { user: "خالد إبراهيم", role: "مشاهد", avatar: "خ" }, { user: "نورة سعود", role: "معلق", avatar: "ن" }].map((p) => (
+                    <div key={p.user} className="flex items-center gap-3 p-3 border rounded-lg bg-gray-50 dark:bg-gray-800"><span className="w-9 h-9 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold">{p.avatar}</span><div className="flex-1"><p className="text-sm font-medium">{p.user}</p></div><LocalBadge color={{ "مالك": "purple", "محرر": "blue", "مشاهد": "green", "معلق": "yellow" }[p.role] || "gray"}>{p.role}</LocalBadge></div>
+                  ))}</div>
+                  <button className="mt-3 w-full border-2 border-dashed border-gray-300 rounded-lg py-2.5 text-sm text-gray-500 hover:border-blue-400 flex items-center justify-center gap-1"><MIcon name="person_add" className="text-lg" /> إضافة مستخدم</button>
+                </div>
+              </div>
+            </SectionCard>
+          )}
+
+          {/* === SECTION 19: Predictive & What-If === */}
+          {activeSection === "predictive" && (
+            <SectionCard title="التنبؤ والسيناريوهات" icon="trending_up" defaultOpen>
+              {!activeTable ? <p className="text-gray-400">يرجى تحميل بيانات أولاً</p> : (() => {
+                const t = activeTable; const numCols = t.columns.filter((c) => ["int", "float", "currency"].includes(c.dtype)).map((c) => c.name);
+                return (
+                  <div className="space-y-6">
+                    <div className="border rounded-xl p-4">
+                      <h4 className="font-medium text-sm mb-3 flex items-center gap-1"><MIcon name="timeline" className="text-blue-600" /> التنبؤ</h4>
+                      <div className="flex gap-2 flex-wrap items-end mb-3">
+                        <div><label className="block text-xs text-gray-500 mb-1">العمود</label><select className="border rounded-lg px-3 py-2 text-sm dark:bg-gray-800" value={predCol} onChange={(e) => setPredCol(e.target.value)}><option value="">اختر</option>{numCols.map((c) => <option key={c} value={c}>{c}</option>)}</select></div>
+                        <div><label className="block text-xs text-gray-500 mb-1">فترات</label><input type="number" className="border rounded-lg px-3 py-2 text-sm w-20 dark:bg-gray-800" value={predPeriods} onChange={(e) => setPredPeriods(parseInt(e.target.value) || 1)} min={1} max={24} /></div>
+                        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm" onClick={() => {
+                          if (!predCol) return; const vs = t.rows.map((r) => r[predCol]).filter((v): v is number => typeof v === "number"); if (vs.length < 3) { setPredResult({ error: "بيانات غير كافية" }); return; }
+                          const n = vs.length; const xm = (n - 1) / 2; const ym = vs.reduce((a, b) => a + b, 0) / n; let num = 0, den = 0; for (let i = 0; i < n; i++) { num += (i - xm) * (vs[i] - ym); den += (i - xm) ** 2; } const slope = den ? num / den : 0; const intercept = ym - slope * xm;
+                          const forecast = Array.from({ length: predPeriods }, (_, i) => Math.round((intercept + slope * (n + i) + (Math.random() - 0.5) * Math.abs(slope) * 2) * 100) / 100);
+                          setPredResult({ forecast, slope: Math.round(slope * 100) / 100, trend: slope > 0 ? "تصاعدي" : slope < 0 ? "تنازلي" : "مستقر", lastValues: vs.slice(-5) }); addLog(`تنبؤ: ${predCol}`);
+                        }}><MIcon name="trending_up" className="text-lg align-middle ml-1" /> تنبؤ</button>
+                      </div>
+                      {predResult && !predResult.error && <div className="space-y-3">
+                        <div className="flex gap-3"><LocalBadge color={predResult.trend === "تصاعدي" ? "green" : predResult.trend === "تنازلي" ? "red" : "yellow"}>الاتجاه: {predResult.trend}</LocalBadge><LocalBadge color="blue">الميل: {predResult.slope}</LocalBadge></div>
+                        <div className="flex items-end gap-1 h-32">{predResult.lastValues.map((v: number, i: number) => <div key={`h${i}`} className="flex-1 bg-blue-500 rounded-t-sm" style={{ height: `${(v / Math.max(...predResult.lastValues, ...predResult.forecast)) * 100}%` }} title={fmtNum(v)} />)}{predResult.forecast.map((v: number, i: number) => <div key={`f${i}`} className="flex-1 bg-green-400 rounded-t-sm border-2 border-dashed border-green-600" style={{ height: `${(v / Math.max(...predResult.lastValues, ...predResult.forecast)) * 100}%` }} title={`${fmtNum(v)} (تنبؤ)`} />)}</div>
+                        <div className="flex gap-3 text-xs text-gray-500"><span className="flex items-center gap-1"><span className="w-3 h-3 bg-blue-500 rounded-sm" /> فعلي</span><span className="flex items-center gap-1"><span className="w-3 h-3 bg-green-400 border border-green-600 rounded-sm" /> تنبؤ</span></div>
+                        <p className="text-sm">متوقع: {predResult.forecast.map((v: number) => fmtNum(v)).join(" , ")}</p>
+                      </div>}
+                      {predResult?.error && <p className="text-red-500 text-sm">{predResult.error}</p>}
+                    </div>
+                    <div className="border rounded-xl p-4">
+                      <h4 className="font-medium text-sm mb-3 flex items-center gap-1"><MIcon name="science" className="text-purple-600" /> محاكاة (What-If)</h4>
+                      <div className="flex gap-2 flex-wrap items-end mb-3">
+                        <div><label className="block text-xs text-gray-500 mb-1">العمود</label><select className="border rounded-lg px-3 py-2 text-sm dark:bg-gray-800" value={whatIfCol} onChange={(e) => setWhatIfCol(e.target.value)}><option value="">اختر</option>{numCols.map((c) => <option key={c} value={c}>{c}</option>)}</select></div>
+                        <div><label className="block text-xs text-gray-500 mb-1">تغيير %</label><input type="number" className="border rounded-lg px-3 py-2 text-sm w-24 dark:bg-gray-800" value={whatIfChange} onChange={(e) => setWhatIfChange(parseFloat(e.target.value) || 0)} /></div>
+                        <button className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm" onClick={() => {
+                          if (!whatIfCol) return; const vs = t.rows.map((r) => r[whatIfCol]).filter((v): v is number => typeof v === "number"); if (!vs.length) return;
+                          const cur = vs.reduce((a, b) => a + b, 0); const fac = 1 + whatIfChange / 100; const proj = cur * fac;
+                          setWhatIfResult({ column: whatIfCol, change: whatIfChange, currentTotal: Math.round(cur * 100) / 100, projectedTotal: Math.round(proj * 100) / 100, difference: Math.round((proj - cur) * 100) / 100, samples: vs.slice(0, 10).map((v) => ({ original: v, projected: Math.round(v * fac * 100) / 100, diff: Math.round(v * (fac - 1) * 100) / 100 })) }); addLog(`What-If: ${whatIfCol} ${whatIfChange}%`);
+                        }}><MIcon name="play_arrow" className="text-lg align-middle ml-1" /> محاكاة</button>
+                      </div>
+                      {whatIfResult && <div className="space-y-3">
+                        <div className="grid grid-cols-3 gap-3"><StatCard label="الحالي" value={fmtNum(whatIfResult.currentTotal, 0)} icon="account_balance" color="blue" /><StatCard label="المتوقع" value={fmtNum(whatIfResult.projectedTotal, 0)} icon="trending_up" color="green" /><StatCard label="الفرق" value={`${whatIfResult.difference >= 0 ? "+" : ""}${fmtNum(whatIfResult.difference, 0)}`} icon="difference" color={whatIfResult.difference >= 0 ? "green" : "red"} /></div>
+                        <div className="overflow-x-auto border rounded-lg"><table className="w-full text-sm"><thead><tr className="bg-purple-50"><th className="px-3 py-2 text-right">#</th><th className="px-3 py-2 text-right">أصلي</th><th className="px-3 py-2 text-right">متوقع</th><th className="px-3 py-2 text-right">فرق</th></tr></thead>
+                          <tbody>{whatIfResult.samples.map((s: any, i: number) => (<tr key={i} className="border-t"><td className="px-3 py-1.5 text-gray-400">{i + 1}</td><td className="px-3 py-1.5">{fmtNum(s.original)}</td><td className="px-3 py-1.5 text-green-600">{fmtNum(s.projected)}</td><td className={`px-3 py-1.5 ${s.diff >= 0 ? "text-green-600" : "text-red-600"}`}>{s.diff >= 0 ? "+" : ""}{fmtNum(s.diff)}</td></tr>))}</tbody></table></div>
+                      </div>}
+                    </div>
+                  </div>
+                );
+              })()}
+            </SectionCard>
+          )}
+
+        </div>
+
+        {/* Log Panel */}
+        {showLog && (
+          <div className="border-t border-gray-200 dark:border-gray-800 bg-gray-900 text-green-400 max-h-48 overflow-y-auto font-mono text-xs p-3">
+            <div className="flex items-center justify-between mb-2"><span className="text-gray-400 font-medium">سجل العمليات</span><button onClick={() => setLogEntries([])} className="text-gray-500 hover:text-gray-300"><MIcon name="delete_sweep" className="text-sm" /></button></div>
+            {logEntries.map((entry, i) => <div key={i} className="py-0.5">{entry}</div>)}
+            {logEntries.length === 0 && <div className="text-gray-600">لا عمليات</div>}
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
