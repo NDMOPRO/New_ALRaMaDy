@@ -18,7 +18,7 @@ import {
   extractColorPalette,
   compareImages,
   calculateSSIM,
-} from './visual-analyzer.service.js';
+} from './visual-analyzer.service';
 
 const prisma = new PrismaClient() as PrismaClient & Record<string, any>;
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || '' });

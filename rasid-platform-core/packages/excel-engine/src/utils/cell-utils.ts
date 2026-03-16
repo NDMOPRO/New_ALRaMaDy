@@ -1,4 +1,4 @@
-import type { CellAddress, CellRange } from '../types/common.types.js';
+import type { CellAddress, CellRange } from '../types/common.types';
 
 export function parseCellAddress(ref: string): CellAddress | null {
   const match = ref.match(/^\$?([A-Z]+)\$?(\d+)$/i);

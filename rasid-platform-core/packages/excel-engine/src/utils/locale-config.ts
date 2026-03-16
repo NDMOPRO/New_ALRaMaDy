@@ -1,5 +1,5 @@
-import type { LocaleConfig } from '../types/common.types.js';
-import type { CulturalFormatConfig } from '../types/formatting.types.js';
+import type { LocaleConfig } from '../types/common.types';
+import type { CulturalFormatConfig } from '../types/formatting.types';
 
 const LOCALE_CONFIGS: Record<string, LocaleConfig> = {
   'ar-SA': {

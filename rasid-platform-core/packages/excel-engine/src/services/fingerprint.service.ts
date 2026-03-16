@@ -1,7 +1,7 @@
-import { logger } from '../utils/logger.js';
+import { logger } from '../utils/logger';
 import CryptoJS from 'crypto-js';
-import type { Fingerprint, BrandIdentity } from '../types/common.types.js';
-import type { BrandComplianceResult } from '../types/matching.types.js';
+import type { Fingerprint, BrandIdentity } from '../types/common.types';
+import type { BrandComplianceResult } from '../types/matching.types';
 
 /**
  * Digital fingerprint service for workbooks stored in the RASID platform.

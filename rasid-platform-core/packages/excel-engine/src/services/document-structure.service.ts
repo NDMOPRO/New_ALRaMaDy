@@ -1,7 +1,7 @@
 import { Prisma } from './prisma-adapter';
-import { logger } from '../utils/logger.js';
-import { getThemeConfig } from '../utils/theme-presets.js';
-import type { CoverPageConfig, ThemePreset } from '../types/formatting.types.js';
+import { logger } from '../utils/logger';
+import { getThemeConfig } from '../utils/theme-presets';
+import type { CoverPageConfig, ThemePreset } from '../types/formatting.types';
 
 // ─── Internal Types ────────────────────────────────────────────────────
 

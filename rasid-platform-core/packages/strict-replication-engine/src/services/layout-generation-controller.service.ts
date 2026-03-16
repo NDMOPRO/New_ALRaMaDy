@@ -17,14 +17,14 @@ import {
   type GeneratorType,
   type OutputFormat,
   type PipelineResult,
-} from './canonical-pipeline-orchestrator.service.js';
-import { DataExtractionService, type ExtractedDatasets } from './data-extraction.service.js';
-import { DataBindingService, type DatasetBindings } from './data-binding.service.js';
-import { ArabicTypographyOptimizer, type TypographyReport } from './arabic-typography-optimizer.service.js';
-import { ArabicLocalizationService } from './arabic-localization.service.js';
-import { PDFIntelligenceService } from './pdf-intelligence.service.js';
-import { LargeImageProcessor } from './large-image-processor.service.js';
-import { analyzeImage, type VisualAnalysis } from './visual-analyzer.service.js';
+} from './canonical-pipeline-orchestrator.service';
+import { DataExtractionService, type ExtractedDatasets } from './data-extraction.service';
+import { DataBindingService, type DatasetBindings } from './data-binding.service';
+import { ArabicTypographyOptimizer, type TypographyReport } from './arabic-typography-optimizer.service';
+import { ArabicLocalizationService } from './arabic-localization.service';
+import { PDFIntelligenceService } from './pdf-intelligence.service';
+import { LargeImageProcessor } from './large-image-processor.service';
+import { analyzeImage, type VisualAnalysis } from './visual-analyzer.service';
 
 // ─── Logger ─────────────────────────────────────────────────────────────────
 

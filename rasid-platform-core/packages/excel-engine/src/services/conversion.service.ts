@@ -1,5 +1,5 @@
-import { logger } from '../utils/logger.js';
-import { getLocaleConfig, formatNumber, formatCurrency } from '../utils/locale-config.js';
+import { logger } from '../utils/logger';
+import { getLocaleConfig, formatNumber, formatCurrency } from '../utils/locale-config';
 
 export class ConversionService {
   /**

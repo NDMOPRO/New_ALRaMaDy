@@ -1,4 +1,4 @@
-import type { FormulaFunction, FormulaValue, FormulaContext } from '../../types/formula.types.js';
+import type { FormulaFunction, FormulaValue, FormulaContext } from '../../types/formula.types';
 
 /**
  * Flatten nested arrays into a single flat array of primitive values.

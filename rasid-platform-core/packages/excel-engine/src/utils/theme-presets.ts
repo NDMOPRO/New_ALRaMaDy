@@ -1,4 +1,4 @@
-import type { ThemeConfig, ThemePreset } from '../types/formatting.types.js';
+import type { ThemeConfig, ThemePreset } from '../types/formatting.types';
 
 const THEME_PRESETS: Record<ThemePreset, ThemeConfig> = {
   'corporate-blue': {

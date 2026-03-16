@@ -189,5 +189,5 @@ export namespace Prisma {
   export type InputJsonValue = JsonValue;
 }
 
-// تصدير افتراضي للتوافق مع import { PrismaClient } from '@prisma/client'
+// تصدير افتراضي للتوافق مع استيراد PrismaClient الأصلي
 export default { PrismaClient, Prisma };

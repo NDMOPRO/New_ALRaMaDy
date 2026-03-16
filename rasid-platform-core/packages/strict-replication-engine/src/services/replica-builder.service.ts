@@ -12,7 +12,7 @@ import {
   calculateSSIM,
   extractColorPalette,
   extractLayout,
-} from './visual-analyzer.service.js';
+} from './visual-analyzer.service';
 
 const prisma = new PrismaClient();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || '' });

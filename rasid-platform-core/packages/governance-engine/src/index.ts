@@ -1614,3 +1614,7 @@ export * from './services/feature-flags.service';
 export * from './services/auth.service';
 export * from './services/runtime-evidence.service';
 export * from './services/observability.service';
+
+// تصدير المسارات
+export * from './routes/auth.routes';
+export * from './routes/runtime.routes';

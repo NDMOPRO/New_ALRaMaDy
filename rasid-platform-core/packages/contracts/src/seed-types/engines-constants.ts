@@ -4,7 +4,7 @@
  * Quick-access constants for engine names, ports, descriptions, and route maps.
  */
 
-import { Engine, ENGINE_REGISTRY, EngineConfig } from '../types/engine-types';
+import { Engine, ENGINE_REGISTRY, EngineConfig } from './engine-types';
 
 // ---------------------------------------------------------------------------
 // Lookup helpers

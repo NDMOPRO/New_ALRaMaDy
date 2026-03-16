@@ -5,7 +5,7 @@
  */
 
 import { PrismaClient } from './prisma-adapter';
-import { logger } from '../utils/logger.js';
+import { logger } from '../utils/logger';
 
 interface AuditIssue {
   sheet: string;

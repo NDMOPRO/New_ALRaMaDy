@@ -1,4 +1,4 @@
-import type { Fingerprint, MatchReport, MatchDetail, BrandIdentity, CellRange } from './common.types.js';
+import type { Fingerprint, MatchReport, MatchDetail, BrandIdentity, CellRange } from './common.types';
 
 export interface ExcelDimensions {
   sheets: Array<{
