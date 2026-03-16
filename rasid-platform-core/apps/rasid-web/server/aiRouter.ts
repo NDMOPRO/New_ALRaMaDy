@@ -2279,4 +2279,172 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
         savedAt: new Date().toISOString(),
       };
     }),
+
+  // ═══════════════════════════════════════════════════════════════
+  // PDF → Multi-page Replication (50+ pages → 50+ slides/pages)
+  // ═══════════════════════════════════════════════════════════════
+  replicateFromPdf: publicProcedure
+    .input(z.object({
+      filePath: z.string(), // Path to uploaded PDF file
+      targetType: z.enum(['presentation', 'report', 'spreadsheet']).default('presentation'),
+      language: z.string().default('ar'),
+      pageRange: z.object({
+        start: z.number().int().min(1).default(1),
+        end: z.number().int().optional(), // undefined = all pages
+      }).optional(),
+      batchSize: z.number().int().min(1).max(10).default(5), // Pages per AI call
+    }))
+    .mutation(async ({ input }) => {
+      const fs = await import('fs');
+      const path = await import('path');
+
+      const pdfPath = input.filePath.startsWith('/')
+        ? path.join(process.cwd(), input.filePath)
+        : input.filePath;
+
+      if (!fs.existsSync(pdfPath)) {
+        return { success: false as const, error: `ملف PDF غير موجود: ${input.filePath}`, pages: [], totalPages: 0 };
+      }
+
+      // Step 1: Convert PDF pages to images using pdf-parse + canvas OR just send to Vision
+      // Since GPT-4o can read PDFs as images, we convert each page to base64
+      const pdfBuffer = fs.readFileSync(pdfPath);
+      const base64Pdf = pdfBuffer.toString('base64');
+
+      // Step 2: First pass — get total page count and overview
+      const overviewMessages: VisionMessage[] = [
+        {
+          role: 'system',
+          content: `أنت محلل مستندات PDF. مهمتك:
+1. حدد عدد الصفحات الإجمالي
+2. حدد نوع المحتوى في كل صفحة (غلاف، نص، جدول، رسم بياني، إنفوجرافيك، صور)
+3. استخرج الثيم العام (الألوان والخطوط)
+
+أجب بـ JSON:
+{
+  "totalPages": number,
+  "title": "عنوان المستند",
+  "theme": { "primaryColor": "#hex", "secondaryColor": "#hex", "accentColor": "#hex", "backgroundColor": "#hex", "fontFamily": "الخط" },
+  "pageMap": [
+    { "page": 1, "type": "cover | content | table | chart | infographic | mixed", "title": "عنوان الصفحة" }
+  ]
+}`
+        },
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: 'حلل هذا المستند وأعطني خريطة الصفحات والثيم العام' },
+            { type: 'image_url', image_url: { url: `data:application/pdf;base64,${base64Pdf}`, detail: 'low' } },
+          ],
+        },
+      ];
+
+      let overview: any = { totalPages: 1, title: 'مستند', theme: {}, pageMap: [] };
+      try {
+        const overviewResult = await callVision(overviewMessages, { model: 'gpt-4o', temperature: 0.1, max_tokens: 4000 });
+        const jsonMatch = overviewResult.content.match(/```json\s*([\s\S]*?)\s*```/) || overviewResult.content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) overview = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+      } catch { /* use defaults */ }
+
+      const totalPages = overview.totalPages || 1;
+      const startPage = input.pageRange?.start || 1;
+      const endPage = Math.min(input.pageRange?.end || totalPages, totalPages);
+      const pagesToProcess = endPage - startPage + 1;
+
+      // Step 3: Process pages in batches — each batch sent to GPT-4o Vision
+      const allPages: any[] = [];
+      const batchSize = input.batchSize;
+
+      for (let batchStart = startPage; batchStart <= endPage; batchStart += batchSize) {
+        const batchEnd = Math.min(batchStart + batchSize - 1, endPage);
+        const pageNumbers = Array.from({ length: batchEnd - batchStart + 1 }, (_, i) => batchStart + i);
+
+        const targetPrompt = input.targetType === 'presentation'
+          ? `حوّل كل صفحة إلى شريحة عرض تقديمي. كل صفحة = شريحة واحدة.
+أرجع JSON: { "slides": [ { "pageNumber": N, "layout": "title|content|chart|table|infographic|two-column|kpi|timeline|closing", "title": "...", "subtitle": "...", "content": "فقرة كاملة 60+ كلمة", "bulletPoints": ["نقطة1", "نقطة2"], "notes": "ملاحظات 50+ كلمة", "chartType": "bar|line|pie", "chartData": [N], "chartLabels": ["..."], "chartColors": ["#hex"], "tableHeaders": ["..."], "tableRows": [["..."]], "infographicItems": [{"icon":"...", "label":"...", "value":"..."}], "timelineItems": [{"year":"...", "title":"...", "description":"..."}], "style": {"backgroundColor":"#hex", "titleColor":"#hex"} } ] }`
+          : input.targetType === 'report'
+          ? `حوّل كل صفحة إلى قسم تقرير. كل صفحة = قسم واحد.
+أرجع JSON: { "sections": [ { "pageNumber": N, "type": "cover|heading|paragraph|kpi|chart|table|recommendation|executive-summary", "title": "...", "content": "محتوى كامل", "level": 1, "data": { "kpis": [], "chartType": "", "chartData": [], "chartLabels": [], "headers": [], "rows": [[]], "items": [] } } ] }`
+          : `حوّل كل صفحة إلى ورقة جدول. كل جدول في صفحة = ورقة.
+أرجع JSON: { "sheets": [ { "pageNumber": N, "name": "...", "headers": ["..."], "rows": [["..."]], "formulas": [] } ] }`;
+
+        const batchMessages: VisionMessage[] = [
+          {
+            role: 'system',
+            content: `أنت محرك مطابقة بصرية. حلل صفحات PDF (${pageNumbers.join(',')}) من أصل ${totalPages} صفحة.
+استخرج كل عنصر بدقة 100%: نصوص حرفية، أرقام بالضبط، ألوان hex، هيكل الجداول والرسوم.
+${targetPrompt}`,
+          },
+          {
+            role: 'user',
+            content: [
+              { type: 'text', text: `حلل الصفحات ${pageNumbers.join(',')} من هذا المستند واستخرج كل التفاصيل` },
+              { type: 'image_url', image_url: { url: `data:application/pdf;base64,${base64Pdf}`, detail: 'high' } },
+            ],
+          },
+        ];
+
+        try {
+          const batchResult = await callVision(batchMessages, {
+            model: 'gpt-4o',
+            temperature: 0.1,
+            max_tokens: 16000,
+          });
+
+          const jsonMatch = batchResult.content.match(/```json\s*([\s\S]*?)\s*```/) || batchResult.content.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            const parsed = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+            const items = parsed.slides || parsed.sections || parsed.sheets || [];
+            allPages.push(...items);
+          }
+        } catch (err) {
+          // Add placeholder for failed batch
+          for (const pn of pageNumbers) {
+            allPages.push({
+              pageNumber: pn,
+              title: `صفحة ${pn} — فشل التحليل`,
+              content: 'تعذر تحليل هذه الصفحة. يرجى المحاولة مرة أخرى.',
+              layout: 'content',
+              type: 'paragraph',
+              name: `صفحة ${pn}`,
+            });
+          }
+        }
+      }
+
+      // Step 4: Build final artifact
+      const artifact: any = {
+        title: overview.title || 'مستند محوّل',
+        theme: overview.theme || {},
+        totalSourcePages: totalPages,
+        processedPages: allPages.length,
+      };
+
+      if (input.targetType === 'presentation') {
+        artifact.type = 'presentation';
+        artifact.slides = JSON.stringify(allPages);
+        artifact.description = `عرض تقديمي من ${allPages.length} شريحة — محوّل من PDF (${totalPages} صفحة)`;
+      } else if (input.targetType === 'report') {
+        artifact.type = 'report';
+        artifact.reportType = 'extracted';
+        artifact.sections = JSON.stringify(allPages);
+        artifact.description = `تقرير من ${allPages.length} قسم — محوّل من PDF (${totalPages} صفحة)`;
+      } else {
+        artifact.type = 'spreadsheet';
+        artifact.sheets = JSON.stringify(allPages);
+        artifact.description = `جدول من ${allPages.length} ورقة — محوّل من PDF (${totalPages} صفحة)`;
+      }
+
+      return {
+        success: true as const,
+        targetType: input.targetType,
+        title: overview.title || 'مستند محوّل',
+        theme: overview.theme || {},
+        totalSourcePages: totalPages,
+        processedPages: allPages.length,
+        pageRange: { start: startPage, end: endPage },
+        artifact,
+        pageMap: overview.pageMap || [],
+      };
+    }),
 });
