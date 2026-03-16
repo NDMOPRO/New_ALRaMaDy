@@ -340,8 +340,8 @@ class WebSocketManager {
   private async connectToPlatformWs(): Promise<void> {
     try {
       const wsUrl = getPlatformWebSocketUrl();
-      if (!wsUrl || wsUrl.includes("localhost:4400")) {
-        console.log("[WS] Platform WebSocket URL not configured, skipping forwarding");
+      if (!wsUrl || wsUrl.includes("localhost")) {
+        console.log("[WS] Platform WebSocket skipped (local mode)");
         return;
       }
 
