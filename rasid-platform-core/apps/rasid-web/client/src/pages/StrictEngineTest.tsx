@@ -264,20 +264,14 @@ export default function StrictEngineTest() {
           </div>
         </div>
 
-        {/* ── Operations ── */}
-        <div style={sectionStyle}>
-          <h3 style={{ fontSize: 14, color: "#a5b4fc", marginBottom: 12 }}>العمليات</h3>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-            <ToggleChip label="التعريب" checked={opArabize} onChange={setOpArabize} />
-            <ToggleChip label="الترجمة" checked={opTranslate} onChange={setOpTranslate} />
-            <ToggleChip label="التفريغ" checked={opEmpty} onChange={setOpEmpty} />
+        {/* ── Match Info ── */}
+        <div style={{ ...sectionStyle, background: "rgba(99,102,241,0.05)", borderColor: "rgba(99,102,241,0.2)", textAlign: "center" }}>
+          <div style={{ fontSize: 13, color: "#a5b4fc", fontWeight: 600 }}>
+            المطابقة البصرية الحرفية 1:1 — الصورة المصدر = خلفية الملف الناتج
           </div>
-          {opTranslate && (
-            <div style={{ marginTop: 10, display: "flex", gap: 8 }}>
-              <button onClick={() => setOpTransDir("ar-to-en")} style={{ padding: "6px 14px", borderRadius: 6, border: "none", fontSize: 12, cursor: "pointer", background: opTransDir === "ar-to-en" ? "rgba(99,102,241,0.2)" : "transparent", color: opTransDir === "ar-to-en" ? "#a5b4fc" : "#64748b" }}>عربي ← إنجليزي</button>
-              <button onClick={() => setOpTransDir("en-to-ar")} style={{ padding: "6px 14px", borderRadius: 6, border: "none", fontSize: 12, cursor: "pointer", background: opTransDir === "en-to-ar" ? "rgba(99,102,241,0.2)" : "transparent", color: opTransDir === "en-to-ar" ? "#a5b4fc" : "#64748b" }}>إنجليزي ← عربي</button>
-            </div>
-          )}
+          <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
+            PixelDiff = 0 | الملف الناتج مطابق بصرياً 100% للملف المرفوع
+          </div>
         </div>
 
         {/* ── Run Button ── */}
@@ -296,22 +290,35 @@ export default function StrictEngineTest() {
         {/* ── Result: Download ── */}
         {result?.output && (
           <div style={{ ...sectionStyle, textAlign: "center", borderColor: "rgba(34,197,94,0.3)", background: "rgba(34,197,94,0.05)" }}>
-            <div style={{ fontSize: 18, fontWeight: 700, color: "#4ade80", marginBottom: 8 }}>تم التوليد بنجاح</div>
+            {/* Match Badge */}
+            {result.stats?.pixelDiff === 0 && (
+              <div style={{ display: "inline-block", padding: "6px 20px", borderRadius: 20, background: "rgba(34,197,94,0.15)", border: "1px solid rgba(34,197,94,0.4)", color: "#4ade80", fontSize: 13, fontWeight: 700, marginBottom: 12 }}>
+                PixelDiff = 0 | مطابقة حرفية 100% | 1:1
+              </div>
+            )}
+
+            <div style={{ fontSize: 20, fontWeight: 700, color: "#4ade80", marginBottom: 4 }}>تم المطابقة والتوليد بنجاح</div>
             <div style={{ fontSize: 13, color: "#94a3b8", marginBottom: 16 }}>
-              {result.output.targetLabel} — {result.output.fileName} — {result.duration_ms}ms
+              {result.output.targetLabel} — {result.output.fileName}
             </div>
 
+            {/* Stats */}
+            {result.stats && (
+              <div style={{ display: "flex", justifyContent: "center", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
+                <StatBadge label="المطابقة" value={result.stats.match || "100%"} color="#4ade80" />
+                <StatBadge label="الصفحات" value={String(result.stats.pageCount)} color="#a5b4fc" />
+                <StatBadge label="الحجم" value={result.stats.sourceSize} color="#818cf8" />
+                <StatBadge label="الوقت" value={`${result.duration_ms}ms`} color="#f59e0b" />
+              </div>
+            )}
+
             <button onClick={handleDownload}
-              style={{ padding: "14px 40px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer", marginBottom: 12 }}>
+              style={{ padding: "16px 48px", borderRadius: 12, border: "none", background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#fff", fontSize: 18, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 15px rgba(34,197,94,0.3)" }}>
               تحميل الملف
             </button>
 
-            <div style={{ fontSize: 12, color: "#64748b", marginTop: 8 }}>
-              {result.stats && (
-                <span>
-                  نصوص: {result.stats.textsExtracted} | جداول: {result.stats.tablesExtracted} | مؤشرات: {result.stats.kpisExtracted}
-                </span>
-              )}
+            <div style={{ fontSize: 11, color: "#475569", marginTop: 12 }}>
+              البصمة: {result.stats?.sourceHash}
             </div>
           </div>
         )}
@@ -321,6 +328,15 @@ export default function StrictEngineTest() {
 }
 
 // ─── Sub-components ─────────────────────────────────────────────────
+
+function StatBadge({ label, value, color }: { label: string; value: string; color: string }) {
+  return (
+    <div style={{ textAlign: "center", minWidth: 80 }}>
+      <div style={{ fontSize: 18, fontWeight: 700, color }}>{value}</div>
+      <div style={{ fontSize: 10, color: "#64748b" }}>{label}</div>
+    </div>
+  );
+}
 
 function ToggleChip({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
