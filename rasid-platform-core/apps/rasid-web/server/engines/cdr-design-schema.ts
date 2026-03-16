@@ -1468,6 +1468,24 @@ export class CdrStore {
   }
 }
 
+// ─── Missing Type Aliases ──────────────────────────────────────────────
+
+/** Column descriptor for data tables */
+export interface CdrDataColumn {
+  name: string;
+  data_type: string;
+  role?: "dimension" | "measure" | "time" | "label" | "unknown";
+}
+
+/** Data collection: tables extracted from a design */
+export interface CdrData {
+  tables: CdrDataTable[];
+  semantic_model?: any;
+}
+
+/** CdrDesign with embedded data linkage */
+export type CdrDesignWithData = CdrDesign & { data?: CdrData };
+
 // ─── Compatibility Aliases & Utility Functions ─────────────────────────
 
 /** Type alias: BboxEmu = BoundingBoxEmu */
