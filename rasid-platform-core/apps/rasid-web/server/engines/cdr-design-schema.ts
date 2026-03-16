@@ -1467,3 +1467,84 @@ export class CdrStore {
     this.tagIndex.clear();
   }
 }
+
+// ─── Compatibility Aliases & Utility Functions ─────────────────────────
+
+/** Type alias: BboxEmu = BoundingBoxEmu */
+export type BboxEmu = BoundingBoxEmu;
+
+/** Quantize an EMU value to nearest grid multiple */
+export function quantizeEmu(value: number, grid: number = EMU_PER_PT): number {
+  if (grid <= 0) return value;
+  return Math.round(value / grid) * grid;
+}
+
+/** Alias: computeFingerprints → computeFingerprint (accepts CdrDesign or CdrPage[]) */
+export function computeFingerprints(input: CdrDesign | CdrPage[]): CdrFingerprint {
+  const pages = Array.isArray(input) ? input : input.pages;
+  return computeFingerprint(pages);
+}
+
+/** Flatten all elements from a CdrDesign (recursing into groups) */
+export function flattenAllElements(design: CdrDesign): ElementSpec[] {
+  const result: ElementSpec[] = [];
+  function walk(el: ElementSpec) {
+    result.push(el);
+    if (el.kind === "group" && el.children) {
+      for (const child of el.children) walk(child);
+    }
+  }
+  for (const page of design.pages) {
+    for (const layer of page.layers) {
+      for (const el of layer.elements) walk(el);
+    }
+  }
+  return result;
+}
+
+/** Count elements by kind in a CdrDesign */
+export function countElementsByKind(design: CdrDesign): Record<string, number> {
+  const counts: Record<string, number> = {};
+  const all = flattenAllElements(design);
+  for (const el of all) {
+    counts[el.kind] = (counts[el.kind] || 0) + 1;
+  }
+  return counts;
+}
+
+/** Validate that a CdrDesign has editable (non-raster) content */
+export function validateEditableCore(design: CdrDesign): { valid: boolean; editableRatio: number; issues: string[] } {
+  const all = flattenAllElements(design);
+  const total = all.length;
+  if (total === 0) return { valid: false, editableRatio: 0, issues: ["No elements found"] };
+  const imageOnly = all.filter((e) => e.kind === "image").length;
+  const editableRatio = total > 0 ? (total - imageOnly) / total : 0;
+  const issues: string[] = [];
+  if (editableRatio < 0.3) issues.push("Too many raster-only elements — output may not be editable");
+  if (!design.pages.length) issues.push("No pages defined");
+  return { valid: issues.length === 0, editableRatio, issues };
+}
+
+/** Quantize all geometry in a CdrDesign to the nearest EMU grid */
+export function quantizeDesignGeometry(design: CdrDesign, grid: number = EMU_PER_PT): CdrDesign {
+  function qBox(b: BoundingBoxEmu): BoundingBoxEmu {
+    return { x: quantizeEmu(b.x, grid), y: quantizeEmu(b.y, grid), w: quantizeEmu(b.w, grid), h: quantizeEmu(b.h, grid) };
+  }
+  function qEl(el: ElementSpec): ElementSpec {
+    const base = { ...el, bbox: qBox((el as any).bbox || { x: 0, y: 0, w: 0, h: 0 }) };
+    if (el.kind === "group" && el.children) {
+      return { ...base, children: el.children.map(qEl) } as any;
+    }
+    return base as ElementSpec;
+  }
+  return {
+    ...design,
+    pages: design.pages.map((page) => ({
+      ...page,
+      layers: page.layers.map((layer) => ({
+        ...layer,
+        elements: layer.elements.map(qEl),
+      })),
+    })),
+  };
+}
