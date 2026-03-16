@@ -1,0 +1,28 @@
+{
+  "run_id": "real-rich-vision-report-to-docx",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-rich-vision-report-to-docx.docx",
+  "verifiers": [
+    {
+      "verifier_id": "runtime-native-renderer",
+      "toolchain": "office-com-pdf",
+      "version": "office-com-pdf",
+      "input_hash": "26e96eec96d3783222cc4a5338893bd188d4eb66c44bd21836da4d2f1f596a25",
+      "render_hash": "158e7a830c2f607b215afcbd370acf1b35e9366ceb1d6653beb98a7ab3a63bd6",
+      "pixel_result": 0.005712962962962963,
+      "structural_result": true,
+      "pass_fail_reasoning": "native render comparison recorded",
+      "independent": false
+    },
+    {
+      "verifier_id": "independent-external-renderer",
+      "toolchain": "independent-libreoffice-pdf",
+      "version": "independent-libreoffice-pdf",
+      "input_hash": "26e96eec96d3783222cc4a5338893bd188d4eb66c44bd21836da4d2f1f596a25",
+      "render_hash": "333b5c13530b7e89e0692f8070fcb22be1fdd479509e27cdfb65a6f03ed60ad8",
+      "pixel_result": 0.006293939393939394,
+      "structural_result": true,
+      "pass_fail_reasoning": "external verifier subprocess result",
+      "independent": true
+    }
+  ]
+}

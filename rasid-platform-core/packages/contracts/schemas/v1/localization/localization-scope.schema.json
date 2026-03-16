@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/localization/localization-scope.schema.json",
+  "title": "LocalizationScope",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "localization_scope_id", "source_artifact_ref", "source_canonical_ref", "target_artifact_type", "scope_type"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.localization.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "localization_scope_id": { "type": "string" },
+    "source_artifact_ref": { "type": "string" },
+    "source_canonical_ref": { "type": "string" },
+    "target_artifact_type": { "enum": ["report", "presentation", "dashboard", "spreadsheet"] },
+    "scope_type": { "enum": ["artifact", "page", "slide", "sheet", "section", "block", "widget", "range", "selection"] },
+    "included_node_refs": { "type": "array", "items": { "type": "string" } },
+    "excluded_node_refs": { "type": "array", "items": { "type": "string" } },
+    "included_binding_refs": { "type": "array", "items": { "type": "string" } },
+    "include_layout_transformation": { "type": "boolean" },
+    "include_typography_refinement": { "type": "boolean" },
+    "include_cultural_formatting": { "type": "boolean" },
+    "include_asset_direction_adaptation": { "type": "boolean" },
+    "preserve_editability": { "type": "boolean" }
+  }
+}

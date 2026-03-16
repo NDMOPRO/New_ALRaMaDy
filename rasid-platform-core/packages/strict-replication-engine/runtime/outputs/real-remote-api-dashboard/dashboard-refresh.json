@@ -1,0 +1,10 @@
+{
+  "refresh_id": "refresh-real-remote-api-dashboard",
+  "run_id": "real-remote-api-dashboard",
+  "binding_id": "binding-real-remote-api-dashboard",
+  "executed_query": "http://127.0.0.1:63599/api/session/real-remote-api-dashboard/refresh",
+  "row_count": 4,
+  "status": "live",
+  "error_message": null,
+  "created_at": "2026-03-15T22:54:56.738092+00:00"
+}

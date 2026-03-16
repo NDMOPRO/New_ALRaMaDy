@@ -1,0 +1,9 @@
+{
+  "binding_id": "binding-real-live-dashboard-strict",
+  "run_id": "real-live-dashboard-strict",
+  "publication_id": "publication-real-live-dashboard-strict",
+  "dataset_ref": "dataset.sales_metrics",
+  "query_ref": "remote://sales_live",
+  "status": "live",
+  "last_refresh_at": "2026-03-15T22:54:35.300584+00:00"
+}

@@ -1,0 +1,9 @@
+{
+  "run_id": "real-rich-vision-report-to-docx",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-rich-vision-report.png",
+  "classified_kind": "image",
+  "source_checksum": "5fbc406a24d3005b09fbe0c1e87036b5c08d681006d6a19ca846a4ff31be93f1",
+  "target_kind": "docx",
+  "source_preview_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-source-input.png",
+  "normalized_source_render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-source.png"
+}

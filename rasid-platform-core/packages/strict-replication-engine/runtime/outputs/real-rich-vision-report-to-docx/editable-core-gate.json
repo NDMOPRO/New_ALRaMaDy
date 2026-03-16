@@ -1,0 +1,22 @@
+{
+  "checks": {
+    "text_runs_real": {
+      "passed": true,
+      "text_run_count": 4
+    },
+    "multi_section_structure": {
+      "passed": true,
+      "section_count": 1
+    },
+    "table_objects_real": {
+      "passed": true,
+      "table_count": 1
+    },
+    "not_static_image_only": {
+      "passed": true,
+      "image_only": false
+    }
+  },
+  "target_kind": "docx",
+  "overall_passed": true
+}

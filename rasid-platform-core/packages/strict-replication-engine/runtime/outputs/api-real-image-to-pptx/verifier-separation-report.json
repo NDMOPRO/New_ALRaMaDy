@@ -1,0 +1,9 @@
+{
+  "run_id": "api-real-image-to-pptx",
+  "primary_renderer": "runtime-parser-pptx",
+  "secondary_renderer": "independent-libreoffice-pdf",
+  "native_renderer": "office-com-pdf",
+  "separated_process": true,
+  "target_hash": "7f9aa54d520bef81a95b0192316f93f306eaffdd29f64e5f1e0e9ab78f881b75",
+  "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\api-real-image-to-pptx\\dual-verifier-matrix.json"
+}

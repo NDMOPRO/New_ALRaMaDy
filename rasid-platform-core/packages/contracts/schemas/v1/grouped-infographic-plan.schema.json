@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/grouped-infographic-plan.schema.json",
+  "title": "GroupedInfographicPlan",
+  "type": "object",
+  "required": [
+    "schema_namespace",
+    "schema_version",
+    "grouped_infographic_plan_id",
+    "deck_ref",
+    "version_ref",
+    "slide_ref",
+    "block_ref",
+    "group_kind"
+  ],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.presentations.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "grouped_infographic_plan_id": { "type": "string" },
+    "deck_ref": { "type": "string" },
+    "version_ref": { "type": "string" },
+    "slide_ref": { "type": "string" },
+    "block_ref": { "type": "string" },
+    "group_kind": { "enum": ["comparison_set", "process_flow", "mixed_story", "stat_cluster"] }
+  }
+}

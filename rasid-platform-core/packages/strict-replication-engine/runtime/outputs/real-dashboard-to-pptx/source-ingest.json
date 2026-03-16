@@ -1,0 +1,9 @@
+{
+  "run_id": "real-dashboard-to-pptx",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-dashboard-pptx.html",
+  "classified_kind": "dashboard_html",
+  "source_checksum": "18434ca79e98cb9201ae0050a5b9e425cd66de6d585f33e16bb270e53028da5f",
+  "target_kind": "pptx",
+  "source_preview_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-dashboard-to-pptx-source-input.png",
+  "normalized_source_render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-dashboard-to-pptx-source.png"
+}

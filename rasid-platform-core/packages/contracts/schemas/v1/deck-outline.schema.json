@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/deck-outline.schema.json",
+  "title": "DeckOutline",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "outline_id", "intent_ref", "estimated_slide_count"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.presentations.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "outline_id": { "type": "string" },
+    "intent_ref": { "type": "string" },
+    "estimated_slide_count": { "type": "integer", "minimum": 1 }
+  }
+}

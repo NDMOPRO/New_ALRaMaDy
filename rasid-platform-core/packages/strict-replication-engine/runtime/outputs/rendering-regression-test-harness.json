@@ -1,0 +1,5 @@
+{
+  "name": "rendering regression test harness",
+  "case_count": 14,
+  "all_cases_have_native_render": true
+}

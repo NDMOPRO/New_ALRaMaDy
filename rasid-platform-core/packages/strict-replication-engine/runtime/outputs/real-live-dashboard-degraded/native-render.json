@@ -1,0 +1,8 @@
+{
+  "renderer": "chromium-headless",
+  "image_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-live-dashboard-degraded-native.png",
+  "url": "file:///C:/ALRaMaDy/rasid-platform-core/packages/strict-replication-engine/runtime/backend/storage/artifacts/real-live-dashboard-degraded.html",
+  "source_pixel_ratio": 0.13055105452674898,
+  "parser_pixel_ratio": 0.13055105452674898,
+  "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-live-dashboard-degraded-native-diff.png"
+}

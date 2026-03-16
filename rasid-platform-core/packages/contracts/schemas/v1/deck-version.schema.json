@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/deck-version.schema.json",
+  "title": "DeckVersion",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "deck_version_id", "deck_ref", "version_ref", "created_from"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.presentations.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "deck_version_id": { "type": "string" },
+    "deck_ref": { "type": "string" },
+    "version_ref": { "type": "object" },
+    "created_from": {
+      "enum": ["manual_edit", "ai_generate", "slide_regeneration", "data_refresh", "template_retheme", "source_rebuild"]
+    }
+  }
+}

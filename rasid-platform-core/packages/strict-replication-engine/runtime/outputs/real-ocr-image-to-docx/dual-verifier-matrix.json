@@ -1,0 +1,28 @@
+{
+  "run_id": "real-ocr-image-to-docx",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-ocr-image-to-docx.docx",
+  "verifiers": [
+    {
+      "verifier_id": "runtime-native-renderer",
+      "toolchain": "office-com-pdf",
+      "version": "office-com-pdf",
+      "input_hash": "0d435a570cb75f847f23d80127f62fad462bc7214bccc7649deb81d32bd9ec20",
+      "render_hash": "b1b3d777fed7d9a1b007286be4995895f8eb533a75d32dc6bac25ef97174a891",
+      "pixel_result": 0.0075487654320987654,
+      "structural_result": true,
+      "pass_fail_reasoning": "native render comparison recorded",
+      "independent": false
+    },
+    {
+      "verifier_id": "independent-external-renderer",
+      "toolchain": "independent-libreoffice-pdf",
+      "version": "independent-libreoffice-pdf",
+      "input_hash": "0d435a570cb75f847f23d80127f62fad462bc7214bccc7649deb81d32bd9ec20",
+      "render_hash": "4ba814078fd916e55f30a681ee00e1d0f4a2cc00174710148fce478811a415e0",
+      "pixel_result": 0.010177777777777779,
+      "structural_result": true,
+      "pass_fail_reasoning": "external verifier subprocess result",
+      "independent": true
+    }
+  ]
+}

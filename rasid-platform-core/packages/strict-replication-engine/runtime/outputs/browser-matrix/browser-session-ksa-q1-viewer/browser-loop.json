@@ -1,0 +1,436 @@
+{
+  "url": "http://127.0.0.1:63599/dashboard/browser-session-ksa-q1-viewer?access_token=55f651d3c3befbe81d9b6c43",
+  "executablePath": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+  "permissionState": "viewer",
+  "expectedPermissions": {
+    "filter": true,
+    "drill": false,
+    "refresh": false,
+    "compare": true,
+    "export": false
+  },
+  "overviewControls": {
+    "filter": true,
+    "drill": false,
+    "refresh": false,
+    "compare": true,
+    "export": false
+  },
+  "finalControls": {
+    "filter": true,
+    "drill": false,
+    "refresh": false,
+    "compare": true,
+    "export": false
+  },
+  "steps": [
+    {
+      "event": "overview",
+      "state": {
+        "session": {
+          "session_id": "browser-session-ksa-q1-viewer",
+          "dataset": "sales_live",
+          "region": "KSA",
+          "period": "2026-Q1",
+          "tenant_id": "tenant-readonly",
+          "permission_state": "viewer",
+          "refresh_count": 0,
+          "export_count": 0,
+          "updated_at": "2026-03-15T22:59:43.437758+00:00"
+        },
+        "title": "LIVE SALES DASHBOARD",
+        "rows": [
+          [
+            "Metric",
+            "Value"
+          ],
+          [
+            "Growth",
+            "17%"
+          ],
+          [
+            "Orders",
+            "129"
+          ],
+          [
+            "Sales",
+            "213"
+          ]
+        ],
+        "metrics": {
+          "Growth": "17%",
+          "Orders": "129",
+          "Sales": "213"
+        },
+        "drill_metric": null,
+        "compare": null,
+        "export_payload": null,
+        "permissions": {
+          "filter": true,
+          "drill": false,
+          "refresh": false,
+          "compare": true,
+          "export": false
+        },
+        "query_ref": "remote://sales_live/KSA/2026-Q1"
+      },
+      "screenshot": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-overview.png"
+    },
+    {
+      "event": "filter",
+      "state": {
+        "session": {
+          "session_id": "browser-session-ksa-q1-viewer",
+          "dataset": "sales_live",
+          "region": "KSA",
+          "period": "2026-Q1",
+          "tenant_id": "tenant-readonly",
+          "permission_state": "viewer",
+          "refresh_count": 0,
+          "export_count": 0,
+          "updated_at": "2026-03-15T22:59:43.437758+00:00"
+        },
+        "title": "LIVE SALES DASHBOARD",
+        "rows": [
+          [
+            "Metric",
+            "Value"
+          ],
+          [
+            "Growth",
+            "17%"
+          ],
+          [
+            "Orders",
+            "129"
+          ],
+          [
+            "Sales",
+            "213"
+          ]
+        ],
+        "metrics": {
+          "Growth": "17%",
+          "Orders": "129",
+          "Sales": "213"
+        },
+        "drill_metric": null,
+        "compare": null,
+        "export_payload": null,
+        "permissions": {
+          "filter": true,
+          "drill": false,
+          "refresh": false,
+          "compare": true,
+          "export": false
+        },
+        "query_ref": "remote://sales_live/KSA/2026-Q1"
+      },
+      "screenshot": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-filter.png",
+      "executed": true
+    },
+    {
+      "event": "drill",
+      "state": {
+        "session": {
+          "session_id": "browser-session-ksa-q1-viewer",
+          "dataset": "sales_live",
+          "region": "KSA",
+          "period": "2026-Q1",
+          "tenant_id": "tenant-readonly",
+          "permission_state": "viewer",
+          "refresh_count": 0,
+          "export_count": 0,
+          "updated_at": "2026-03-15T22:59:43.437758+00:00"
+        },
+        "title": "LIVE SALES DASHBOARD",
+        "rows": [
+          [
+            "Metric",
+            "Value"
+          ],
+          [
+            "Growth",
+            "17%"
+          ],
+          [
+            "Orders",
+            "129"
+          ],
+          [
+            "Sales",
+            "213"
+          ]
+        ],
+        "metrics": {
+          "Growth": "17%",
+          "Orders": "129",
+          "Sales": "213"
+        },
+        "drill_metric": null,
+        "compare": null,
+        "export_payload": null,
+        "permissions": {
+          "filter": true,
+          "drill": false,
+          "refresh": false,
+          "compare": true,
+          "export": false
+        },
+        "query_ref": "remote://sales_live/KSA/2026-Q1"
+      },
+      "screenshot": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-drill.png",
+      "executed": false
+    },
+    {
+      "event": "refresh",
+      "state": {
+        "session": {
+          "session_id": "browser-session-ksa-q1-viewer",
+          "dataset": "sales_live",
+          "region": "KSA",
+          "period": "2026-Q1",
+          "tenant_id": "tenant-readonly",
+          "permission_state": "viewer",
+          "refresh_count": 0,
+          "export_count": 0,
+          "updated_at": "2026-03-15T22:59:43.437758+00:00"
+        },
+        "title": "LIVE SALES DASHBOARD",
+        "rows": [
+          [
+            "Metric",
+            "Value"
+          ],
+          [
+            "Growth",
+            "17%"
+          ],
+          [
+            "Orders",
+            "129"
+          ],
+          [
+            "Sales",
+            "213"
+          ]
+        ],
+        "metrics": {
+          "Growth": "17%",
+          "Orders": "129",
+          "Sales": "213"
+        },
+        "drill_metric": null,
+        "compare": null,
+        "export_payload": null,
+        "permissions": {
+          "filter": true,
+          "drill": false,
+          "refresh": false,
+          "compare": true,
+          "export": false
+        },
+        "query_ref": "remote://sales_live/KSA/2026-Q1"
+      },
+      "screenshot": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-refresh.png",
+      "executed": false
+    },
+    {
+      "event": "compare",
+      "state": {
+        "session": {
+          "session_id": "browser-session-ksa-q1-viewer",
+          "dataset": "sales_live",
+          "region": "KSA",
+          "period": "2026-Q1",
+          "tenant_id": "tenant-readonly",
+          "permission_state": "viewer",
+          "refresh_count": 0,
+          "export_count": 0,
+          "updated_at": "2026-03-15T22:59:51.553007+00:00"
+        },
+        "title": "LIVE SALES DASHBOARD",
+        "rows": [
+          [
+            "Metric",
+            "Value"
+          ],
+          [
+            "Growth",
+            "17%"
+          ],
+          [
+            "Orders",
+            "129"
+          ],
+          [
+            "Sales",
+            "213"
+          ]
+        ],
+        "metrics": {
+          "Growth": "17%",
+          "Orders": "129",
+          "Sales": "213"
+        },
+        "drill_metric": null,
+        "compare": {
+          "baseline_region": "KSA",
+          "baseline_period": "2026-Q1",
+          "deltas": [
+            {
+              "metric": "Growth",
+              "current": "17%",
+              "baseline": "17%",
+              "delta": "+0pp"
+            },
+            {
+              "metric": "Orders",
+              "current": "129",
+              "baseline": "129",
+              "delta": 0
+            },
+            {
+              "metric": "Sales",
+              "current": "213",
+              "baseline": "213",
+              "delta": 0
+            }
+          ]
+        },
+        "export_payload": null,
+        "permissions": {
+          "filter": true,
+          "drill": false,
+          "refresh": false,
+          "compare": true,
+          "export": false
+        },
+        "query_ref": "remote://sales_live/KSA/2026-Q1"
+      },
+      "screenshot": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-compare.png",
+      "executed": true
+    },
+    {
+      "event": "export",
+      "state": {
+        "session": {
+          "session_id": "browser-session-ksa-q1-viewer",
+          "dataset": "sales_live",
+          "region": "KSA",
+          "period": "2026-Q1",
+          "tenant_id": "tenant-readonly",
+          "permission_state": "viewer",
+          "refresh_count": 0,
+          "export_count": 0,
+          "updated_at": "2026-03-15T22:59:51.553007+00:00"
+        },
+        "title": "LIVE SALES DASHBOARD",
+        "rows": [
+          [
+            "Metric",
+            "Value"
+          ],
+          [
+            "Growth",
+            "17%"
+          ],
+          [
+            "Orders",
+            "129"
+          ],
+          [
+            "Sales",
+            "213"
+          ]
+        ],
+        "metrics": {
+          "Growth": "17%",
+          "Orders": "129",
+          "Sales": "213"
+        },
+        "drill_metric": null,
+        "compare": {
+          "baseline_region": "KSA",
+          "baseline_period": "2026-Q1",
+          "deltas": [
+            {
+              "metric": "Growth",
+              "current": "17%",
+              "baseline": "17%",
+              "delta": "+0pp"
+            },
+            {
+              "metric": "Orders",
+              "current": "129",
+              "baseline": "129",
+              "delta": 0
+            },
+            {
+              "metric": "Sales",
+              "current": "213",
+              "baseline": "213",
+              "delta": 0
+            }
+          ]
+        },
+        "export_payload": null,
+        "permissions": {
+          "filter": true,
+          "drill": false,
+          "refresh": false,
+          "compare": true,
+          "export": false
+        },
+        "query_ref": "remote://sales_live/KSA/2026-Q1"
+      },
+      "screenshot": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-export.png",
+      "executed": false
+    }
+  ],
+  "actionResults": {
+    "filter": {
+      "allowed": true,
+      "executed": true
+    },
+    "drill": {
+      "allowed": false,
+      "executed": false
+    },
+    "refresh": {
+      "allowed": false,
+      "executed": false
+    },
+    "compare": {
+      "allowed": true,
+      "executed": true
+    },
+    "export": {
+      "allowed": false,
+      "executed": false
+    }
+  },
+  "requests": [
+    {
+      "url": "http://127.0.0.1:63599/api/session/browser-session-ksa-q1-viewer/state",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:63599/api/session/browser-session-ksa-q1-viewer/filter",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:63599/api/session/browser-session-ksa-q1-viewer/compare",
+      "status": 200,
+      "method": "POST"
+    }
+  ],
+  "consoleMessages": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ]
+}

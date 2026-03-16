@@ -1,0 +1,9 @@
+{
+  "run_id": "real-pdf-to-docx",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-pdf-docx.pdf",
+  "classified_kind": "pdf",
+  "source_checksum": "b07323385f8f58fcbae45286f738350f31600a03b4f631704d6c0b70fc3ba126",
+  "target_kind": "docx",
+  "source_preview_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-docx-source-input.png",
+  "normalized_source_render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-docx-source.png"
+}

@@ -1,0 +1,51 @@
+{
+  "provider": {
+    "name": "github-releases",
+    "delivery_mode": "repository_release_assets",
+    "production_grade": true,
+    "repository": "NDMOPRO/New_ALRaMaDy",
+    "repository_url": "https://github.com/NDMOPRO/New_ALRaMaDy",
+    "visibility": "public"
+  },
+  "connector": {
+    "provider": "github-rest-api",
+    "authenticated": true,
+    "token_source": "gh-cli",
+    "request_artifact": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\remote-provider-request.json",
+    "response_artifact": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\remote-provider-response.json",
+    "rate_limit_taxonomy": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\remote-connectors-publication\\remote-connector-rate-limit-taxonomy.json",
+    "error_taxonomy": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\remote-connectors-publication\\remote-connector-error-taxonomy.json",
+    "retry_degrade_proof": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\remote-connectors-publication\\remote-connector-retry-degrade-proof.json"
+  },
+  "remote_refs": {
+    "release_tag": "strict-replication-publications",
+    "release_html_url": "https://github.com/NDMOPRO/New_ALRaMaDy/releases/tag/strict-replication-publications",
+    "release_api_url": "https://api.github.com/repos/NDMOPRO/New_ALRaMaDy/releases/297230715",
+    "manifest_download_url": "https://github.com/NDMOPRO/New_ALRaMaDy/releases/download/strict-replication-publications/strict-remote-publication-manifest.json",
+    "pass_dashboard_download_url": "https://github.com/NDMOPRO/New_ALRaMaDy/releases/download/strict-replication-publications/real-remote-api-dashboard.html",
+    "degraded_dashboard_download_url": "https://github.com/NDMOPRO/New_ALRaMaDy/releases/download/strict-replication-publications/strict-real-remote-api-dashboard-degraded.html"
+  },
+  "fetched_payloads": {
+    "manifest_status": 200,
+    "pass_status": 200,
+    "degraded_status": 200,
+    "release_assets": [
+      "strict-real-remote-api-dashboard-degraded.html",
+      "strict-real-remote-api-dashboard.html",
+      "strict-remote-publication-manifest.json"
+    ]
+  },
+  "integrity": {
+    "manifest_local_sha256": "4cbc9d869b9317aff38221621bcd900547c2ca40f6d398e5f874030c23f6a6cd",
+    "manifest_remote_sha256": "4cbc9d869b9317aff38221621bcd900547c2ca40f6d398e5f874030c23f6a6cd",
+    "pass_local_sha256": "446a16526fea0acbc6e18f1cbdf0d2f69003ec2dc6d1c38fb01f9b0d22bd6b3b",
+    "pass_remote_sha256": "446a16526fea0acbc6e18f1cbdf0d2f69003ec2dc6d1c38fb01f9b0d22bd6b3b",
+    "degraded_local_sha256": "8baea7359cfdc01e1093dccb3f52638ea0c7704968531683ab121a47cb193526",
+    "degraded_remote_sha256": "8baea7359cfdc01e1093dccb3f52638ea0c7704968531683ab121a47cb193526",
+    "verified": true
+  },
+  "screenshots": {
+    "release_page": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\remote-connectors-publication\\release-page.png",
+    "live_dashboard": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\remote-connectors-publication\\remote-dashboard-live.png"
+  }
+}

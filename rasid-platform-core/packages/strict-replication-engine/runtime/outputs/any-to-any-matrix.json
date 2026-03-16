@@ -1,0 +1,105 @@
+{
+  "generated_at": "2026-03-15T22:59:13.956590+00:00",
+  "entries": [
+    {
+      "pair": "image-to-dashboard",
+      "input": "real-image-to-dashboard",
+      "target": "dashboard",
+      "strict_policy": {
+        "pixel_zero_required": true,
+        "editable_core_required": true,
+        "determinism_required": true
+      },
+      "pixel_result": true,
+      "structural_result": true,
+      "determinism_result": true,
+      "output_artifact": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-image-to-dashboard.html",
+      "evidence": {
+        "pixel_report": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\pixel-diff-report.json",
+        "editable_core_gate": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\editable-core-gate.json",
+        "determinism_report": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\determinism-report.json"
+      },
+      "regression_status": "passed"
+    },
+    {
+      "pair": "screenshot-to-PPT",
+      "input": "real-screenshot-to-pptx",
+      "target": "pptx",
+      "strict_policy": {
+        "pixel_zero_required": true,
+        "editable_core_required": true,
+        "determinism_required": true
+      },
+      "pixel_result": true,
+      "structural_result": true,
+      "determinism_result": true,
+      "output_artifact": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-screenshot-to-pptx.pptx",
+      "evidence": {
+        "pixel_report": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\pixel-diff-report.json",
+        "editable_core_gate": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\editable-core-gate.json",
+        "determinism_report": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\determinism-report.json"
+      },
+      "regression_status": "passed"
+    },
+    {
+      "pair": "PDF-to-BI",
+      "input": "real-pdf-to-bi-dashboard",
+      "target": "dashboard",
+      "strict_policy": {
+        "pixel_zero_required": true,
+        "editable_core_required": true,
+        "determinism_required": true
+      },
+      "pixel_result": true,
+      "structural_result": true,
+      "determinism_result": true,
+      "output_artifact": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-pdf-to-bi-dashboard.html",
+      "evidence": {
+        "pixel_report": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\pixel-diff-report.json",
+        "editable_core_gate": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\editable-core-gate.json",
+        "determinism_report": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\determinism-report.json"
+      },
+      "regression_status": "passed"
+    },
+    {
+      "pair": "Excel-to-dashboard",
+      "input": "real-excel-to-dashboard",
+      "target": "dashboard",
+      "strict_policy": {
+        "pixel_zero_required": true,
+        "editable_core_required": true,
+        "determinism_required": true
+      },
+      "pixel_result": true,
+      "structural_result": true,
+      "determinism_result": true,
+      "output_artifact": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-excel-to-dashboard.html",
+      "evidence": {
+        "pixel_report": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\pixel-diff-report.json",
+        "editable_core_gate": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\editable-core-gate.json",
+        "determinism_report": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\determinism-report.json"
+      },
+      "regression_status": "passed"
+    },
+    {
+      "pair": "dashboard-to-PPT",
+      "input": "real-dashboard-to-pptx",
+      "target": "pptx",
+      "strict_policy": {
+        "pixel_zero_required": true,
+        "editable_core_required": true,
+        "determinism_required": true
+      },
+      "pixel_result": true,
+      "structural_result": true,
+      "determinism_result": true,
+      "output_artifact": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-dashboard-to-pptx.pptx",
+      "evidence": {
+        "pixel_report": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\pixel-diff-report.json",
+        "editable_core_gate": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\editable-core-gate.json",
+        "determinism_report": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\determinism-report.json"
+      },
+      "regression_status": "passed"
+    }
+  ]
+}

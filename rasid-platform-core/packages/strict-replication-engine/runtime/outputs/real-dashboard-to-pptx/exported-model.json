@@ -1,0 +1,43 @@
+{
+  "width": 960,
+  "height": 540,
+  "background": "#FFFFFF",
+  "elements": [
+    {
+      "id": "text-0",
+      "type": "text",
+      "x": 40,
+      "y": 34,
+      "text": "STRICT DASHBOARD"
+    },
+    {
+      "id": "shape-1",
+      "type": "shape",
+      "x": 40,
+      "y": 120,
+      "width": 220,
+      "height": 110,
+      "fill": "#90CAF9"
+    },
+    {
+      "id": "table-2",
+      "type": "table",
+      "x": 420,
+      "y": 180,
+      "rows": [
+        [
+          "KPI",
+          "Value"
+        ],
+        [
+          "Sales",
+          "210"
+        ],
+        [
+          "Growth",
+          "17%"
+        ]
+      ]
+    }
+  ]
+}

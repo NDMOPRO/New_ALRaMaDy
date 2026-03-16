@@ -1,0 +1,19 @@
+{
+  "name": "structural regression test suite",
+  "case_count": 14,
+  "passing_cases": [
+    "real-image-to-pptx",
+    "real-pdf-to-docx",
+    "real-image-to-dashboard",
+    "real-screenshot-to-pptx",
+    "real-pdf-to-bi-dashboard",
+    "real-excel-to-dashboard",
+    "real-dashboard-to-pptx",
+    "real-live-dashboard-strict",
+    "real-live-dashboard-degraded",
+    "real-remote-api-dashboard",
+    "real-multipage-pdf-to-docx",
+    "real-ocr-image-to-docx",
+    "real-rich-vision-report-to-docx"
+  ]
+}

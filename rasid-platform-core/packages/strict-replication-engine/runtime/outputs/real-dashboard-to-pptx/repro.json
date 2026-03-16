@@ -1,0 +1,9 @@
+{
+  "run_id": "real-dashboard-to-pptx",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-dashboard-pptx.html",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-dashboard-to-pptx.pptx",
+  "native_renderer": "office-com-pdf",
+  "independent_verifier": "independent-libreoffice-pdf",
+  "target_kind": "pptx",
+  "ingest_strategy": "dashboard_html"
+}

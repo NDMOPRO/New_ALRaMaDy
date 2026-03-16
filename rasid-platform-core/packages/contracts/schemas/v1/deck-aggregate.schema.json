@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/deck-aggregate.schema.json",
+  "title": "DeckAggregate",
+  "type": "object",
+  "required": [
+    "contract",
+    "schema_namespace",
+    "schema_version",
+    "deck_id",
+    "artifact_ref",
+    "canonical_ref",
+    "current_version_ref",
+    "intent_ref",
+    "mode",
+    "status"
+  ],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.presentations.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "deck_id": { "type": "string" },
+    "artifact_ref": { "type": "string" },
+    "canonical_ref": { "type": "string" },
+    "current_version_ref": { "type": "string" },
+    "intent_ref": { "type": "string" },
+    "mode": { "enum": ["easy", "advanced"] },
+    "status": { "enum": ["draft", "outlining", "storyboarding", "binding", "review", "approved", "published", "archived", "degraded"] }
+  }
+}

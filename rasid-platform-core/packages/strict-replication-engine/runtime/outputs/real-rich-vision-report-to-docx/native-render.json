@@ -1,0 +1,8 @@
+{
+  "renderer": "office-com-pdf",
+  "pdf_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-native.pdf",
+  "image_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-native.png",
+  "source_pixel_ratio": 0.006232323232323232,
+  "parser_pixel_ratio": 0.005712962962962963,
+  "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-native-diff.png"
+}

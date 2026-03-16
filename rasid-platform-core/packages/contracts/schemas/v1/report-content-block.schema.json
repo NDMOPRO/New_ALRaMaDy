@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/report-content-block.schema.json",
+  "title": "ReportContentBlock",
+  "type": "object",
+  "required": [
+    "schema_namespace",
+    "schema_version",
+    "block_id",
+    "report_ref",
+    "version_ref",
+    "section_ref",
+    "block_type",
+    "order_index"
+  ],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.report.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "block_id": { "type": "string" },
+    "report_ref": { "type": "string" },
+    "version_ref": { "type": "string" },
+    "section_ref": { "type": "string" },
+    "block_type": {
+      "enum": [
+        "cover",
+        "executive_summary",
+        "narrative",
+        "table",
+        "chart",
+        "metric_card",
+        "commentary",
+        "infographic_plan",
+        "appendix",
+        "toc"
+      ]
+    },
+    "order_index": { "type": "integer", "minimum": 0 }
+  }
+}

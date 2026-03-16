@@ -1,0 +1,267 @@
+{
+  "url": "http://127.0.0.1:60536/dashboard/browser-session-uae-q2?access_token=47543104ff6ac2806bb74df6",
+  "executablePath": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+  "steps": [
+    {
+      "event": "overview",
+      "state": {
+        "session": {
+          "session_id": "browser-session-uae-q2",
+          "dataset": "sales_live",
+          "region": "UAE",
+          "period": "2026-Q2",
+          "refresh_count": 0,
+          "updated_at": "2026-03-15T20:09:47.081501+00:00"
+        },
+        "title": "LIVE SALES DASHBOARD",
+        "rows": [
+          [
+            "Metric",
+            "Value"
+          ],
+          [
+            "Growth",
+            "13%"
+          ],
+          [
+            "Orders",
+            "104"
+          ],
+          [
+            "Sales",
+            "186"
+          ]
+        ],
+        "metrics": {
+          "Growth": "13%",
+          "Orders": "104",
+          "Sales": "186"
+        },
+        "drill_metric": null,
+        "compare": null,
+        "query_ref": "remote://sales_live/UAE/2026-Q2"
+      },
+      "screenshot": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2\\browser-overview.png"
+    },
+    {
+      "event": "filter",
+      "state": {
+        "session": {
+          "session_id": "browser-session-uae-q2",
+          "dataset": "sales_live",
+          "region": "UAE",
+          "period": "2026-Q2",
+          "refresh_count": 0,
+          "updated_at": "2026-03-15T20:09:50.080725+00:00"
+        },
+        "title": "LIVE SALES DASHBOARD",
+        "rows": [
+          [
+            "Metric",
+            "Value"
+          ],
+          [
+            "Growth",
+            "13%"
+          ],
+          [
+            "Orders",
+            "104"
+          ],
+          [
+            "Sales",
+            "186"
+          ]
+        ],
+        "metrics": {
+          "Growth": "13%",
+          "Orders": "104",
+          "Sales": "186"
+        },
+        "drill_metric": null,
+        "compare": null,
+        "query_ref": "remote://sales_live/UAE/2026-Q2"
+      },
+      "screenshot": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2\\browser-filter.png"
+    },
+    {
+      "event": "drill",
+      "state": {
+        "session": {
+          "session_id": "browser-session-uae-q2",
+          "dataset": "sales_live",
+          "region": "UAE",
+          "period": "2026-Q2",
+          "refresh_count": 0,
+          "updated_at": "2026-03-15T20:09:50.184476+00:00"
+        },
+        "title": "LIVE SALES DASHBOARD",
+        "rows": [
+          [
+            "Metric",
+            "Value"
+          ],
+          [
+            "Growth",
+            "13%"
+          ],
+          [
+            "Orders",
+            "104"
+          ],
+          [
+            "Sales",
+            "186"
+          ]
+        ],
+        "metrics": {
+          "Growth": "13%",
+          "Orders": "104",
+          "Sales": "186"
+        },
+        "drill_metric": "Sales",
+        "compare": null,
+        "query_ref": "remote://sales_live/UAE/2026-Q2"
+      },
+      "screenshot": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2\\browser-drill.png"
+    },
+    {
+      "event": "refresh",
+      "state": {
+        "session": {
+          "session_id": "browser-session-uae-q2",
+          "dataset": "sales_live",
+          "region": "UAE",
+          "period": "2026-Q2",
+          "refresh_count": 1,
+          "updated_at": "2026-03-15T20:09:50.285027+00:00"
+        },
+        "title": "LIVE SALES DASHBOARD",
+        "rows": [
+          [
+            "Metric",
+            "Value"
+          ],
+          [
+            "Growth",
+            "13%"
+          ],
+          [
+            "Orders",
+            "105"
+          ],
+          [
+            "Sales",
+            "189"
+          ]
+        ],
+        "metrics": {
+          "Growth": "13%",
+          "Orders": "105",
+          "Sales": "189"
+        },
+        "drill_metric": "Sales",
+        "compare": null,
+        "query_ref": "remote://sales_live/UAE/2026-Q2"
+      },
+      "screenshot": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2\\browser-refresh.png"
+    },
+    {
+      "event": "compare",
+      "state": {
+        "session": {
+          "session_id": "browser-session-uae-q2",
+          "dataset": "sales_live",
+          "region": "UAE",
+          "period": "2026-Q2",
+          "refresh_count": 1,
+          "updated_at": "2026-03-15T20:09:50.392095+00:00"
+        },
+        "title": "LIVE SALES DASHBOARD",
+        "rows": [
+          [
+            "Metric",
+            "Value"
+          ],
+          [
+            "Growth",
+            "13%"
+          ],
+          [
+            "Orders",
+            "105"
+          ],
+          [
+            "Sales",
+            "189"
+          ]
+        ],
+        "metrics": {
+          "Growth": "13%",
+          "Orders": "105",
+          "Sales": "189"
+        },
+        "drill_metric": "Sales",
+        "compare": {
+          "baseline_region": "UAE",
+          "baseline_period": "2026-Q2",
+          "deltas": [
+            {
+              "metric": "Growth",
+              "current": "13%",
+              "baseline": "13%",
+              "delta": "+0pp"
+            },
+            {
+              "metric": "Orders",
+              "current": "105",
+              "baseline": "105",
+              "delta": 0
+            },
+            {
+              "metric": "Sales",
+              "current": "189",
+              "baseline": "189",
+              "delta": 0
+            }
+          ]
+        },
+        "query_ref": "remote://sales_live/UAE/2026-Q2"
+      },
+      "screenshot": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2\\browser-compare.png"
+    }
+  ],
+  "requests": [
+    {
+      "url": "http://127.0.0.1:60536/api/session/browser-session-uae-q2/state",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:60536/api/session/browser-session-uae-q2/filter",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:60536/api/session/browser-session-uae-q2/drill",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:60536/api/session/browser-session-uae-q2/refresh",
+      "status": 200,
+      "method": "POST"
+    },
+    {
+      "url": "http://127.0.0.1:60536/api/session/browser-session-uae-q2/compare",
+      "status": 200,
+      "method": "POST"
+    }
+  ],
+  "consoleMessages": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "run_id": "real-pdf-to-docx",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-pdf-to-docx.docx",
+  "verifiers": [
+    {
+      "verifier_id": "runtime-native-renderer",
+      "toolchain": "office-com-pdf",
+      "version": "office-com-pdf",
+      "input_hash": "e8b1a5e9c40d45330e7f1fb826a2e4479bb0d453be6c8ec81e2aba1d4cf14ec6",
+      "render_hash": "c6450343f77d2f5404170f05c791e1196375ecaa8c4240f7b37443ca21be7d2a",
+      "pixel_result": 0.0048345679012345676,
+      "structural_result": true,
+      "pass_fail_reasoning": "native render comparison recorded",
+      "independent": false
+    },
+    {
+      "verifier_id": "independent-external-renderer",
+      "toolchain": "independent-libreoffice-pdf",
+      "version": "independent-libreoffice-pdf",
+      "input_hash": "e8b1a5e9c40d45330e7f1fb826a2e4479bb0d453be6c8ec81e2aba1d4cf14ec6",
+      "render_hash": "eab65f7545fdd497555aa58cbc70a7ef733fa4945cad28cad77abc5dc5cfcb04",
+      "pixel_result": 0.004934259259259259,
+      "structural_result": true,
+      "pass_fail_reasoning": "external verifier subprocess result",
+      "independent": true
+    }
+  ]
+}

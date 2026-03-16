@@ -1,0 +1,58 @@
+{
+  "comparison_id": "independent-verifier",
+  "threshold": 0.0,
+  "passed": true,
+  "pixel_diff": 0.0,
+  "differing_pixels": 0,
+  "total_pixels": 518400,
+  "dimensions_report": {
+    "equal": true,
+    "reference": {
+      "width": 960,
+      "height": 540
+    },
+    "candidate": {
+      "width": 960,
+      "height": 540
+    },
+    "comparison_canvas": {
+      "width": 960,
+      "height": 540
+    }
+  },
+  "normalization_proof": {
+    "reference": {
+      "sRGB_normalized": true,
+      "premultiplied_alpha_normalized": true,
+      "orientation_normalized": true,
+      "original_mode": "RGB",
+      "normalized_mode": "RGBA",
+      "dimensions": {
+        "width": 960,
+        "height": 540
+      }
+    },
+    "candidate": {
+      "sRGB_normalized": true,
+      "premultiplied_alpha_normalized": true,
+      "orientation_normalized": true,
+      "original_mode": "RGBA",
+      "normalized_mode": "RGBA",
+      "dimensions": {
+        "width": 960,
+        "height": 540
+      }
+    }
+  },
+  "render_config_hash": "21a1ef9d0e93032a56d69b28fd6c60d7b863f6c261d16a86d89bf89cccbe5391",
+  "engine_fingerprint": {
+    "renderer": "independent-firefox-headless",
+    "target_kind": "dashboard",
+    "fingerprint_hash": "25552ac3b3d754017d18793a2a72eeb288e63c661e4c0e1c76d7bd99a0ae3c31"
+  },
+  "pixel_hash": {
+    "reference": "eb2a06ab2c989122a7b57af7db38f618e7f05c68c570c60533557135bb473b7a",
+    "candidate": "eb2a06ab2c989122a7b57af7db38f618e7f05c68c570c60533557135bb473b7a"
+  },
+  "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\independent-heatmap.png"
+}

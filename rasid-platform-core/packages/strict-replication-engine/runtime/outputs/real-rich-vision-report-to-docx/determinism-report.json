@@ -1,0 +1,88 @@
+{
+  "lock_policy": {
+    "os_image": "Windows-11-10.0.26200-SP0",
+    "python_version": "3.14.3",
+    "fonts_snapshot_hash": "6a1dad344ebab28f55575ba31577166b7f4886045b4f232bd51cbf5b208b069a",
+    "aa_policy": "default-platform-aa",
+    "random_seed": 0,
+    "float_normalization": "python-native-json-stable",
+    "farm_image_id": "farm::Windows-11-10.0.26200-SP0",
+    "font_snapshot_id": "fonts::6a1dad344ebab28f55575ba31577166b7f4886045b4f232bd51cbf5b208b069a"
+  },
+  "rerun_count": 2,
+  "same_input_rerun_equals": true,
+  "model_hash_equal": true,
+  "render_hash_equal": true,
+  "binary_hash_equal": true,
+  "pixel_hashes_match": true,
+  "engine_fingerprints_match": true,
+  "render_config_consistent": true,
+  "render_config_hashes_match": true,
+  "model_hashes": [
+    "057ebcf413df906022612b3120e7370392c8e50efa07301f72bab51a71f561a9",
+    "057ebcf413df906022612b3120e7370392c8e50efa07301f72bab51a71f561a9"
+  ],
+  "render_hashes": [
+    "0e76654ab789dfcf6376551a068c1c4f633d67bda94605b9a05dfffcf0bb909b",
+    "0e76654ab789dfcf6376551a068c1c4f633d67bda94605b9a05dfffcf0bb909b"
+  ],
+  "binary_hashes": [
+    "a9484489d7227d551ef0bdc4d0ef7d073a7ccac0e924f05e5c83708638642e64",
+    "a9484489d7227d551ef0bdc4d0ef7d073a7ccac0e924f05e5c83708638642e64"
+  ],
+  "render_config_hash": "7f9d6bef564cfc83311201859f28afeaeea41b4132d1c598ec2992fb6d412a86",
+  "engine_fingerprint": {
+    "runtime": "strict-replication-engine/runtime",
+    "python_version": "3.14.3",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "target_extension": "docx",
+    "fonts_snapshot_hash": "6a1dad344ebab28f55575ba31577166b7f4886045b4f232bd51cbf5b208b069a"
+  },
+  "engine_fingerprint_hash": "fe3e28e363beb2c46cbad2d0d97586e83cf5db56f708a4f3342b7e08304ae536",
+  "render_profile": {
+    "target_extension": "docx",
+    "dpi": 144,
+    "colorspace": "sRGB",
+    "anti_aliasing_policy": "default-platform-aa",
+    "float_normalization": "python-native-json-stable",
+    "page_range": {
+      "from": 1,
+      "to": 1
+    }
+  },
+  "render_refs": [
+    {
+      "render_id": "docx-rerun-1",
+      "uri": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\determinism\\run-1.docx",
+      "dpi": 144,
+      "colorspace": "sRGB",
+      "engine_fingerprint": "fe3e28e363beb2c46cbad2d0d97586e83cf5db56f708a4f3342b7e08304ae536",
+      "render_config_hash": "7f9d6bef564cfc83311201859f28afeaeea41b4132d1c598ec2992fb6d412a86",
+      "fingerprint": {
+        "layout_hash": "057ebcf413df906022612b3120e7370392c8e50efa07301f72bab51a71f561a9",
+        "structural_hash": "057ebcf413df906022612b3120e7370392c8e50efa07301f72bab51a71f561a9",
+        "typography_hash": "734380eb84b1e8218eeb07eb228df7709f2cf950781f059201e63f65072a731d",
+        "pixel_hash": "0e76654ab789dfcf6376551a068c1c4f633d67bda94605b9a05dfffcf0bb909b"
+      },
+      "binary_hash": "a9484489d7227d551ef0bdc4d0ef7d073a7ccac0e924f05e5c83708638642e64"
+    },
+    {
+      "render_id": "docx-rerun-2",
+      "uri": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\determinism\\run-2.docx",
+      "dpi": 144,
+      "colorspace": "sRGB",
+      "engine_fingerprint": "fe3e28e363beb2c46cbad2d0d97586e83cf5db56f708a4f3342b7e08304ae536",
+      "render_config_hash": "7f9d6bef564cfc83311201859f28afeaeea41b4132d1c598ec2992fb6d412a86",
+      "fingerprint": {
+        "layout_hash": "057ebcf413df906022612b3120e7370392c8e50efa07301f72bab51a71f561a9",
+        "structural_hash": "057ebcf413df906022612b3120e7370392c8e50efa07301f72bab51a71f561a9",
+        "typography_hash": "734380eb84b1e8218eeb07eb228df7709f2cf950781f059201e63f65072a731d",
+        "pixel_hash": "0e76654ab789dfcf6376551a068c1c4f633d67bda94605b9a05dfffcf0bb909b"
+      },
+      "binary_hash": "a9484489d7227d551ef0bdc4d0ef7d073a7ccac0e924f05e5c83708638642e64"
+    }
+  ],
+  "source_model_hash": "2e9853d5ce8878323a453c1948cfdb49cd2a666e83366e7733adcd48ad1e6e92",
+  "violations": [],
+  "passed": true
+}

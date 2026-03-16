@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/localization/localization-degrade-reason.schema.json",
+  "title": "LocalizationDegradeReason",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "localization_degrade_reason_id", "request_ref", "stage", "reason_code", "summary", "detail"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.localization.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "localization_degrade_reason_id": { "type": "string" },
+    "request_ref": { "type": "string" },
+    "stage": { "enum": ["detect_source_language", "resolve_terminology_profile", "build_localization_plan", "transform_language", "transform_direction", "refine_typography", "apply_cultural_formatting", "run_quality_gates", "publish_output"] },
+    "reason_code": { "type": "string" },
+    "summary": { "type": "string" },
+    "detail": { "type": "string" },
+    "impacted_refs": { "type": "array", "items": { "type": "string" } },
+    "retryable": { "type": "boolean" },
+    "repairable": { "type": "boolean" },
+    "blocks_apply": { "type": "boolean" }
+  }
+}

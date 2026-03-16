@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/report-layout.schema.json",
+  "title": "ReportLayout",
+  "type": "object",
+  "required": [
+    "schema_namespace",
+    "schema_version",
+    "layout_id",
+    "report_ref",
+    "version_ref",
+    "template_ref",
+    "page_size",
+    "orientation"
+  ],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.report.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "layout_id": { "type": "string" },
+    "report_ref": { "type": "string" },
+    "version_ref": { "type": "string" },
+    "template_ref": { "type": "string" },
+    "page_size": { "enum": ["a4", "a3", "letter", "legal", "custom"] },
+    "orientation": { "enum": ["portrait", "landscape"] }
+  }
+}

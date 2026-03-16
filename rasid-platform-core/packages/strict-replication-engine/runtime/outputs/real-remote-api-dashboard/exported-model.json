@@ -1,0 +1,61 @@
+{
+  "width": 960,
+  "height": 540,
+  "title": "LIVE SALES DASHBOARD",
+  "rows": [
+    [
+      "Metric",
+      "Value"
+    ],
+    [
+      "Forks",
+      "4638"
+    ],
+    [
+      "OpenIssues",
+      "331"
+    ],
+    [
+      "Stars",
+      "30254"
+    ],
+    [
+      "Watchers",
+      "348"
+    ]
+  ],
+  "region": "openai",
+  "period": "openai-python",
+  "drill_metric": null,
+  "refresh_count": 1,
+  "compare": {
+    "baseline_region": "openai",
+    "baseline_period": "openai-python",
+    "deltas": [
+      {
+        "metric": "Forks",
+        "current": "4638",
+        "baseline": "4638",
+        "delta": 0
+      },
+      {
+        "metric": "OpenIssues",
+        "current": "331",
+        "baseline": "331",
+        "delta": 0
+      },
+      {
+        "metric": "Stars",
+        "current": "30254",
+        "baseline": "30254",
+        "delta": 0
+      },
+      {
+        "metric": "Watchers",
+        "current": "348",
+        "baseline": "348",
+        "delta": 0
+      }
+    ]
+  }
+}

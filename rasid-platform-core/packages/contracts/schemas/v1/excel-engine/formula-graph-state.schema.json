@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/excel-engine/formula-graph-state.schema.json",
+  "title": "Excel Formula Graph State",
+  "type": "object",
+  "required": ["graph_id", "workbook_ref", "formula_refs", "dependency_edges", "recalculation_state"],
+  "properties": {
+    "graph_id": { "type": "string" },
+    "workbook_ref": { "type": "string" },
+    "formula_refs": { "type": "array", "items": { "type": "object" } },
+    "dependency_edges": { "type": "array", "items": { "type": "object" } },
+    "dirty_cell_refs": { "type": "array", "items": { "type": "string" } },
+    "recalculation_state": { "enum": ["idle", "dirty", "planned", "executing", "completed", "degraded", "failed"] }
+  }
+}

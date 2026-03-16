@@ -1,0 +1,34 @@
+{
+  "manifest_id": "strict-remote-publication-manifest",
+  "generated_at": "2026-03-15T23:00:31.921442+00:00",
+  "provider": {
+    "name": "github-releases",
+    "delivery_mode": "repository_release_assets",
+    "production_grade": true,
+    "repository": "NDMOPRO/New_ALRaMaDy",
+    "repository_url": "https://github.com/NDMOPRO/New_ALRaMaDy",
+    "visibility": "public"
+  },
+  "connector": {
+    "provider": "github-rest-api",
+    "authenticated": true,
+    "token_source": "gh-cli",
+    "request_artifact": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\remote-provider-request.json",
+    "response_artifact": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\remote-provider-response.json",
+    "rate_limit_taxonomy": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\remote-connectors-publication\\remote-connector-rate-limit-taxonomy.json",
+    "error_taxonomy": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\remote-connectors-publication\\remote-connector-error-taxonomy.json",
+    "retry_degrade_proof": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\remote-connectors-publication\\remote-connector-retry-degrade-proof.json"
+  },
+  "artifacts": {
+    "pass_dashboard": {
+      "run_id": "real-remote-api-dashboard",
+      "local_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-remote-api-dashboard.html",
+      "publication_ref": "github://NDMOPRO/New_ALRaMaDy/releases/strict-replication-publications/strict-real-remote-api-dashboard.html"
+    },
+    "degraded_dashboard": {
+      "run_id": "real-remote-api-dashboard-degraded",
+      "local_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-remote-api-dashboard-degraded.html",
+      "publication_ref": "github://NDMOPRO/New_ALRaMaDy/releases/strict-replication-publications/strict-real-remote-api-dashboard-degraded.html"
+    }
+  }
+}

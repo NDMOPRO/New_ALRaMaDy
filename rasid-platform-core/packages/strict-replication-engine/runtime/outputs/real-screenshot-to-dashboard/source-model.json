@@ -1,0 +1,19 @@
+{
+  "width": 960,
+  "height": 540,
+  "title": "STRICT DASHBOARD",
+  "rows": [
+    [
+      "KPI",
+      "Value"
+    ],
+    [
+      "Sales",
+      "210"
+    ],
+    [
+      "Growth",
+      "17%"
+    ]
+  ]
+}

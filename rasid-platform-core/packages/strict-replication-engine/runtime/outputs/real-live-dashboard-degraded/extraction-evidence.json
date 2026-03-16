@@ -1,0 +1,7 @@
+{
+  "strategy": "dashboard_live_connector_remote",
+  "binding_status": "degraded",
+  "connector_dataset": "sales_missing",
+  "connector_base_url": "http://127.0.0.1:63599",
+  "error": "HTTP Error 404: Not Found"
+}

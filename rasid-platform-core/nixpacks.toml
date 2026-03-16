@@ -1,0 +1,8 @@
+[phases.install]
+cmds = ["npm ci"]
+
+[phases.build]
+cmds = ["npx tsc -b tsconfig.json"]
+
+[start]
+cmd = "node apps/contracts-cli/dist/index.js dashboard-serve-web"

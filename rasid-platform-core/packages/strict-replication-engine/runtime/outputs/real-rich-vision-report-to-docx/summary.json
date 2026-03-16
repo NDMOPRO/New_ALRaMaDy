@@ -1,0 +1,61 @@
+{
+  "run_id": "real-rich-vision-report-to-docx",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-rich-vision-report.png",
+  "classified_kind": "image",
+  "source_checksum": "5fbc406a24d3005b09fbe0c1e87036b5c08d681006d6a19ca846a4ff31be93f1",
+  "target_kind": "docx",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-rich-vision-report-to-docx.docx",
+  "initial_structural_pass": true,
+  "final_structural_pass": true,
+  "initial_pixel_ratio": 0.0,
+  "final_pixel_ratio": 0.0,
+  "round_trip_ratio": 0.0,
+  "repair_applied": false,
+  "publish_state": "degraded_published",
+  "publication_ref": "sqlite://strict-backend/publications/publication-real-rich-vision-report-to-docx",
+  "strict_pass": false,
+  "strict_policy": {
+    "pixel_zero_required": true,
+    "editable_core_required": true,
+    "determinism_required": true
+  },
+  "pixel_zero_gate_passed": false,
+  "editable_core_gate_passed": true,
+  "determinism_gate_passed": true,
+  "native_gate": {
+    "passed": true,
+    "threshold": 0.01,
+    "ratio": 0.005712962962962963,
+    "authoritative": false
+  },
+  "independent_native_verification": {
+    "passed": true,
+    "threshold": 0.01,
+    "ratio": 0.006293939393939394,
+    "renderer": "independent-libreoffice-pdf",
+    "authoritative": true,
+    "independent": true,
+    "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-independent.png",
+    "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-independent-diff.png",
+    "reference_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-source.png",
+    "pdf_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-independent.pdf",
+    "browser_url": null
+  },
+  "native_render": {
+    "renderer": "office-com-pdf",
+    "pdf_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-native.pdf",
+    "image_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-native.png",
+    "source_pixel_ratio": 0.006232323232323232,
+    "parser_pixel_ratio": 0.005712962962962963,
+    "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-native-diff.png"
+  },
+  "renders": {
+    "source_input": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-source-input.png",
+    "source": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-source.png",
+    "initial": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-initial.png",
+    "final": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-final.png",
+    "round_trip": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-roundtrip.png",
+    "diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-diff.png",
+    "round_trip_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-roundtrip-diff.png"
+  }
+}

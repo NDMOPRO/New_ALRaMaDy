@@ -1,0 +1,27 @@
+{
+  "valid": true,
+  "checks": {
+    "cdr_design.version": true,
+    "cdr_design.immutable_layout_lock_flag": true,
+    "pages[]": true,
+    "pages[].size_emu": true,
+    "layers[]": true,
+    "elements[]": true,
+    "transform_matrix": true,
+    "bbox_emu": true,
+    "text_runs": true,
+    "table_grid/cells": true,
+    "chart_bindings": true,
+    "layout_graph": true,
+    "constraint_matrix": true,
+    "fingerprints": true,
+    "lineage_ref": true,
+    "cdr_data.tables": true
+  },
+  "coverage": {
+    "page_count": 1,
+    "layer_count": 7,
+    "element_count": 3,
+    "table_count": 1
+  }
+}

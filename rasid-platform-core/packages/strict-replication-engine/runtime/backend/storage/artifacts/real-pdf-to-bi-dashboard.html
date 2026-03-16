@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>STRICT DASHBOARD</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 0; background: #ffffff; }
+      .wrap { padding: 20px; width: 1120px; }
+      .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 18px; }
+      .badge { border: 1px solid #000; background: #eef6ff; padding: 8px 10px; }
+      .control-row { display: flex; gap: 8px; margin-bottom: 14px; }
+      .title { background: #ddeeff; border: 1px solid #000; padding: 14px 20px; width: 220px; }
+      .cards { display: flex; gap: 12px; margin-top: 20px; }
+      .card { border: 1px solid #000; background: #f8fbff; padding: 12px; min-width: 150px; }
+      .metric { font-size: 14px; }
+      .value { font-size: 22px; margin-top: 6px; }
+      table { border-collapse: collapse; margin-top: 28px; width: 420px; }
+      td { border: 1px solid #000; padding: 8px 10px; }
+      .compare { margin-top: 18px; border: 1px solid #000; background: #fffbe6; padding: 12px; width: 520px; }
+    </style>
+  </head>
+  <body data-binding-status="synthetic_bind" data-query-ref="synthetic://pdf/real-pdf-to-bi-dashboard">
+    <div class="wrap" data-dashboard-runtime="strictDashboardApi" data-query-ref="synthetic://pdf/real-pdf-to-bi-dashboard">
+      <div class='badge binding-warning' data-binding-warning="true">Synthetic or degraded binding active</div>
+      <div class="toolbar">
+        <div class="badge">Region: KSA</div>
+        <div class="badge">Period: 2026-Q1</div>
+        <div class="badge">Drill: none</div>
+        <div class="badge">Refreshes: 0</div>
+      </div>
+      <div class="control-row">
+        <button type="button" id="apply-filter" data-action="apply-filter">Apply Filter</button>
+        <button type="button" id="drill-sales" data-action="drill-sales">Drill Sales</button>
+        <button type="button" id="refresh-button" data-action="refresh-button">Refresh</button>
+        <button type="button" id="compare-button" data-action="compare-button">Compare</button>
+      </div>
+      <div class="title">STRICT DASHBOARD</div>
+      <div class="cards"><div class='card'><div class='metric'>Sales</div><div class='value'>210</div></div><div class='card'><div class='metric'>Growth</div><div class='value'>17%</div></div></div>
+      <table><tr><td>KPI</td><td>Value</td></tr><tr><td>Sales</td><td>210</td></tr><tr><td>Growth</td><td>17%</td></tr></table>
+      
+    </div>
+    <script type="application/json" id="strict-dashboard-model">{"width": 960, "height": 540, "title": "STRICT DASHBOARD", "rows": [["KPI", "Value"], ["Sales", "210"], ["Growth", "17%"]], "binding_status": "synthetic_bind", "query_ref": "synthetic://pdf/real-pdf-to-bi-dashboard"}</script>
+    <script>
+      const strictDashboardApi = {
+        queryRef: "synthetic://pdf/real-pdf-to-bi-dashboard",
+        bindingStatus: "synthetic_bind",
+        refresh: () => fetch("data:application/json,%7B%22ok%22%3Atrue%7D").then((response) => response.json()),
+      };
+      window.strictDashboardApi = strictDashboardApi;
+    </script>
+  </body>
+</html>

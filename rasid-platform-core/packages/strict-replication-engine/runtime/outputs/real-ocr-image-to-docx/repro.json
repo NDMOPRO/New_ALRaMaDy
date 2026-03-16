@@ -1,0 +1,9 @@
+{
+  "run_id": "real-ocr-image-to-docx",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-ocr-report.png",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-ocr-image-to-docx.docx",
+  "native_renderer": "office-com-pdf",
+  "independent_verifier": "independent-libreoffice-pdf",
+  "target_kind": "docx",
+  "ingest_strategy": "ocr_image"
+}

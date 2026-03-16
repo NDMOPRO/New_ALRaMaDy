@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/render-parity-validation.schema.json",
+  "title": "RenderParityValidation",
+  "type": "object",
+  "required": [
+    "schema_namespace",
+    "schema_version",
+    "render_parity_validation_id",
+    "deck_ref",
+    "version_ref",
+    "overall_status",
+    "publish_ready",
+    "validated_at"
+  ],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.presentations.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "render_parity_validation_id": { "type": "string" },
+    "deck_ref": { "type": "string" },
+    "version_ref": { "type": "string" },
+    "overall_status": { "enum": ["unverified", "verified", "success_with_warnings", "degraded", "failed"] },
+    "publish_ready": { "type": "boolean" },
+    "validated_at": { "type": "string" }
+  }
+}

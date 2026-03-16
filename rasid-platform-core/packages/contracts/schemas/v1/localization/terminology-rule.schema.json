@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/localization/terminology-rule.schema.json",
+  "title": "TerminologyRule",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "terminology_rule_id", "profile_ref", "source_locale", "target_locale", "source_term", "preferred_translation"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.localization.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "terminology_rule_id": { "type": "string" },
+    "profile_ref": { "type": "string" },
+    "source_locale": { "type": "string" },
+    "target_locale": { "type": "string" },
+    "source_term": { "type": "string" },
+    "preferred_translation": { "type": "string" },
+    "banned_translations": { "type": "array", "items": { "type": "string" } },
+    "rule_class": { "enum": ["preferred_translation", "banned_translation", "protected_term", "non_translatable", "acronym", "title", "caption"] },
+    "case_sensitive": { "type": "boolean" },
+    "applies_to_scope_refs": { "type": "array", "items": { "type": "string" } },
+    "context_notes": { "type": ["string", "null"] },
+    "priority": { "type": "integer", "minimum": 0 }
+  }
+}

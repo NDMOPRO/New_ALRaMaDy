@@ -1,10 +1,16 @@
 {
   "files": [],
   "references": [
+    { "path": "./packages/arabic-localization-lct-engine" },
+    { "path": "./packages/ai-engine" },
     { "path": "./packages/common" },
     { "path": "./packages/contracts" },
     { "path": "./packages/dashboard-engine" },
     { "path": "./packages/excel-engine" },
+    { "path": "./packages/governance-engine" },
+    { "path": "./packages/presentations-engine" },
+    { "path": "./packages/report-engine" },
+    { "path": "./packages/transcription-extraction-engine" },
     { "path": "./packages/strict-replication-engine" },
     { "path": "./packages/runtime" },
     { "path": "./packages/artifacts" },

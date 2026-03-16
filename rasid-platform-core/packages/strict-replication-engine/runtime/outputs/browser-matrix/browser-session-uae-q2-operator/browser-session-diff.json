@@ -1,0 +1,60 @@
+{
+  "comparison_id": "browser-session-uae-q2-operator",
+  "threshold": 0.0,
+  "passed": false,
+  "pixel_diff": 0.08435980902777777,
+  "differing_pixels": 77746,
+  "total_pixels": 921600,
+  "dimensions_report": {
+    "equal": true,
+    "reference": {
+      "width": 1280,
+      "height": 720
+    },
+    "candidate": {
+      "width": 1280,
+      "height": 720
+    },
+    "comparison_canvas": {
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "normalization_proof": {
+    "reference": {
+      "sRGB_normalized": true,
+      "premultiplied_alpha_normalized": true,
+      "orientation_normalized": true,
+      "original_mode": "RGB",
+      "normalized_mode": "RGBA",
+      "dimensions": {
+        "width": 1280,
+        "height": 720
+      }
+    },
+    "candidate": {
+      "sRGB_normalized": true,
+      "premultiplied_alpha_normalized": true,
+      "orientation_normalized": true,
+      "original_mode": "RGB",
+      "normalized_mode": "RGBA",
+      "dimensions": {
+        "width": 1280,
+        "height": 720
+      }
+    }
+  },
+  "render_config_hash": "e6fb663f15b9ef8a6af01751e37c2ec61c85f50d0334efee50886bb3508ed435",
+  "engine_fingerprint": {
+    "renderer": "playwright-browser-matrix",
+    "scenario": "operator-full-access",
+    "permission_state": "operator",
+    "tenant_id": "tenant-ops",
+    "fingerprint_hash": "8cd00df9ace5046dd2c278eaca4029c9647f8b5a3b126417cc6a8f318f6168cf"
+  },
+  "pixel_hash": {
+    "reference": "638bd0a4eadc7612109c77db99aea3f2f6f1f96c95e35014b2a594a8815f3248",
+    "candidate": "3d82933b51284d71c8847342d71e8d7dd9a0a0332af4954755bb732b7b4fab57"
+  },
+  "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-session-heatmap.png"
+}

@@ -1,0 +1,14 @@
+{
+  "generated_at": "2026-03-15T23:00:04.467902+00:00",
+  "generator": "run_browser_matrix",
+  "connector_base_url": "http://127.0.0.1:63599",
+  "scenario_ids": [
+    "browser-session-ksa-q1-analyst",
+    "browser-session-uae-q1-analyst",
+    "browser-session-uae-q2-executive",
+    "browser-session-ksa-q1-viewer",
+    "browser-session-uae-q2-operator",
+    "browser-session-ksa-q2-admin"
+  ],
+  "browser_runner": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\browser_loop_runner.mjs"
+}

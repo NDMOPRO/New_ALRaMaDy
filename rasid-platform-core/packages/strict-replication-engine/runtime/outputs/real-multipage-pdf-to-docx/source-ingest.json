@@ -1,0 +1,9 @@
+{
+  "run_id": "real-multipage-pdf-to-docx",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-multipage-report.pdf",
+  "classified_kind": "pdf",
+  "source_checksum": "aca2f191d6955335e63698250ace3fc5660aa189372ee45160ebc01936f3af57",
+  "target_kind": "docx",
+  "source_preview_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-multipage-pdf-to-docx-source-input.png",
+  "normalized_source_render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-multipage-pdf-to-docx-source.png"
+}

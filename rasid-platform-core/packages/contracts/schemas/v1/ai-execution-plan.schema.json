@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/ai-execution-plan.schema.json",
+  "title": "AiExecutionPlan",
+  "type": "object",
+  "required": [
+    "schema_namespace",
+    "schema_version",
+    "plan_id",
+    "session_id",
+    "page_path",
+    "intent",
+    "normalized_prompt",
+    "selected_agent",
+    "selected_capability",
+    "selected_action_ref",
+    "selected_tool_ref",
+    "selected_engine_ref",
+    "selected_provider_ref",
+    "selected_model_ref",
+    "fallback_provider_ref",
+    "fallback_model_ref",
+    "approval_required",
+    "execution_mode",
+    "target_output_kind",
+    "confidence",
+    "step_refs",
+    "source_refs"
+  ],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.ai.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "plan_id": { "type": "string" },
+    "session_id": { "type": "string" },
+    "page_path": {
+      "enum": ["/home", "/data", "/excel", "/dashboards", "/reports", "/presentations", "/transcription", "/replication", "/localization", "/library", "/governance"]
+    },
+    "intent": { "type": "string" },
+    "normalized_prompt": { "type": "string" },
+    "selected_agent": {
+      "enum": [
+        "data_analyst_agent",
+        "excel_assistant",
+        "dashboard_assistant",
+        "reporting_assistant",
+        "presentation_assistant",
+        "localization_assistant",
+        "governance_aware_assistant",
+        "document_file_understanding_assistant",
+        "replication_aware_assistant"
+      ]
+    },
+    "selected_capability": { "type": "string" },
+    "selected_action_ref": { "type": ["string", "null"] },
+    "selected_tool_ref": { "type": ["string", "null"] },
+    "selected_engine_ref": { "type": "string" },
+    "selected_provider_ref": { "type": "string" },
+    "selected_model_ref": { "type": "string" },
+    "fallback_provider_ref": { "type": ["string", "null"] },
+    "fallback_model_ref": { "type": ["string", "null"] },
+    "approval_required": { "type": "boolean" },
+    "execution_mode": { "enum": ["assistive", "approved_apply"] },
+    "target_output_kind": {
+      "enum": ["summary", "suggestion_pack", "dashboard", "report", "presentation", "spreadsheet", "localization", "replication"]
+    },
+    "confidence": { "type": "number" },
+    "step_refs": { "type": "array", "items": { "type": "string" } },
+    "source_refs": { "type": "array", "items": { "type": "string" } }
+  }
+}

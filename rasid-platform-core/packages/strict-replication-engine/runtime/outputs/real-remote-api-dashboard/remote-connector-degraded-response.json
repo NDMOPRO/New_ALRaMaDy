@@ -1,0 +1,10 @@
+{
+  "status": 404,
+  "headers": {
+    "Server": "BaseHTTP/0.6 Python/3.14.3",
+    "Date": "Sun, 15 Mar 2026 23:00:25 GMT",
+    "Content-Type": "application/json",
+    "Content-Length": "268"
+  },
+  "body_text": "{\"ok\": false, \"error\": \"provider_http_error\", \"status\": 404, \"reason\": \"Not Found\", \"provider\": \"github-rest-api\", \"response_excerpt\": \"{\\\"message\\\":\\\"Not Found\\\",\\\"documentation_url\\\":\\\"https://docs.github.com/rest/repos/repos#get-a-repository\\\",\\\"status\\\":\\\"404\\\"}\"}"
+}

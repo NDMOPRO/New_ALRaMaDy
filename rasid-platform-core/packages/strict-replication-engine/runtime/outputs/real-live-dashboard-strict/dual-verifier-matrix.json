@@ -1,0 +1,28 @@
+{
+  "run_id": "real-live-dashboard-strict",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-live-dashboard-strict.html",
+  "verifiers": [
+    {
+      "verifier_id": "runtime-native-renderer",
+      "toolchain": "chromium-headless",
+      "version": "chromium-headless",
+      "input_hash": "46aa506639d902a6a22bd95af69bf73fc3f391b4832b9f13202d9da6579b295b",
+      "render_hash": "43b84e86952b0d68a7c9a27e77096acebfbcb7873422f566d2b45d335a550f0f",
+      "pixel_result": 0.0,
+      "structural_result": true,
+      "pass_fail_reasoning": "native render comparison recorded",
+      "independent": false
+    },
+    {
+      "verifier_id": "independent-external-renderer",
+      "toolchain": "independent-firefox-headless",
+      "version": "independent-firefox-headless",
+      "input_hash": "46aa506639d902a6a22bd95af69bf73fc3f391b4832b9f13202d9da6579b295b",
+      "render_hash": "472ed9f6042d59dcf07af0ce4ba04705b2202f15c442eb71175a178840c8ba7c",
+      "pixel_result": 0.0,
+      "structural_result": true,
+      "pass_fail_reasoning": "external verifier subprocess result",
+      "independent": true
+    }
+  ]
+}

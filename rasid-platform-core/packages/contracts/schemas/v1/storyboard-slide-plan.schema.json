@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/storyboard-slide-plan.schema.json",
+  "title": "StoryboardSlidePlan",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "storyboard_slide_plan_id", "intent_ref", "slide_order", "layout_ref"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.presentations.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "storyboard_slide_plan_id": { "type": "string" },
+    "intent_ref": { "type": "string" },
+    "slide_order": { "type": "integer", "minimum": 0 },
+    "layout_ref": { "type": "string" }
+  }
+}

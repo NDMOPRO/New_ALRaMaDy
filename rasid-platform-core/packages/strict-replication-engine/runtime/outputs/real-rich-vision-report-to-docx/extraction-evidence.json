@@ -1,0 +1,833 @@
+{
+  "strategy": "rich_vision_layout",
+  "layout_nodes": [
+    {
+      "node_id": "model-block-0",
+      "node_type": "heading",
+      "text": "FIELD REPORT 2026",
+      "bbox": [
+        57,
+        63,
+        152,
+        73
+      ],
+      "source": "paddleocr_ppstructurev3",
+      "label": "header"
+    },
+    {
+      "node_id": "model-block-1",
+      "node_type": "paragraph",
+      "text": "Region: KSA ",
+      "bbox": [
+        56,
+        149,
+        115,
+        161
+      ],
+      "source": "paddleocr_ppstructurev3",
+      "label": "text"
+    },
+    {
+      "node_id": "model-block-2",
+      "node_type": "paragraph",
+      "text": "Period: Q1-2026",
+      "bbox": [
+        57,
+        189,
+        134,
+        200
+      ],
+      "source": "paddleocr_ppstructurev3",
+      "label": "text"
+    },
+    {
+      "node_id": "model-block-3",
+      "node_type": "paragraph",
+      "text": "Approved: Yes ",
+      "bbox": [
+        57,
+        230,
+        124,
+        241
+      ],
+      "source": "paddleocr_ppstructurev3",
+      "label": "text"
+    },
+    {
+      "node_id": "model-block-4",
+      "node_type": "table",
+      "text": "<html><body><table><tr><td>Month</td><td>Sales</td><td>Target</td></tr><tr><td>Jan</td><td>210</td><td>205</td></tr><tr><td>Feb</td><td>224</td><td>220</td></tr></table></body></html>",
+      "bbox": [
+        60,
+        298,
+        561,
+        470
+      ],
+      "source": "paddleocr_ppstructurev3",
+      "label": "table"
+    },
+    {
+      "node_id": "model-block-5",
+      "node_type": "chart",
+      "text": "\u0647\u00b7\u200c210Q1224Q2231Q3",
+      "bbox": [
+        716,
+        331,
+        1120,
+        724
+      ],
+      "source": "paddleocr_ppstructurev3",
+      "label": "chart"
+    }
+  ],
+  "form_fields": [
+    {
+      "label": "Region",
+      "value": "KSA",
+      "bbox": [
+        56,
+        149,
+        115,
+        161
+      ],
+      "field_type": "text"
+    },
+    {
+      "label": "Period",
+      "value": "Q1-2026",
+      "bbox": [
+        57,
+        189,
+        134,
+        200
+      ],
+      "field_type": "text"
+    },
+    {
+      "label": "Approved",
+      "value": "Yes",
+      "bbox": [
+        57,
+        230,
+        124,
+        241
+      ],
+      "field_type": "boolean"
+    }
+  ],
+  "table_understanding": {
+    "grid": {
+      "source": "paddleocr_ppstructurev3",
+      "boxes": [
+        [
+          61,
+          301,
+          260,
+          351
+        ],
+        [
+          260,
+          301,
+          400,
+          351
+        ],
+        [
+          400,
+          301,
+          558,
+          351
+        ],
+        [
+          61,
+          351,
+          260,
+          411
+        ],
+        [
+          260,
+          351,
+          400,
+          411
+        ],
+        [
+          400,
+          351,
+          558,
+          411
+        ],
+        [
+          61,
+          411,
+          260,
+          469
+        ],
+        [
+          260,
+          411,
+          400,
+          469
+        ],
+        [
+          400,
+          411,
+          558,
+          469
+        ]
+      ],
+      "bounds": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "rows": [
+      [
+        "Month",
+        "Sales",
+        "Target"
+      ],
+      [
+        "Jan",
+        "210",
+        "205"
+      ],
+      [
+        "Feb",
+        "224",
+        "220"
+      ]
+    ]
+  },
+  "chart_understanding": [
+    {
+      "series": "ModelVisionChart",
+      "bar_index": 0,
+      "height": 210,
+      "label": "Q1224"
+    },
+    {
+      "series": "ModelVisionChart",
+      "bar_index": 1,
+      "height": 1224,
+      "label": "Q2231"
+    },
+    {
+      "series": "ModelVisionChart",
+      "bar_index": 2,
+      "height": 2231,
+      "label": "Q3"
+    },
+    {
+      "series": "ModelVisionChart",
+      "bar_index": 3,
+      "height": 3,
+      "label": null
+    }
+  ],
+  "semantic_sections": [
+    {
+      "section_id": "section-0",
+      "title": "FIELD REPORT 2026",
+      "bbox": [
+        57,
+        63,
+        152,
+        73
+      ]
+    }
+  ],
+  "model_vision": {
+    "runtime": "paddleocr-ppstructurev3",
+    "active": true,
+    "page_size": {
+      "width": 1240,
+      "height": 920
+    },
+    "layout_boxes": [
+      {
+        "label": "table",
+        "score": 0.9684893488883972,
+        "bbox": [
+          60,
+          299,
+          561,
+          471
+        ]
+      },
+      {
+        "label": "chart",
+        "score": 0.8781256675720215,
+        "bbox": [
+          717,
+          332,
+          1121,
+          725
+        ]
+      },
+      {
+        "label": "text",
+        "score": 0.695954442024231,
+        "bbox": [
+          57,
+          230,
+          125,
+          241
+        ]
+      },
+      {
+        "label": "text",
+        "score": 0.6896284818649292,
+        "bbox": [
+          57,
+          190,
+          134,
+          200
+        ]
+      },
+      {
+        "label": "text",
+        "score": 0.639555037021637,
+        "bbox": [
+          56,
+          150,
+          116,
+          161
+        ]
+      },
+      {
+        "label": "header",
+        "score": 0.6369777917861938,
+        "bbox": [
+          58,
+          63,
+          152,
+          74
+        ]
+      }
+    ],
+    "regions": [],
+    "parsing_blocks": [
+      {
+        "block_id": 0,
+        "label": "header",
+        "content": "FIELD REPORT 2026",
+        "bbox": [
+          57,
+          63,
+          152,
+          73
+        ]
+      },
+      {
+        "block_id": 1,
+        "label": "text",
+        "content": "Region: KSA ",
+        "bbox": [
+          56,
+          149,
+          115,
+          161
+        ]
+      },
+      {
+        "block_id": 2,
+        "label": "text",
+        "content": "Period: Q1-2026",
+        "bbox": [
+          57,
+          189,
+          134,
+          200
+        ]
+      },
+      {
+        "block_id": 3,
+        "label": "text",
+        "content": "Approved: Yes ",
+        "bbox": [
+          57,
+          230,
+          124,
+          241
+        ]
+      },
+      {
+        "block_id": 4,
+        "label": "table",
+        "content": "<html><body><table><tr><td>Month</td><td>Sales</td><td>Target</td></tr><tr><td>Jan</td><td>210</td><td>205</td></tr><tr><td>Feb</td><td>224</td><td>220</td></tr></table></body></html>",
+        "bbox": [
+          60,
+          298,
+          561,
+          470
+        ]
+      },
+      {
+        "block_id": 5,
+        "label": "chart",
+        "content": "\u0647\u00b7\u200c210Q1224Q2231Q3",
+        "bbox": [
+          716,
+          331,
+          1120,
+          724
+        ]
+      }
+    ],
+    "semantic_sections": [
+      {
+        "section_id": "section-0",
+        "title": "FIELD REPORT 2026",
+        "bbox": [
+          57,
+          63,
+          152,
+          73
+        ]
+      }
+    ],
+    "form_fields": [
+      {
+        "label": "Region",
+        "value": "KSA",
+        "bbox": [
+          56,
+          149,
+          115,
+          161
+        ],
+        "field_type": "text"
+      },
+      {
+        "label": "Period",
+        "value": "Q1-2026",
+        "bbox": [
+          57,
+          189,
+          134,
+          200
+        ],
+        "field_type": "text"
+      },
+      {
+        "label": "Approved",
+        "value": "Yes",
+        "bbox": [
+          57,
+          230,
+          124,
+          241
+        ],
+        "field_type": "boolean"
+      }
+    ],
+    "tables": [
+      {
+        "table_id": "table-0",
+        "bbox": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "rows": [
+          [
+            "Month",
+            "Sales",
+            "Target"
+          ],
+          [
+            "Jan",
+            "210",
+            "205"
+          ],
+          [
+            "Feb",
+            "224",
+            "220"
+          ]
+        ],
+        "html": "<html><body><table><tr><td>Month</td><td>Sales</td><td>Target</td></tr><tr><td>Jan</td><td>210</td><td>205</td></tr><tr><td>Feb</td><td>224</td><td>220</td></tr></table></body></html>",
+        "cell_boxes": [
+          [
+            61,
+            301,
+            260,
+            351
+          ],
+          [
+            260,
+            301,
+            400,
+            351
+          ],
+          [
+            400,
+            301,
+            558,
+            351
+          ],
+          [
+            61,
+            351,
+            260,
+            411
+          ],
+          [
+            260,
+            351,
+            400,
+            411
+          ],
+          [
+            400,
+            351,
+            558,
+            411
+          ],
+          [
+            61,
+            411,
+            260,
+            469
+          ],
+          [
+            260,
+            411,
+            400,
+            469
+          ],
+          [
+            400,
+            411,
+            558,
+            469
+          ]
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "chart_id": "chart-5",
+        "bbox": [
+          716,
+          331,
+          1120,
+          724
+        ],
+        "content": "\u0647\u00b7\u200c210Q1224Q2231Q3",
+        "numeric_points": [
+          210,
+          1224,
+          2231,
+          3
+        ],
+        "labels": [
+          "Q1224",
+          "Q2231",
+          "Q3"
+        ]
+      }
+    ]
+  },
+  "object_graph": {
+    "objects": [
+      {
+        "object_id": "model-block-0",
+        "object_type": "heading",
+        "text": "FIELD REPORT 2026",
+        "bbox": [
+          57,
+          63,
+          152,
+          73
+        ]
+      },
+      {
+        "object_id": "model-block-1",
+        "object_type": "paragraph",
+        "text": "Region: KSA ",
+        "bbox": [
+          56,
+          149,
+          115,
+          161
+        ]
+      },
+      {
+        "object_id": "model-block-2",
+        "object_type": "paragraph",
+        "text": "Period: Q1-2026",
+        "bbox": [
+          57,
+          189,
+          134,
+          200
+        ]
+      },
+      {
+        "object_id": "model-block-3",
+        "object_type": "paragraph",
+        "text": "Approved: Yes ",
+        "bbox": [
+          57,
+          230,
+          124,
+          241
+        ]
+      },
+      {
+        "object_id": "model-block-4",
+        "object_type": "table",
+        "text": "<html><body><table><tr><td>Month</td><td>Sales</td><td>Target</td></tr><tr><td>Jan</td><td>210</td><td>205</td></tr><tr><td>Feb</td><td>224</td><td>220</td></tr></table></body></html>",
+        "bbox": [
+          60,
+          298,
+          561,
+          470
+        ]
+      },
+      {
+        "object_id": "model-block-5",
+        "object_type": "chart",
+        "text": "\u0647\u00b7\u200c210Q1224Q2231Q3",
+        "bbox": [
+          716,
+          331,
+          1120,
+          724
+        ]
+      },
+      {
+        "object_id": "section-0",
+        "object_type": "section",
+        "title": "FIELD REPORT 2026"
+      },
+      {
+        "object_id": "form-field-0",
+        "object_type": "form_field",
+        "label": "Region",
+        "value": "KSA",
+        "bbox": [
+          56,
+          149,
+          115,
+          161
+        ],
+        "field_type": "text"
+      },
+      {
+        "object_id": "form-field-1",
+        "object_type": "form_field",
+        "label": "Period",
+        "value": "Q1-2026",
+        "bbox": [
+          57,
+          189,
+          134,
+          200
+        ],
+        "field_type": "text"
+      },
+      {
+        "object_id": "form-field-2",
+        "object_type": "form_field",
+        "label": "Approved",
+        "value": "Yes",
+        "bbox": [
+          57,
+          230,
+          124,
+          241
+        ],
+        "field_type": "boolean"
+      },
+      {
+        "object_id": "table-0",
+        "object_type": "table",
+        "row_count": 3,
+        "column_count": 3
+      },
+      {
+        "object_id": "table-0-r0-c0",
+        "object_type": "table_cell",
+        "row_index": 0,
+        "column_index": 0,
+        "value": "Month"
+      },
+      {
+        "object_id": "table-0-r0-c1",
+        "object_type": "table_cell",
+        "row_index": 0,
+        "column_index": 1,
+        "value": "Sales"
+      },
+      {
+        "object_id": "table-0-r0-c2",
+        "object_type": "table_cell",
+        "row_index": 0,
+        "column_index": 2,
+        "value": "Target"
+      },
+      {
+        "object_id": "table-0-r1-c0",
+        "object_type": "table_cell",
+        "row_index": 1,
+        "column_index": 0,
+        "value": "Jan"
+      },
+      {
+        "object_id": "table-0-r1-c1",
+        "object_type": "table_cell",
+        "row_index": 1,
+        "column_index": 1,
+        "value": "210"
+      },
+      {
+        "object_id": "table-0-r1-c2",
+        "object_type": "table_cell",
+        "row_index": 1,
+        "column_index": 2,
+        "value": "205"
+      },
+      {
+        "object_id": "table-0-r2-c0",
+        "object_type": "table_cell",
+        "row_index": 2,
+        "column_index": 0,
+        "value": "Feb"
+      },
+      {
+        "object_id": "table-0-r2-c1",
+        "object_type": "table_cell",
+        "row_index": 2,
+        "column_index": 1,
+        "value": "224"
+      },
+      {
+        "object_id": "table-0-r2-c2",
+        "object_type": "table_cell",
+        "row_index": 2,
+        "column_index": 2,
+        "value": "220"
+      },
+      {
+        "object_id": "chart-0",
+        "object_type": "chart",
+        "series_count": 1,
+        "point_count": 4
+      },
+      {
+        "object_id": "chart-0-point-0",
+        "object_type": "chart_point",
+        "series": "ModelVisionChart",
+        "bar_index": 0,
+        "height": 210
+      },
+      {
+        "object_id": "chart-0-point-1",
+        "object_type": "chart_point",
+        "series": "ModelVisionChart",
+        "bar_index": 1,
+        "height": 1224
+      },
+      {
+        "object_id": "chart-0-point-2",
+        "object_type": "chart_point",
+        "series": "ModelVisionChart",
+        "bar_index": 2,
+        "height": 2231
+      },
+      {
+        "object_id": "chart-0-point-3",
+        "object_type": "chart_point",
+        "series": "ModelVisionChart",
+        "bar_index": 3,
+        "height": 3
+      }
+    ],
+    "relations": [
+      {
+        "from": "form-field-0",
+        "to": "section-form",
+        "relation": "belongs_to"
+      },
+      {
+        "from": "form-field-1",
+        "to": "section-form",
+        "relation": "belongs_to"
+      },
+      {
+        "from": "form-field-2",
+        "to": "section-form",
+        "relation": "belongs_to"
+      },
+      {
+        "from": "table-0-r0-c0",
+        "to": "table-0",
+        "relation": "cell_of"
+      },
+      {
+        "from": "table-0-r0-c1",
+        "to": "table-0",
+        "relation": "cell_of"
+      },
+      {
+        "from": "table-0-r0-c2",
+        "to": "table-0",
+        "relation": "cell_of"
+      },
+      {
+        "from": "table-0-r1-c0",
+        "to": "table-0",
+        "relation": "cell_of"
+      },
+      {
+        "from": "table-0-r1-c1",
+        "to": "table-0",
+        "relation": "cell_of"
+      },
+      {
+        "from": "table-0-r1-c2",
+        "to": "table-0",
+        "relation": "cell_of"
+      },
+      {
+        "from": "table-0-r2-c0",
+        "to": "table-0",
+        "relation": "cell_of"
+      },
+      {
+        "from": "table-0-r2-c1",
+        "to": "table-0",
+        "relation": "cell_of"
+      },
+      {
+        "from": "table-0-r2-c2",
+        "to": "table-0",
+        "relation": "cell_of"
+      },
+      {
+        "from": "chart-0-point-0",
+        "to": "chart-0",
+        "relation": "point_of"
+      },
+      {
+        "from": "chart-0-point-1",
+        "to": "chart-0",
+        "relation": "point_of"
+      },
+      {
+        "from": "chart-0-point-2",
+        "to": "chart-0",
+        "relation": "point_of"
+      },
+      {
+        "from": "chart-0-point-3",
+        "to": "chart-0",
+        "relation": "point_of"
+      }
+    ]
+  }
+}

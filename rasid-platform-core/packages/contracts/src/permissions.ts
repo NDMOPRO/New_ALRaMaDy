@@ -15,9 +15,21 @@ export const WorkspaceSchema = z.object({
 
 export const RoleBindingSchema = z.object({
   principal_ref: z.string(),
-  role: z.enum(["owner", "admin", "editor", "analyst", "viewer", "auditor", "service"]),
-  scope: z.enum(["tenant", "workspace", "asset", "source", "artifact", "audit"]),
-  scope_ref: z.string()
+  role: z.string().min(1),
+  scope: z.enum(["tenant", "workspace", "asset", "source", "artifact", "audit", "publication", "library", "template", "kpi", "governance"]),
+  scope_ref: z.string(),
+  granted_by: z.string().optional(),
+  granted_at: z.string().optional(),
+  attributes: z
+    .object({
+      department: z.string().optional(),
+      owner_ref: z.string().optional(),
+      sensitivity: z.enum(["public", "internal", "confidential", "restricted"]).optional(),
+      asset_type: z.string().optional(),
+      action_type: z.string().optional(),
+      tenant_ref: z.string().optional()
+    })
+    .optional()
 });
 
 export const TenantPermissionSchema = z.object({

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/presentation-intent-manifest.schema.json",
+  "title": "PresentationIntentManifest",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "intent_id", "request_type", "mode", "export_targets"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.presentations.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "intent_id": { "type": "string" },
+    "request_type": {
+      "enum": ["prompt_to_deck", "source_to_deck", "theme_match", "report_to_deck", "dashboard_to_deck", "infographic_only"]
+    },
+    "mode": { "enum": ["easy", "advanced"] },
+    "export_targets": {
+      "type": "array",
+      "items": { "enum": ["reader", "pptx", "pdf", "html"] }
+    }
+  }
+}

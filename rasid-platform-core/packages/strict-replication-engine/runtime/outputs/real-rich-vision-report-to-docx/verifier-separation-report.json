@@ -1,0 +1,9 @@
+{
+  "run_id": "real-rich-vision-report-to-docx",
+  "primary_renderer": "runtime-parser-docx",
+  "secondary_renderer": "independent-libreoffice-pdf",
+  "native_renderer": "office-com-pdf",
+  "separated_process": true,
+  "target_hash": "26e96eec96d3783222cc4a5338893bd188d4eb66c44bd21836da4d2f1f596a25",
+  "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\dual-verifier-matrix.json"
+}

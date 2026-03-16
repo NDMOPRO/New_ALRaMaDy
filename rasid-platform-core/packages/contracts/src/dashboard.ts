@@ -29,9 +29,16 @@ export const DashboardWidgetTypeSchema = z.enum([
   "pie_chart",
   "area_chart",
   "combo_chart",
+  "compare_chart",
+  "heatmap",
+  "top_bottom",
+  "growth_indicator",
+  "anomaly_alert",
   "filter",
   "selector",
   "text",
+  "map",
+  "scatter_3d",
   "image",
   "section"
 ]);
@@ -228,6 +235,33 @@ export const DashboardVersionSchema = z.object({
   snapshot_canonical_ref: z.string()
 });
 
+export const DashboardCompareItemDeltaSchema = z.object({
+  ref: z.string(),
+  base: z.record(z.unknown()).nullable(),
+  target: z.record(z.unknown()).nullable()
+});
+
+export const DashboardBindingRefreshDeltaSchema = z.object({
+  binding_ref: z.string(),
+  base_refresh_state: DashboardBindingRefreshStateSchema.nullable(),
+  target_refresh_state: DashboardBindingRefreshStateSchema.nullable(),
+  base_last_refresh_at: TimestampSchema.nullable(),
+  target_last_refresh_at: TimestampSchema.nullable()
+});
+
+export const DashboardVersionDeltaSchema = z.object({
+  base_version_ref: z.string(),
+  target_version_ref: z.string(),
+  publication_state_changed: z.boolean(),
+  stale_binding_delta: z.number().int(),
+  refresh_job_changed: z.boolean()
+});
+
+export const DashboardDataSourceDeltaSchema = z.object({
+  added_dataset_refs: StringListSchema,
+  removed_dataset_refs: StringListSchema
+});
+
 export const DashboardCompareResultSchema = z.object({
   contract: ContractEnvelopeSchema,
   schema_namespace: z.literal(DASHBOARD_SCHEMA_NAMESPACE),
@@ -239,6 +273,14 @@ export const DashboardCompareResultSchema = z.object({
   changed_widget_refs: StringListSchema,
   changed_layout_item_refs: StringListSchema,
   changed_filter_refs: StringListSchema,
+  widget_config_diffs: z.array(DashboardCompareItemDeltaSchema),
+  layout_diffs: z.array(DashboardCompareItemDeltaSchema),
+  filter_state_diffs: z.array(DashboardCompareItemDeltaSchema),
+  binding_diffs: z.array(DashboardCompareItemDeltaSchema),
+  interaction_rule_diffs: z.array(DashboardCompareItemDeltaSchema),
+  refresh_result_diffs: z.array(DashboardBindingRefreshDeltaSchema),
+  version_delta: DashboardVersionDeltaSchema,
+  data_source_delta: DashboardDataSourceDeltaSchema,
   summary: z.string(),
   diff_artifact_ref: z.string(),
   created_at: TimestampSchema,
@@ -269,3 +311,7 @@ export type DashboardRefreshPolicy = z.infer<typeof DashboardRefreshPolicySchema
 export type DashboardPublicationMetadata = z.infer<typeof DashboardPublicationMetadataSchema>;
 export type DashboardVersion = z.infer<typeof DashboardVersionSchema>;
 export type DashboardCompareResult = z.infer<typeof DashboardCompareResultSchema>;
+export type DashboardCompareItemDelta = z.infer<typeof DashboardCompareItemDeltaSchema>;
+export type DashboardBindingRefreshDelta = z.infer<typeof DashboardBindingRefreshDeltaSchema>;
+export type DashboardVersionDelta = z.infer<typeof DashboardVersionDeltaSchema>;
+export type DashboardDataSourceDelta = z.infer<typeof DashboardDataSourceDeltaSchema>;

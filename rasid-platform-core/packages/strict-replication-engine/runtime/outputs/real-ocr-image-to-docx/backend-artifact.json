@@ -1,0 +1,10 @@
+{
+  "artifact_id": "real-ocr-image-to-docx-docx-artifact",
+  "run_id": "real-ocr-image-to-docx",
+  "artifact_kind": "docx",
+  "target_kind": "docx",
+  "path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-ocr-image-to-docx.docx",
+  "checksum": "0d435a570cb75f847f23d80127f62fad462bc7214bccc7649deb81d32bd9ec20",
+  "strict_status": "degraded",
+  "created_at": "2026-03-15T22:55:30.711320+00:00"
+}

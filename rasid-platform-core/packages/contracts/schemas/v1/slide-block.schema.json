@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/slide-block.schema.json",
+  "title": "SlideBlock",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "slide_block_id", "deck_ref", "version_ref", "slide_ref", "block_kind", "order_index"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.presentations.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "slide_block_id": { "type": "string" },
+    "deck_ref": { "type": "string" },
+    "version_ref": { "type": "string" },
+    "slide_ref": { "type": "string" },
+    "block_kind": {
+      "enum": ["title", "body", "chart", "table", "metric_card", "infographic", "grouped_infographic", "image", "icon", "video", "callout", "quote", "agenda"]
+    },
+    "order_index": { "type": "integer", "minimum": 0 }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "artifact_id": "real-rich-vision-report-to-docx-docx-artifact",
+  "run_id": "real-rich-vision-report-to-docx",
+  "artifact_kind": "docx",
+  "target_kind": "docx",
+  "path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-rich-vision-report-to-docx.docx",
+  "checksum": "26e96eec96d3783222cc4a5338893bd188d4eb66c44bd21836da4d2f1f596a25",
+  "strict_status": "degraded",
+  "created_at": "2026-03-15T22:59:13.869600+00:00"
+}

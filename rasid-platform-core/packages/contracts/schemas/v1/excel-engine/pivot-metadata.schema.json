@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/excel-engine/pivot-metadata.schema.json",
+  "title": "Excel Pivot Metadata",
+  "type": "object",
+  "required": ["pivot_id", "workbook_ref", "worksheet_ref", "source_range_ref", "target_range_ref", "cache_ref"],
+  "properties": {
+    "pivot_id": { "type": "string" },
+    "workbook_ref": { "type": "string" },
+    "worksheet_ref": { "type": "string" },
+    "source_range_ref": { "type": "string" },
+    "target_range_ref": { "type": "string" },
+    "cache_ref": { "type": "string" },
+    "row_field_refs": { "type": "array", "items": { "type": "string" } },
+    "column_field_refs": { "type": "array", "items": { "type": "string" } }
+  }
+}

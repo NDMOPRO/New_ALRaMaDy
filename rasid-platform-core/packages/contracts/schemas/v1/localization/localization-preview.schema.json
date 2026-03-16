@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/localization/localization-preview.schema.json",
+  "title": "LocalizationPreview",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "localization_preview_id", "request_ref", "preview_artifact_ref", "status"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.localization.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "localization_preview_id": { "type": "string" },
+    "request_ref": { "type": "string" },
+    "preview_artifact_ref": { "type": "string" },
+    "diff_artifact_ref": { "type": ["string", "null"] },
+    "output_metadata_ref": { "type": ["string", "null"] },
+    "quality_result_ref": { "type": ["string", "null"] },
+    "status": { "enum": ["ready", "ready_with_warnings", "blocked"] },
+    "warnings": { "type": "array", "items": { "type": "object" } },
+    "degrade_reason_refs": { "type": "array", "items": { "type": "string" } },
+    "expires_at": { "type": ["string", "null"] }
+  }
+}

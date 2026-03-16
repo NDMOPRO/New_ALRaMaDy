@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/infographic-block-plan.schema.json",
+  "title": "InfographicBlockPlan",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "infographic_block_plan_id", "deck_ref", "version_ref", "slide_ref", "block_ref", "layout_kind"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.presentations.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "infographic_block_plan_id": { "type": "string" },
+    "deck_ref": { "type": "string" },
+    "version_ref": { "type": "string" },
+    "slide_ref": { "type": "string" },
+    "block_ref": { "type": "string" },
+    "layout_kind": { "type": "string" }
+  }
+}

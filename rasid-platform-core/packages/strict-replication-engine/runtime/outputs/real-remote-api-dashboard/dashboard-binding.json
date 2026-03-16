@@ -1,0 +1,9 @@
+{
+  "binding_id": "binding-real-remote-api-dashboard",
+  "run_id": "real-remote-api-dashboard",
+  "publication_id": "publication-real-remote-api-dashboard",
+  "dataset_ref": "dataset.github_repo",
+  "query_ref": "remote://github_repo/openai/openai-python",
+  "status": "live",
+  "last_refresh_at": "2026-03-15T22:54:56.734326+00:00"
+}

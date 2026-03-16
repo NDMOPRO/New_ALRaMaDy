@@ -1,0 +1,159 @@
+{
+  "root": "strict-zero-gate",
+  "edges": [
+    {
+      "from": "real-image-to-pptx",
+      "to": "strict-zero-gate",
+      "refs": {
+        "pixel": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\pixel-diff-report.json",
+        "structural": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\editable-core-gate.json",
+        "functional": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\functional-equivalence-report.json",
+        "determinism": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\determinism-report.json",
+        "independent_verifier": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\dual-verifier-matrix.json"
+      }
+    },
+    {
+      "from": "real-pdf-to-docx",
+      "to": "strict-zero-gate",
+      "refs": {
+        "pixel": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\pixel-diff-report.json",
+        "structural": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\editable-core-gate.json",
+        "functional": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\functional-equivalence-report.json",
+        "determinism": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\determinism-report.json",
+        "independent_verifier": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\dual-verifier-matrix.json"
+      }
+    },
+    {
+      "from": "real-screenshot-to-xlsx",
+      "to": "strict-zero-gate",
+      "refs": {
+        "pixel": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\pixel-diff-report.json",
+        "structural": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\editable-core-gate.json",
+        "functional": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\functional-equivalence-report.json",
+        "determinism": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\determinism-report.json",
+        "independent_verifier": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\dual-verifier-matrix.json"
+      }
+    },
+    {
+      "from": "real-image-to-dashboard",
+      "to": "strict-zero-gate",
+      "refs": {
+        "pixel": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\pixel-diff-report.json",
+        "structural": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\editable-core-gate.json",
+        "functional": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\functional-equivalence-report.json",
+        "determinism": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\determinism-report.json",
+        "independent_verifier": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\dual-verifier-matrix.json"
+      }
+    },
+    {
+      "from": "real-screenshot-to-pptx",
+      "to": "strict-zero-gate",
+      "refs": {
+        "pixel": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\pixel-diff-report.json",
+        "structural": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\editable-core-gate.json",
+        "functional": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\functional-equivalence-report.json",
+        "determinism": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\determinism-report.json",
+        "independent_verifier": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\dual-verifier-matrix.json"
+      }
+    },
+    {
+      "from": "real-pdf-to-bi-dashboard",
+      "to": "strict-zero-gate",
+      "refs": {
+        "pixel": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\pixel-diff-report.json",
+        "structural": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\editable-core-gate.json",
+        "functional": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\functional-equivalence-report.json",
+        "determinism": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\determinism-report.json",
+        "independent_verifier": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\dual-verifier-matrix.json"
+      }
+    },
+    {
+      "from": "real-excel-to-dashboard",
+      "to": "strict-zero-gate",
+      "refs": {
+        "pixel": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\pixel-diff-report.json",
+        "structural": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\editable-core-gate.json",
+        "functional": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\functional-equivalence-report.json",
+        "determinism": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\determinism-report.json",
+        "independent_verifier": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\dual-verifier-matrix.json"
+      }
+    },
+    {
+      "from": "real-dashboard-to-pptx",
+      "to": "strict-zero-gate",
+      "refs": {
+        "pixel": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\pixel-diff-report.json",
+        "structural": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\editable-core-gate.json",
+        "functional": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\functional-equivalence-report.json",
+        "determinism": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\determinism-report.json",
+        "independent_verifier": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\dual-verifier-matrix.json"
+      }
+    },
+    {
+      "from": "real-live-dashboard-strict",
+      "to": "strict-zero-gate",
+      "refs": {
+        "pixel": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\pixel-diff-report.json",
+        "structural": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\editable-core-gate.json",
+        "functional": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\functional-equivalence-report.json",
+        "determinism": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\determinism-report.json",
+        "independent_verifier": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\dual-verifier-matrix.json"
+      }
+    },
+    {
+      "from": "real-live-dashboard-degraded",
+      "to": "strict-zero-gate",
+      "refs": {
+        "pixel": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\pixel-diff-report.json",
+        "structural": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\editable-core-gate.json",
+        "functional": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\functional-equivalence-report.json",
+        "determinism": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\determinism-report.json",
+        "independent_verifier": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\dual-verifier-matrix.json"
+      }
+    },
+    {
+      "from": "real-remote-api-dashboard",
+      "to": "strict-zero-gate",
+      "refs": {
+        "pixel": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\pixel-diff-report.json",
+        "structural": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\editable-core-gate.json",
+        "functional": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\functional-equivalence-report.json",
+        "determinism": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\determinism-report.json",
+        "independent_verifier": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\dual-verifier-matrix.json"
+      }
+    },
+    {
+      "from": "real-multipage-pdf-to-docx",
+      "to": "strict-zero-gate",
+      "refs": {
+        "pixel": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\pixel-diff-report.json",
+        "structural": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\editable-core-gate.json",
+        "functional": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\functional-equivalence-report.json",
+        "determinism": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\determinism-report.json",
+        "independent_verifier": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\dual-verifier-matrix.json"
+      }
+    },
+    {
+      "from": "real-ocr-image-to-docx",
+      "to": "strict-zero-gate",
+      "refs": {
+        "pixel": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\pixel-diff-report.json",
+        "structural": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\editable-core-gate.json",
+        "functional": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\functional-equivalence-report.json",
+        "determinism": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\determinism-report.json",
+        "independent_verifier": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\dual-verifier-matrix.json"
+      }
+    },
+    {
+      "from": "real-rich-vision-report-to-docx",
+      "to": "strict-zero-gate",
+      "refs": {
+        "pixel": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\pixel-diff-report.json",
+        "structural": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\editable-core-gate.json",
+        "functional": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\functional-equivalence-report.json",
+        "determinism": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\determinism-report.json",
+        "independent_verifier": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\dual-verifier-matrix.json"
+      }
+    }
+  ]
+}

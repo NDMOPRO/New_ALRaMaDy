@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/excel-engine/transformation-result.schema.json",
+  "title": "Excel Transformation Result",
+  "type": "object",
+  "required": ["result_id", "plan_ref", "workbook_ref", "action_execution_refs", "evidence_ref", "outcome"],
+  "properties": {
+    "result_id": { "type": "string" },
+    "plan_ref": { "type": "string" },
+    "workbook_ref": { "type": "string" },
+    "action_execution_refs": { "type": "array", "items": { "type": "string" } },
+    "evidence_ref": { "type": "string" },
+    "outcome": { "enum": ["success", "success_with_warnings", "degraded", "failed"] }
+  }
+}

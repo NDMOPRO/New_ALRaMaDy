@@ -1,0 +1,10 @@
+{
+  "refresh_id": "refresh-real-live-dashboard-strict",
+  "run_id": "real-live-dashboard-strict",
+  "binding_id": "binding-real-live-dashboard-strict",
+  "executed_query": "http://127.0.0.1:63599/api/session/real-live-dashboard-strict/refresh",
+  "row_count": 3,
+  "status": "live",
+  "error_message": null,
+  "created_at": "2026-03-15T22:54:35.304366+00:00"
+}

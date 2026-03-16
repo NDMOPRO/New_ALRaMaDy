@@ -1,0 +1,8 @@
+{
+  "renderer": "chromium-headless",
+  "image_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-excel-to-dashboard-native.png",
+  "url": "file:///C:/ALRaMaDy/rasid-platform-core/packages/strict-replication-engine/runtime/backend/storage/artifacts/real-excel-to-dashboard.html",
+  "source_pixel_ratio": 0.13973443930041152,
+  "parser_pixel_ratio": 0.13973443930041152,
+  "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-excel-to-dashboard-native-diff.png"
+}

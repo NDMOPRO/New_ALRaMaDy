@@ -1,0 +1,9 @@
+{
+  "run_id": "real-screenshot-to-xlsx",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-screenshot-xlsx.png",
+  "classified_kind": "screenshot",
+  "source_checksum": "297b991a5e5d7c5f6e807c2e4caa944da88384873dbe9792577c7713e0656bc7",
+  "target_kind": "xlsx",
+  "source_preview_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-source-input.png",
+  "normalized_source_render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-source.png"
+}

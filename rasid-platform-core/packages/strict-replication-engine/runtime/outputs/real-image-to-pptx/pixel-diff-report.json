@@ -1,0 +1,177 @@
+{
+  "primary": {
+    "comparison_id": "runtime-final",
+    "threshold": 0.0,
+    "passed": true,
+    "pixel_diff": 0.0,
+    "differing_pixels": 0,
+    "total_pixels": 518400,
+    "dimensions_report": {
+      "equal": true,
+      "reference": {
+        "width": 960,
+        "height": 540
+      },
+      "candidate": {
+        "width": 960,
+        "height": 540
+      },
+      "comparison_canvas": {
+        "width": 960,
+        "height": 540
+      }
+    },
+    "normalization_proof": {
+      "reference": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 960,
+          "height": 540
+        }
+      },
+      "candidate": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 960,
+          "height": 540
+        }
+      }
+    },
+    "render_config_hash": "d6c270fb6920067edbc72dd64123baaf8d99e05c1a93d863de5263e1d986ffc9",
+    "engine_fingerprint": {
+      "renderer": "runtime-parser-pptx",
+      "python_version": "3.14.3",
+      "target_kind": "pptx",
+      "fingerprint_hash": "60d952c16c7e4cb5b33a9e9f25b728b486f4c77ebc481791d641983d0aa1776a"
+    },
+    "pixel_hash": {
+      "reference": "e3ad27db340d71df753700149c8a4c2a8cc2df185fe306b779d45186edc71391",
+      "candidate": "e3ad27db340d71df753700149c8a4c2a8cc2df185fe306b779d45186edc71391"
+    },
+    "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\heatmap.png"
+  },
+  "native": {
+    "comparison_id": "native-render",
+    "threshold": 0.0,
+    "passed": false,
+    "pixel_diff": 0.0764429012345679,
+    "differing_pixels": 39628,
+    "total_pixels": 518400,
+    "dimensions_report": {
+      "equal": false,
+      "reference": {
+        "width": 960,
+        "height": 540
+      },
+      "candidate": {
+        "width": 720,
+        "height": 405
+      },
+      "comparison_canvas": {
+        "width": 960,
+        "height": 540
+      }
+    },
+    "normalization_proof": {
+      "reference": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 960,
+          "height": 540
+        }
+      },
+      "candidate": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 720,
+          "height": 405
+        }
+      }
+    },
+    "render_config_hash": "15cf209a0a0be659b928d23ab1dc6ee8f9c967c25c8bb28bd2bf67d381a90df6",
+    "engine_fingerprint": {
+      "renderer": "office-com-pdf",
+      "target_kind": "pptx",
+      "fingerprint_hash": "d312f5da43c79f4bd00f6cb62e39f50c54ffdb0d8fea52b27521b9c328801ace"
+    },
+    "pixel_hash": {
+      "reference": "e3ad27db340d71df753700149c8a4c2a8cc2df185fe306b779d45186edc71391",
+      "candidate": "4fdba47ed28370b91bc36b64e3cb41a147c31d3cf07199927c61049811ff2c07"
+    },
+    "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\native-heatmap.png"
+  },
+  "independent": {
+    "comparison_id": "independent-verifier",
+    "threshold": 0.0,
+    "passed": false,
+    "pixel_diff": 0.06058641975308642,
+    "differing_pixels": 31408,
+    "total_pixels": 518400,
+    "dimensions_report": {
+      "equal": false,
+      "reference": {
+        "width": 960,
+        "height": 540
+      },
+      "candidate": {
+        "width": 720,
+        "height": 406
+      },
+      "comparison_canvas": {
+        "width": 960,
+        "height": 540
+      }
+    },
+    "normalization_proof": {
+      "reference": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 960,
+          "height": 540
+        }
+      },
+      "candidate": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 720,
+          "height": 406
+        }
+      }
+    },
+    "render_config_hash": "bf14e60ebedef25ad3d7cbc988d7b1274508427756f823cf9ececac93c3c477e",
+    "engine_fingerprint": {
+      "renderer": "independent-libreoffice-pdf",
+      "target_kind": "pptx",
+      "fingerprint_hash": "00c4f8093b83229e7b6f7f2a77d999fe67a8429b49a3ba3b9cc4d6993b8d7c70"
+    },
+    "pixel_hash": {
+      "reference": "e3ad27db340d71df753700149c8a4c2a8cc2df185fe306b779d45186edc71391",
+      "candidate": "cc06d6a10e9c13ea6defc1f4b6baf2708ef95d8b1c1c682fba6062e6c4e62f21"
+    },
+    "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\independent-heatmap.png"
+  }
+}

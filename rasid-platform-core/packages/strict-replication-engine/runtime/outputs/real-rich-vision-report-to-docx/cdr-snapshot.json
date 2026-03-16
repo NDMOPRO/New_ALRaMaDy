@@ -1,0 +1,638 @@
+{
+  "snapshot_id": "cdr::5fbc406a24d3::docx",
+  "snapshot_version": "2026-03-15.strict.2",
+  "cdr_design": {
+    "version": "1.1.0",
+    "immutable_layout_lock_flag": true,
+    "conversion_policy_id": "strict_replication",
+    "dpi_reference": 144,
+    "target_kind": "docx",
+    "pages": [
+      {
+        "page_id": "page-1",
+        "index": 1,
+        "size_emu": {
+          "w": 7772400,
+          "h": 10058400
+        },
+        "background_spec": {
+          "type": "solid",
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          }
+        },
+        "layers": [
+          {
+            "layer_id": "background",
+            "z_index": 0,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "guides",
+            "z_index": 1,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "containers",
+            "z_index": 2,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "text",
+            "z_index": 3,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": [
+              {
+                "element_id": "paragraph-1",
+                "kind": "text",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 381000,
+                  "width": 6096000,
+                  "height": 266700
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  381000
+                ],
+                "opacity": 1.0,
+                "z_index": 1,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": true
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.1
+                },
+                "fingerprint": "71b3d6718d2eb390e7646d3c55794f629918299a05646af2518b2ea66ae68b8f",
+                "text": {
+                  "text": "FIELD REPORT 2026",
+                  "direction": "LTR",
+                  "alignment": "start",
+                  "baseline_offset_emu": 0,
+                  "line_height": 1.0,
+                  "wrap": "word",
+                  "auto_fit": false,
+                  "runs": [
+                    {
+                      "range": {
+                        "start": 0,
+                        "end": 17
+                      },
+                      "font_family": "Arial",
+                      "font_weight": 400,
+                      "font_style": "normal",
+                      "font_size_emu": 152400,
+                      "letter_spacing_emu": 0,
+                      "kerning_enabled": false,
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      },
+                      "script": "mixed",
+                      "text": "FIELD REPORT 2026"
+                    }
+                  ],
+                  "shaping": {
+                    "arabic_mode": "BASIC",
+                    "bidi_runs": [],
+                    "glyph_positions_emu": []
+                  },
+                  "paint": {
+                    "fill": {
+                      "type": "solid",
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "element_id": "paragraph-2",
+                "kind": "text",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 723900,
+                  "width": 6096000,
+                  "height": 266700
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  723900
+                ],
+                "opacity": 1.0,
+                "z_index": 2,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": true
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.1
+                },
+                "fingerprint": "12b0cce937d3e708782fa2ded24d7f38e173740d3a029dd6a8d3c69e4897da47",
+                "text": {
+                  "text": "Region: KSA ",
+                  "direction": "LTR",
+                  "alignment": "start",
+                  "baseline_offset_emu": 0,
+                  "line_height": 1.0,
+                  "wrap": "word",
+                  "auto_fit": false,
+                  "runs": [
+                    {
+                      "range": {
+                        "start": 0,
+                        "end": 12
+                      },
+                      "font_family": "Arial",
+                      "font_weight": 400,
+                      "font_style": "normal",
+                      "font_size_emu": 152400,
+                      "letter_spacing_emu": 0,
+                      "kerning_enabled": false,
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      },
+                      "script": "mixed",
+                      "text": "Region: KSA "
+                    }
+                  ],
+                  "shaping": {
+                    "arabic_mode": "BASIC",
+                    "bidi_runs": [],
+                    "glyph_positions_emu": []
+                  },
+                  "paint": {
+                    "fill": {
+                      "type": "solid",
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "element_id": "paragraph-3",
+                "kind": "text",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 1066800,
+                  "width": 6096000,
+                  "height": 266700
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  1066800
+                ],
+                "opacity": 1.0,
+                "z_index": 3,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": true
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.1
+                },
+                "fingerprint": "9794709425aed8044f73b4cf82db06a80abcee3df3ae8e763f39646835a0085f",
+                "text": {
+                  "text": "Period: Q1-2026",
+                  "direction": "LTR",
+                  "alignment": "start",
+                  "baseline_offset_emu": 0,
+                  "line_height": 1.0,
+                  "wrap": "word",
+                  "auto_fit": false,
+                  "runs": [
+                    {
+                      "range": {
+                        "start": 0,
+                        "end": 15
+                      },
+                      "font_family": "Arial",
+                      "font_weight": 400,
+                      "font_style": "normal",
+                      "font_size_emu": 152400,
+                      "letter_spacing_emu": 0,
+                      "kerning_enabled": false,
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      },
+                      "script": "mixed",
+                      "text": "Period: Q1-2026"
+                    }
+                  ],
+                  "shaping": {
+                    "arabic_mode": "BASIC",
+                    "bidi_runs": [],
+                    "glyph_positions_emu": []
+                  },
+                  "paint": {
+                    "fill": {
+                      "type": "solid",
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "element_id": "paragraph-4",
+                "kind": "text",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 1409700,
+                  "width": 6096000,
+                  "height": 266700
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  1409700
+                ],
+                "opacity": 1.0,
+                "z_index": 4,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": true
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.1
+                },
+                "fingerprint": "8446975b8bfe1798e0f774e4011b34d78373fde49514ef5f7bca876908124ac6",
+                "text": {
+                  "text": "Approved: Yes ",
+                  "direction": "LTR",
+                  "alignment": "start",
+                  "baseline_offset_emu": 0,
+                  "line_height": 1.0,
+                  "wrap": "word",
+                  "auto_fit": false,
+                  "runs": [
+                    {
+                      "range": {
+                        "start": 0,
+                        "end": 14
+                      },
+                      "font_family": "Arial",
+                      "font_weight": 400,
+                      "font_style": "normal",
+                      "font_size_emu": 152400,
+                      "letter_spacing_emu": 0,
+                      "kerning_enabled": false,
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      },
+                      "script": "mixed",
+                      "text": "Approved: Yes "
+                    }
+                  ],
+                  "shaping": {
+                    "arabic_mode": "BASIC",
+                    "bidi_runs": [],
+                    "glyph_positions_emu": []
+                  },
+                  "paint": {
+                    "fill": {
+                      "type": "solid",
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "layer_id": "vectors",
+            "z_index": 4,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "data",
+            "z_index": 5,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": [
+              {
+                "element_id": "table-1",
+                "kind": "table",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 1905000,
+                  "width": 4572000,
+                  "height": 800100
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  1905000
+                ],
+                "opacity": 1.0,
+                "z_index": 100,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": false
+                },
+                "ratios": {
+                  "padding_ratio": 0.02,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.0
+                },
+                "fingerprint": "22b0a79b0217de8cbd1b49050edbe9774ad07e7e81ba64aeb293536bfc38ceec",
+                "table": {
+                  "grid": {
+                    "rows": 3,
+                    "cols": 3,
+                    "row_heights_emu": [
+                      266700,
+                      266700,
+                      266700
+                    ],
+                    "col_widths_emu": [
+                      1143000,
+                      1143000,
+                      1143000
+                    ]
+                  },
+                  "cells": [
+                    {
+                      "r": 0,
+                      "c": 0,
+                      "value": "Month",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 0,
+                      "c": 1,
+                      "value": "Sales",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 0,
+                      "c": 2,
+                      "value": "Target",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 1,
+                      "c": 0,
+                      "value": "Jan",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 1,
+                      "c": 1,
+                      "value": "210",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 1,
+                      "c": 2,
+                      "value": "205",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 2,
+                      "c": 0,
+                      "value": "Feb",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 2,
+                      "c": 1,
+                      "value": "224",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 2,
+                      "c": 2,
+                      "value": "220",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    }
+                  ],
+                  "style": {
+                    "alignments": {
+                      "default": "start"
+                    }
+                  },
+                  "rtl": false,
+                  "binding": null
+                }
+              }
+            ]
+          },
+          {
+            "layer_id": "interactive",
+            "z_index": 6,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          }
+        ]
+      }
+    ],
+    "assets": [
+      {
+        "asset_id": "source-asset-1",
+        "uri": "sha256://5fbc406a24d3005b09fbe0c1e87036b5c08d681006d6a19ca846a4ff31be93f1",
+        "mime": "application/docx",
+        "sha256": "5fbc406a24d3005b09fbe0c1e87036b5c08d681006d6a19ca846a4ff31be93f1",
+        "size_bytes": 0
+      }
+    ],
+    "layout_graph": "{\"edges\": [{\"from\": \"background\", \"to\": \"text\"}, {\"from\": \"background\", \"to\": \"data\"}], \"nodes\": [\"paragraph-1\", \"paragraph-2\", \"paragraph-3\", \"paragraph-4\", \"table-1\"]}",
+    "constraint_matrix": "{\"constraints\": [{\"element_id\": \"paragraph-1\", \"no_reflow\": true}, {\"element_id\": \"paragraph-2\", \"no_reflow\": true}, {\"element_id\": \"paragraph-3\", \"no_reflow\": true}, {\"element_id\": \"paragraph-4\", \"no_reflow\": true}, {\"element_id\": \"table-1\", \"no_reflow\": true}]}",
+    "fingerprints": {
+      "layout_hash": "2f426faff4455ff81430794996f2eaa7217a6fee503bf2e45e07bf7f708b9610",
+      "structural_hash": "4208f0f7cf580427504dc7977288a64ca9e0b7777bb316ab6ded8786d55b0082",
+      "typography_hash": "734380eb84b1e8218eeb07eb228df7709f2cf950781f059201e63f65072a731d",
+      "render_intent_hash": "e2727f6c106ec94ca999cf56f86e03a4da8d903b9df64dd0f4d7f8ecea6d141f"
+    }
+  },
+  "cdr_data": {
+    "tables": [
+      {
+        "table_id": "docx-table-1",
+        "columns": [
+          {
+            "name": "col_0",
+            "type": "string",
+            "fingerprint": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+          },
+          {
+            "name": "col_1",
+            "type": "string",
+            "fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+          },
+          {
+            "name": "col_2",
+            "type": "string",
+            "fingerprint": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
+          }
+        ],
+        "rows": [
+          [
+            "Month",
+            "Sales",
+            "Target"
+          ],
+          [
+            "Jan",
+            "210",
+            "205"
+          ],
+          [
+            "Feb",
+            "224",
+            "220"
+          ]
+        ],
+        "row_source_ref": "cdr://table/docx-table-1"
+      }
+    ],
+    "lineage_ref": "lineage://real-rich-vision-report-to-docx",
+    "semantic_model_ref": null
+  },
+  "lineage_ref": "lineage://real-rich-vision-report-to-docx",
+  "semantic_model_ref": null
+}

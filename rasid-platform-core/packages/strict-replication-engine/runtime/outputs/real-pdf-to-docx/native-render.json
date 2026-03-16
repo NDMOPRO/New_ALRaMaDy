@@ -1,0 +1,8 @@
+{
+  "renderer": "office-com-pdf",
+  "pdf_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-docx-native.pdf",
+  "image_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-docx-native.png",
+  "source_pixel_ratio": 0.0048345679012345676,
+  "parser_pixel_ratio": 0.0048345679012345676,
+  "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-docx-native-diff.png"
+}

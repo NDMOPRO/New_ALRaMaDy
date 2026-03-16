@@ -1,0 +1,9 @@
+{
+  "run_id": "real-image-to-dashboard",
+  "primary_renderer": "runtime-parser-dashboard",
+  "secondary_renderer": "independent-firefox-headless",
+  "native_renderer": "chromium-headless",
+  "separated_process": true,
+  "target_hash": "93370898b80bcd0b52ed16699d8313dd1aae3f13668423dda85140ea793044b0",
+  "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\dual-verifier-matrix.json"
+}

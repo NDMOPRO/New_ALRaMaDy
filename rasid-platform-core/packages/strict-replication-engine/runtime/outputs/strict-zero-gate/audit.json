@@ -1,0 +1,11 @@
+{
+  "audited_at": "strict-zero-gate",
+  "scope": "strict_replication_engine",
+  "requirement": "STRICT_ZERO gate",
+  "checks": {
+    "no_degraded_masquerading_as_strict": true,
+    "pixel_structural_functional_determinism_linked": true,
+    "independent_verifier_linked": true
+  },
+  "status": "verified"
+}

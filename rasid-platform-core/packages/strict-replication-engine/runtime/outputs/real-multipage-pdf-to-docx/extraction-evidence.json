@@ -1,0 +1,208 @@
+{
+  "strategy": "pdf_layout",
+  "pages": [
+    {
+      "page_number": 1,
+      "width": 595,
+      "height": 842,
+      "paragraphs": [
+        "EXECUTIVE SUMMARY",
+        "Revenue remained stable across the first half.",
+        "Primary risk is margin compression in category B."
+      ],
+      "block_count": 3
+    },
+    {
+      "page_number": 2,
+      "width": 595,
+      "height": 842,
+      "paragraphs": [
+        "ACTION ITEMS",
+        "1. Review regional discounting policy.",
+        "2. Re-price low margin SKUs before Q4 close."
+      ],
+      "block_count": 3
+    }
+  ],
+  "page_count": 2,
+  "layout_nodes": [
+    {
+      "node_id": "page-1-node-0",
+      "page_number": 1,
+      "node_type": "heading",
+      "text": "EXECUTIVE SUMMARY",
+      "bbox": [
+        48,
+        50,
+        269,
+        77
+      ]
+    },
+    {
+      "node_id": "page-1-node-1",
+      "page_number": 1,
+      "node_type": "paragraph",
+      "text": "Revenue remained stable across the first half.",
+      "bbox": [
+        48,
+        100,
+        332,
+        120
+      ]
+    },
+    {
+      "node_id": "page-1-node-2",
+      "page_number": 1,
+      "node_type": "paragraph",
+      "text": "Primary risk is margin compression in category B.",
+      "bbox": [
+        48,
+        128,
+        355,
+        148
+      ]
+    },
+    {
+      "node_id": "page-2-node-3",
+      "page_number": 2,
+      "node_type": "heading",
+      "text": "ACTION ITEMS",
+      "bbox": [
+        48,
+        50,
+        190,
+        77
+      ]
+    },
+    {
+      "node_id": "page-2-node-4",
+      "page_number": 2,
+      "node_type": "list_item",
+      "text": "1. Review regional discounting policy.",
+      "bbox": [
+        48,
+        100,
+        281,
+        120
+      ]
+    },
+    {
+      "node_id": "page-2-node-5",
+      "page_number": 2,
+      "node_type": "list_item",
+      "text": "2. Re-price low margin SKUs before Q4 close.",
+      "bbox": [
+        48,
+        128,
+        334,
+        148
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "section-1",
+      "title": "EXECUTIVE SUMMARY",
+      "page_number": 1
+    },
+    {
+      "section_id": "section-2",
+      "title": "ACTION ITEMS",
+      "page_number": 2
+    }
+  ],
+  "graph_edges": [
+    {
+      "from": "section-1",
+      "to": "section-2",
+      "relation": "next"
+    }
+  ],
+  "object_graph": {
+    "objects": [
+      {
+        "object_id": "page-1-node-0",
+        "object_type": "heading",
+        "text": "EXECUTIVE SUMMARY",
+        "bbox": [
+          48,
+          50,
+          269,
+          77
+        ]
+      },
+      {
+        "object_id": "page-1-node-1",
+        "object_type": "paragraph",
+        "text": "Revenue remained stable across the first half.",
+        "bbox": [
+          48,
+          100,
+          332,
+          120
+        ]
+      },
+      {
+        "object_id": "page-1-node-2",
+        "object_type": "paragraph",
+        "text": "Primary risk is margin compression in category B.",
+        "bbox": [
+          48,
+          128,
+          355,
+          148
+        ]
+      },
+      {
+        "object_id": "page-2-node-3",
+        "object_type": "heading",
+        "text": "ACTION ITEMS",
+        "bbox": [
+          48,
+          50,
+          190,
+          77
+        ]
+      },
+      {
+        "object_id": "page-2-node-4",
+        "object_type": "list_item",
+        "text": "1. Review regional discounting policy.",
+        "bbox": [
+          48,
+          100,
+          281,
+          120
+        ]
+      },
+      {
+        "object_id": "page-2-node-5",
+        "object_type": "list_item",
+        "text": "2. Re-price low margin SKUs before Q4 close.",
+        "bbox": [
+          48,
+          128,
+          334,
+          148
+        ]
+      },
+      {
+        "object_id": "section-1",
+        "object_type": "section",
+        "title": "EXECUTIVE SUMMARY"
+      },
+      {
+        "object_id": "section-2",
+        "object_type": "section",
+        "title": "ACTION ITEMS"
+      }
+    ],
+    "relations": [
+      {
+        "from": "section-1",
+        "to": "section-2",
+        "relation": "next_section"
+      }
+    ]
+  }
+}

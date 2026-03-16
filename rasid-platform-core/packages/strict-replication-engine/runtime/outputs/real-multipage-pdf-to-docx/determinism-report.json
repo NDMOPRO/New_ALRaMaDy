@@ -1,0 +1,88 @@
+{
+  "lock_policy": {
+    "os_image": "Windows-11-10.0.26200-SP0",
+    "python_version": "3.14.3",
+    "fonts_snapshot_hash": "6a1dad344ebab28f55575ba31577166b7f4886045b4f232bd51cbf5b208b069a",
+    "aa_policy": "default-platform-aa",
+    "random_seed": 0,
+    "float_normalization": "python-native-json-stable",
+    "farm_image_id": "farm::Windows-11-10.0.26200-SP0",
+    "font_snapshot_id": "fonts::6a1dad344ebab28f55575ba31577166b7f4886045b4f232bd51cbf5b208b069a"
+  },
+  "rerun_count": 2,
+  "same_input_rerun_equals": true,
+  "model_hash_equal": true,
+  "render_hash_equal": true,
+  "binary_hash_equal": true,
+  "pixel_hashes_match": true,
+  "engine_fingerprints_match": true,
+  "render_config_consistent": true,
+  "render_config_hashes_match": true,
+  "model_hashes": [
+    "7e2f08c9d2ad5f79504fef8bad20d8274e3144ec2984a709838678d8e586bcae",
+    "7e2f08c9d2ad5f79504fef8bad20d8274e3144ec2984a709838678d8e586bcae"
+  ],
+  "render_hashes": [
+    "563d99f4b66dc5dc1c9440588e5d068874cdfac791aca83c530be920303c39a0",
+    "563d99f4b66dc5dc1c9440588e5d068874cdfac791aca83c530be920303c39a0"
+  ],
+  "binary_hashes": [
+    "e46305aa9a8ffbaa835bd84c11054ba9943168efcc02e63cb0481f9e0945a1d9",
+    "e46305aa9a8ffbaa835bd84c11054ba9943168efcc02e63cb0481f9e0945a1d9"
+  ],
+  "render_config_hash": "7f9d6bef564cfc83311201859f28afeaeea41b4132d1c598ec2992fb6d412a86",
+  "engine_fingerprint": {
+    "runtime": "strict-replication-engine/runtime",
+    "python_version": "3.14.3",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "target_extension": "docx",
+    "fonts_snapshot_hash": "6a1dad344ebab28f55575ba31577166b7f4886045b4f232bd51cbf5b208b069a"
+  },
+  "engine_fingerprint_hash": "fe3e28e363beb2c46cbad2d0d97586e83cf5db56f708a4f3342b7e08304ae536",
+  "render_profile": {
+    "target_extension": "docx",
+    "dpi": 144,
+    "colorspace": "sRGB",
+    "anti_aliasing_policy": "default-platform-aa",
+    "float_normalization": "python-native-json-stable",
+    "page_range": {
+      "from": 1,
+      "to": 1
+    }
+  },
+  "render_refs": [
+    {
+      "render_id": "docx-rerun-1",
+      "uri": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\determinism\\run-1.docx",
+      "dpi": 144,
+      "colorspace": "sRGB",
+      "engine_fingerprint": "fe3e28e363beb2c46cbad2d0d97586e83cf5db56f708a4f3342b7e08304ae536",
+      "render_config_hash": "7f9d6bef564cfc83311201859f28afeaeea41b4132d1c598ec2992fb6d412a86",
+      "fingerprint": {
+        "layout_hash": "7e2f08c9d2ad5f79504fef8bad20d8274e3144ec2984a709838678d8e586bcae",
+        "structural_hash": "7e2f08c9d2ad5f79504fef8bad20d8274e3144ec2984a709838678d8e586bcae",
+        "typography_hash": "01d6bef501adfb33591604a40417325adecb3b86a7ebd52f8187661107161db2",
+        "pixel_hash": "563d99f4b66dc5dc1c9440588e5d068874cdfac791aca83c530be920303c39a0"
+      },
+      "binary_hash": "e46305aa9a8ffbaa835bd84c11054ba9943168efcc02e63cb0481f9e0945a1d9"
+    },
+    {
+      "render_id": "docx-rerun-2",
+      "uri": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\determinism\\run-2.docx",
+      "dpi": 144,
+      "colorspace": "sRGB",
+      "engine_fingerprint": "fe3e28e363beb2c46cbad2d0d97586e83cf5db56f708a4f3342b7e08304ae536",
+      "render_config_hash": "7f9d6bef564cfc83311201859f28afeaeea41b4132d1c598ec2992fb6d412a86",
+      "fingerprint": {
+        "layout_hash": "7e2f08c9d2ad5f79504fef8bad20d8274e3144ec2984a709838678d8e586bcae",
+        "structural_hash": "7e2f08c9d2ad5f79504fef8bad20d8274e3144ec2984a709838678d8e586bcae",
+        "typography_hash": "01d6bef501adfb33591604a40417325adecb3b86a7ebd52f8187661107161db2",
+        "pixel_hash": "563d99f4b66dc5dc1c9440588e5d068874cdfac791aca83c530be920303c39a0"
+      },
+      "binary_hash": "e46305aa9a8ffbaa835bd84c11054ba9943168efcc02e63cb0481f9e0945a1d9"
+    }
+  ],
+  "source_model_hash": "bcef609c3b746ca21d85746598c594e4072e845439fd0be707690609d85df66a",
+  "violations": [],
+  "passed": true
+}

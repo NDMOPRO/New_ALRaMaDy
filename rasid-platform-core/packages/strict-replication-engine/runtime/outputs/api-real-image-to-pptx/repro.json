@@ -1,0 +1,9 @@
+{
+  "run_id": "api-real-image-to-pptx",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-image-pptx.png",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\api-real-image-to-pptx.pptx",
+  "native_renderer": "office-com-pdf",
+  "independent_verifier": "independent-libreoffice-pdf",
+  "target_kind": "pptx",
+  "ingest_strategy": "metadata"
+}

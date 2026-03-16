@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/localization/cultural-formatting-plan.schema.json",
+  "title": "CulturalFormattingPlan",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "cultural_formatting_plan_id", "request_ref", "target_locale"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.localization.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "cultural_formatting_plan_id": { "type": "string" },
+    "request_ref": { "type": "string" },
+    "target_locale": { "type": "string" },
+    "target_node_refs": { "type": "array", "items": { "type": "string" } },
+    "date_format_style": { "type": "string" },
+    "time_format_style": { "type": "string" },
+    "number_format_style": { "type": "string" },
+    "currency_format_style": { "type": "string" },
+    "decimal_separator": { "type": "string" },
+    "thousands_separator": { "type": "string" },
+    "locale_phrase_policy": { "enum": ["literal", "culturally_adapted", "brand_constrained"] },
+    "asset_direction_policy": { "enum": ["preserve", "flip_directional_assets", "replace_with_locale_specific_assets"] },
+    "manual_review_required": { "type": "boolean" }
+  }
+}

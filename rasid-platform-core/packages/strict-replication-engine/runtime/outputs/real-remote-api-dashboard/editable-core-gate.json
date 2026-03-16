@@ -1,0 +1,32 @@
+{
+  "checks": {
+    "live_visuals_present": {
+      "passed": true,
+      "model_script_present": true
+    },
+    "bindings_present": {
+      "passed": true,
+      "query_ref": "remote://github_repo/openai/openai-python"
+    },
+    "interactive_controls_present": {
+      "passed": true,
+      "controls": {
+        "apply-filter": true,
+        "drill-sales": true,
+        "refresh-button": true,
+        "compare-button": true
+      }
+    },
+    "synthetic_bind_warning": {
+      "passed": true,
+      "binding_status": "live",
+      "warning_present": false
+    },
+    "not_static_image_only": {
+      "passed": true,
+      "html_fetch_runtime": true
+    }
+  },
+  "target_kind": "dashboard",
+  "overall_passed": true
+}

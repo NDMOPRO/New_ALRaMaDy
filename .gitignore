@@ -1,0 +1,16 @@
+.runtime/
+.tmp/
+.tmp*/
+.venv311-strict/
+tmp-lo-test/
+tmp-lo-test-pptx/
+tmp-lo-test-xlsx/
+tmp-firefox-shot.png
+tmp_excel_open_check.ps1
+tmp-vision-helper.json
+tmp-vision-rich.json
+tmpfiles-test.xlsx
+rasid_core_seed/
+rasid-platform-core/.runtime/
+rasid-platform-core/packages/*/output/
+rasid-platform-core/packages/*/artifacts/

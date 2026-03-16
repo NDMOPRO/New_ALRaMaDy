@@ -1,0 +1,9 @@
+{
+  "run_id": "real-pdf-to-bi-dashboard",
+  "primary_renderer": "runtime-parser-dashboard",
+  "secondary_renderer": "independent-firefox-headless",
+  "native_renderer": "chromium-headless",
+  "separated_process": true,
+  "target_hash": "768b5daf369c0d38d9a8df9157a18cace7ad07dd04344e6c5d0b2f1b479dc4ec",
+  "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\dual-verifier-matrix.json"
+}

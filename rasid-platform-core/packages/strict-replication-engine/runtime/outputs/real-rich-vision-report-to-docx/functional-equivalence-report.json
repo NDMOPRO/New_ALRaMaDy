@@ -1,0 +1,12 @@
+{
+  "target_kind": "docx",
+  "checks": {
+    "editable_multi_page_layout": true,
+    "structured_sections": true,
+    "toc": false,
+    "data_binding": true,
+    "live_recalculation": false,
+    "export_ready_compliance": true
+  },
+  "overall_passed": false
+}

@@ -1,0 +1,30 @@
+{
+  "provider": "github-rest-api",
+  "observed_request_url": "https://api.github.com/repos/openai/openai-python",
+  "authenticated": true,
+  "headers": {
+    "x-ratelimit-limit": "5000",
+    "x-ratelimit-remaining": "4377",
+    "x-ratelimit-reset": "1773616451",
+    "x-ratelimit-resource": "core",
+    "x-ratelimit-used": "623"
+  },
+  "taxonomy": {
+    "success_status": 200,
+    "rate_limit_status": 403,
+    "retryable_statuses": [
+      403,
+      429,
+      500,
+      502,
+      503,
+      504
+    ],
+    "non_retryable_statuses": [
+      400,
+      401,
+      404,
+      422
+    ]
+  }
+}

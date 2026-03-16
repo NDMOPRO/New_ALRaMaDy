@@ -1,0 +1,26 @@
+{
+  "name": "@rasid/report-engine",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./platform": {
+      "types": "./dist/platform.d.ts",
+      "default": "./dist/platform.js"
+    }
+  },
+  "dependencies": {
+    "@rasid/capability-registry": "1.0.0",
+    "@rasid/contracts": "1.0.0",
+    "@rasid/dashboard-engine": "1.0.0",
+    "@rasid/presentations-engine": "1.0.0",
+    "exceljs": "^4.4.0",
+    "jszip": "^3.10.1",
+    "zod": "^3.24.2"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/excel-engine/workbook-version.schema.json",
+  "title": "Excel Workbook Version",
+  "type": "object",
+  "required": ["workbook_version_id", "workbook_ref", "version_ref", "change_kind", "change_reason", "created_at"],
+  "properties": {
+    "workbook_version_id": { "type": "string" },
+    "workbook_ref": { "type": "string" },
+    "change_kind": { "enum": ["import", "analysis", "transformation", "recalculation", "pivot_generation", "formatting", "export"] },
+    "change_reason": { "type": "string" },
+    "created_at": { "type": "string" }
+  }
+}

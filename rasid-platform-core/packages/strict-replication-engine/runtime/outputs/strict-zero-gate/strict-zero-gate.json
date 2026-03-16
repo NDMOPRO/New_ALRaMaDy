@@ -1,0 +1,810 @@
+{
+  "phase_requirement": "STRICT_ZERO gate",
+  "strict_zero_policy": {
+    "pixel_zero_required": true,
+    "native_zero_required_for_strict": true,
+    "independent_zero_required_for_strict": true,
+    "structural_required": true,
+    "functional_required": true,
+    "determinism_required": true,
+    "no_mutation_under_strict": true,
+    "no_fallback_under_strict": true,
+    "round_trip_zero_required": true
+  },
+  "evaluated_run_count": 14,
+  "strict_zero_run_count": 1,
+  "strict_zero_runs": [
+    "real-live-dashboard-strict"
+  ],
+  "masquerade_count": 0,
+  "masquerade_runs": [],
+  "gate_enforced": true,
+  "evaluated_runs": [
+    {
+      "run_id": "real-image-to-pptx",
+      "target_kind": "pptx",
+      "publish_state": "degraded_published",
+      "strict_claim_present": false,
+      "strict_zero_eligible": false,
+      "no_masquerade": true,
+      "consistency_root": {
+        "pixel": {
+          "primary_zero": true,
+          "native_zero": false,
+          "independent_zero": false,
+          "primary_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\pixel-diff-report.json",
+          "native_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\native-pixel-diff-report.json",
+          "independent_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\independent-pixel-diff-report.json",
+          "primary_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\heatmap.png",
+          "native_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\native-heatmap.png",
+          "independent_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\independent-heatmap.png"
+        },
+        "structural": {
+          "final_structural_pass": true,
+          "editable_core_pass": true,
+          "editable_core_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\editable-core-gate.json",
+          "render_check_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\render-check.json"
+        },
+        "functional": {
+          "overall_passed": false,
+          "functional_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\functional-equivalence-report.json"
+        },
+        "determinism": {
+          "overall_passed": true,
+          "determinism_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\determinism-report.json",
+          "drift_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\drift-report.json"
+        },
+        "independent_verifier": {
+          "passed": true,
+          "ratio": 0.06058577674897119,
+          "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-pptx-independent.png",
+          "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-pptx-independent-diff.png",
+          "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\dual-verifier-matrix.json",
+          "separation_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\verifier-separation-report.json"
+        },
+        "mutation_and_fallback": {
+          "repair_applied": true,
+          "binding_status": "n/a",
+          "degraded_refresh_status": null,
+          "hidden_fallback": true
+        }
+      },
+      "failure_roots": [
+        "native_pixel_not_zero",
+        "independent_pixel_not_zero",
+        "functional_gate_failed",
+        "repair_or_mutation_present",
+        "fallback_or_degraded_state_present"
+      ]
+    },
+    {
+      "run_id": "real-pdf-to-docx",
+      "target_kind": "docx",
+      "publish_state": "degraded_published",
+      "strict_claim_present": false,
+      "strict_zero_eligible": false,
+      "no_masquerade": true,
+      "consistency_root": {
+        "pixel": {
+          "primary_zero": true,
+          "native_zero": false,
+          "independent_zero": false,
+          "primary_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\pixel-diff-report.json",
+          "native_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\native-pixel-diff-report.json",
+          "independent_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\independent-pixel-diff-report.json",
+          "primary_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\heatmap.png",
+          "native_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\native-heatmap.png",
+          "independent_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\independent-heatmap.png"
+        },
+        "structural": {
+          "final_structural_pass": true,
+          "editable_core_pass": true,
+          "editable_core_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\editable-core-gate.json",
+          "render_check_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\render-check.json"
+        },
+        "functional": {
+          "overall_passed": false,
+          "functional_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\functional-equivalence-report.json"
+        },
+        "determinism": {
+          "overall_passed": true,
+          "determinism_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\determinism-report.json",
+          "drift_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\drift-report.json"
+        },
+        "independent_verifier": {
+          "passed": true,
+          "ratio": 0.004934259259259259,
+          "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-docx-independent.png",
+          "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-docx-independent-diff.png",
+          "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\dual-verifier-matrix.json",
+          "separation_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\verifier-separation-report.json"
+        },
+        "mutation_and_fallback": {
+          "repair_applied": false,
+          "binding_status": "n/a",
+          "degraded_refresh_status": null,
+          "hidden_fallback": true
+        }
+      },
+      "failure_roots": [
+        "native_pixel_not_zero",
+        "independent_pixel_not_zero",
+        "functional_gate_failed",
+        "fallback_or_degraded_state_present"
+      ]
+    },
+    {
+      "run_id": "real-screenshot-to-xlsx",
+      "target_kind": "xlsx",
+      "publish_state": "degraded_published",
+      "strict_claim_present": false,
+      "strict_zero_eligible": false,
+      "no_masquerade": true,
+      "consistency_root": {
+        "pixel": {
+          "primary_zero": false,
+          "native_zero": false,
+          "independent_zero": false,
+          "primary_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\pixel-diff-report.json",
+          "native_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\native-pixel-diff-report.json",
+          "independent_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\independent-pixel-diff-report.json",
+          "primary_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\heatmap.png",
+          "native_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\native-heatmap.png",
+          "independent_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\independent-heatmap.png"
+        },
+        "structural": {
+          "final_structural_pass": false,
+          "editable_core_pass": true,
+          "editable_core_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\editable-core-gate.json",
+          "render_check_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\render-check.json"
+        },
+        "functional": {
+          "overall_passed": false,
+          "functional_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\functional-equivalence-report.json"
+        },
+        "determinism": {
+          "overall_passed": true,
+          "determinism_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\determinism-report.json",
+          "drift_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\drift-report.json"
+        },
+        "independent_verifier": {
+          "passed": true,
+          "ratio": 0.006514285006932066,
+          "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-independent.png",
+          "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-independent-diff.png",
+          "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\dual-verifier-matrix.json",
+          "separation_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\verifier-separation-report.json"
+        },
+        "mutation_and_fallback": {
+          "repair_applied": false,
+          "binding_status": "n/a",
+          "degraded_refresh_status": null,
+          "hidden_fallback": true
+        }
+      },
+      "failure_roots": [
+        "primary_pixel_not_zero",
+        "native_pixel_not_zero",
+        "independent_pixel_not_zero",
+        "structural_gate_failed",
+        "functional_gate_failed",
+        "fallback_or_degraded_state_present"
+      ]
+    },
+    {
+      "run_id": "real-image-to-dashboard",
+      "target_kind": "dashboard",
+      "publish_state": "degraded_published",
+      "strict_claim_present": false,
+      "strict_zero_eligible": false,
+      "no_masquerade": true,
+      "consistency_root": {
+        "pixel": {
+          "primary_zero": true,
+          "native_zero": false,
+          "independent_zero": false,
+          "primary_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\pixel-diff-report.json",
+          "native_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\native-pixel-diff-report.json",
+          "independent_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\independent-pixel-diff-report.json",
+          "primary_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\heatmap.png",
+          "native_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\native-heatmap.png",
+          "independent_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\independent-heatmap.png"
+        },
+        "structural": {
+          "final_structural_pass": true,
+          "editable_core_pass": true,
+          "editable_core_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\editable-core-gate.json",
+          "render_check_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\render-check.json"
+        },
+        "functional": {
+          "overall_passed": false,
+          "functional_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\functional-equivalence-report.json"
+        },
+        "determinism": {
+          "overall_passed": true,
+          "determinism_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\determinism-report.json",
+          "drift_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\drift-report.json"
+        },
+        "independent_verifier": {
+          "passed": true,
+          "ratio": 0.12293274176954733,
+          "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-dashboard-independent.png",
+          "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-dashboard-independent-diff.png",
+          "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\dual-verifier-matrix.json",
+          "separation_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\verifier-separation-report.json"
+        },
+        "mutation_and_fallback": {
+          "repair_applied": false,
+          "binding_status": "synthetic_bind",
+          "degraded_refresh_status": null,
+          "hidden_fallback": true
+        }
+      },
+      "failure_roots": [
+        "native_pixel_not_zero",
+        "independent_pixel_not_zero",
+        "functional_gate_failed",
+        "fallback_or_degraded_state_present"
+      ]
+    },
+    {
+      "run_id": "real-screenshot-to-pptx",
+      "target_kind": "pptx",
+      "publish_state": "degraded_published",
+      "strict_claim_present": false,
+      "strict_zero_eligible": false,
+      "no_masquerade": true,
+      "consistency_root": {
+        "pixel": {
+          "primary_zero": true,
+          "native_zero": false,
+          "independent_zero": false,
+          "primary_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\pixel-diff-report.json",
+          "native_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\native-pixel-diff-report.json",
+          "independent_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\independent-pixel-diff-report.json",
+          "primary_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\heatmap.png",
+          "native_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\native-heatmap.png",
+          "independent_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\independent-heatmap.png"
+        },
+        "structural": {
+          "final_structural_pass": true,
+          "editable_core_pass": true,
+          "editable_core_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\editable-core-gate.json",
+          "render_check_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\render-check.json"
+        },
+        "functional": {
+          "overall_passed": false,
+          "functional_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\functional-equivalence-report.json"
+        },
+        "determinism": {
+          "overall_passed": true,
+          "determinism_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\determinism-report.json",
+          "drift_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\drift-report.json"
+        },
+        "independent_verifier": {
+          "passed": true,
+          "ratio": 0.06058577674897119,
+          "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-pptx-independent.png",
+          "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-pptx-independent-diff.png",
+          "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\dual-verifier-matrix.json",
+          "separation_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\verifier-separation-report.json"
+        },
+        "mutation_and_fallback": {
+          "repair_applied": false,
+          "binding_status": "n/a",
+          "degraded_refresh_status": null,
+          "hidden_fallback": true
+        }
+      },
+      "failure_roots": [
+        "native_pixel_not_zero",
+        "independent_pixel_not_zero",
+        "functional_gate_failed",
+        "fallback_or_degraded_state_present"
+      ]
+    },
+    {
+      "run_id": "real-pdf-to-bi-dashboard",
+      "target_kind": "dashboard",
+      "publish_state": "degraded_published",
+      "strict_claim_present": false,
+      "strict_zero_eligible": false,
+      "no_masquerade": true,
+      "consistency_root": {
+        "pixel": {
+          "primary_zero": true,
+          "native_zero": false,
+          "independent_zero": false,
+          "primary_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\pixel-diff-report.json",
+          "native_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\native-pixel-diff-report.json",
+          "independent_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\independent-pixel-diff-report.json",
+          "primary_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\heatmap.png",
+          "native_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\native-heatmap.png",
+          "independent_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\independent-heatmap.png"
+        },
+        "structural": {
+          "final_structural_pass": true,
+          "editable_core_pass": true,
+          "editable_core_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\editable-core-gate.json",
+          "render_check_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\render-check.json"
+        },
+        "functional": {
+          "overall_passed": false,
+          "functional_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\functional-equivalence-report.json"
+        },
+        "determinism": {
+          "overall_passed": true,
+          "determinism_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\determinism-report.json",
+          "drift_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\drift-report.json"
+        },
+        "independent_verifier": {
+          "passed": true,
+          "ratio": 0.12293274176954733,
+          "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-bi-dashboard-independent.png",
+          "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-bi-dashboard-independent-diff.png",
+          "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\dual-verifier-matrix.json",
+          "separation_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\verifier-separation-report.json"
+        },
+        "mutation_and_fallback": {
+          "repair_applied": false,
+          "binding_status": "synthetic_bind",
+          "degraded_refresh_status": null,
+          "hidden_fallback": true
+        }
+      },
+      "failure_roots": [
+        "native_pixel_not_zero",
+        "independent_pixel_not_zero",
+        "functional_gate_failed",
+        "fallback_or_degraded_state_present"
+      ]
+    },
+    {
+      "run_id": "real-excel-to-dashboard",
+      "target_kind": "dashboard",
+      "publish_state": "degraded_published",
+      "strict_claim_present": false,
+      "strict_zero_eligible": false,
+      "no_masquerade": true,
+      "consistency_root": {
+        "pixel": {
+          "primary_zero": true,
+          "native_zero": false,
+          "independent_zero": false,
+          "primary_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\pixel-diff-report.json",
+          "native_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\native-pixel-diff-report.json",
+          "independent_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\independent-pixel-diff-report.json",
+          "primary_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\heatmap.png",
+          "native_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\native-heatmap.png",
+          "independent_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\independent-heatmap.png"
+        },
+        "structural": {
+          "final_structural_pass": true,
+          "editable_core_pass": true,
+          "editable_core_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\editable-core-gate.json",
+          "render_check_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\render-check.json"
+        },
+        "functional": {
+          "overall_passed": false,
+          "functional_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\functional-equivalence-report.json"
+        },
+        "determinism": {
+          "overall_passed": true,
+          "determinism_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\determinism-report.json",
+          "drift_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\drift-report.json"
+        },
+        "independent_verifier": {
+          "passed": true,
+          "ratio": 0.14182227366255143,
+          "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-excel-to-dashboard-independent.png",
+          "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-excel-to-dashboard-independent-diff.png",
+          "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\dual-verifier-matrix.json",
+          "separation_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\verifier-separation-report.json"
+        },
+        "mutation_and_fallback": {
+          "repair_applied": false,
+          "binding_status": "synthetic_bind",
+          "degraded_refresh_status": null,
+          "hidden_fallback": true
+        }
+      },
+      "failure_roots": [
+        "native_pixel_not_zero",
+        "independent_pixel_not_zero",
+        "functional_gate_failed",
+        "fallback_or_degraded_state_present"
+      ]
+    },
+    {
+      "run_id": "real-dashboard-to-pptx",
+      "target_kind": "pptx",
+      "publish_state": "degraded_published",
+      "strict_claim_present": false,
+      "strict_zero_eligible": false,
+      "no_masquerade": true,
+      "consistency_root": {
+        "pixel": {
+          "primary_zero": true,
+          "native_zero": false,
+          "independent_zero": false,
+          "primary_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\pixel-diff-report.json",
+          "native_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\native-pixel-diff-report.json",
+          "independent_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\independent-pixel-diff-report.json",
+          "primary_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\heatmap.png",
+          "native_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\native-heatmap.png",
+          "independent_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\independent-heatmap.png"
+        },
+        "structural": {
+          "final_structural_pass": true,
+          "editable_core_pass": true,
+          "editable_core_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\editable-core-gate.json",
+          "render_check_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\render-check.json"
+        },
+        "functional": {
+          "overall_passed": false,
+          "functional_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\functional-equivalence-report.json"
+        },
+        "determinism": {
+          "overall_passed": true,
+          "determinism_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\determinism-report.json",
+          "drift_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\drift-report.json"
+        },
+        "independent_verifier": {
+          "passed": true,
+          "ratio": 0.07453960905349795,
+          "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-dashboard-to-pptx-independent.png",
+          "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-dashboard-to-pptx-independent-diff.png",
+          "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\dual-verifier-matrix.json",
+          "separation_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\verifier-separation-report.json"
+        },
+        "mutation_and_fallback": {
+          "repair_applied": false,
+          "binding_status": "n/a",
+          "degraded_refresh_status": null,
+          "hidden_fallback": true
+        }
+      },
+      "failure_roots": [
+        "native_pixel_not_zero",
+        "independent_pixel_not_zero",
+        "functional_gate_failed",
+        "fallback_or_degraded_state_present"
+      ]
+    },
+    {
+      "run_id": "real-live-dashboard-strict",
+      "target_kind": "dashboard",
+      "publish_state": "strict_published",
+      "strict_claim_present": true,
+      "strict_zero_eligible": true,
+      "no_masquerade": true,
+      "consistency_root": {
+        "pixel": {
+          "primary_zero": true,
+          "native_zero": true,
+          "independent_zero": true,
+          "primary_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\pixel-diff-report.json",
+          "native_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\native-pixel-diff-report.json",
+          "independent_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\independent-pixel-diff-report.json",
+          "primary_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\heatmap.png",
+          "native_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\native-heatmap.png",
+          "independent_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\independent-heatmap.png"
+        },
+        "structural": {
+          "final_structural_pass": true,
+          "editable_core_pass": true,
+          "editable_core_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\editable-core-gate.json",
+          "render_check_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\render-check.json"
+        },
+        "functional": {
+          "overall_passed": true,
+          "functional_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\functional-equivalence-report.json"
+        },
+        "determinism": {
+          "overall_passed": true,
+          "determinism_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\determinism-report.json",
+          "drift_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\drift-report.json"
+        },
+        "independent_verifier": {
+          "passed": true,
+          "ratio": 0.0,
+          "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-live-dashboard-strict-independent.png",
+          "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-live-dashboard-strict-independent-diff.png",
+          "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\dual-verifier-matrix.json",
+          "separation_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-strict\\verifier-separation-report.json"
+        },
+        "mutation_and_fallback": {
+          "repair_applied": false,
+          "binding_status": "live",
+          "degraded_refresh_status": "live",
+          "hidden_fallback": false
+        }
+      },
+      "failure_roots": []
+    },
+    {
+      "run_id": "real-live-dashboard-degraded",
+      "target_kind": "dashboard",
+      "publish_state": "degraded_published",
+      "strict_claim_present": false,
+      "strict_zero_eligible": false,
+      "no_masquerade": true,
+      "consistency_root": {
+        "pixel": {
+          "primary_zero": true,
+          "native_zero": false,
+          "independent_zero": false,
+          "primary_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\pixel-diff-report.json",
+          "native_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\native-pixel-diff-report.json",
+          "independent_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\independent-pixel-diff-report.json",
+          "primary_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\heatmap.png",
+          "native_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\native-heatmap.png",
+          "independent_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\independent-heatmap.png"
+        },
+        "structural": {
+          "final_structural_pass": true,
+          "editable_core_pass": true,
+          "editable_core_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\editable-core-gate.json",
+          "render_check_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\render-check.json"
+        },
+        "functional": {
+          "overall_passed": false,
+          "functional_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\functional-equivalence-report.json"
+        },
+        "determinism": {
+          "overall_passed": true,
+          "determinism_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\determinism-report.json",
+          "drift_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\drift-report.json"
+        },
+        "independent_verifier": {
+          "passed": true,
+          "ratio": 0.13202996399176956,
+          "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-live-dashboard-degraded-independent.png",
+          "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-live-dashboard-degraded-independent-diff.png",
+          "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\dual-verifier-matrix.json",
+          "separation_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\verifier-separation-report.json"
+        },
+        "mutation_and_fallback": {
+          "repair_applied": false,
+          "binding_status": "degraded",
+          "degraded_refresh_status": "degraded",
+          "hidden_fallback": true
+        }
+      },
+      "failure_roots": [
+        "native_pixel_not_zero",
+        "independent_pixel_not_zero",
+        "functional_gate_failed",
+        "fallback_or_degraded_state_present"
+      ]
+    },
+    {
+      "run_id": "real-remote-api-dashboard",
+      "target_kind": "dashboard",
+      "publish_state": "degraded_published",
+      "strict_claim_present": false,
+      "strict_zero_eligible": false,
+      "no_masquerade": true,
+      "consistency_root": {
+        "pixel": {
+          "primary_zero": true,
+          "native_zero": false,
+          "independent_zero": false,
+          "primary_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\pixel-diff-report.json",
+          "native_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\native-pixel-diff-report.json",
+          "independent_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\independent-pixel-diff-report.json",
+          "primary_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\heatmap.png",
+          "native_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\native-heatmap.png",
+          "independent_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\independent-heatmap.png"
+        },
+        "structural": {
+          "final_structural_pass": true,
+          "editable_core_pass": true,
+          "editable_core_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\editable-core-gate.json",
+          "render_check_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\render-check.json"
+        },
+        "functional": {
+          "overall_passed": true,
+          "functional_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\functional-equivalence-report.json"
+        },
+        "determinism": {
+          "overall_passed": true,
+          "determinism_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\determinism-report.json",
+          "drift_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\drift-report.json"
+        },
+        "independent_verifier": {
+          "passed": true,
+          "ratio": 0.14348958333333334,
+          "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-remote-api-dashboard-independent.png",
+          "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-remote-api-dashboard-independent-diff.png",
+          "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\dual-verifier-matrix.json",
+          "separation_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\verifier-separation-report.json"
+        },
+        "mutation_and_fallback": {
+          "repair_applied": false,
+          "binding_status": "live",
+          "degraded_refresh_status": "live",
+          "hidden_fallback": true
+        }
+      },
+      "failure_roots": [
+        "native_pixel_not_zero",
+        "independent_pixel_not_zero",
+        "fallback_or_degraded_state_present"
+      ]
+    },
+    {
+      "run_id": "real-multipage-pdf-to-docx",
+      "target_kind": "docx",
+      "publish_state": "degraded_published",
+      "strict_claim_present": false,
+      "strict_zero_eligible": false,
+      "no_masquerade": true,
+      "consistency_root": {
+        "pixel": {
+          "primary_zero": true,
+          "native_zero": false,
+          "independent_zero": false,
+          "primary_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\pixel-diff-report.json",
+          "native_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\native-pixel-diff-report.json",
+          "independent_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\independent-pixel-diff-report.json",
+          "primary_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\heatmap.png",
+          "native_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\native-heatmap.png",
+          "independent_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\independent-heatmap.png"
+        },
+        "structural": {
+          "final_structural_pass": true,
+          "editable_core_pass": true,
+          "editable_core_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\editable-core-gate.json",
+          "render_check_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\render-check.json"
+        },
+        "functional": {
+          "overall_passed": false,
+          "functional_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\functional-equivalence-report.json"
+        },
+        "determinism": {
+          "overall_passed": true,
+          "determinism_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\determinism-report.json",
+          "drift_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\drift-report.json"
+        },
+        "independent_verifier": {
+          "passed": false,
+          "ratio": 0.010024074074074074,
+          "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-multipage-pdf-to-docx-independent.png",
+          "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-multipage-pdf-to-docx-independent-diff.png",
+          "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\dual-verifier-matrix.json",
+          "separation_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\verifier-separation-report.json"
+        },
+        "mutation_and_fallback": {
+          "repair_applied": false,
+          "binding_status": "n/a",
+          "degraded_refresh_status": null,
+          "hidden_fallback": true
+        }
+      },
+      "failure_roots": [
+        "native_pixel_not_zero",
+        "independent_pixel_not_zero",
+        "functional_gate_failed",
+        "independent_verifier_inconsistent",
+        "fallback_or_degraded_state_present"
+      ]
+    },
+    {
+      "run_id": "real-ocr-image-to-docx",
+      "target_kind": "docx",
+      "publish_state": "degraded_published",
+      "strict_claim_present": false,
+      "strict_zero_eligible": false,
+      "no_masquerade": true,
+      "consistency_root": {
+        "pixel": {
+          "primary_zero": false,
+          "native_zero": false,
+          "independent_zero": false,
+          "primary_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\pixel-diff-report.json",
+          "native_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\native-pixel-diff-report.json",
+          "independent_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\independent-pixel-diff-report.json",
+          "primary_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\heatmap.png",
+          "native_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\native-heatmap.png",
+          "independent_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\independent-heatmap.png"
+        },
+        "structural": {
+          "final_structural_pass": true,
+          "editable_core_pass": true,
+          "editable_core_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\editable-core-gate.json",
+          "render_check_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\render-check.json"
+        },
+        "functional": {
+          "overall_passed": false,
+          "functional_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\functional-equivalence-report.json"
+        },
+        "determinism": {
+          "overall_passed": true,
+          "determinism_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\determinism-report.json",
+          "drift_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\drift-report.json"
+        },
+        "independent_verifier": {
+          "passed": false,
+          "ratio": 0.010177777777777779,
+          "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-independent.png",
+          "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-independent-diff.png",
+          "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\dual-verifier-matrix.json",
+          "separation_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\verifier-separation-report.json"
+        },
+        "mutation_and_fallback": {
+          "repair_applied": false,
+          "binding_status": "n/a",
+          "degraded_refresh_status": null,
+          "hidden_fallback": true
+        }
+      },
+      "failure_roots": [
+        "primary_pixel_not_zero",
+        "native_pixel_not_zero",
+        "independent_pixel_not_zero",
+        "functional_gate_failed",
+        "independent_verifier_inconsistent",
+        "fallback_or_degraded_state_present"
+      ]
+    },
+    {
+      "run_id": "real-rich-vision-report-to-docx",
+      "target_kind": "docx",
+      "publish_state": "degraded_published",
+      "strict_claim_present": false,
+      "strict_zero_eligible": false,
+      "no_masquerade": true,
+      "consistency_root": {
+        "pixel": {
+          "primary_zero": false,
+          "native_zero": false,
+          "independent_zero": false,
+          "primary_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\pixel-diff-report.json",
+          "native_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\native-pixel-diff-report.json",
+          "independent_report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\independent-pixel-diff-report.json",
+          "primary_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\heatmap.png",
+          "native_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\native-heatmap.png",
+          "independent_heatmap_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\independent-heatmap.png"
+        },
+        "structural": {
+          "final_structural_pass": true,
+          "editable_core_pass": true,
+          "editable_core_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\editable-core-gate.json",
+          "render_check_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\render-check.json"
+        },
+        "functional": {
+          "overall_passed": false,
+          "functional_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\functional-equivalence-report.json"
+        },
+        "determinism": {
+          "overall_passed": true,
+          "determinism_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\determinism-report.json",
+          "drift_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\drift-report.json"
+        },
+        "independent_verifier": {
+          "passed": true,
+          "ratio": 0.006293939393939394,
+          "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-independent.png",
+          "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-independent-diff.png",
+          "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\dual-verifier-matrix.json",
+          "separation_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\verifier-separation-report.json"
+        },
+        "mutation_and_fallback": {
+          "repair_applied": false,
+          "binding_status": "n/a",
+          "degraded_refresh_status": null,
+          "hidden_fallback": true
+        }
+      },
+      "failure_roots": [
+        "primary_pixel_not_zero",
+        "native_pixel_not_zero",
+        "independent_pixel_not_zero",
+        "functional_gate_failed",
+        "fallback_or_degraded_state_present"
+      ]
+    }
+  ],
+  "root_hash": "b386cda4e7d6d2b9907eb3a2fa2d627abbb35093ec6a0f1f1d648ae73d9bc955"
+}

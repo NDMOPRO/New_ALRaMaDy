@@ -1,0 +1,10 @@
+{
+  "artifact_id": "real-image-to-dashboard-dashboard-artifact",
+  "run_id": "real-image-to-dashboard",
+  "artifact_kind": "dashboard",
+  "target_kind": "dashboard",
+  "path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-image-to-dashboard.html",
+  "checksum": "93370898b80bcd0b52ed16699d8313dd1aae3f13668423dda85140ea793044b0",
+  "strict_status": "degraded",
+  "created_at": "2026-03-15T22:54:09.096615+00:00"
+}

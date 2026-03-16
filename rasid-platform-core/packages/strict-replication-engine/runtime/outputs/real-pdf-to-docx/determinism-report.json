@@ -1,0 +1,88 @@
+{
+  "lock_policy": {
+    "os_image": "Windows-11-10.0.26200-SP0",
+    "python_version": "3.14.3",
+    "fonts_snapshot_hash": "6a1dad344ebab28f55575ba31577166b7f4886045b4f232bd51cbf5b208b069a",
+    "aa_policy": "default-platform-aa",
+    "random_seed": 0,
+    "float_normalization": "python-native-json-stable",
+    "farm_image_id": "farm::Windows-11-10.0.26200-SP0",
+    "font_snapshot_id": "fonts::6a1dad344ebab28f55575ba31577166b7f4886045b4f232bd51cbf5b208b069a"
+  },
+  "rerun_count": 2,
+  "same_input_rerun_equals": true,
+  "model_hash_equal": true,
+  "render_hash_equal": true,
+  "binary_hash_equal": true,
+  "pixel_hashes_match": true,
+  "engine_fingerprints_match": true,
+  "render_config_consistent": true,
+  "render_config_hashes_match": true,
+  "model_hashes": [
+    "f04b0de75ca64b8ac3bcad6999081a060a9f3912934418d67be9b474056d9269",
+    "f04b0de75ca64b8ac3bcad6999081a060a9f3912934418d67be9b474056d9269"
+  ],
+  "render_hashes": [
+    "9f44153bb7e3a958681bcdcc77f6742353181954f8089a34c5335bfdcaa794f5",
+    "9f44153bb7e3a958681bcdcc77f6742353181954f8089a34c5335bfdcaa794f5"
+  ],
+  "binary_hashes": [
+    "aaa00f71326ce993c314cb0bde5aca464d086cb0eaa175c8bd6a2285603265f5",
+    "aaa00f71326ce993c314cb0bde5aca464d086cb0eaa175c8bd6a2285603265f5"
+  ],
+  "render_config_hash": "7f9d6bef564cfc83311201859f28afeaeea41b4132d1c598ec2992fb6d412a86",
+  "engine_fingerprint": {
+    "runtime": "strict-replication-engine/runtime",
+    "python_version": "3.14.3",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "target_extension": "docx",
+    "fonts_snapshot_hash": "6a1dad344ebab28f55575ba31577166b7f4886045b4f232bd51cbf5b208b069a"
+  },
+  "engine_fingerprint_hash": "fe3e28e363beb2c46cbad2d0d97586e83cf5db56f708a4f3342b7e08304ae536",
+  "render_profile": {
+    "target_extension": "docx",
+    "dpi": 144,
+    "colorspace": "sRGB",
+    "anti_aliasing_policy": "default-platform-aa",
+    "float_normalization": "python-native-json-stable",
+    "page_range": {
+      "from": 1,
+      "to": 1
+    }
+  },
+  "render_refs": [
+    {
+      "render_id": "docx-rerun-1",
+      "uri": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\determinism\\run-1.docx",
+      "dpi": 144,
+      "colorspace": "sRGB",
+      "engine_fingerprint": "fe3e28e363beb2c46cbad2d0d97586e83cf5db56f708a4f3342b7e08304ae536",
+      "render_config_hash": "7f9d6bef564cfc83311201859f28afeaeea41b4132d1c598ec2992fb6d412a86",
+      "fingerprint": {
+        "layout_hash": "f04b0de75ca64b8ac3bcad6999081a060a9f3912934418d67be9b474056d9269",
+        "structural_hash": "f04b0de75ca64b8ac3bcad6999081a060a9f3912934418d67be9b474056d9269",
+        "typography_hash": "4403c6570c3143eaac5e24dd0efac15606dddbd290f4cdefb244baf2e34d2d9c",
+        "pixel_hash": "9f44153bb7e3a958681bcdcc77f6742353181954f8089a34c5335bfdcaa794f5"
+      },
+      "binary_hash": "aaa00f71326ce993c314cb0bde5aca464d086cb0eaa175c8bd6a2285603265f5"
+    },
+    {
+      "render_id": "docx-rerun-2",
+      "uri": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\determinism\\run-2.docx",
+      "dpi": 144,
+      "colorspace": "sRGB",
+      "engine_fingerprint": "fe3e28e363beb2c46cbad2d0d97586e83cf5db56f708a4f3342b7e08304ae536",
+      "render_config_hash": "7f9d6bef564cfc83311201859f28afeaeea41b4132d1c598ec2992fb6d412a86",
+      "fingerprint": {
+        "layout_hash": "f04b0de75ca64b8ac3bcad6999081a060a9f3912934418d67be9b474056d9269",
+        "structural_hash": "f04b0de75ca64b8ac3bcad6999081a060a9f3912934418d67be9b474056d9269",
+        "typography_hash": "4403c6570c3143eaac5e24dd0efac15606dddbd290f4cdefb244baf2e34d2d9c",
+        "pixel_hash": "9f44153bb7e3a958681bcdcc77f6742353181954f8089a34c5335bfdcaa794f5"
+      },
+      "binary_hash": "aaa00f71326ce993c314cb0bde5aca464d086cb0eaa175c8bd6a2285603265f5"
+    }
+  ],
+  "source_model_hash": "f04b0de75ca64b8ac3bcad6999081a060a9f3912934418d67be9b474056d9269",
+  "violations": [],
+  "passed": true
+}

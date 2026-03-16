@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "threshold": 0.01,
+  "ratio": 0.004934259259259259,
+  "renderer": "independent-libreoffice-pdf",
+  "authoritative": true,
+  "independent": true,
+  "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-docx-independent.png",
+  "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-docx-independent-diff.png",
+  "reference_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-docx-source.png",
+  "pdf_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-docx-independent.pdf",
+  "browser_url": null
+}

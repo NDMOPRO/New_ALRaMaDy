@@ -1,0 +1,28 @@
+{
+  "run_id": "real-remote-api-dashboard",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-remote-api-dashboard.html",
+  "verifiers": [
+    {
+      "verifier_id": "runtime-native-renderer",
+      "toolchain": "chromium-headless",
+      "version": "chromium-headless",
+      "input_hash": "446a16526fea0acbc6e18f1cbdf0d2f69003ec2dc6d1c38fb01f9b0d22bd6b3b",
+      "render_hash": "75b13e9a726ef4c684a3a6ba020e29d242586c4979368a84d8744717bd321118",
+      "pixel_result": 0.13983796296296297,
+      "structural_result": true,
+      "pass_fail_reasoning": "native render comparison recorded",
+      "independent": false
+    },
+    {
+      "verifier_id": "independent-external-renderer",
+      "toolchain": "independent-firefox-headless",
+      "version": "independent-firefox-headless",
+      "input_hash": "446a16526fea0acbc6e18f1cbdf0d2f69003ec2dc6d1c38fb01f9b0d22bd6b3b",
+      "render_hash": "8d6916ae1c4b47e667c5430c72922d744703d8abdc53f71f2296133dc1c5e688",
+      "pixel_result": 0.14348958333333334,
+      "structural_result": true,
+      "pass_fail_reasoning": "external verifier subprocess result",
+      "independent": true
+    }
+  ]
+}

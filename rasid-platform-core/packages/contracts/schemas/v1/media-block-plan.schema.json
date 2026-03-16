@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/media-block-plan.schema.json",
+  "title": "MediaBlockPlan",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "media_block_plan_id", "deck_ref", "version_ref", "slide_ref", "block_ref", "media_kind", "asset_ref"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.presentations.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "media_block_plan_id": { "type": "string" },
+    "deck_ref": { "type": "string" },
+    "version_ref": { "type": "string" },
+    "slide_ref": { "type": "string" },
+    "block_ref": { "type": "string" },
+    "media_kind": { "enum": ["image", "icon", "video", "audio"] },
+    "asset_ref": { "type": "string" }
+  }
+}

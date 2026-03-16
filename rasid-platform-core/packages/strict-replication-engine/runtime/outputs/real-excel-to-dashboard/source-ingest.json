@@ -1,0 +1,9 @@
+{
+  "run_id": "real-excel-to-dashboard",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-excel-dashboard.xlsx",
+  "classified_kind": "xlsx",
+  "source_checksum": "b212aa88ccf711d5d3080dcb46181ac0aa32af9d9fa5c1b6dd2d5d526afae0d7",
+  "target_kind": "dashboard",
+  "source_preview_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-excel-to-dashboard-source-input.png",
+  "normalized_source_render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-excel-to-dashboard-source.png"
+}

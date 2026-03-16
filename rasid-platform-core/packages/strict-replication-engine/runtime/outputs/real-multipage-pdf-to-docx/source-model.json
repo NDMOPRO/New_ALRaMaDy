@@ -1,0 +1,27 @@
+{
+  "width": 900,
+  "height": 1200,
+  "paragraphs": [
+    "EXECUTIVE SUMMARY",
+    "Revenue remained stable across the first half.",
+    "Primary risk is margin compression in category B.",
+    "ACTION ITEMS",
+    "1. Review regional discounting policy.",
+    "2. Re-price low margin SKUs before Q4 close."
+  ],
+  "table": [
+    [
+      "Page",
+      "BlockCount"
+    ],
+    [
+      "1",
+      "3"
+    ],
+    [
+      "2",
+      "3"
+    ]
+  ],
+  "page_count": 2
+}

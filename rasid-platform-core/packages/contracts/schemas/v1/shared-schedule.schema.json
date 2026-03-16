@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/shared-schedule.schema.json",
+  "title": "SharedSchedule",
+  "type": "object",
+  "required": [
+    "schema_namespace",
+    "schema_version",
+    "schedule_id",
+    "schedule_type",
+    "capability",
+    "cadence",
+    "timezone",
+    "trigger_policy",
+    "publication_policy",
+    "state",
+    "created_by",
+    "updated_at"
+  ],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.schedule.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "schedule_id": { "type": "string" },
+    "schedule_type": { "type": "string" },
+    "capability": { "type": "string" },
+    "cadence": { "enum": ["weekly", "monthly", "on_demand", "custom"] },
+    "timezone": { "type": "string" },
+    "trigger_policy": { "type": "object" },
+    "next_run_at": { "type": ["string", "null"] },
+    "publication_policy": { "type": "object" },
+    "state": { "enum": ["enabled", "disabled"] },
+    "last_run_ref": { "type": ["string", "null"] },
+    "created_by": { "type": "string" },
+    "updated_at": { "type": "string" }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "binding_id": "binding-real-image-to-dashboard",
+  "run_id": "real-image-to-dashboard",
+  "publication_id": "publication-real-image-to-dashboard",
+  "dataset_ref": "dataset.unknown",
+  "query_ref": "query.unknown",
+  "status": "synthetic_bind",
+  "last_refresh_at": "2026-03-15T22:54:09.111835+00:00"
+}

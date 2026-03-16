@@ -1,0 +1,28 @@
+{
+  "run_id": "real-live-dashboard-degraded",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-live-dashboard-degraded.html",
+  "verifiers": [
+    {
+      "verifier_id": "runtime-native-renderer",
+      "toolchain": "chromium-headless",
+      "version": "chromium-headless",
+      "input_hash": "1d9a3f2a787d3d75665dbe5cdfd3761a346aced6067a239a182d90ae1bf5ab4e",
+      "render_hash": "693806b0b37b68929f62ca08c5b624b307bccc25fb976ec9d6c9b7a82103a11d",
+      "pixel_result": 0.13055105452674898,
+      "structural_result": true,
+      "pass_fail_reasoning": "native render comparison recorded",
+      "independent": false
+    },
+    {
+      "verifier_id": "independent-external-renderer",
+      "toolchain": "independent-firefox-headless",
+      "version": "independent-firefox-headless",
+      "input_hash": "1d9a3f2a787d3d75665dbe5cdfd3761a346aced6067a239a182d90ae1bf5ab4e",
+      "render_hash": "179444185cb9730105b2e91f9023d15e845452f8bbd5e90bc03e04c1cc55c227",
+      "pixel_result": 0.13202996399176956,
+      "structural_result": true,
+      "pass_fail_reasoning": "external verifier subprocess result",
+      "independent": true
+    }
+  ]
+}

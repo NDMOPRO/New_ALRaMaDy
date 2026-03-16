@@ -1,0 +1,27 @@
+{
+  "width": 900,
+  "height": 1200,
+  "paragraphs": [
+    "FIELD REPORT 2026",
+    "Region: KSA ",
+    "Period: Q1-2026",
+    "Approved: Yes "
+  ],
+  "table": [
+    [
+      "Month",
+      "Sales",
+      "Target"
+    ],
+    [
+      "Jan",
+      "210",
+      "205"
+    ],
+    [
+      "Feb",
+      "224",
+      "220"
+    ]
+  ]
+}

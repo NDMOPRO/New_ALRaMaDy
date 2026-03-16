@@ -1,0 +1,20 @@
+{
+  "drift_detected": false,
+  "binary_drift": false,
+  "model_drift": false,
+  "render_drift": false,
+  "fingerprint_equality": {
+    "source_model_hash_equal": true,
+    "layout_hash_equal": true,
+    "pixel_hash_equal": true,
+    "engine_fingerprint_equal": true,
+    "render_config_hash_equal": true
+  },
+  "policy": {
+    "excel_tolerance": 0.0,
+    "svm_tolerance": 0.0,
+    "allow_binary_container_timestamp_drift": false,
+    "zero_drift_required": true
+  },
+  "violations": []
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/export-validation-result.schema.json",
+  "title": "ExportValidationResult",
+  "type": "object",
+  "required": [
+    "schema_namespace",
+    "schema_version",
+    "export_validation_result_id",
+    "deck_ref",
+    "version_ref",
+    "export_target",
+    "verification_status"
+  ],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.presentations.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "export_validation_result_id": { "type": "string" },
+    "deck_ref": { "type": "string" },
+    "version_ref": { "type": "string" },
+    "export_target": { "enum": ["reader", "pptx", "pdf", "html"] },
+    "verification_status": { "enum": ["unverified", "verified", "success_with_warnings", "degraded", "failed"] }
+  }
+}

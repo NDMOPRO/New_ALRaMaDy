@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/presentation-output-metadata.schema.json",
+  "title": "PresentationOutputMetadata",
+  "type": "object",
+  "required": [
+    "schema_namespace",
+    "schema_version",
+    "presentation_output_metadata_id",
+    "deck_ref",
+    "version_ref",
+    "export_refs",
+    "delivered_targets",
+    "editable_export_default"
+  ],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.presentations.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "presentation_output_metadata_id": { "type": "string" },
+    "deck_ref": { "type": "string" },
+    "version_ref": { "type": "string" },
+    "export_refs": { "type": "array" },
+    "delivered_targets": {
+      "type": "array",
+      "items": { "enum": ["reader", "pptx", "pdf", "html"] }
+    },
+    "editable_export_default": { "type": "boolean" }
+  }
+}

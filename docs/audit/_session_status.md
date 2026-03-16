@@ -1,9 +1,9 @@
 # Session Status
 
 - Session started: 2026-03-15T01:06:43+03:00
-- Current phase: Shared executable foundation implemented
-- Last completed checkpoint: Required shared packages now include `common`, `output-publication`, and `capability-registry`; `typecheck`, `lint`, `smoke`, and `check` all pass
-- Current scope: Track the full executable shared foundation baseline in Git
+- Current phase: `c4_architecture_documentation` generate the full C4 architecture suite, API inventory, database notes, and Mermaid diagrams for the active platform
+- Last completed checkpoint: Repository evidence pass completed across the active monorepo, shared contracts, platform servers, the copied `apps/rasid-web` app, and the storage/schema layers
+- Current scope: Write the architecture documentation set under `docs/` and `docs/diagrams/`, grounded in the inspected code and persistence/runtime behavior
 - Completed folders/files:
   - docs/audit/
   - docs/audit/phases/
@@ -12,24 +12,27 @@
   - docs/audit/_knowledge_base.md
   - docs/audit/_open_questions.md
   - docs/audit/logs/session_progress.log.md
-  - SHARED_CONTRACTS_PACK.md
-  - rasid-platform-core/packages/contracts
-  - rasid-platform-core/packages/runtime
-  - rasid-platform-core/packages/common
-  - rasid-platform-core/packages/artifacts
-  - rasid-platform-core/packages/jobs
-  - rasid-platform-core/packages/evidence
-  - rasid-platform-core/packages/audit-lineage
-  - rasid-platform-core/packages/library
-  - rasid-platform-core/packages/brand-template
-  - rasid-platform-core/packages/canvas-contract
-  - rasid-platform-core/packages/permissions
-  - rasid-platform-core/packages/connectors
-  - rasid-platform-core/packages/output-publication
-  - rasid-platform-core/packages/capability-registry
-  - rasid-platform-core/.github/workflows/shared-foundation.yml
+  - rasid-platform-core/apps/contracts-cli/src/dashboard-web.ts
+  - rasid-platform-core/.runtime/dashboard-web-proof/20260316-reports-surface-fix/reports-entry-before-sync.png
+  - rasid-platform-core/.runtime/dashboard-web-proof/20260316-reports-surface-fix/reports-after-sync.png
+  - rasid-platform-core/.runtime/dashboard-web-proof/20260316-reports-surface-fix/presentations-report-context-after-sync.png
+  - rasid-platform-core/.runtime/dashboard-web-proof/20260316-reports-surface-fix/dashboards-report-context-after-sync.png
+  - rasid-platform-core/.runtime/presentations-engine/decks/rptdeck-cbd2d1f2e8/
+  - rasid-platform-core/.runtime/report-engine/integrations/dashboard-engine/dashboards/rptdash-a55669d065/
+  - git branch/remote history for `origin/codex/define-shared-contracts-for-rasid-platform-nru6ge`
+  - .runtime/github-proof/20260316-pr3-closed.png
+  - C:\ALRaMaDy_worktrees\codex-live-integration-batch-1\
+  - C:\ALRaMaDy\.runtime\railway-proof\20260316-login-page.png
+  - C:\ALRaMaDy\.runtime\railway-proof\20260316-data-page-live.png
+  - C:\ALRaMaDy\.runtime\railway-proof\20260316-dashboards-page-live.png
+  - C:\ALRaMaDy\.runtime\railway-proof\20260316-transcription-page-live.png
+  - C:\ALRaMaDy\.runtime\railway-proof\20260316-reports-page-live.png
+  - C:\ALRaMaDy\.runtime\railway-proof\20260316-presentations-page-live.png
+  - C:\ALRaMaDy\.runtime\railway-proof\20260316-governance-page-live.png
+  - rasid-platform-core/apps/rasid-web/
 - Remaining scope:
-  - Create the first Git commit including the executable foundation and audit trail
-  - Push after Git author identity is available
-- Next exact step: Stage the executable foundation changes and create the first commit on `main`.
-- Last update: 2026-03-15T01:27:50+03:00
+  - Generate the requested documentation files under `docs/`
+  - Generate the requested Mermaid diagram files under `docs/diagrams/`
+  - Append the architecture milestone log and timestamped phase report
+- Next exact step: write the C4 documents and diagrams from the inspected repository evidence, then checkpoint the completed output
+- Last update: 2026-03-16T06:12:10.4704774+03:00

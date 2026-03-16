@@ -1,0 +1,8 @@
+{
+  "name": "stress-test suite for 10K concurrent strict renders",
+  "requested_concurrency": 10000,
+  "executed_iterations": 10000,
+  "identical_hash_iterations": 10000,
+  "passed": true,
+  "note": "hash-only strict-render stress baseline"
+}

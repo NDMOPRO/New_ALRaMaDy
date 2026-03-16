@@ -1,0 +1,9 @@
+{
+  "run_id": "real-dashboard-to-pptx",
+  "primary_renderer": "runtime-parser-pptx",
+  "secondary_renderer": "independent-libreoffice-pdf",
+  "native_renderer": "office-com-pdf",
+  "separated_process": true,
+  "target_hash": "77a5e417ccf4049366966cc16209c1d3b1a168179feb7bbb8af0d1b812520eb3",
+  "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\dual-verifier-matrix.json"
+}

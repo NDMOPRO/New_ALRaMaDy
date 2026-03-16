@@ -1,0 +1,174 @@
+{
+  "binding_id": "binding-real-remote-api-dashboard",
+  "refresh_query": "http://127.0.0.1:63599/api/session/real-remote-api-dashboard/refresh",
+  "refresh_query_params": [],
+  "refresh_status": "live",
+  "refresh_rows": [
+    [
+      "Forks",
+      "4638"
+    ],
+    [
+      "OpenIssues",
+      "331"
+    ],
+    [
+      "Stars",
+      "30254"
+    ],
+    [
+      "Watchers",
+      "348"
+    ]
+  ],
+  "refresh_error": null,
+  "interactive_loop": {
+    "session_id": "real-remote-api-dashboard",
+    "dashboard_url": "http://127.0.0.1:63599/dashboard/real-remote-api-dashboard?access_token=55f651d3c3befbe81d9b6c43",
+    "connector_base_url": "http://127.0.0.1:63599",
+    "remote_steps": [
+      {
+        "event": "refresh",
+        "state": {
+          "session": {
+            "session_id": "real-remote-api-dashboard",
+            "dataset": "github_repo",
+            "region": "openai",
+            "period": "openai-python",
+            "tenant_id": "tenant-default",
+            "permission_state": "analyst",
+            "refresh_count": 1,
+            "export_count": 0,
+            "updated_at": "2026-03-15T22:54:39.776392+00:00"
+          },
+          "title": "LIVE SALES DASHBOARD",
+          "rows": [
+            [
+              "Metric",
+              "Value"
+            ],
+            [
+              "Forks",
+              "4638"
+            ],
+            [
+              "OpenIssues",
+              "331"
+            ],
+            [
+              "Stars",
+              "30254"
+            ],
+            [
+              "Watchers",
+              "348"
+            ]
+          ],
+          "metrics": {
+            "Stars": "30254",
+            "Forks": "4638",
+            "OpenIssues": "331",
+            "Watchers": "348"
+          },
+          "drill_metric": null,
+          "compare": null,
+          "export_payload": null,
+          "permissions": {
+            "filter": true,
+            "drill": true,
+            "refresh": true,
+            "compare": true,
+            "export": true
+          },
+          "query_ref": "remote://github_repo/openai/openai-python"
+        }
+      },
+      {
+        "event": "compare",
+        "state": {
+          "session": {
+            "session_id": "real-remote-api-dashboard",
+            "dataset": "github_repo",
+            "region": "openai",
+            "period": "openai-python",
+            "tenant_id": "tenant-default",
+            "permission_state": "analyst",
+            "refresh_count": 1,
+            "export_count": 0,
+            "updated_at": "2026-03-15T22:54:41.150567+00:00"
+          },
+          "title": "LIVE SALES DASHBOARD",
+          "rows": [
+            [
+              "Metric",
+              "Value"
+            ],
+            [
+              "Forks",
+              "4638"
+            ],
+            [
+              "OpenIssues",
+              "331"
+            ],
+            [
+              "Stars",
+              "30254"
+            ],
+            [
+              "Watchers",
+              "348"
+            ]
+          ],
+          "metrics": {
+            "Stars": "30254",
+            "Forks": "4638",
+            "OpenIssues": "331",
+            "Watchers": "348"
+          },
+          "drill_metric": null,
+          "compare": {
+            "baseline_region": "openai",
+            "baseline_period": "openai-python",
+            "deltas": [
+              {
+                "metric": "Forks",
+                "current": "4638",
+                "baseline": "4638",
+                "delta": 0
+              },
+              {
+                "metric": "OpenIssues",
+                "current": "331",
+                "baseline": "331",
+                "delta": 0
+              },
+              {
+                "metric": "Stars",
+                "current": "30254",
+                "baseline": "30254",
+                "delta": 0
+              },
+              {
+                "metric": "Watchers",
+                "current": "348",
+                "baseline": "348",
+                "delta": 0
+              }
+            ]
+          },
+          "export_payload": null,
+          "permissions": {
+            "filter": true,
+            "drill": true,
+            "refresh": true,
+            "compare": true,
+            "export": true
+          },
+          "query_ref": "remote://github_repo/openai/openai-python"
+        }
+      }
+    ]
+  },
+  "browser_requests": []
+}

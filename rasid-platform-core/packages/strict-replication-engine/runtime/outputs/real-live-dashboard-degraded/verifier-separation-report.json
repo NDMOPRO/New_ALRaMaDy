@@ -1,0 +1,9 @@
+{
+  "run_id": "real-live-dashboard-degraded",
+  "primary_renderer": "runtime-parser-dashboard",
+  "secondary_renderer": "independent-firefox-headless",
+  "native_renderer": "chromium-headless",
+  "separated_process": true,
+  "target_hash": "1d9a3f2a787d3d75665dbe5cdfd3761a346aced6067a239a182d90ae1bf5ab4e",
+  "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\dual-verifier-matrix.json"
+}

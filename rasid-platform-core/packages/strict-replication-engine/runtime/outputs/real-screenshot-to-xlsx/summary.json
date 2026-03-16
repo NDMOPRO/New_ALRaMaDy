@@ -1,0 +1,61 @@
+{
+  "run_id": "real-screenshot-to-xlsx",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-screenshot-xlsx.png",
+  "classified_kind": "screenshot",
+  "source_checksum": "297b991a5e5d7c5f6e807c2e4caa944da88384873dbe9792577c7713e0656bc7",
+  "target_kind": "xlsx",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-screenshot-to-xlsx.xlsx",
+  "initial_structural_pass": false,
+  "final_structural_pass": false,
+  "initial_pixel_ratio": 0.004086538461538462,
+  "final_pixel_ratio": 0.004086538461538462,
+  "round_trip_ratio": 0.0,
+  "repair_applied": false,
+  "publish_state": "degraded_published",
+  "publication_ref": "sqlite://strict-backend/publications/publication-real-screenshot-to-xlsx",
+  "strict_pass": false,
+  "strict_policy": {
+    "pixel_zero_required": true,
+    "editable_core_required": true,
+    "determinism_required": true
+  },
+  "pixel_zero_gate_passed": false,
+  "editable_core_gate_passed": true,
+  "determinism_gate_passed": true,
+  "native_gate": {
+    "passed": true,
+    "threshold": 0.01,
+    "ratio": 0.006515128568923464,
+    "authoritative": false
+  },
+  "independent_native_verification": {
+    "passed": true,
+    "threshold": 0.01,
+    "ratio": 0.006514285006932066,
+    "renderer": "independent-libreoffice-pdf",
+    "authoritative": true,
+    "independent": true,
+    "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-independent.png",
+    "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-independent-diff.png",
+    "reference_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-source.png",
+    "pdf_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-independent.pdf",
+    "browser_url": null
+  },
+  "native_render": {
+    "renderer": "office-com-pdf",
+    "pdf_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-native.pdf",
+    "image_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-native.png",
+    "source_pixel_ratio": 0.006125555962951745,
+    "parser_pixel_ratio": 0.006515128568923464,
+    "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-native-diff.png"
+  },
+  "renders": {
+    "source_input": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-source-input.png",
+    "source": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-source.png",
+    "initial": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-initial.png",
+    "final": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-final.png",
+    "round_trip": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-roundtrip.png",
+    "diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-diff.png",
+    "round_trip_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-roundtrip-diff.png"
+  }
+}

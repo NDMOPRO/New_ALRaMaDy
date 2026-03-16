@@ -1,0 +1,7 @@
+{
+  "strategy": "metadata_png",
+  "metadata_keys": [
+    "model",
+    "target_kind"
+  ]
+}

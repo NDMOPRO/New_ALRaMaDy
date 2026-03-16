@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/template-lock-state.schema.json",
+  "title": "TemplateLockState",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "template_lock_state_id", "deck_ref", "version_ref", "template_ref", "lock_mode"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.presentations.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "template_lock_state_id": { "type": "string" },
+    "deck_ref": { "type": "string" },
+    "version_ref": { "type": "string" },
+    "template_ref": { "type": "string" },
+    "lock_mode": { "enum": ["unlocked", "soft_lock", "strict_lock"] }
+  }
+}

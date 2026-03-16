@@ -1,0 +1,37 @@
+{
+  "strategy": "dashboard_live_connector_remote",
+  "binding_status": "live",
+  "connector_dataset": "github_repo",
+  "session_id": "real-remote-api-dashboard",
+  "overview_rows": [
+    [
+      "Metric",
+      "Value"
+    ],
+    [
+      "Forks",
+      "4638"
+    ],
+    [
+      "OpenIssues",
+      "331"
+    ],
+    [
+      "Stars",
+      "30254"
+    ],
+    [
+      "Watchers",
+      "348"
+    ]
+  ],
+  "dashboard_url": "http://127.0.0.1:63599/dashboard/real-remote-api-dashboard?access_token=55f651d3c3befbe81d9b6c43",
+  "connector_base_url": "http://127.0.0.1:63599",
+  "connector_auth_mode": "bearer",
+  "connector_auth": {
+    "mode": "bearer",
+    "token_present": true,
+    "token_source": "gh-cli",
+    "provider": "github-rest-api"
+  }
+}

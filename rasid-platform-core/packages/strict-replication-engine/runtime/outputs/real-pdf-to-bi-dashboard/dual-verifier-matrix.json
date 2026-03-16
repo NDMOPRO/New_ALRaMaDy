@@ -1,0 +1,28 @@
+{
+  "run_id": "real-pdf-to-bi-dashboard",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-pdf-to-bi-dashboard.html",
+  "verifiers": [
+    {
+      "verifier_id": "runtime-native-renderer",
+      "toolchain": "chromium-headless",
+      "version": "chromium-headless",
+      "input_hash": "768b5daf369c0d38d9a8df9157a18cace7ad07dd04344e6c5d0b2f1b479dc4ec",
+      "render_hash": "dbaa24b798aa331dc32677102d15657ba01a303a24c8d10fdda3d8f6d80ac016",
+      "pixel_result": 0.12151684670781893,
+      "structural_result": true,
+      "pass_fail_reasoning": "native render comparison recorded",
+      "independent": false
+    },
+    {
+      "verifier_id": "independent-external-renderer",
+      "toolchain": "independent-firefox-headless",
+      "version": "independent-firefox-headless",
+      "input_hash": "768b5daf369c0d38d9a8df9157a18cace7ad07dd04344e6c5d0b2f1b479dc4ec",
+      "render_hash": "77e5844985a9a00aead6714c7e801b8332a097068015023cda56e1b118b21f46",
+      "pixel_result": 0.12293274176954733,
+      "structural_result": true,
+      "pass_fail_reasoning": "external verifier subprocess result",
+      "independent": true
+    }
+  ]
+}

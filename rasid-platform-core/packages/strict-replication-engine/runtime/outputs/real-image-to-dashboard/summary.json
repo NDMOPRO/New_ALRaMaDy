@@ -1,0 +1,61 @@
+{
+  "run_id": "real-image-to-dashboard",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-screenshot-dashboard.png",
+  "classified_kind": "image",
+  "source_checksum": "dc567b25417bef6ca30c7887d5db40a1e4961038fbfa9dee75c7ea39f0bf2f02",
+  "target_kind": "dashboard",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-image-to-dashboard.html",
+  "initial_structural_pass": true,
+  "final_structural_pass": true,
+  "initial_pixel_ratio": 0.0,
+  "final_pixel_ratio": 0.0,
+  "round_trip_ratio": 0.0,
+  "repair_applied": false,
+  "publish_state": "degraded_published",
+  "publication_ref": "sqlite://strict-backend/publications/publication-real-image-to-dashboard",
+  "strict_pass": false,
+  "strict_policy": {
+    "pixel_zero_required": true,
+    "editable_core_required": true,
+    "determinism_required": true
+  },
+  "pixel_zero_gate_passed": true,
+  "editable_core_gate_passed": true,
+  "determinism_gate_passed": true,
+  "native_gate": {
+    "passed": true,
+    "threshold": 0.15,
+    "ratio": 0.12151684670781893,
+    "authoritative": false
+  },
+  "independent_native_verification": {
+    "passed": true,
+    "threshold": 0.15,
+    "ratio": 0.12293274176954733,
+    "renderer": "independent-firefox-headless",
+    "authoritative": true,
+    "independent": true,
+    "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-dashboard-independent.png",
+    "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-dashboard-independent-diff.png",
+    "reference_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-dashboard-source.png",
+    "pdf_path": null,
+    "browser_url": "file:///C:/ALRaMaDy/rasid-platform-core/packages/strict-replication-engine/runtime/backend/storage/artifacts/real-image-to-dashboard.html"
+  },
+  "native_render": {
+    "renderer": "chromium-headless",
+    "image_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-dashboard-native.png",
+    "url": "file:///C:/ALRaMaDy/rasid-platform-core/packages/strict-replication-engine/runtime/backend/storage/artifacts/real-image-to-dashboard.html",
+    "source_pixel_ratio": 0.12151684670781893,
+    "parser_pixel_ratio": 0.12151684670781893,
+    "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-dashboard-native-diff.png"
+  },
+  "renders": {
+    "source_input": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-dashboard-source-input.png",
+    "source": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-dashboard-source.png",
+    "initial": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-dashboard-initial.png",
+    "final": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-dashboard-final.png",
+    "round_trip": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-dashboard-roundtrip.png",
+    "diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-dashboard-diff.png",
+    "round_trip_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-dashboard-roundtrip-diff.png"
+  }
+}

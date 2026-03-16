@@ -1,0 +1,627 @@
+{
+  "snapshot_id": "cdr::bfee94fa1550::docx",
+  "snapshot_version": "2026-03-15.strict.2",
+  "cdr_design": {
+    "version": "1.1.0",
+    "immutable_layout_lock_flag": true,
+    "conversion_policy_id": "strict_replication",
+    "dpi_reference": 144,
+    "target_kind": "docx",
+    "pages": [
+      {
+        "page_id": "page-1",
+        "index": 1,
+        "size_emu": {
+          "w": 7772400,
+          "h": 10058400
+        },
+        "background_spec": {
+          "type": "solid",
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          }
+        },
+        "layers": [
+          {
+            "layer_id": "background",
+            "z_index": 0,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "guides",
+            "z_index": 1,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "containers",
+            "z_index": 2,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "text",
+            "z_index": 3,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": [
+              {
+                "element_id": "paragraph-1",
+                "kind": "text",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 381000,
+                  "width": 6096000,
+                  "height": 266700
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  381000
+                ],
+                "opacity": 1.0,
+                "z_index": 1,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": true
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.1
+                },
+                "fingerprint": "ff591320d668ffd2c1f6158539b15d130b7b6385bcc1a1623f0f7dc456fcea34",
+                "text": {
+                  "text": "STRICTOCR REPORT",
+                  "direction": "LTR",
+                  "alignment": "start",
+                  "baseline_offset_emu": 0,
+                  "line_height": 1.0,
+                  "wrap": "word",
+                  "auto_fit": false,
+                  "runs": [
+                    {
+                      "range": {
+                        "start": 0,
+                        "end": 16
+                      },
+                      "font_family": "Arial",
+                      "font_weight": 400,
+                      "font_style": "normal",
+                      "font_size_emu": 152400,
+                      "letter_spacing_emu": 0,
+                      "kerning_enabled": false,
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      },
+                      "script": "mixed",
+                      "text": "STRICTOCR REPORT"
+                    }
+                  ],
+                  "shaping": {
+                    "arabic_mode": "BASIC",
+                    "bidi_runs": [],
+                    "glyph_positions_emu": []
+                  },
+                  "paint": {
+                    "fill": {
+                      "type": "solid",
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "element_id": "paragraph-2",
+                "kind": "text",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 723900,
+                  "width": 6096000,
+                  "height": 266700
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  723900
+                ],
+                "opacity": 1.0,
+                "z_index": 2,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": true
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.1
+                },
+                "fingerprint": "c6933bed063c58a8b640010bd7442aaf12bdc1085fb46a14b17c5b879788a12a",
+                "text": {
+                  "text": "Pegion KSA Sales 210,",
+                  "direction": "LTR",
+                  "alignment": "start",
+                  "baseline_offset_emu": 0,
+                  "line_height": 1.0,
+                  "wrap": "word",
+                  "auto_fit": false,
+                  "runs": [
+                    {
+                      "range": {
+                        "start": 0,
+                        "end": 21
+                      },
+                      "font_family": "Arial",
+                      "font_weight": 400,
+                      "font_style": "normal",
+                      "font_size_emu": 152400,
+                      "letter_spacing_emu": 0,
+                      "kerning_enabled": false,
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      },
+                      "script": "mixed",
+                      "text": "Pegion KSA Sales 210,"
+                    }
+                  ],
+                  "shaping": {
+                    "arabic_mode": "BASIC",
+                    "bidi_runs": [],
+                    "glyph_positions_emu": []
+                  },
+                  "paint": {
+                    "fill": {
+                      "type": "solid",
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "element_id": "paragraph-3",
+                "kind": "text",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 1066800,
+                  "width": 6096000,
+                  "height": 266700
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  1066800
+                ],
+                "opacity": 1.0,
+                "z_index": 3,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": true
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.1
+                },
+                "fingerprint": "84f89a18b7ce8c1e6aa0a227ec29a3cbc7eef26955d17180e11b83c9e27890bc",
+                "text": {
+                  "text": "Region UAE Sales 175",
+                  "direction": "LTR",
+                  "alignment": "start",
+                  "baseline_offset_emu": 0,
+                  "line_height": 1.0,
+                  "wrap": "word",
+                  "auto_fit": false,
+                  "runs": [
+                    {
+                      "range": {
+                        "start": 0,
+                        "end": 20
+                      },
+                      "font_family": "Arial",
+                      "font_weight": 400,
+                      "font_style": "normal",
+                      "font_size_emu": 152400,
+                      "letter_spacing_emu": 0,
+                      "kerning_enabled": false,
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      },
+                      "script": "mixed",
+                      "text": "Region UAE Sales 175"
+                    }
+                  ],
+                  "shaping": {
+                    "arabic_mode": "BASIC",
+                    "bidi_runs": [],
+                    "glyph_positions_emu": []
+                  },
+                  "paint": {
+                    "fill": {
+                      "type": "solid",
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "element_id": "paragraph-4",
+                "kind": "text",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 1409700,
+                  "width": 6096000,
+                  "height": 266700
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  1409700
+                ],
+                "opacity": 1.0,
+                "z_index": 4,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": true
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.1
+                },
+                "fingerprint": "82c7137ab7c7b0896d34cd654bae02e9596cf182421c9c3d48da5ed396676b19",
+                "text": {
+                  "text": "Filter Period 01-2028,",
+                  "direction": "LTR",
+                  "alignment": "start",
+                  "baseline_offset_emu": 0,
+                  "line_height": 1.0,
+                  "wrap": "word",
+                  "auto_fit": false,
+                  "runs": [
+                    {
+                      "range": {
+                        "start": 0,
+                        "end": 22
+                      },
+                      "font_family": "Arial",
+                      "font_weight": 400,
+                      "font_style": "normal",
+                      "font_size_emu": 152400,
+                      "letter_spacing_emu": 0,
+                      "kerning_enabled": false,
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      },
+                      "script": "mixed",
+                      "text": "Filter Period 01-2028,"
+                    }
+                  ],
+                  "shaping": {
+                    "arabic_mode": "BASIC",
+                    "bidi_runs": [],
+                    "glyph_positions_emu": []
+                  },
+                  "paint": {
+                    "fill": {
+                      "type": "solid",
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "layer_id": "vectors",
+            "z_index": 4,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "data",
+            "z_index": 5,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": [
+              {
+                "element_id": "table-1",
+                "kind": "table",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 1905000,
+                  "width": 4572000,
+                  "height": 1066800
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  1905000
+                ],
+                "opacity": 1.0,
+                "z_index": 100,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": false
+                },
+                "ratios": {
+                  "padding_ratio": 0.02,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.0
+                },
+                "fingerprint": "6b8c8d5e7feacb1848b3c79a939677cb9dd85ba0ec2d43a2aee9ec2e75eab06e",
+                "table": {
+                  "grid": {
+                    "rows": 4,
+                    "cols": 2,
+                    "row_heights_emu": [
+                      266700,
+                      266700,
+                      266700,
+                      266700
+                    ],
+                    "col_widths_emu": [
+                      1143000,
+                      1143000
+                    ]
+                  },
+                  "cells": [
+                    {
+                      "r": 0,
+                      "c": 0,
+                      "value": "Field",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 0,
+                      "c": 1,
+                      "value": "Value",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 1,
+                      "c": 0,
+                      "value": "Pegion KSA Sales",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 1,
+                      "c": 1,
+                      "value": "210,",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 2,
+                      "c": 0,
+                      "value": "Region UAE Sales",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 2,
+                      "c": 1,
+                      "value": "175",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 3,
+                      "c": 0,
+                      "value": "Filter Period",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 3,
+                      "c": 1,
+                      "value": "01-2028,",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    }
+                  ],
+                  "style": {
+                    "alignments": {
+                      "default": "start"
+                    }
+                  },
+                  "rtl": false,
+                  "binding": null
+                }
+              }
+            ]
+          },
+          {
+            "layer_id": "interactive",
+            "z_index": 6,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          }
+        ]
+      }
+    ],
+    "assets": [
+      {
+        "asset_id": "source-asset-1",
+        "uri": "sha256://bfee94fa15507d8914f111ad8be53cc13287e3bf115cabff976ba633a8efb649",
+        "mime": "application/docx",
+        "sha256": "bfee94fa15507d8914f111ad8be53cc13287e3bf115cabff976ba633a8efb649",
+        "size_bytes": 0
+      }
+    ],
+    "layout_graph": "{\"edges\": [{\"from\": \"background\", \"to\": \"text\"}, {\"from\": \"background\", \"to\": \"data\"}], \"nodes\": [\"paragraph-1\", \"paragraph-2\", \"paragraph-3\", \"paragraph-4\", \"table-1\"]}",
+    "constraint_matrix": "{\"constraints\": [{\"element_id\": \"paragraph-1\", \"no_reflow\": true}, {\"element_id\": \"paragraph-2\", \"no_reflow\": true}, {\"element_id\": \"paragraph-3\", \"no_reflow\": true}, {\"element_id\": \"paragraph-4\", \"no_reflow\": true}, {\"element_id\": \"table-1\", \"no_reflow\": true}]}",
+    "fingerprints": {
+      "layout_hash": "d4eb2fbf83687ae8354b99e63ce3c8435844ed11fca34a4845a160ee004d1fdd",
+      "structural_hash": "584c816cde32655f15284b780cb2234717348ba50bee6b676b631929286f7afe",
+      "typography_hash": "8c210819a99b389b849848d218d54b7fad7ff56557e194c4c4311bba42f3b3b0",
+      "render_intent_hash": "e2727f6c106ec94ca999cf56f86e03a4da8d903b9df64dd0f4d7f8ecea6d141f"
+    }
+  },
+  "cdr_data": {
+    "tables": [
+      {
+        "table_id": "docx-table-1",
+        "columns": [
+          {
+            "name": "col_0",
+            "type": "string",
+            "fingerprint": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+          },
+          {
+            "name": "col_1",
+            "type": "string",
+            "fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+          }
+        ],
+        "rows": [
+          [
+            "Field",
+            "Value"
+          ],
+          [
+            "Pegion KSA Sales",
+            "210,"
+          ],
+          [
+            "Region UAE Sales",
+            "175"
+          ],
+          [
+            "Filter Period",
+            "01-2028,"
+          ]
+        ],
+        "row_source_ref": "cdr://table/docx-table-1"
+      }
+    ],
+    "lineage_ref": "lineage://real-ocr-image-to-docx",
+    "semantic_model_ref": null
+  },
+  "lineage_ref": "lineage://real-ocr-image-to-docx",
+  "semantic_model_ref": null
+}

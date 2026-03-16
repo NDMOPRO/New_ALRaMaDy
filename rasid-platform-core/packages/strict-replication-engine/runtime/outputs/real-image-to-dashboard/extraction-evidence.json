@@ -1,0 +1,9 @@
+{
+  "strategy": "metadata_png",
+  "metadata_keys": [
+    "binding_status",
+    "model",
+    "query_ref",
+    "target_kind"
+  ]
+}

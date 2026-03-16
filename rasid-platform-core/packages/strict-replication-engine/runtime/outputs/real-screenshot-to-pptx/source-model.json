@@ -1,0 +1,39 @@
+{
+  "width": 960,
+  "height": 540,
+  "background": "#FFFFFF",
+  "elements": [
+    {
+      "id": "title",
+      "type": "text",
+      "x": 40,
+      "y": 34,
+      "text": "STRICT PPTX"
+    },
+    {
+      "id": "hero",
+      "type": "shape",
+      "x": 40,
+      "y": 120,
+      "width": 220,
+      "height": 110,
+      "fill": "#90CAF9"
+    },
+    {
+      "id": "table",
+      "type": "table",
+      "x": 420,
+      "y": 180,
+      "rows": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "1",
+          "2"
+        ]
+      ]
+    }
+  ]
+}

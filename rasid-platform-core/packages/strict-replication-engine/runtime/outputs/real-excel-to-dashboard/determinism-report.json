@@ -1,0 +1,88 @@
+{
+  "lock_policy": {
+    "os_image": "Windows-11-10.0.26200-SP0",
+    "python_version": "3.14.3",
+    "fonts_snapshot_hash": "6a1dad344ebab28f55575ba31577166b7f4886045b4f232bd51cbf5b208b069a",
+    "aa_policy": "default-platform-aa",
+    "random_seed": 0,
+    "float_normalization": "python-native-json-stable",
+    "farm_image_id": "farm::Windows-11-10.0.26200-SP0",
+    "font_snapshot_id": "fonts::6a1dad344ebab28f55575ba31577166b7f4886045b4f232bd51cbf5b208b069a"
+  },
+  "rerun_count": 2,
+  "same_input_rerun_equals": true,
+  "model_hash_equal": true,
+  "render_hash_equal": true,
+  "binary_hash_equal": true,
+  "pixel_hashes_match": true,
+  "engine_fingerprints_match": true,
+  "render_config_consistent": true,
+  "render_config_hashes_match": true,
+  "model_hashes": [
+    "4439ffe465bfd0cab5e1fd9ac6a061e3da93b3c9d08bdea07ca6f8df0d8c24c3",
+    "4439ffe465bfd0cab5e1fd9ac6a061e3da93b3c9d08bdea07ca6f8df0d8c24c3"
+  ],
+  "render_hashes": [
+    "be2d04fa963cb1deacaae0dd3726d7dad0622993ffa8fd882799da6181f0a0e4",
+    "be2d04fa963cb1deacaae0dd3726d7dad0622993ffa8fd882799da6181f0a0e4"
+  ],
+  "binary_hashes": [
+    "7a6e624cb0ba18d220c0210be9374054cbf769e588d7815f85d39acb2e2065df",
+    "7a6e624cb0ba18d220c0210be9374054cbf769e588d7815f85d39acb2e2065df"
+  ],
+  "render_config_hash": "4961d33d8ad6ff2439c9fd72ff171a42a9d75685fa271a185bfd3ce6d3208883",
+  "engine_fingerprint": {
+    "runtime": "strict-replication-engine/runtime",
+    "python_version": "3.14.3",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "target_extension": "html",
+    "fonts_snapshot_hash": "6a1dad344ebab28f55575ba31577166b7f4886045b4f232bd51cbf5b208b069a"
+  },
+  "engine_fingerprint_hash": "5397c762d6bd1d69e67d78d6cf3e1d03ab667ecc89a856e0a13b473b9df23fff",
+  "render_profile": {
+    "target_extension": "html",
+    "dpi": 144,
+    "colorspace": "sRGB",
+    "anti_aliasing_policy": "default-platform-aa",
+    "float_normalization": "python-native-json-stable",
+    "page_range": {
+      "from": 1,
+      "to": 1
+    }
+  },
+  "render_refs": [
+    {
+      "render_id": "html-rerun-1",
+      "uri": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\determinism\\run-1.html",
+      "dpi": 144,
+      "colorspace": "sRGB",
+      "engine_fingerprint": "5397c762d6bd1d69e67d78d6cf3e1d03ab667ecc89a856e0a13b473b9df23fff",
+      "render_config_hash": "4961d33d8ad6ff2439c9fd72ff171a42a9d75685fa271a185bfd3ce6d3208883",
+      "fingerprint": {
+        "layout_hash": "4439ffe465bfd0cab5e1fd9ac6a061e3da93b3c9d08bdea07ca6f8df0d8c24c3",
+        "structural_hash": "4439ffe465bfd0cab5e1fd9ac6a061e3da93b3c9d08bdea07ca6f8df0d8c24c3",
+        "typography_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "pixel_hash": "be2d04fa963cb1deacaae0dd3726d7dad0622993ffa8fd882799da6181f0a0e4"
+      },
+      "binary_hash": "7a6e624cb0ba18d220c0210be9374054cbf769e588d7815f85d39acb2e2065df"
+    },
+    {
+      "render_id": "html-rerun-2",
+      "uri": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\determinism\\run-2.html",
+      "dpi": 144,
+      "colorspace": "sRGB",
+      "engine_fingerprint": "5397c762d6bd1d69e67d78d6cf3e1d03ab667ecc89a856e0a13b473b9df23fff",
+      "render_config_hash": "4961d33d8ad6ff2439c9fd72ff171a42a9d75685fa271a185bfd3ce6d3208883",
+      "fingerprint": {
+        "layout_hash": "4439ffe465bfd0cab5e1fd9ac6a061e3da93b3c9d08bdea07ca6f8df0d8c24c3",
+        "structural_hash": "4439ffe465bfd0cab5e1fd9ac6a061e3da93b3c9d08bdea07ca6f8df0d8c24c3",
+        "typography_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "pixel_hash": "be2d04fa963cb1deacaae0dd3726d7dad0622993ffa8fd882799da6181f0a0e4"
+      },
+      "binary_hash": "7a6e624cb0ba18d220c0210be9374054cbf769e588d7815f85d39acb2e2065df"
+    }
+  ],
+  "source_model_hash": "4439ffe465bfd0cab5e1fd9ac6a061e3da93b3c9d08bdea07ca6f8df0d8c24c3",
+  "violations": [],
+  "passed": true
+}

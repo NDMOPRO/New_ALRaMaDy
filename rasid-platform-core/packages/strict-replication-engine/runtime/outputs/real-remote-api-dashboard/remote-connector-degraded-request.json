@@ -1,0 +1,16 @@
+{
+  "url": "http://127.0.0.1:63599/api/session/start",
+  "method": "POST",
+  "headers": {
+    "Authorization": "Bearer <redacted>",
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "session_id": "remote-publication-degraded",
+    "dataset": "github_repo",
+    "region": "openai",
+    "period": "definitely-missing-strict-replication-repo",
+    "permission_state": "viewer",
+    "tenant_id": "tenant-remote-degraded"
+  }
+}

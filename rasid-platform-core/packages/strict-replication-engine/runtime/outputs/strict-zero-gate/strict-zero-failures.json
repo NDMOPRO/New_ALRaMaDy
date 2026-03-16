@@ -1,0 +1,229 @@
+[
+  {
+    "run_id": "real-image-to-pptx",
+    "publish_state": "degraded_published",
+    "failure_roots": [
+      "native_pixel_not_zero",
+      "independent_pixel_not_zero",
+      "functional_gate_failed",
+      "repair_or_mutation_present",
+      "fallback_or_degraded_state_present"
+    ],
+    "diff_refs": {
+      "primary": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\heatmap.png",
+      "native": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\native-heatmap.png",
+      "independent": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-pptx\\independent-heatmap.png",
+      "native_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-pptx-native-diff.png",
+      "independent_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-pptx-independent-diff.png"
+    }
+  },
+  {
+    "run_id": "real-pdf-to-docx",
+    "publish_state": "degraded_published",
+    "failure_roots": [
+      "native_pixel_not_zero",
+      "independent_pixel_not_zero",
+      "functional_gate_failed",
+      "fallback_or_degraded_state_present"
+    ],
+    "diff_refs": {
+      "primary": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\heatmap.png",
+      "native": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\native-heatmap.png",
+      "independent": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\independent-heatmap.png",
+      "native_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-docx-native-diff.png",
+      "independent_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-docx-independent-diff.png"
+    }
+  },
+  {
+    "run_id": "real-screenshot-to-xlsx",
+    "publish_state": "degraded_published",
+    "failure_roots": [
+      "primary_pixel_not_zero",
+      "native_pixel_not_zero",
+      "independent_pixel_not_zero",
+      "structural_gate_failed",
+      "functional_gate_failed",
+      "fallback_or_degraded_state_present"
+    ],
+    "diff_refs": {
+      "primary": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\heatmap.png",
+      "native": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\native-heatmap.png",
+      "independent": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\independent-heatmap.png",
+      "native_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-native-diff.png",
+      "independent_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-independent-diff.png"
+    }
+  },
+  {
+    "run_id": "real-image-to-dashboard",
+    "publish_state": "degraded_published",
+    "failure_roots": [
+      "native_pixel_not_zero",
+      "independent_pixel_not_zero",
+      "functional_gate_failed",
+      "fallback_or_degraded_state_present"
+    ],
+    "diff_refs": {
+      "primary": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\heatmap.png",
+      "native": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\native-heatmap.png",
+      "independent": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-image-to-dashboard\\independent-heatmap.png",
+      "native_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-dashboard-native-diff.png",
+      "independent_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-dashboard-independent-diff.png"
+    }
+  },
+  {
+    "run_id": "real-screenshot-to-pptx",
+    "publish_state": "degraded_published",
+    "failure_roots": [
+      "native_pixel_not_zero",
+      "independent_pixel_not_zero",
+      "functional_gate_failed",
+      "fallback_or_degraded_state_present"
+    ],
+    "diff_refs": {
+      "primary": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\heatmap.png",
+      "native": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\native-heatmap.png",
+      "independent": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-pptx\\independent-heatmap.png",
+      "native_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-pptx-native-diff.png",
+      "independent_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-pptx-independent-diff.png"
+    }
+  },
+  {
+    "run_id": "real-pdf-to-bi-dashboard",
+    "publish_state": "degraded_published",
+    "failure_roots": [
+      "native_pixel_not_zero",
+      "independent_pixel_not_zero",
+      "functional_gate_failed",
+      "fallback_or_degraded_state_present"
+    ],
+    "diff_refs": {
+      "primary": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\heatmap.png",
+      "native": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\native-heatmap.png",
+      "independent": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-bi-dashboard\\independent-heatmap.png",
+      "native_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-bi-dashboard-native-diff.png",
+      "independent_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-bi-dashboard-independent-diff.png"
+    }
+  },
+  {
+    "run_id": "real-excel-to-dashboard",
+    "publish_state": "degraded_published",
+    "failure_roots": [
+      "native_pixel_not_zero",
+      "independent_pixel_not_zero",
+      "functional_gate_failed",
+      "fallback_or_degraded_state_present"
+    ],
+    "diff_refs": {
+      "primary": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\heatmap.png",
+      "native": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\native-heatmap.png",
+      "independent": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\independent-heatmap.png",
+      "native_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-excel-to-dashboard-native-diff.png",
+      "independent_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-excel-to-dashboard-independent-diff.png"
+    }
+  },
+  {
+    "run_id": "real-dashboard-to-pptx",
+    "publish_state": "degraded_published",
+    "failure_roots": [
+      "native_pixel_not_zero",
+      "independent_pixel_not_zero",
+      "functional_gate_failed",
+      "fallback_or_degraded_state_present"
+    ],
+    "diff_refs": {
+      "primary": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\heatmap.png",
+      "native": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\native-heatmap.png",
+      "independent": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-dashboard-to-pptx\\independent-heatmap.png",
+      "native_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-dashboard-to-pptx-native-diff.png",
+      "independent_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-dashboard-to-pptx-independent-diff.png"
+    }
+  },
+  {
+    "run_id": "real-live-dashboard-degraded",
+    "publish_state": "degraded_published",
+    "failure_roots": [
+      "native_pixel_not_zero",
+      "independent_pixel_not_zero",
+      "functional_gate_failed",
+      "fallback_or_degraded_state_present"
+    ],
+    "diff_refs": {
+      "primary": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\heatmap.png",
+      "native": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\native-heatmap.png",
+      "independent": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-live-dashboard-degraded\\independent-heatmap.png",
+      "native_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-live-dashboard-degraded-native-diff.png",
+      "independent_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-live-dashboard-degraded-independent-diff.png"
+    }
+  },
+  {
+    "run_id": "real-remote-api-dashboard",
+    "publish_state": "degraded_published",
+    "failure_roots": [
+      "native_pixel_not_zero",
+      "independent_pixel_not_zero",
+      "fallback_or_degraded_state_present"
+    ],
+    "diff_refs": {
+      "primary": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\heatmap.png",
+      "native": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\native-heatmap.png",
+      "independent": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\independent-heatmap.png",
+      "native_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-remote-api-dashboard-native-diff.png",
+      "independent_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-remote-api-dashboard-independent-diff.png"
+    }
+  },
+  {
+    "run_id": "real-multipage-pdf-to-docx",
+    "publish_state": "degraded_published",
+    "failure_roots": [
+      "native_pixel_not_zero",
+      "independent_pixel_not_zero",
+      "functional_gate_failed",
+      "independent_verifier_inconsistent",
+      "fallback_or_degraded_state_present"
+    ],
+    "diff_refs": {
+      "primary": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\heatmap.png",
+      "native": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\native-heatmap.png",
+      "independent": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\independent-heatmap.png",
+      "native_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-multipage-pdf-to-docx-native-diff.png",
+      "independent_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-multipage-pdf-to-docx-independent-diff.png"
+    }
+  },
+  {
+    "run_id": "real-ocr-image-to-docx",
+    "publish_state": "degraded_published",
+    "failure_roots": [
+      "primary_pixel_not_zero",
+      "native_pixel_not_zero",
+      "independent_pixel_not_zero",
+      "functional_gate_failed",
+      "independent_verifier_inconsistent",
+      "fallback_or_degraded_state_present"
+    ],
+    "diff_refs": {
+      "primary": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\heatmap.png",
+      "native": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\native-heatmap.png",
+      "independent": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\independent-heatmap.png",
+      "native_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-native-diff.png",
+      "independent_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-independent-diff.png"
+    }
+  },
+  {
+    "run_id": "real-rich-vision-report-to-docx",
+    "publish_state": "degraded_published",
+    "failure_roots": [
+      "primary_pixel_not_zero",
+      "native_pixel_not_zero",
+      "independent_pixel_not_zero",
+      "functional_gate_failed",
+      "fallback_or_degraded_state_present"
+    ],
+    "diff_refs": {
+      "primary": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\heatmap.png",
+      "native": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\native-heatmap.png",
+      "independent": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-rich-vision-report-to-docx\\independent-heatmap.png",
+      "native_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-native-diff.png",
+      "independent_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-rich-vision-report-to-docx-independent-diff.png"
+    }
+  }
+]

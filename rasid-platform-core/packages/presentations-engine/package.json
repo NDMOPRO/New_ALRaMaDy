@@ -1,0 +1,31 @@
+{
+  "name": "@rasid/presentations-engine",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./platform": {
+      "types": "./dist/platform.d.ts",
+      "default": "./dist/platform.js"
+    },
+    "./workspace": {
+      "types": "./dist/workspace.d.ts",
+      "default": "./dist/workspace.js"
+    }
+  },
+  "dependencies": {
+    "@rasid/capability-registry": "1.0.0",
+    "@rasid/contracts": "1.0.0",
+    "@rasid/runtime": "1.0.0",
+    "jszip": "^3.10.1",
+    "playwright-core": "^1.55.1",
+    "pptxgenjs": "^4.0.1",
+    "xlsx": "^0.18.5",
+    "zod": "^3.24.2"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "run_id": "real-remote-api-dashboard",
+  "primary_renderer": "runtime-parser-dashboard",
+  "secondary_renderer": "independent-firefox-headless",
+  "native_renderer": "chromium-headless",
+  "separated_process": true,
+  "target_hash": "446a16526fea0acbc6e18f1cbdf0d2f69003ec2dc6d1c38fb01f9b0d22bd6b3b",
+  "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-remote-api-dashboard\\dual-verifier-matrix.json"
+}

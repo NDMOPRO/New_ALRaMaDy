@@ -1,0 +1,10 @@
+{
+  "artifact_id": "real-remote-api-dashboard-dashboard-artifact",
+  "run_id": "real-remote-api-dashboard",
+  "artifact_kind": "dashboard",
+  "target_kind": "dashboard",
+  "path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-remote-api-dashboard.html",
+  "checksum": "446a16526fea0acbc6e18f1cbdf0d2f69003ec2dc6d1c38fb01f9b0d22bd6b3b",
+  "strict_status": "degraded",
+  "created_at": "2026-03-15T22:54:56.674416+00:00"
+}

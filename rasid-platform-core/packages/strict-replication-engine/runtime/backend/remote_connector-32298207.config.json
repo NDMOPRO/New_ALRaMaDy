@@ -1,0 +1,9 @@
+{
+  "base_url": "http://127.0.0.1:60262",
+  "db_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\remote_connector-32298207.sqlite",
+  "auth_mode": "bearer",
+  "token_hint": "322982...",
+  "external_provider": "github-rest-api",
+  "external_authenticated": true,
+  "external_token_source": "gh-cli"
+}

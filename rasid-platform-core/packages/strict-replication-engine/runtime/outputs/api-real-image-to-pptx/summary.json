@@ -1,0 +1,61 @@
+{
+  "run_id": "api-real-image-to-pptx",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-image-pptx.png",
+  "classified_kind": "image",
+  "source_checksum": "e3e985cd403fb116b5a99deda3cf871531dd625694facf3bc423e844c9b156f5",
+  "target_kind": "pptx",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\api-real-image-to-pptx.pptx",
+  "initial_structural_pass": true,
+  "final_structural_pass": true,
+  "initial_pixel_ratio": 0.0006635802469135803,
+  "final_pixel_ratio": 0.0,
+  "round_trip_ratio": 0.0,
+  "repair_applied": true,
+  "publish_state": "degraded_published",
+  "publication_ref": "sqlite://strict-backend/publications/publication-api-real-image-to-pptx",
+  "strict_pass": false,
+  "strict_policy": {
+    "pixel_zero_required": true,
+    "editable_core_required": true,
+    "determinism_required": true
+  },
+  "pixel_zero_gate_passed": true,
+  "editable_core_gate_passed": true,
+  "determinism_gate_passed": true,
+  "native_gate": {
+    "passed": true,
+    "threshold": 0.08,
+    "ratio": 0.07092078189300412,
+    "authoritative": false
+  },
+  "independent_native_verification": {
+    "passed": true,
+    "threshold": 0.08,
+    "ratio": 0.06058577674897119,
+    "renderer": "independent-libreoffice-pdf",
+    "authoritative": true,
+    "independent": true,
+    "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\api-real-image-to-pptx-independent.png",
+    "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\api-real-image-to-pptx-independent-diff.png",
+    "reference_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\api-real-image-to-pptx-source.png",
+    "pdf_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\api-real-image-to-pptx-independent.pdf",
+    "browser_url": null
+  },
+  "native_render": {
+    "renderer": "office-com-pdf",
+    "pdf_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\api-real-image-to-pptx-native.pdf",
+    "image_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\api-real-image-to-pptx-native.png",
+    "source_pixel_ratio": 0.07092078189300412,
+    "parser_pixel_ratio": 0.07092078189300412,
+    "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\api-real-image-to-pptx-native-diff.png"
+  },
+  "renders": {
+    "source_input": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\api-real-image-to-pptx-source-input.png",
+    "source": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\api-real-image-to-pptx-source.png",
+    "initial": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\api-real-image-to-pptx-initial.png",
+    "final": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\api-real-image-to-pptx-final.png",
+    "round_trip": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\api-real-image-to-pptx-roundtrip.png",
+    "diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\api-real-image-to-pptx-diff.png",
+    "round_trip_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\api-real-image-to-pptx-roundtrip-diff.png"
+  }
+}

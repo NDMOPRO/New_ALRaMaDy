@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/transcription-compare.schema.json",
+  "title": "TranscriptionCompareResult",
+  "type": "object",
+  "required": [
+    "compare_id",
+    "compare_kind",
+    "left_ref",
+    "right_ref",
+    "added_refs",
+    "removed_refs",
+    "changed_refs",
+    "summary",
+    "detail_rows",
+    "diff_artifact_ref"
+  ],
+  "properties": {
+    "compare_id": { "type": "string" },
+    "compare_kind": { "enum": ["source_to_source", "bundle_to_bundle", "version_to_version"] },
+    "left_ref": { "type": "string" },
+    "right_ref": { "type": "string" },
+    "added_refs": { "type": "array", "items": { "type": "string" } },
+    "removed_refs": { "type": "array", "items": { "type": "string" } },
+    "changed_refs": { "type": "array", "items": { "type": "string" } },
+    "summary": { "type": "string" },
+    "detail_rows": { "type": "array", "items": { "type": "object" } },
+    "diff_artifact_ref": { "type": "string" }
+  }
+}

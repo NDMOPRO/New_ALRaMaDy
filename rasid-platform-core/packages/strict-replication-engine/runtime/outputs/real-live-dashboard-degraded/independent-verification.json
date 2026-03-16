@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "threshold": 0.15,
+  "ratio": 0.13202996399176956,
+  "renderer": "independent-firefox-headless",
+  "authoritative": true,
+  "independent": true,
+  "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-live-dashboard-degraded-independent.png",
+  "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-live-dashboard-degraded-independent-diff.png",
+  "reference_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-live-dashboard-degraded-source.png",
+  "pdf_path": null,
+  "browser_url": "file:///C:/ALRaMaDy/rasid-platform-core/packages/strict-replication-engine/runtime/backend/storage/artifacts/real-live-dashboard-degraded.html"
+}

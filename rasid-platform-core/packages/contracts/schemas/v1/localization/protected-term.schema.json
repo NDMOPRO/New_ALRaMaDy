@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/localization/protected-term.schema.json",
+  "title": "ProtectedTerm",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "protected_term_id", "profile_ref", "locale", "term", "match_strategy"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.localization.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "protected_term_id": { "type": "string" },
+    "profile_ref": { "type": "string" },
+    "locale": { "type": "string" },
+    "term": { "type": "string" },
+    "required_output_term": { "type": ["string", "null"] },
+    "match_strategy": { "enum": ["exact", "normalized", "regex"] },
+    "applies_to_scope_refs": { "type": "array", "items": { "type": "string" } },
+    "rationale": { "type": ["string", "null"] }
+  }
+}

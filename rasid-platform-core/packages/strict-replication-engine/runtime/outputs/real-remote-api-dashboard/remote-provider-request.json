@@ -1,0 +1,9 @@
+{
+  "provider": "github-rest-api",
+  "request_id": "github-repo-success",
+  "method": "GET",
+  "url": "https://api.github.com/repos/openai/openai-python",
+  "authenticated": true,
+  "token_source": "gh-cli",
+  "expected_status": 200
+}

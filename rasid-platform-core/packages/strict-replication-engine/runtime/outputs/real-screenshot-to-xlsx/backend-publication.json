@@ -1,0 +1,9 @@
+{
+  "publication_id": "publication-real-screenshot-to-xlsx",
+  "run_id": "real-screenshot-to-xlsx",
+  "artifact_id": "real-screenshot-to-xlsx-xlsx-artifact",
+  "publication_ref": "sqlite://strict-backend/publications/publication-real-screenshot-to-xlsx",
+  "backend_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-screenshot-to-xlsx.xlsx",
+  "strict_status": "degraded",
+  "created_at": "2026-03-15T22:54:03.760403+00:00"
+}

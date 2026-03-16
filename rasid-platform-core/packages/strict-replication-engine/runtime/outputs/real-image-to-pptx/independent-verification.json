@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "threshold": 0.08,
+  "ratio": 0.06058577674897119,
+  "renderer": "independent-libreoffice-pdf",
+  "authoritative": true,
+  "independent": true,
+  "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-pptx-independent.png",
+  "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-pptx-independent-diff.png",
+  "reference_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-pptx-source.png",
+  "pdf_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-image-to-pptx-independent.pdf",
+  "browser_url": null
+}

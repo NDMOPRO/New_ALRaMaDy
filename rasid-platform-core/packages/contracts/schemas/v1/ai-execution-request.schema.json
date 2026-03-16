@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/ai-execution-request.schema.json",
+  "title": "AiExecutionRequest",
+  "type": "object",
+  "required": [
+    "schema_namespace",
+    "schema_version",
+    "request_id",
+    "session_id",
+    "page_path",
+    "user_prompt",
+    "requested_mode",
+    "approval_granted",
+    "resource_ref",
+    "resource_refs",
+    "context_payload"
+  ],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.ai.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "request_id": { "type": "string" },
+    "session_id": { "type": "string" },
+    "page_path": {
+      "enum": ["/home", "/data", "/excel", "/dashboards", "/reports", "/presentations", "/transcription", "/replication", "/localization", "/library", "/governance"]
+    },
+    "user_prompt": { "type": "string" },
+    "requested_mode": { "enum": ["easy", "advanced"] },
+    "approval_granted": { "type": "boolean" },
+    "resource_ref": { "type": ["string", "null"] },
+    "resource_refs": { "type": "array", "items": { "type": "string" } },
+    "context_payload": { "type": "object" }
+  }
+}

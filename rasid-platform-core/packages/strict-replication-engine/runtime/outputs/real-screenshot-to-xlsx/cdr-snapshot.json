@@ -1,0 +1,386 @@
+{
+  "snapshot_id": "cdr::297b991a5e5d::xlsx",
+  "snapshot_version": "2026-03-15.strict.2",
+  "cdr_design": {
+    "version": "1.1.0",
+    "immutable_layout_lock_flag": true,
+    "conversion_policy_id": "strict_replication",
+    "dpi_reference": 144,
+    "target_kind": "xlsx",
+    "pages": [
+      {
+        "page_id": "page-1",
+        "index": 1,
+        "size_emu": {
+          "w": 3657600,
+          "h": 1828800
+        },
+        "background_spec": {
+          "type": "solid",
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          }
+        },
+        "layers": [
+          {
+            "layer_id": "background",
+            "z_index": 0,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "guides",
+            "z_index": 1,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "containers",
+            "z_index": 2,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "text",
+            "z_index": 3,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "vectors",
+            "z_index": 4,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "data",
+            "z_index": 5,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": [
+              {
+                "element_id": "sheet-grid-1",
+                "kind": "table",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 381000,
+                  "width": 3429000,
+                  "height": 1143000
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  381000
+                ],
+                "opacity": 1.0,
+                "z_index": 1,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": false
+                },
+                "ratios": {
+                  "padding_ratio": 0.01,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.0
+                },
+                "fingerprint": "b75ce8dfbd6bd6d700f6336d76574169e84786a09e3f1f0f7a5f0ffc28b6e900",
+                "table": {
+                  "grid": {
+                    "rows": 4,
+                    "cols": 4,
+                    "row_heights_emu": [
+                      228600,
+                      228600,
+                      228600,
+                      228600
+                    ],
+                    "col_widths_emu": [
+                      800100,
+                      800100,
+                      800100,
+                      800100
+                    ]
+                  },
+                  "cells": [
+                    {
+                      "r": 0,
+                      "c": 0,
+                      "value": "Month",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 0,
+                      "c": 1,
+                      "value": "Revenue",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 0,
+                      "c": 2,
+                      "value": "Cost",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 0,
+                      "c": 3,
+                      "value": "Margin",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 1,
+                      "c": 0,
+                      "value": "Jan",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 1,
+                      "c": 1,
+                      "value": "120",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 1,
+                      "c": 2,
+                      "value": "60",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 1,
+                      "c": 3,
+                      "value": "=B2-C2",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 2,
+                      "c": 0,
+                      "value": "Feb",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 2,
+                      "c": 1,
+                      "value": "140",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 2,
+                      "c": 2,
+                      "value": "70",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 2,
+                      "c": 3,
+                      "value": "=B3-C3",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 3,
+                      "c": 0,
+                      "value": "Mar",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 3,
+                      "c": 1,
+                      "value": "160",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 3,
+                      "c": 2,
+                      "value": "85",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 3,
+                      "c": 3,
+                      "value": "=B4-C4",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    }
+                  ],
+                  "style": {
+                    "alignments": {
+                      "default": "center"
+                    }
+                  },
+                  "rtl": false,
+                  "binding": "sheet://active"
+                }
+              }
+            ]
+          },
+          {
+            "layer_id": "interactive",
+            "z_index": 6,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          }
+        ]
+      }
+    ],
+    "assets": [
+      {
+        "asset_id": "source-asset-1",
+        "uri": "sha256://297b991a5e5d7c5f6e807c2e4caa944da88384873dbe9792577c7713e0656bc7",
+        "mime": "application/xlsx",
+        "sha256": "297b991a5e5d7c5f6e807c2e4caa944da88384873dbe9792577c7713e0656bc7",
+        "size_bytes": 0
+      }
+    ],
+    "layout_graph": "{\"edges\": [{\"from\": \"background\", \"to\": \"data\"}], \"nodes\": [\"sheet-grid-1\"]}",
+    "constraint_matrix": "{\"constraints\": [{\"element_id\": \"sheet-grid-1\", \"no_reflow\": true}]}",
+    "fingerprints": {
+      "layout_hash": "318742b3465c7b8c774a0aec0de5f2a7f6f3406d1e840b7e39fa2af7107ae6ef",
+      "structural_hash": "df0d02d14ca15420385ea4a205d2c057339978689d141df5c600137b11361cdf",
+      "typography_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "render_intent_hash": "99fcf68749bd9319f1402986ad2dabf059033b641e0d263a6e4980625b70ae80"
+    }
+  },
+  "cdr_data": {
+    "tables": [
+      {
+        "table_id": "xlsx-sheet-active",
+        "columns": [
+          {
+            "name": "Month",
+            "type": "string",
+            "fingerprint": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+          },
+          {
+            "name": "Revenue",
+            "type": "string",
+            "fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+          },
+          {
+            "name": "Cost",
+            "type": "string",
+            "fingerprint": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
+          },
+          {
+            "name": "Margin",
+            "type": "string",
+            "fingerprint": "4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce"
+          }
+        ],
+        "rows": [
+          [
+            "Month",
+            "Revenue",
+            "Cost",
+            "Margin"
+          ],
+          [
+            "Jan",
+            "120",
+            "60",
+            "=B2-C2"
+          ],
+          [
+            "Feb",
+            "140",
+            "70",
+            "=B3-C3"
+          ],
+          [
+            "Mar",
+            "160",
+            "85",
+            "=B4-C4"
+          ]
+        ],
+        "row_source_ref": "cdr://sheet/xlsx-sheet-active"
+      }
+    ],
+    "lineage_ref": "lineage://real-screenshot-to-xlsx",
+    "semantic_model_ref": null
+  },
+  "lineage_ref": "lineage://real-screenshot-to-xlsx",
+  "semantic_model_ref": null
+}

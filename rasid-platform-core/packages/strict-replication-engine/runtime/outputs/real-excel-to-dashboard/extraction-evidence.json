@@ -1,0 +1,43 @@
+{
+  "strategy": "xlsx_file",
+  "source_rows": [
+    [
+      "Month",
+      "Revenue",
+      "Cost",
+      "Margin"
+    ],
+    [
+      "Jan",
+      "120",
+      "60",
+      "=B2-C2"
+    ],
+    [
+      "Feb",
+      "140",
+      "70",
+      "=B3-C3"
+    ],
+    [
+      "Mar",
+      "160",
+      "85",
+      "=B4-C4"
+    ]
+  ],
+  "formula_cells": [
+    {
+      "cell": "D2",
+      "formula": "=B2-C2"
+    },
+    {
+      "cell": "D3",
+      "formula": "=B3-C3"
+    },
+    {
+      "cell": "D4",
+      "formula": "=B4-C4"
+    }
+  ]
+}

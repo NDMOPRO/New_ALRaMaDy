@@ -1,0 +1,9 @@
+{
+  "publication_id": "publication-real-remote-api-dashboard",
+  "run_id": "real-remote-api-dashboard",
+  "artifact_id": "real-remote-api-dashboard-dashboard-artifact",
+  "publication_ref": "sqlite://strict-backend/publications/publication-real-remote-api-dashboard",
+  "backend_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-remote-api-dashboard.html",
+  "strict_status": "degraded",
+  "created_at": "2026-03-15T22:54:56.699177+00:00"
+}

@@ -1,0 +1,28 @@
+{
+  "run_id": "api-real-image-to-pptx",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\api-real-image-to-pptx.pptx",
+  "verifiers": [
+    {
+      "verifier_id": "runtime-native-renderer",
+      "toolchain": "office-com-pdf",
+      "version": "office-com-pdf",
+      "input_hash": "7f9aa54d520bef81a95b0192316f93f306eaffdd29f64e5f1e0e9ab78f881b75",
+      "render_hash": "8b8677e1040c705c0c64de9469b6a8933d3a975e96d06489796730746655bd98",
+      "pixel_result": 0.07092078189300412,
+      "structural_result": true,
+      "pass_fail_reasoning": "native render comparison recorded",
+      "independent": false
+    },
+    {
+      "verifier_id": "independent-external-renderer",
+      "toolchain": "independent-libreoffice-pdf",
+      "version": "independent-libreoffice-pdf",
+      "input_hash": "7f9aa54d520bef81a95b0192316f93f306eaffdd29f64e5f1e0e9ab78f881b75",
+      "render_hash": "80aacd7044ec48e232248f2afbefe0bc7f8f579da84d3c02a97f831464f1bd5d",
+      "pixel_result": 0.06058577674897119,
+      "structural_result": true,
+      "pass_fail_reasoning": "external verifier subprocess result",
+      "independent": true
+    }
+  ]
+}

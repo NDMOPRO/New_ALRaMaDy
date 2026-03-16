@@ -1,0 +1,9 @@
+{
+  "run_id": "real-ocr-image-to-docx",
+  "primary_renderer": "runtime-parser-docx",
+  "secondary_renderer": "independent-libreoffice-pdf",
+  "native_renderer": "office-com-pdf",
+  "separated_process": true,
+  "target_hash": "0d435a570cb75f847f23d80127f62fad462bc7214bccc7649deb81d32bd9ec20",
+  "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\dual-verifier-matrix.json"
+}

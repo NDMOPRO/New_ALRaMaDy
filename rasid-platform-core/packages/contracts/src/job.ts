@@ -15,12 +15,14 @@ export const JobSchema = z.object({
   contract: ContractEnvelopeSchema,
   job_id: z.string(),
   capability: z.enum([
+    "governance",
     "strict_replication",
     "presentations",
-    "excel_data",
+    "excel_engine",
     "dashboards",
     "reports",
-    "lct",
+    "arabic_localization_lct",
+    "transcription_extraction",
     "rasid_intelligent_operator",
     "unified_canvas"
   ]),

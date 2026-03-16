@@ -1,0 +1,9 @@
+{
+  "run_id": "real-live-dashboard-strict",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-screenshot-dashboard.png",
+  "classified_kind": "screenshot",
+  "source_checksum": "dc567b25417bef6ca30c7887d5db40a1e4961038fbfa9dee75c7ea39f0bf2f02",
+  "target_kind": "dashboard",
+  "source_preview_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-live-dashboard-strict-source-input.png",
+  "normalized_source_render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-live-dashboard-strict-source.png"
+}

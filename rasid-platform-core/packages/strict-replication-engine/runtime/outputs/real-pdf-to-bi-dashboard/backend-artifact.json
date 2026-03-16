@@ -1,0 +1,10 @@
+{
+  "artifact_id": "real-pdf-to-bi-dashboard-dashboard-artifact",
+  "run_id": "real-pdf-to-bi-dashboard",
+  "artifact_kind": "dashboard",
+  "target_kind": "dashboard",
+  "path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-pdf-to-bi-dashboard.html",
+  "checksum": "768b5daf369c0d38d9a8df9157a18cace7ad07dd04344e6c5d0b2f1b479dc4ec",
+  "strict_status": "degraded",
+  "created_at": "2026-03-15T22:54:19.487468+00:00"
+}

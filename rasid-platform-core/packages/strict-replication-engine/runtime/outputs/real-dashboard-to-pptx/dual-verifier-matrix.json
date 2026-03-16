@@ -1,0 +1,28 @@
+{
+  "run_id": "real-dashboard-to-pptx",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-dashboard-to-pptx.pptx",
+  "verifiers": [
+    {
+      "verifier_id": "runtime-native-renderer",
+      "toolchain": "office-com-pdf",
+      "version": "office-com-pdf",
+      "input_hash": "77a5e417ccf4049366966cc16209c1d3b1a168179feb7bbb8af0d1b812520eb3",
+      "render_hash": "67dd7645803f37feaf200dfce1c71275a1d1bd13ebf7d20a550ca9bbfd9ad1b3",
+      "pixel_result": 0.08443930041152263,
+      "structural_result": true,
+      "pass_fail_reasoning": "native render comparison recorded",
+      "independent": false
+    },
+    {
+      "verifier_id": "independent-external-renderer",
+      "toolchain": "independent-libreoffice-pdf",
+      "version": "independent-libreoffice-pdf",
+      "input_hash": "77a5e417ccf4049366966cc16209c1d3b1a168179feb7bbb8af0d1b812520eb3",
+      "render_hash": "beff58998d2e6e8990b17cfb96ad8124fde345a5902fa9d0b36dfedaca07fa02",
+      "pixel_result": 0.07453960905349795,
+      "structural_result": true,
+      "pass_fail_reasoning": "external verifier subprocess result",
+      "independent": true
+    }
+  ]
+}

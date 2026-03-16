@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/excel-engine/merged-cells.schema.json",
+  "title": "Excel Merged Cells",
+  "type": "object",
+  "required": ["merged_cells_id", "workbook_ref", "worksheet_ref", "anchor_cell_ref", "range_ref"],
+  "properties": {
+    "merged_cells_id": { "type": "string" },
+    "workbook_ref": { "type": "string" },
+    "worksheet_ref": { "type": "string" },
+    "anchor_cell_ref": { "type": "string" },
+    "covered_cell_refs": { "type": "array", "items": { "type": "string" } },
+    "range_ref": { "type": "string" }
+  }
+}

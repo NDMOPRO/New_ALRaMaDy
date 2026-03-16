@@ -1,0 +1,9 @@
+{
+  "binding_id": "binding-real-live-dashboard-degraded",
+  "run_id": "real-live-dashboard-degraded",
+  "publication_id": "publication-real-live-dashboard-degraded",
+  "dataset_ref": "dataset.sales_metrics",
+  "query_ref": "remote://sales_missing",
+  "status": "degraded",
+  "last_refresh_at": "2026-03-15T22:54:38.364696+00:00"
+}

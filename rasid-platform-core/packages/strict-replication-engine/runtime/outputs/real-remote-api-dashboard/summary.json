@@ -1,0 +1,61 @@
+{
+  "run_id": "real-remote-api-dashboard",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-screenshot-dashboard.png",
+  "classified_kind": "screenshot",
+  "source_checksum": "dc567b25417bef6ca30c7887d5db40a1e4961038fbfa9dee75c7ea39f0bf2f02",
+  "target_kind": "dashboard",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-remote-api-dashboard.html",
+  "initial_structural_pass": true,
+  "final_structural_pass": true,
+  "initial_pixel_ratio": 0.0,
+  "final_pixel_ratio": 0.0,
+  "round_trip_ratio": 0.0,
+  "repair_applied": false,
+  "publish_state": "degraded_published",
+  "publication_ref": "sqlite://strict-backend/publications/publication-real-remote-api-dashboard",
+  "strict_pass": false,
+  "strict_policy": {
+    "pixel_zero_required": true,
+    "editable_core_required": true,
+    "determinism_required": true
+  },
+  "pixel_zero_gate_passed": true,
+  "editable_core_gate_passed": true,
+  "determinism_gate_passed": true,
+  "native_gate": {
+    "passed": true,
+    "threshold": 0.15,
+    "ratio": 0.13983796296296297,
+    "authoritative": false
+  },
+  "independent_native_verification": {
+    "passed": true,
+    "threshold": 0.15,
+    "ratio": 0.14348958333333334,
+    "renderer": "independent-firefox-headless",
+    "authoritative": true,
+    "independent": true,
+    "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-remote-api-dashboard-independent.png",
+    "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-remote-api-dashboard-independent-diff.png",
+    "reference_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-remote-api-dashboard-source.png",
+    "pdf_path": null,
+    "browser_url": "http://127.0.0.1:63599/dashboard/real-remote-api-dashboard?access_token=55f651d3c3befbe81d9b6c43"
+  },
+  "native_render": {
+    "renderer": "chromium-headless",
+    "image_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-remote-api-dashboard-native.png",
+    "url": "http://127.0.0.1:63599/dashboard/real-remote-api-dashboard?access_token=55f651d3c3befbe81d9b6c43",
+    "source_pixel_ratio": 0.13983796296296297,
+    "parser_pixel_ratio": 0.13983796296296297,
+    "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-remote-api-dashboard-native-diff.png"
+  },
+  "renders": {
+    "source_input": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-remote-api-dashboard-source-input.png",
+    "source": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-remote-api-dashboard-source.png",
+    "initial": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-remote-api-dashboard-initial.png",
+    "final": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-remote-api-dashboard-final.png",
+    "round_trip": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-remote-api-dashboard-roundtrip.png",
+    "diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-remote-api-dashboard-diff.png",
+    "round_trip_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-remote-api-dashboard-roundtrip-diff.png"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "segmentation_regions": [],
+  "ocr_confidence_thresholds": {
+    "minimum_line_confidence": 0.75,
+    "model_runtime": null
+  },
+  "style_extraction": {
+    "available": false,
+    "layout_box_count": 0
+  },
+  "table_reconstruction_quality": {
+    "available": false,
+    "table_count": 0
+  },
+  "chart_reconstruction_quality": {
+    "available": false,
+    "chart_count": 0
+  },
+  "arabic_shaping_rtl_fidelity": {
+    "available": false,
+    "rtl_text": []
+  },
+  "fallback_policy": {
+    "strategy": "xlsx_file",
+    "status": "applied_if_model_missing"
+  },
+  "image_normalization": {
+    "applied": true,
+    "mode": "RGBA/sRGB/orientation-normalized"
+  },
+  "validator_matrix": {
+    "image_to_table": false,
+    "image_to_dashboard": false,
+    "image_to_presentation": false
+  },
+  "overall_passed": false
+}

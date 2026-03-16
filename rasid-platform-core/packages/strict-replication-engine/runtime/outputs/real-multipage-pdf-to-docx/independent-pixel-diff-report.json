@@ -1,0 +1,58 @@
+{
+  "comparison_id": "independent-verifier",
+  "threshold": 0.0,
+  "passed": false,
+  "pixel_diff": 0.010024074074074074,
+  "differing_pixels": 10826,
+  "total_pixels": 1080000,
+  "dimensions_report": {
+    "equal": false,
+    "reference": {
+      "width": 900,
+      "height": 1200
+    },
+    "candidate": {
+      "width": 612,
+      "height": 792
+    },
+    "comparison_canvas": {
+      "width": 900,
+      "height": 1200
+    }
+  },
+  "normalization_proof": {
+    "reference": {
+      "sRGB_normalized": true,
+      "premultiplied_alpha_normalized": true,
+      "orientation_normalized": true,
+      "original_mode": "RGB",
+      "normalized_mode": "RGBA",
+      "dimensions": {
+        "width": 900,
+        "height": 1200
+      }
+    },
+    "candidate": {
+      "sRGB_normalized": true,
+      "premultiplied_alpha_normalized": true,
+      "orientation_normalized": true,
+      "original_mode": "RGB",
+      "normalized_mode": "RGBA",
+      "dimensions": {
+        "width": 612,
+        "height": 792
+      }
+    }
+  },
+  "render_config_hash": "4570fa3b5a4ea0e0ff89c559f2e594839a80a85f7c90f07bd48564594ad6e3d3",
+  "engine_fingerprint": {
+    "renderer": "independent-libreoffice-pdf",
+    "target_kind": "docx",
+    "fingerprint_hash": "8fabbb9d9f2673d4d98726971ada841515508ae95dc6ac55f69fa109b84ab499"
+  },
+  "pixel_hash": {
+    "reference": "8862d427824c7b626c1d9254ef2a8a1d858c6b6d2f49605d5db52f363e91f139",
+    "candidate": "a5cb237c7bdc1578174c6cd31df5e3bc9fa8a1141eb39dd71c8bb842cdd8fa15"
+  },
+  "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\independent-heatmap.png"
+}

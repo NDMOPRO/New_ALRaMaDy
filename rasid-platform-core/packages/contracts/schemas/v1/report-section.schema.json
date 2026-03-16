@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/report-section.schema.json",
+  "title": "ReportSection",
+  "type": "object",
+  "required": [
+    "schema_namespace",
+    "schema_version",
+    "section_id",
+    "report_ref",
+    "version_ref",
+    "section_kind",
+    "title",
+    "order_index"
+  ],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.report.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "section_id": { "type": "string" },
+    "report_ref": { "type": "string" },
+    "version_ref": { "type": "string" },
+    "section_kind": { "enum": ["cover", "executive_summary", "table_of_contents", "body", "appendix", "footnotes"] },
+    "title": { "type": "array" },
+    "order_index": { "type": "integer", "minimum": 0 }
+  }
+}

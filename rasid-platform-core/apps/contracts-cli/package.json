@@ -5,6 +5,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
+    "@rasid/arabic-localization-lct-engine": "1.0.0",
+    "@rasid/ai-engine": "1.0.0",
     "@rasid/common": "1.0.0",
     "@rasid/artifacts": "1.0.0",
     "@rasid/audit-lineage": "1.0.0",
@@ -15,10 +17,14 @@
     "@rasid/contracts": "1.0.0",
     "@rasid/dashboard-engine": "1.0.0",
     "@rasid/evidence": "1.0.0",
+    "@rasid/governance-engine": "1.0.0",
     "@rasid/jobs": "1.0.0",
     "@rasid/library": "1.0.0",
     "@rasid/output-publication": "1.0.0",
     "@rasid/permissions": "1.0.0",
-    "@rasid/runtime": "1.0.0"
+    "@rasid/presentations-engine": "1.0.0",
+    "@rasid/report-engine": "1.0.0",
+    "@rasid/runtime": "1.0.0",
+    "@rasid/transcription-extraction-engine": "1.0.0"
   }
 }

@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/dashboard-compare.schema.json",
+  "title": "DashboardCompareResult",
+  "type": "object",
+  "required": [
+    "compare_id",
+    "dashboard_ref",
+    "base_version_ref",
+    "target_version_ref",
+    "changed_widget_refs",
+    "changed_layout_item_refs",
+    "changed_filter_refs",
+    "widget_config_diffs",
+    "layout_diffs",
+    "filter_state_diffs",
+    "binding_diffs",
+    "interaction_rule_diffs",
+    "refresh_result_diffs",
+    "version_delta",
+    "data_source_delta",
+    "diff_artifact_ref",
+    "created_at",
+    "created_by"
+  ],
+  "properties": {
+    "compare_id": { "type": "string" },
+    "dashboard_ref": { "type": "string" },
+    "base_version_ref": { "type": "string" },
+    "target_version_ref": { "type": "string" },
+    "changed_widget_refs": { "type": "array", "items": { "type": "string" } },
+    "changed_layout_item_refs": { "type": "array", "items": { "type": "string" } },
+    "changed_filter_refs": { "type": "array", "items": { "type": "string" } },
+    "widget_config_diffs": { "$ref": "#/$defs/itemDiffs" },
+    "layout_diffs": { "$ref": "#/$defs/itemDiffs" },
+    "filter_state_diffs": { "$ref": "#/$defs/itemDiffs" },
+    "binding_diffs": { "$ref": "#/$defs/itemDiffs" },
+    "interaction_rule_diffs": { "$ref": "#/$defs/itemDiffs" },
+    "refresh_result_diffs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["binding_ref", "base_refresh_state", "target_refresh_state", "base_last_refresh_at", "target_last_refresh_at"],
+        "properties": {
+          "binding_ref": { "type": "string" },
+          "base_refresh_state": { "type": ["string", "null"] },
+          "target_refresh_state": { "type": ["string", "null"] },
+          "base_last_refresh_at": { "type": ["string", "null"] },
+          "target_last_refresh_at": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "version_delta": {
+      "type": "object",
+      "required": ["base_version_ref", "target_version_ref", "publication_state_changed", "stale_binding_delta", "refresh_job_changed"],
+      "properties": {
+        "base_version_ref": { "type": "string" },
+        "target_version_ref": { "type": "string" },
+        "publication_state_changed": { "type": "boolean" },
+        "stale_binding_delta": { "type": "integer" },
+        "refresh_job_changed": { "type": "boolean" }
+      }
+    },
+    "data_source_delta": {
+      "type": "object",
+      "required": ["added_dataset_refs", "removed_dataset_refs"],
+      "properties": {
+        "added_dataset_refs": { "type": "array", "items": { "type": "string" } },
+        "removed_dataset_refs": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "summary": { "type": "string" },
+    "diff_artifact_ref": { "type": "string" },
+    "created_at": { "type": "string" },
+    "created_by": { "type": "string" }
+  },
+  "$defs": {
+    "itemDiffs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ref", "base", "target"],
+        "properties": {
+          "ref": { "type": "string" },
+          "base": { "type": ["object", "null"] },
+          "target": { "type": ["object", "null"] }
+        }
+      }
+    }
+  }
+}

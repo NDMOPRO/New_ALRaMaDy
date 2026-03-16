@@ -1,0 +1,9 @@
+{
+  "run_id": "real-excel-to-dashboard",
+  "primary_renderer": "runtime-parser-dashboard",
+  "secondary_renderer": "independent-firefox-headless",
+  "native_renderer": "chromium-headless",
+  "separated_process": true,
+  "target_hash": "7a6e624cb0ba18d220c0210be9374054cbf769e588d7815f85d39acb2e2065df",
+  "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-excel-to-dashboard\\dual-verifier-matrix.json"
+}

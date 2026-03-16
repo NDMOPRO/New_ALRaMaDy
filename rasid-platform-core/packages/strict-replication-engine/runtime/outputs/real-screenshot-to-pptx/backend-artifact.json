@@ -1,0 +1,10 @@
+{
+  "artifact_id": "real-screenshot-to-pptx-pptx-artifact",
+  "run_id": "real-screenshot-to-pptx",
+  "artifact_kind": "pptx",
+  "target_kind": "pptx",
+  "path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-screenshot-to-pptx.pptx",
+  "checksum": "2a84f0d30d19862f37056df1fc43c7e03556bca96d5f0de0f65ed527c008b35b",
+  "strict_status": "degraded",
+  "created_at": "2026-03-15T22:54:15.851311+00:00"
+}

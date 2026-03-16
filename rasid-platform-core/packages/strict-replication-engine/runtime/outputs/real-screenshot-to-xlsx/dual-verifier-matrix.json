@@ -1,0 +1,28 @@
+{
+  "run_id": "real-screenshot-to-xlsx",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-screenshot-to-xlsx.xlsx",
+  "verifiers": [
+    {
+      "verifier_id": "runtime-native-renderer",
+      "toolchain": "office-com-pdf",
+      "version": "office-com-pdf",
+      "input_hash": "a923e5a0510a4d067d197bffdd721553fe4680cb38b2356c04db45825b63f76c",
+      "render_hash": "9f18e64a6659f8f7b81c33b01b37b476fdfa14428a21abea3c0b46e66de7c5bb",
+      "pixel_result": 0.006515128568923464,
+      "structural_result": false,
+      "pass_fail_reasoning": "native render comparison recorded",
+      "independent": false
+    },
+    {
+      "verifier_id": "independent-external-renderer",
+      "toolchain": "independent-libreoffice-pdf",
+      "version": "independent-libreoffice-pdf",
+      "input_hash": "a923e5a0510a4d067d197bffdd721553fe4680cb38b2356c04db45825b63f76c",
+      "render_hash": "2d522765c7efee09b94c1f303f9b5e856bfdd04fb6898f607f7c229d3104df3a",
+      "pixel_result": 0.006514285006932066,
+      "structural_result": false,
+      "pass_fail_reasoning": "external verifier subprocess result",
+      "independent": true
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "refresh_id": "refresh-real-live-dashboard-degraded",
+  "run_id": "real-live-dashboard-degraded",
+  "binding_id": "binding-real-live-dashboard-degraded",
+  "executed_query": "SELECT metric, value FROM missing_sales_metrics WHERE region = ?",
+  "row_count": 0,
+  "status": "degraded",
+  "error_message": "no such table: missing_sales_metrics",
+  "created_at": "2026-03-15T01:46:58.045741+00:00"
+}

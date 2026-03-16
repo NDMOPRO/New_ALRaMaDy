@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/excel-engine/workbook.schema.json",
+  "title": "Excel Workbook",
+  "type": "object",
+  "required": ["workbook_id", "artifact_ref", "canonical_ref", "worksheet_refs", "current_formula_graph_ref", "current_version_ref"],
+  "properties": {
+    "workbook_id": { "type": "string" },
+    "artifact_ref": { "type": "string" },
+    "canonical_ref": { "type": "string" },
+    "worksheet_refs": { "type": "array", "items": { "type": "string" } },
+    "named_range_refs": { "type": "array", "items": { "type": "string" } },
+    "style_refs": { "type": "array", "items": { "type": "string" } },
+    "pivot_refs": { "type": "array", "items": { "type": "string" } },
+    "current_formula_graph_ref": { "type": "string" },
+    "current_version_ref": { "type": "string" },
+    "status": { "enum": ["draft", "profiled", "ready", "mutated", "exported", "degraded"] }
+  }
+}

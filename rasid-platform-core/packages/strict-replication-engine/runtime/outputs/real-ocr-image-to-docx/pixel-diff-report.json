@@ -1,0 +1,177 @@
+{
+  "primary": {
+    "comparison_id": "runtime-final",
+    "threshold": 0.0,
+    "passed": false,
+    "pixel_diff": 0.0,
+    "differing_pixels": 0,
+    "total_pixels": 1080000,
+    "dimensions_report": {
+      "equal": false,
+      "reference": {
+        "width": 900,
+        "height": 900
+      },
+      "candidate": {
+        "width": 900,
+        "height": 1200
+      },
+      "comparison_canvas": {
+        "width": 900,
+        "height": 1200
+      }
+    },
+    "normalization_proof": {
+      "reference": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 900,
+          "height": 900
+        }
+      },
+      "candidate": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 900,
+          "height": 1200
+        }
+      }
+    },
+    "render_config_hash": "73de04ff1b65da53fca44d25a074999af6f993712275fadfc8041d9ac9686d11",
+    "engine_fingerprint": {
+      "renderer": "runtime-parser-docx",
+      "python_version": "3.14.3",
+      "target_kind": "docx",
+      "fingerprint_hash": "20f80654e358bbe9ff54aab8ea7ce344840ee79283948ebb052036bdb472291c"
+    },
+    "pixel_hash": {
+      "reference": "2cdf607ed6eb153829538b6d20e374501914dd3071b058649b27ddf16411ec2f",
+      "candidate": "2cdf607ed6eb153829538b6d20e374501914dd3071b058649b27ddf16411ec2f"
+    },
+    "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\heatmap.png"
+  },
+  "native": {
+    "comparison_id": "native-render",
+    "threshold": 0.0,
+    "passed": false,
+    "pixel_diff": 0.0100679012345679,
+    "differing_pixels": 8155,
+    "total_pixels": 810000,
+    "dimensions_report": {
+      "equal": false,
+      "reference": {
+        "width": 900,
+        "height": 900
+      },
+      "candidate": {
+        "width": 612,
+        "height": 792
+      },
+      "comparison_canvas": {
+        "width": 900,
+        "height": 900
+      }
+    },
+    "normalization_proof": {
+      "reference": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 900,
+          "height": 900
+        }
+      },
+      "candidate": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 612,
+          "height": 792
+        }
+      }
+    },
+    "render_config_hash": "c73255800a742379fd1a82a51d4a3b1249f017083516835b0b157e051e8c0924",
+    "engine_fingerprint": {
+      "renderer": "office-com-pdf",
+      "target_kind": "docx",
+      "fingerprint_hash": "589859b8ba06a233545c6805a3ec032e5dd3a520c528f8a68a406e08822d2af0"
+    },
+    "pixel_hash": {
+      "reference": "810e1d19b40f3f757de0d058688e573666e01df9eac547245a3c2eea62860280",
+      "candidate": "290a8f0c8eaeaf616001a7ce2c454b6d4b67e9563b1c4c20d9038f2bdb1746b3"
+    },
+    "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\native-heatmap.png"
+  },
+  "independent": {
+    "comparison_id": "independent-verifier",
+    "threshold": 0.0,
+    "passed": false,
+    "pixel_diff": 0.010177777777777779,
+    "differing_pixels": 8244,
+    "total_pixels": 810000,
+    "dimensions_report": {
+      "equal": false,
+      "reference": {
+        "width": 900,
+        "height": 900
+      },
+      "candidate": {
+        "width": 612,
+        "height": 792
+      },
+      "comparison_canvas": {
+        "width": 900,
+        "height": 900
+      }
+    },
+    "normalization_proof": {
+      "reference": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 900,
+          "height": 900
+        }
+      },
+      "candidate": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 612,
+          "height": 792
+        }
+      }
+    },
+    "render_config_hash": "6754140f68ac571fb1c3b05f02f2169c0d5c8ee9d9a861daf15185352a0cb0d6",
+    "engine_fingerprint": {
+      "renderer": "independent-libreoffice-pdf",
+      "target_kind": "docx",
+      "fingerprint_hash": "8fabbb9d9f2673d4d98726971ada841515508ae95dc6ac55f69fa109b84ab499"
+    },
+    "pixel_hash": {
+      "reference": "810e1d19b40f3f757de0d058688e573666e01df9eac547245a3c2eea62860280",
+      "candidate": "48a9967daa23da4e1f005a34d2ad711b43c2a92b26a101fc13644321b64bef0a"
+    },
+    "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-ocr-image-to-docx\\independent-heatmap.png"
+  }
+}

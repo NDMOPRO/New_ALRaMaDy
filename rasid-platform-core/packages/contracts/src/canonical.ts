@@ -140,6 +140,7 @@ export const CanonicalRepresentationSchema = z.object({
     "presentation",
     "dashboard",
     "report",
+    "multimodal_content",
     "intermediate_converted_artifact"
   ]),
   strictness_mode: StrictnessModeSchema,

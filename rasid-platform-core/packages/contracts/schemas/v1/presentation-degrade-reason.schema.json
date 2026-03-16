@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/presentation-degrade-reason.schema.json",
+  "title": "PresentationDegradeReason",
+  "type": "object",
+  "required": [
+    "schema_namespace",
+    "schema_version",
+    "presentation_degrade_reason_id",
+    "deck_ref",
+    "version_ref",
+    "reason_code",
+    "severity",
+    "publish_allowed"
+  ],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.presentations.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "presentation_degrade_reason_id": { "type": "string" },
+    "deck_ref": { "type": "string" },
+    "version_ref": { "type": "string" },
+    "reason_code": { "type": "string" },
+    "severity": { "enum": ["low", "medium", "high", "critical"] },
+    "publish_allowed": { "type": "boolean" }
+  }
+}

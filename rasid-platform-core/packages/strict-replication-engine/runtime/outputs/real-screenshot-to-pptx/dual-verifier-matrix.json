@@ -1,0 +1,28 @@
+{
+  "run_id": "real-screenshot-to-pptx",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-screenshot-to-pptx.pptx",
+  "verifiers": [
+    {
+      "verifier_id": "runtime-native-renderer",
+      "toolchain": "office-com-pdf",
+      "version": "office-com-pdf",
+      "input_hash": "2a84f0d30d19862f37056df1fc43c7e03556bca96d5f0de0f65ed527c008b35b",
+      "render_hash": "ea21077a2775d3625c9cf88d0d4c297a2900e019a5daca3763e5bfc9174ff476",
+      "pixel_result": 0.07092078189300412,
+      "structural_result": true,
+      "pass_fail_reasoning": "native render comparison recorded",
+      "independent": false
+    },
+    {
+      "verifier_id": "independent-external-renderer",
+      "toolchain": "independent-libreoffice-pdf",
+      "version": "independent-libreoffice-pdf",
+      "input_hash": "2a84f0d30d19862f37056df1fc43c7e03556bca96d5f0de0f65ed527c008b35b",
+      "render_hash": "80aacd7044ec48e232248f2afbefe0bc7f8f579da84d3c02a97f831464f1bd5d",
+      "pixel_result": 0.06058577674897119,
+      "structural_result": true,
+      "pass_fail_reasoning": "external verifier subprocess result",
+      "independent": true
+    }
+  ]
+}

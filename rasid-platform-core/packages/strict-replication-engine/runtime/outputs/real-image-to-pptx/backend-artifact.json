@@ -1,0 +1,10 @@
+{
+  "artifact_id": "real-image-to-pptx-pptx-artifact",
+  "run_id": "real-image-to-pptx",
+  "artifact_kind": "pptx",
+  "target_kind": "pptx",
+  "path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-image-to-pptx.pptx",
+  "checksum": "75615479aa7a9d6500b7b7bd88630bc366cfbdd356a770e3cd91c6fddabcf60d",
+  "strict_status": "degraded",
+  "created_at": "2026-03-16T00:48:00.249114+00:00"
+}

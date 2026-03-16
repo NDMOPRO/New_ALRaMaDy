@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/report-diff-metadata.schema.json",
+  "title": "ReportDiffMetadata",
+  "type": "object",
+  "required": [
+    "schema_namespace",
+    "schema_version",
+    "diff_id",
+    "report_ref",
+    "base_version_ref",
+    "target_version_ref",
+    "compare_kind"
+  ],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.report.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "diff_id": { "type": "string" },
+    "report_ref": { "type": "string" },
+    "base_version_ref": { "type": "string" },
+    "target_version_ref": { "type": "string" },
+    "compare_kind": { "enum": ["version_to_version", "period_to_period", "dataset_to_dataset"] }
+  }
+}

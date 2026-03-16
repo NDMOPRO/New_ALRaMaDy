@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/localization/language-quality-result.schema.json",
+  "title": "LanguageQualityResult",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "language_quality_result_id", "request_ref", "status", "score"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.localization.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "language_quality_result_id": { "type": "string" },
+    "request_ref": { "type": "string" },
+    "status": { "enum": ["passed", "passed_with_warnings", "failed"] },
+    "score": { "type": "number", "minimum": 0, "maximum": 100 },
+    "untranslated_critical_refs": { "type": "array", "items": { "type": "string" } },
+    "protected_term_violation_refs": { "type": "array", "items": { "type": "string" } },
+    "banned_translation_refs": { "type": "array", "items": { "type": "string" } },
+    "consistency_issue_refs": { "type": "array", "items": { "type": "string" } },
+    "warning_count": { "type": "integer", "minimum": 0 }
+  }
+}

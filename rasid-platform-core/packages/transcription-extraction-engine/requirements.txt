@@ -1,0 +1,5 @@
+vosk
+imageio-ffmpeg
+pillow
+pymupdf
+paddleocr

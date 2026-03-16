@@ -1,0 +1,29 @@
+{
+  "width": 960,
+  "height": 540,
+  "title": "STRICT DASHBOARD",
+  "rows": [
+    [
+      "Metric",
+      "Value"
+    ],
+    [
+      "Jan",
+      "120"
+    ],
+    [
+      "Feb",
+      "140"
+    ],
+    [
+      "Mar",
+      "160"
+    ]
+  ],
+  "region": "KSA",
+  "period": "2026-Q1",
+  "drill_metric": null,
+  "refresh_count": 0,
+  "query_ref": "synthetic://xlsx-sheet/active",
+  "binding_status": "synthetic_bind"
+}

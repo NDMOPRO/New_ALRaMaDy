@@ -1,0 +1,8 @@
+{
+  "renderer": "office-com-pdf",
+  "pdf_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-native.pdf",
+  "image_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-native.png",
+  "source_pixel_ratio": 0.006125555962951745,
+  "parser_pixel_ratio": 0.006515128568923464,
+  "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-screenshot-to-xlsx-native-diff.png"
+}

@@ -1,0 +1,28 @@
+{
+  "width": 900,
+  "height": 900,
+  "paragraphs": [
+    "STRICTOCR REPORT",
+    "Pegion KSA Sales 210,",
+    "Region UAE Sales 175",
+    "Filter Period 01-2028,"
+  ],
+  "table": [
+    [
+      "Field",
+      "Value"
+    ],
+    [
+      "Pegion KSA Sales",
+      "210,"
+    ],
+    [
+      "Region UAE Sales",
+      "175"
+    ],
+    [
+      "Filter Period",
+      "01-2028,"
+    ]
+  ]
+}

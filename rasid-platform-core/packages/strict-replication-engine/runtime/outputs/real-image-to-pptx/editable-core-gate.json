@@ -1,0 +1,22 @@
+{
+  "checks": {
+    "text_runs_real": {
+      "passed": true,
+      "text_run_count": 1
+    },
+    "table_objects_real": {
+      "passed": true,
+      "table_count": 1
+    },
+    "not_static_image_only": {
+      "passed": true,
+      "image_shape_count": 0
+    },
+    "layout_zones_structured": {
+      "passed": true,
+      "layout_zone_count": 3
+    }
+  },
+  "target_kind": "pptx",
+  "overall_passed": true
+}

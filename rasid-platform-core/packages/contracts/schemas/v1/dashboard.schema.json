@@ -19,7 +19,7 @@
         "properties": {
           "widget_id": { "type": "string" },
           "widget_type": {
-            "enum": ["kpi_card", "table", "bar_chart", "line_chart", "pie_chart", "area_chart", "combo_chart", "filter", "selector", "text", "image", "section"]
+            "enum": ["kpi_card", "table", "bar_chart", "line_chart", "pie_chart", "area_chart", "combo_chart", "compare_chart", "heatmap", "top_bottom", "growth_indicator", "anomaly_alert", "filter", "selector", "text", "map", "scatter_3d", "image", "section"]
           },
           "page_id": { "type": "string" }
         }

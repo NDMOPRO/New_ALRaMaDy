@@ -1,0 +1,9 @@
+{
+  "publication_id": "publication-real-screenshot-to-pptx",
+  "run_id": "real-screenshot-to-pptx",
+  "artifact_id": "real-screenshot-to-pptx-pptx-artifact",
+  "publication_ref": "sqlite://strict-backend/publications/publication-real-screenshot-to-pptx",
+  "backend_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-screenshot-to-pptx.pptx",
+  "strict_status": "degraded",
+  "created_at": "2026-03-15T22:54:15.854525+00:00"
+}

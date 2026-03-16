@@ -1,0 +1,225 @@
+{
+  "strategy": "ocr_tesseract",
+  "line_count": 4,
+  "lines": [
+    {
+      "text": "STRICTOCR REPORT",
+      "bbox": [
+        61,
+        66,
+        155,
+        74
+      ]
+    },
+    {
+      "text": "Pegion KSA Sales 210,",
+      "bbox": [
+        61,
+        162,
+        162,
+        190
+      ]
+    },
+    {
+      "text": "Region UAE Sales 175",
+      "bbox": [
+        61,
+        212,
+        159,
+        240
+      ]
+    },
+    {
+      "text": "Filter Period 01-2028,",
+      "bbox": [
+        61,
+        261,
+        158,
+        289
+      ]
+    }
+  ],
+  "tesseract_path": "C:\\Program Files\\Tesseract-OCR\\tesseract.exe",
+  "layout_nodes": [
+    {
+      "node_id": "layout-node-0",
+      "node_type": "heading",
+      "text": "STRICTOCR REPORT",
+      "bbox": [
+        61,
+        66,
+        155,
+        74
+      ]
+    },
+    {
+      "node_id": "layout-node-1",
+      "node_type": "paragraph",
+      "text": "Pegion KSA Sales 210,",
+      "bbox": [
+        61,
+        162,
+        162,
+        190
+      ]
+    },
+    {
+      "node_id": "layout-node-2",
+      "node_type": "paragraph",
+      "text": "Region UAE Sales 175",
+      "bbox": [
+        61,
+        212,
+        159,
+        240
+      ]
+    },
+    {
+      "node_id": "layout-node-3",
+      "node_type": "paragraph",
+      "text": "Filter Period 01-2028,",
+      "bbox": [
+        61,
+        261,
+        158,
+        289
+      ]
+    }
+  ],
+  "form_fields": [
+    {
+      "label": "Pegion KSA Sales",
+      "value": "210,",
+      "bbox": [
+        61,
+        162,
+        162,
+        190
+      ]
+    },
+    {
+      "label": "Region UAE Sales",
+      "value": "175",
+      "bbox": [
+        61,
+        212,
+        159,
+        240
+      ]
+    },
+    {
+      "label": "Filter Period",
+      "value": "01-2028,",
+      "bbox": [
+        61,
+        261,
+        158,
+        289
+      ]
+    }
+  ],
+  "object_graph": {
+    "objects": [
+      {
+        "object_id": "layout-node-0",
+        "object_type": "heading",
+        "text": "STRICTOCR REPORT",
+        "bbox": [
+          61,
+          66,
+          155,
+          74
+        ]
+      },
+      {
+        "object_id": "layout-node-1",
+        "object_type": "paragraph",
+        "text": "Pegion KSA Sales 210,",
+        "bbox": [
+          61,
+          162,
+          162,
+          190
+        ]
+      },
+      {
+        "object_id": "layout-node-2",
+        "object_type": "paragraph",
+        "text": "Region UAE Sales 175",
+        "bbox": [
+          61,
+          212,
+          159,
+          240
+        ]
+      },
+      {
+        "object_id": "layout-node-3",
+        "object_type": "paragraph",
+        "text": "Filter Period 01-2028,",
+        "bbox": [
+          61,
+          261,
+          158,
+          289
+        ]
+      },
+      {
+        "object_id": "form-field-0",
+        "object_type": "form_field",
+        "label": "Pegion KSA Sales",
+        "value": "210,",
+        "bbox": [
+          61,
+          162,
+          162,
+          190
+        ],
+        "field_type": "text"
+      },
+      {
+        "object_id": "form-field-1",
+        "object_type": "form_field",
+        "label": "Region UAE Sales",
+        "value": "175",
+        "bbox": [
+          61,
+          212,
+          159,
+          240
+        ],
+        "field_type": "text"
+      },
+      {
+        "object_id": "form-field-2",
+        "object_type": "form_field",
+        "label": "Filter Period",
+        "value": "01-2028,",
+        "bbox": [
+          61,
+          261,
+          158,
+          289
+        ],
+        "field_type": "text"
+      }
+    ],
+    "relations": [
+      {
+        "from": "form-field-0",
+        "to": "section-form",
+        "relation": "belongs_to"
+      },
+      {
+        "from": "form-field-1",
+        "to": "section-form",
+        "relation": "belongs_to"
+      },
+      {
+        "from": "form-field-2",
+        "to": "section-form",
+        "relation": "belongs_to"
+      }
+    ]
+  }
+}

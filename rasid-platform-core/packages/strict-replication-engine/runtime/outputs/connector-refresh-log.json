@@ -1,0 +1,88 @@
+{
+  "last_snapshot": {
+    "ok": true,
+    "snapshot": {
+      "session": {
+        "session_id": "real-live-dashboard-strict",
+        "dataset": "sales_live",
+        "region": "UAE",
+        "period": "2026-Q1",
+        "tenant_id": "tenant-default",
+        "permission_state": "analyst",
+        "refresh_count": 1,
+        "export_count": 1,
+        "updated_at": "2026-03-15T22:54:31.706084+00:00"
+      },
+      "title": "LIVE SALES DASHBOARD",
+      "rows": [
+        [
+          "Metric",
+          "Value"
+        ],
+        [
+          "Growth",
+          "11%"
+        ],
+        [
+          "Orders",
+          "99"
+        ],
+        [
+          "Sales",
+          "181"
+        ]
+      ],
+      "metrics": {
+        "Growth": "11%",
+        "Orders": "99",
+        "Sales": "181"
+      },
+      "drill_metric": "Sales",
+      "compare": {
+        "baseline_region": "KSA",
+        "baseline_period": "2026-Q1",
+        "deltas": [
+          {
+            "metric": "Growth",
+            "current": "11%",
+            "baseline": "17%",
+            "delta": "-6pp"
+          },
+          {
+            "metric": "Orders",
+            "current": "98",
+            "baseline": "128",
+            "delta": -30
+          },
+          {
+            "metric": "Sales",
+            "current": "178",
+            "baseline": "210",
+            "delta": -32
+          }
+        ]
+      },
+      "export_payload": {
+        "format": "csv",
+        "row_count": 3,
+        "exported_metric_names": [
+          "Growth",
+          "Orders",
+          "Sales"
+        ],
+        "tenant_id": "tenant-default",
+        "permission_state": "analyst",
+        "exported_at": "2026-03-15T22:54:31.706046+00:00"
+      },
+      "permissions": {
+        "filter": true,
+        "drill": true,
+        "refresh": true,
+        "compare": true,
+        "export": true
+      },
+      "query_ref": "remote://sales_live/UAE/2026-Q1"
+    }
+  },
+  "config_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\remote_connector-55f651d3.config.json"
+}

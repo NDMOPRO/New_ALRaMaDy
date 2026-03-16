@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/motion-metadata.schema.json",
+  "title": "MotionMetadata",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "motion_metadata_id", "deck_ref", "version_ref", "slide_ref", "motion_level"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.presentations.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "motion_metadata_id": { "type": "string" },
+    "deck_ref": { "type": "string" },
+    "version_ref": { "type": "string" },
+    "slide_ref": { "type": "string" },
+    "motion_level": { "enum": ["none", "subtle", "moderate", "high"] }
+  }
+}

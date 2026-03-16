@@ -1,0 +1,23 @@
+{
+  "width": 900,
+  "height": 1200,
+  "paragraphs": [
+    "STRICT DOCX",
+    "Quarterly report",
+    "Approved narrative paragraph"
+  ],
+  "table": [
+    [
+      "Metric",
+      "Value"
+    ],
+    [
+      "Revenue",
+      "120"
+    ],
+    [
+      "Margin",
+      "42%"
+    ]
+  ]
+}

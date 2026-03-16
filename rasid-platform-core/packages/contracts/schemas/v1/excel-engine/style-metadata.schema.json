@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/excel-engine/style-metadata.schema.json",
+  "title": "Excel Style Metadata",
+  "type": "object",
+  "required": ["style_id", "workbook_ref", "scope", "target_refs", "rtl"],
+  "properties": {
+    "style_id": { "type": "string" },
+    "workbook_ref": { "type": "string" },
+    "scope": { "enum": ["cell", "row", "column", "worksheet", "table", "pivot", "workbook"] },
+    "target_refs": { "type": "array", "items": { "type": "string" } },
+    "rtl": { "type": "boolean" },
+    "number_format_code": { "type": ["string", "null"] },
+    "conditional_rules": { "type": "array", "items": { "type": "object" } }
+  }
+}

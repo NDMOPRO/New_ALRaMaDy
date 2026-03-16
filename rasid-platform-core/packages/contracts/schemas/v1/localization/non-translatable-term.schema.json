@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/localization/non-translatable-term.schema.json",
+  "title": "NonTranslatableTerm",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "non_translatable_term_id", "profile_ref", "locale", "term", "match_strategy", "preserve_original"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.localization.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "non_translatable_term_id": { "type": "string" },
+    "profile_ref": { "type": "string" },
+    "locale": { "type": "string" },
+    "term": { "type": "string" },
+    "match_strategy": { "enum": ["exact", "normalized", "regex"] },
+    "preserve_original": { "type": "boolean" },
+    "applies_to_scope_refs": { "type": "array", "items": { "type": "string" } },
+    "rationale": { "type": ["string", "null"] }
+  }
+}

@@ -25,7 +25,10 @@ export const ContractNameSchema = z.enum([
   "canvas",
   "report",
   "presentation",
-  "schedule"
+  "schedule",
+  "ai",
+  "transcription",
+  "governance"
 ]);
 
 export const SemverSchema = z.string().regex(/^\d+\.\d+\.\d+$/);
@@ -133,7 +136,7 @@ export const PreviewRefSchema = z.object({
 
 export const ExportRefSchema = z.object({
   export_id: IdentifierSchema,
-  export_type: z.enum(["pdf", "docx", "html", "pptx", "xlsx", "csv", "png", "json", "zip", "other"]),
+  export_type: z.enum(["pdf", "docx", "html", "pptx", "xlsx", "xls", "xlsm", "csv", "png", "json", "zip", "other"]),
   explicit_non_editable: z.boolean(),
   storage_ref: z.string()
 });
@@ -206,7 +209,10 @@ export const CONTRACT_VERSIONS = {
   canvas: CONTRACT_PACK_VERSION,
   report: CONTRACT_PACK_VERSION,
   presentation: CONTRACT_PACK_VERSION,
-  schedule: CONTRACT_PACK_VERSION
+  schedule: CONTRACT_PACK_VERSION,
+  ai: CONTRACT_PACK_VERSION,
+  transcription: CONTRACT_PACK_VERSION,
+  governance: CONTRACT_PACK_VERSION
 } as const;
 
 export const assertContractVersion = (contractName: keyof typeof CONTRACT_VERSIONS, version: string): void => {
@@ -223,3 +229,5 @@ export type Warning = z.infer<typeof WarningSchema>;
 export type FailureReason = z.infer<typeof FailureReasonSchema>;
 export type PermissionScope = z.infer<typeof PermissionScopeSchema>;
 export type JsonSchemaRef = z.infer<typeof JsonSchemaRefSchema>;
+export type ExportRef = z.infer<typeof ExportRefSchema>;
+export type VersionRef = z.infer<typeof VersionRefSchema>;

@@ -1,0 +1,9 @@
+{
+  "publication_id": "publication-real-dashboard-to-pptx",
+  "run_id": "real-dashboard-to-pptx",
+  "artifact_id": "real-dashboard-to-pptx-pptx-artifact",
+  "publication_ref": "sqlite://strict-backend/publications/publication-real-dashboard-to-pptx",
+  "backend_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-dashboard-to-pptx.pptx",
+  "strict_status": "degraded",
+  "created_at": "2026-03-15T22:54:29.727917+00:00"
+}

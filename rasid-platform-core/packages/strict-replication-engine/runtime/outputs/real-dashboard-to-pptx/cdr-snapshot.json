@@ -1,0 +1,417 @@
+{
+  "snapshot_id": "cdr::18434ca79e98::pptx",
+  "snapshot_version": "2026-03-15.strict.2",
+  "cdr_design": {
+    "version": "1.1.0",
+    "immutable_layout_lock_flag": true,
+    "conversion_policy_id": "strict_replication",
+    "dpi_reference": 144,
+    "target_kind": "pptx",
+    "pages": [
+      {
+        "page_id": "page-1",
+        "index": 1,
+        "size_emu": {
+          "w": 9144000,
+          "h": 5143500
+        },
+        "background_spec": {
+          "type": "solid",
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          }
+        },
+        "layers": [
+          {
+            "layer_id": "background",
+            "z_index": 0,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "guides",
+            "z_index": 1,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "containers",
+            "z_index": 2,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "text",
+            "z_index": 3,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": [
+              {
+                "element_id": "pptx-element-1",
+                "kind": "text",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 323850,
+                  "width": 1524000,
+                  "height": 381000
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  323850
+                ],
+                "opacity": 1.0,
+                "z_index": 1,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": true
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.0
+                },
+                "fingerprint": "166ffcaa237b0388b1d0421942bb46330ccaf9224117d31e7b4ede19ab5f5e8f",
+                "text": {
+                  "text": "STRICT DASHBOARD",
+                  "direction": "LTR",
+                  "alignment": "start",
+                  "baseline_offset_emu": 0,
+                  "line_height": 1.0,
+                  "wrap": "word",
+                  "auto_fit": false,
+                  "runs": [
+                    {
+                      "range": {
+                        "start": 0,
+                        "end": 16
+                      },
+                      "font_family": "Arial",
+                      "font_weight": 400,
+                      "font_style": "normal",
+                      "font_size_emu": 152400,
+                      "letter_spacing_emu": 0,
+                      "kerning_enabled": false,
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      },
+                      "script": "mixed",
+                      "text": "STRICT DASHBOARD"
+                    }
+                  ],
+                  "shaping": {
+                    "arabic_mode": "BASIC",
+                    "bidi_runs": [],
+                    "glyph_positions_emu": []
+                  },
+                  "paint": {
+                    "fill": {
+                      "type": "solid",
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "layer_id": "vectors",
+            "z_index": 4,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": [
+              {
+                "element_id": "pptx-element-2",
+                "kind": "shape",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 1143000,
+                  "width": 2095500,
+                  "height": 1047750
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  1143000
+                ],
+                "opacity": 1.0,
+                "z_index": 2,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": false
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.0
+                },
+                "fingerprint": "8fccf3385f91bcfab818b5a0b643b36363136c78b59c597086fa2e9bf151aacc",
+                "shape": {
+                  "geometry": "rounded_rect",
+                  "fill": {
+                    "type": "solid",
+                    "color": {
+                      "r": 222,
+                      "g": 238,
+                      "b": 255,
+                      "a": 255
+                    }
+                  },
+                  "effects": []
+                }
+              }
+            ]
+          },
+          {
+            "layer_id": "data",
+            "z_index": 5,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": [
+              {
+                "element_id": "pptx-element-3",
+                "kind": "table",
+                "bbox_emu": {
+                  "x": 4000500,
+                  "y": 1714500,
+                  "width": 1524000,
+                  "height": 381000
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  4000500,
+                  1714500
+                ],
+                "opacity": 1.0,
+                "z_index": 3,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": false
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.0
+                },
+                "fingerprint": "14a193a7652d8df614e28d49a921fa1e7e42dac55638a7956ca26df28fc7d80d",
+                "table": {
+                  "grid": {
+                    "rows": 3,
+                    "cols": 2,
+                    "row_heights_emu": [
+                      266700,
+                      266700,
+                      266700
+                    ],
+                    "col_widths_emu": [
+                      914400,
+                      914400
+                    ]
+                  },
+                  "cells": [
+                    {
+                      "r": 0,
+                      "c": 0,
+                      "value": "KPI",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 0,
+                      "c": 1,
+                      "value": "Value",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 1,
+                      "c": 0,
+                      "value": "Sales",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 1,
+                      "c": 1,
+                      "value": "210",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 2,
+                      "c": 0,
+                      "value": "Growth",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 2,
+                      "c": 1,
+                      "value": "17%",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    }
+                  ],
+                  "style": {
+                    "alignments": {
+                      "default": "center"
+                    }
+                  },
+                  "rtl": false,
+                  "binding": null
+                }
+              }
+            ]
+          },
+          {
+            "layer_id": "interactive",
+            "z_index": 6,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          }
+        ]
+      }
+    ],
+    "assets": [
+      {
+        "asset_id": "source-asset-1",
+        "uri": "sha256://18434ca79e98cb9201ae0050a5b9e425cd66de6d585f33e16bb270e53028da5f",
+        "mime": "application/pptx",
+        "sha256": "18434ca79e98cb9201ae0050a5b9e425cd66de6d585f33e16bb270e53028da5f",
+        "size_bytes": 0
+      }
+    ],
+    "layout_graph": "{\"edges\": [{\"from\": \"background\", \"to\": \"text\"}, {\"from\": \"background\", \"to\": \"vectors\"}, {\"from\": \"background\", \"to\": \"data\"}], \"nodes\": [\"pptx-element-1\", \"pptx-element-2\", \"pptx-element-3\"]}",
+    "constraint_matrix": "{\"constraints\": [{\"element_id\": \"pptx-element-1\", \"no_reflow\": true}, {\"element_id\": \"pptx-element-2\", \"no_reflow\": true}, {\"element_id\": \"pptx-element-3\", \"no_reflow\": true}]}",
+    "fingerprints": {
+      "layout_hash": "dd2b3ca5a82604b22c472967bc8205315deae52e327606f92d68fabfc59d4c08",
+      "structural_hash": "187d89a1c5bd73d3970512bc5ebe9c9cce221554c62e02e19f44c9b3c26374c0",
+      "typography_hash": "5af0595af29d2155f154b18b6db33efe643fa823412bc8031f3e6fe88c263bde",
+      "render_intent_hash": "8e53508cad60dd485964facf401d4f2b4405824d6c883ce97303d9a341cc0596"
+    }
+  },
+  "cdr_data": {
+    "tables": [
+      {
+        "table_id": "pptx-table-3",
+        "columns": [
+          {
+            "name": "col_0",
+            "type": "string",
+            "fingerprint": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+          },
+          {
+            "name": "col_1",
+            "type": "string",
+            "fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+          }
+        ],
+        "rows": [
+          [
+            "KPI",
+            "Value"
+          ],
+          [
+            "Sales",
+            "210"
+          ],
+          [
+            "Growth",
+            "17%"
+          ]
+        ],
+        "row_source_ref": "cdr://table/pptx-table-3"
+      }
+    ],
+    "lineage_ref": "lineage://real-dashboard-to-pptx",
+    "semantic_model_ref": null
+  },
+  "lineage_ref": "lineage://real-dashboard-to-pptx",
+  "semantic_model_ref": null
+}

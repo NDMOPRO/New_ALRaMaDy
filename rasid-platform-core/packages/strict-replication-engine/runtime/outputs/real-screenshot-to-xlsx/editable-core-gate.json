@@ -1,0 +1,67 @@
+{
+  "checks": {
+    "structured_cells_real": {
+      "passed": true,
+      "cell_count": 16
+    },
+    "formulas_real": {
+      "passed": true,
+      "formula_count": 3,
+      "formulas": [
+        {
+          "cell": "D2",
+          "formula": "=B2-C2",
+          "dependencies": [
+            "B2",
+            "C2"
+          ]
+        },
+        {
+          "cell": "D3",
+          "formula": "=B3-C3",
+          "dependencies": [
+            "B3",
+            "C3"
+          ]
+        },
+        {
+          "cell": "D4",
+          "formula": "=B4-C4",
+          "dependencies": [
+            "B4",
+            "C4"
+          ]
+        }
+      ]
+    },
+    "dependency_graph_present": {
+      "passed": true,
+      "edge_count": 6
+    },
+    "conditional_formatting_present": {
+      "passed": true,
+      "ranges": [
+        "<ConditionalFormatting D2:D4>"
+      ]
+    },
+    "pivots_present": {
+      "passed": true,
+      "pivot_parts": [
+        "xl/pivotTables/pivotTable1.xml"
+      ]
+    },
+    "live_recalculation_support": {
+      "passed": true,
+      "engine": "openpyxl_formula_cells"
+    },
+    "named_ranges_present": {
+      "passed": true,
+      "defined_names": [
+        "StrictDataRange",
+        "StrictMetricCell"
+      ]
+    }
+  },
+  "target_kind": "xlsx",
+  "overall_passed": true
+}

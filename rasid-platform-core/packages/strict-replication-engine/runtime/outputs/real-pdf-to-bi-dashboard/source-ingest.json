@@ -1,0 +1,9 @@
+{
+  "run_id": "real-pdf-to-bi-dashboard",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-pdf-dashboard.pdf",
+  "classified_kind": "pdf",
+  "source_checksum": "7f214c1c3f877349353b1c5a43f664b28f54220a2768b16e4bfb1bf1c1f36334",
+  "target_kind": "dashboard",
+  "source_preview_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-bi-dashboard-source-input.png",
+  "normalized_source_render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-pdf-to-bi-dashboard-source.png"
+}

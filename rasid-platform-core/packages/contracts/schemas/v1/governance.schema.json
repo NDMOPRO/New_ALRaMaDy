@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schema://governance/governance/1.0.0",
+  "title": "Rasid Governance Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.governance.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "permissions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/permissionDefinition" }
+    },
+    "roles": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/roleDefinition" }
+    },
+    "policy_rules": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/policyRule" }
+    },
+    "approval_workflows": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/approvalWorkflow" }
+    },
+    "approvals": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/approvalRecord" }
+    },
+    "kpis": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/kpiDefinition" }
+    },
+    "versions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/versionRecord" }
+    },
+    "diffs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/diffArtifact" }
+    }
+  },
+  "required": ["schema_namespace", "schema_version"],
+  "$defs": {
+    "permissionDefinition": {
+      "type": "object",
+      "required": ["permission_id", "action", "resource_kind", "label"],
+      "properties": {
+        "permission_id": { "type": "string" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "action": { "type": "string" },
+        "resource_kind": { "type": "string" },
+        "built_in": { "type": "boolean" }
+      }
+    },
+    "roleDefinition": {
+      "type": "object",
+      "required": ["role_id", "tenant_ref", "name", "permission_ids"],
+      "properties": {
+        "role_id": { "type": "string" },
+        "tenant_ref": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "built_in": { "type": "boolean" },
+        "permission_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "policyRule": {
+      "type": "object",
+      "required": ["policy_id", "tenant_ref", "name", "effect", "priority"],
+      "properties": {
+        "policy_id": { "type": "string" },
+        "tenant_ref": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "priority": { "type": "integer", "minimum": 0 },
+        "effect": { "enum": ["allow", "deny", "require_approval"] },
+        "enabled": { "type": "boolean" },
+        "conditions": {
+          "type": "object",
+          "properties": {
+            "department": { "type": "string" },
+            "data_sensitivity": { "type": "string" },
+            "resource_kind": { "type": "string" },
+            "action": { "type": "string" },
+            "owner_ref": { "type": "string" },
+            "asset_type": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "approvalWorkflow": {
+      "type": "object",
+      "required": ["workflow_id", "tenant_ref", "name", "resource_kind", "action_id", "stages"],
+      "properties": {
+        "workflow_id": { "type": "string" },
+        "tenant_ref": { "type": "string" },
+        "name": { "type": "string" },
+        "resource_kind": { "type": "string" },
+        "action_id": { "type": "string" },
+        "stages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["stage_id", "label", "approver_role_ids", "minimum_approvals"],
+            "properties": {
+              "stage_id": { "type": "string" },
+              "label": { "type": "string" },
+              "approver_role_ids": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "minimum_approvals": { "type": "integer", "minimum": 1 }
+            }
+          }
+        }
+      }
+    },
+    "approvalRecord": {
+      "type": "object",
+      "required": ["approval_id", "tenant_ref", "workflow_id", "action_id", "resource_kind", "resource_ref", "status"],
+      "properties": {
+        "approval_id": { "type": "string" },
+        "tenant_ref": { "type": "string" },
+        "workflow_id": { "type": "string" },
+        "action_id": { "type": "string" },
+        "resource_kind": { "type": "string" },
+        "resource_ref": { "type": "string" },
+        "status": { "enum": ["pending", "in_review", "approved", "rejected"] }
+      }
+    },
+    "kpiDefinition": {
+      "type": "object",
+      "required": ["kpi_id", "tenant_ref", "name", "formula", "owner_ref", "sensitivity", "current_version_id"],
+      "properties": {
+        "kpi_id": { "type": "string" },
+        "tenant_ref": { "type": "string" },
+        "name": { "type": "string" },
+        "formula": { "type": "string" },
+        "owner_ref": { "type": "string" },
+        "scope_ref": { "type": "string" },
+        "sensitivity": { "type": "string" },
+        "current_version_id": { "type": "string" }
+      }
+    },
+    "versionRecord": {
+      "type": "object",
+      "required": ["version_record_id", "tenant_ref", "resource_kind", "resource_ref", "created_at"],
+      "properties": {
+        "version_record_id": { "type": "string" },
+        "tenant_ref": { "type": "string" },
+        "resource_kind": { "type": "string" },
+        "resource_ref": { "type": "string" },
+        "change_summary": { "type": "string" },
+        "created_at": { "type": "string" }
+      }
+    },
+    "diffArtifact": {
+      "type": "object",
+      "required": ["diff_id", "tenant_ref", "resource_kind", "left_ref", "right_ref", "summary"],
+      "properties": {
+        "diff_id": { "type": "string" },
+        "tenant_ref": { "type": "string" },
+        "resource_kind": { "type": "string" },
+        "left_ref": { "type": "string" },
+        "right_ref": { "type": "string" },
+        "summary": { "type": "string" },
+        "changed_fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

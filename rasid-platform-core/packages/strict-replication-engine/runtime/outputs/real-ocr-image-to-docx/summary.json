@@ -1,0 +1,61 @@
+{
+  "run_id": "real-ocr-image-to-docx",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-ocr-report.png",
+  "classified_kind": "image",
+  "source_checksum": "bfee94fa15507d8914f111ad8be53cc13287e3bf115cabff976ba633a8efb649",
+  "target_kind": "docx",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-ocr-image-to-docx.docx",
+  "initial_structural_pass": true,
+  "final_structural_pass": true,
+  "initial_pixel_ratio": 0.0,
+  "final_pixel_ratio": 0.0,
+  "round_trip_ratio": 0.0,
+  "repair_applied": false,
+  "publish_state": "degraded_published",
+  "publication_ref": "sqlite://strict-backend/publications/publication-real-ocr-image-to-docx",
+  "strict_pass": false,
+  "strict_policy": {
+    "pixel_zero_required": true,
+    "editable_core_required": true,
+    "determinism_required": true
+  },
+  "pixel_zero_gate_passed": false,
+  "editable_core_gate_passed": true,
+  "determinism_gate_passed": true,
+  "native_gate": {
+    "passed": true,
+    "threshold": 0.01,
+    "ratio": 0.0075487654320987654,
+    "authoritative": false
+  },
+  "independent_native_verification": {
+    "passed": false,
+    "threshold": 0.01,
+    "ratio": 0.010177777777777779,
+    "renderer": "independent-libreoffice-pdf",
+    "authoritative": true,
+    "independent": true,
+    "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-independent.png",
+    "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-independent-diff.png",
+    "reference_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-source.png",
+    "pdf_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-independent.pdf",
+    "browser_url": null
+  },
+  "native_render": {
+    "renderer": "office-com-pdf",
+    "pdf_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-native.pdf",
+    "image_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-native.png",
+    "source_pixel_ratio": 0.010065020576131687,
+    "parser_pixel_ratio": 0.0075487654320987654,
+    "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-native-diff.png"
+  },
+  "renders": {
+    "source_input": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-source-input.png",
+    "source": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-source.png",
+    "initial": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-initial.png",
+    "final": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-final.png",
+    "round_trip": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-roundtrip.png",
+    "diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-diff.png",
+    "round_trip_diff": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-roundtrip-diff.png"
+  }
+}

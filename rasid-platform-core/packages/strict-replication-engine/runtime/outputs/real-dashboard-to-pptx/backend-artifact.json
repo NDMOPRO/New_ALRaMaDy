@@ -1,0 +1,10 @@
+{
+  "artifact_id": "real-dashboard-to-pptx-pptx-artifact",
+  "run_id": "real-dashboard-to-pptx",
+  "artifact_kind": "pptx",
+  "target_kind": "pptx",
+  "path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-dashboard-to-pptx.pptx",
+  "checksum": "77a5e417ccf4049366966cc16209c1d3b1a168179feb7bbb8af0d1b812520eb3",
+  "strict_status": "degraded",
+  "created_at": "2026-03-15T22:54:29.721793+00:00"
+}

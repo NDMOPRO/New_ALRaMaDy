@@ -1,0 +1,245 @@
+{
+  "generated_at": "2026-03-15T23:00:04.467902+00:00",
+  "edges": [
+    {
+      "from": "browser-session-ksa-q1-analyst",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-session-diff.json",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q1-analyst",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-session-heatmap.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q1-analyst",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-overview.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q1-analyst",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-filter.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q1-analyst",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-drill.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q1-analyst",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-refresh.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q1-analyst",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-compare.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q1-analyst",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-export.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q1-analyst",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-session-diff.json",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q1-analyst",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-session-heatmap.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q1-analyst",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-overview.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q1-analyst",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-filter.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q1-analyst",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-drill.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q1-analyst",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-refresh.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q1-analyst",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-compare.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q1-analyst",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-export.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q2-executive",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-session-diff.json",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q2-executive",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-session-heatmap.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q2-executive",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-overview.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q2-executive",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-filter.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q2-executive",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-drill.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q2-executive",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-refresh.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q2-executive",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-compare.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q2-executive",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-export.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q1-viewer",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-session-diff.json",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q1-viewer",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-session-heatmap.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q1-viewer",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-overview.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q1-viewer",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-filter.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q1-viewer",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-drill.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q1-viewer",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-refresh.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q1-viewer",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-compare.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q1-viewer",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-export.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q2-operator",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-session-diff.json",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q2-operator",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-session-heatmap.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q2-operator",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-overview.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q2-operator",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-filter.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q2-operator",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-drill.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q2-operator",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-refresh.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q2-operator",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-compare.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-uae-q2-operator",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-export.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q2-admin",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-session-diff.json",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q2-admin",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-session-heatmap.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q2-admin",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-overview.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q2-admin",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-filter.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q2-admin",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-drill.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q2-admin",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-refresh.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q2-admin",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-compare.png",
+      "kind": "browser_matrix_artifact"
+    },
+    {
+      "from": "browser-session-ksa-q2-admin",
+      "to": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-export.png",
+      "kind": "browser_matrix_artifact"
+    }
+  ]
+}

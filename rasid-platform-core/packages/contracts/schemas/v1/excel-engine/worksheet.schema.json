@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/excel-engine/worksheet.schema.json",
+  "title": "Excel Worksheet",
+  "type": "object",
+  "required": ["worksheet_id", "workbook_ref", "name", "sheet_index", "visibility"],
+  "properties": {
+    "worksheet_id": { "type": "string" },
+    "workbook_ref": { "type": "string" },
+    "name": { "type": "string" },
+    "sheet_index": { "type": "integer", "minimum": 0 },
+    "visibility": { "enum": ["visible", "hidden", "very_hidden"] },
+    "table_refs": { "type": "array", "items": { "type": "string" } },
+    "pivot_refs": { "type": "array", "items": { "type": "string" } },
+    "merged_cells_refs": { "type": "array", "items": { "type": "string" } }
+  }
+}

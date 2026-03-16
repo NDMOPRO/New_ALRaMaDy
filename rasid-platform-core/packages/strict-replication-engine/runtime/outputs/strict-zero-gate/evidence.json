@@ -1,0 +1,9 @@
+{
+  "gate_enforced": true,
+  "strict_zero_run_count": 1,
+  "masquerade_count": 0,
+  "root_hash": "b386cda4e7d6d2b9907eb3a2fa2d627abbb35093ec6a0f1f1d648ae73d9bc955",
+  "failure_count": 13,
+  "failure_roots_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\strict-zero-gate\\strict-zero-failures.json",
+  "report_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\strict-zero-gate\\strict-zero-gate.json"
+}

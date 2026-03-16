@@ -1,0 +1,28 @@
+{
+  "run_id": "real-excel-to-dashboard",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-excel-to-dashboard.html",
+  "verifiers": [
+    {
+      "verifier_id": "runtime-native-renderer",
+      "toolchain": "chromium-headless",
+      "version": "chromium-headless",
+      "input_hash": "7a6e624cb0ba18d220c0210be9374054cbf769e588d7815f85d39acb2e2065df",
+      "render_hash": "db3a96ac8146ebb68c0cf79f3337a2128950b844e07ed81d35e5587a1970255a",
+      "pixel_result": 0.13973443930041152,
+      "structural_result": true,
+      "pass_fail_reasoning": "native render comparison recorded",
+      "independent": false
+    },
+    {
+      "verifier_id": "independent-external-renderer",
+      "toolchain": "independent-firefox-headless",
+      "version": "independent-firefox-headless",
+      "input_hash": "7a6e624cb0ba18d220c0210be9374054cbf769e588d7815f85d39acb2e2065df",
+      "render_hash": "ef010a88a7a29a0dd978257708fa86451292984a576b75c3334600918dcdf63b",
+      "pixel_result": 0.14182227366255143,
+      "structural_result": true,
+      "pass_fail_reasoning": "external verifier subprocess result",
+      "independent": true
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "binding_id": "binding-real-excel-to-dashboard",
+  "run_id": "real-excel-to-dashboard",
+  "publication_id": "publication-real-excel-to-dashboard",
+  "dataset_ref": "dataset.unknown",
+  "query_ref": "query.unknown",
+  "status": "synthetic_bind",
+  "last_refresh_at": "2026-03-15T22:54:23.101492+00:00"
+}

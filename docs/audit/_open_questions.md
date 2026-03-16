@@ -1,4 +1,3 @@
 # Open Questions
 
-- Only items not yet verified from direct evidence
-- Git author name and email are still required to complete the first commit.
+- None for the current `presentations_engine` repair scope. Remaining items are confirmed implementation gaps, not unverified questions.

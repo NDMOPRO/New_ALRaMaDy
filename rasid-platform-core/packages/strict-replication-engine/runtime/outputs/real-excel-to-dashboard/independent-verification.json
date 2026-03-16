@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "threshold": 0.15,
+  "ratio": 0.14182227366255143,
+  "renderer": "independent-firefox-headless",
+  "authoritative": true,
+  "independent": true,
+  "render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-excel-to-dashboard-independent.png",
+  "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-excel-to-dashboard-independent-diff.png",
+  "reference_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-excel-to-dashboard-source.png",
+  "pdf_path": null,
+  "browser_url": "file:///C:/ALRaMaDy/rasid-platform-core/packages/strict-replication-engine/runtime/backend/storage/artifacts/real-excel-to-dashboard.html"
+}

@@ -1,0 +1,50 @@
+{
+  "provider": "github-rest-api",
+  "success_flow": {
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": 200,
+        "url": "https://api.github.com/repos/openai/openai-python"
+      }
+    ],
+    "retry_policy": {
+      "max_attempts": 3,
+      "backoff_seconds": [
+        1,
+        2,
+        4
+      ]
+    },
+    "fallback_used": false
+  },
+  "degraded_flow": {
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": 404,
+        "url": "https://api.github.com/repos/openai/definitely-missing-strict-replication-repo"
+      }
+    ],
+    "retry_policy": {
+      "max_attempts": 3,
+      "retryable_statuses": [
+        403,
+        429,
+        500,
+        502,
+        503,
+        504
+      ],
+      "non_retryable_statuses": [
+        400,
+        401,
+        404,
+        422
+      ]
+    },
+    "fallback_used": true,
+    "fallback_publication_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-remote-api-dashboard-degraded.html",
+    "fallback_reason": "provider_not_found_non_retryable"
+  }
+}

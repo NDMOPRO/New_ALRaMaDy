@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-03-15T23:00:56.768411+00:00",
+  "generator": "run_remote_connector_publication_proof",
+  "repo": "NDMOPRO/New_ALRaMaDy",
+  "release_tag": "strict-replication-publications",
+  "connector_base_url": "http://127.0.0.1:63599",
+  "auth_metadata": {
+    "provider": "github-rest-api",
+    "authenticated": true,
+    "token_source": "gh-cli"
+  },
+  "executed_paths": {
+    "provider_success": "https://api.github.com/repos/openai/openai-python",
+    "provider_error": "https://api.github.com/repos/openai/definitely-missing-strict-replication-repo",
+    "release_html_url": "https://github.com/NDMOPRO/New_ALRaMaDy/releases/tag/strict-replication-publications"
+  }
+}

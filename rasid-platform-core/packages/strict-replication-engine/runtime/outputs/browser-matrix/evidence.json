@@ -1,0 +1,45 @@
+{
+  "generated_at": "2026-03-15T23:00:04.467902+00:00",
+  "session_count": 6,
+  "permission_states": [
+    "admin",
+    "analyst",
+    "executive",
+    "operator",
+    "viewer"
+  ],
+  "tenants": [
+    "tenant-admin",
+    "tenant-alpha",
+    "tenant-exec",
+    "tenant-ops",
+    "tenant-readonly"
+  ],
+  "all_passed": true,
+  "diff_refs": [
+    [
+      "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-session-diff.json",
+      "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-session-heatmap.png"
+    ],
+    [
+      "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-session-diff.json",
+      "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-session-heatmap.png"
+    ],
+    [
+      "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-session-diff.json",
+      "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-session-heatmap.png"
+    ],
+    [
+      "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-session-diff.json",
+      "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-session-heatmap.png"
+    ],
+    [
+      "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-session-diff.json",
+      "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-session-heatmap.png"
+    ],
+    [
+      "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-session-diff.json",
+      "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-session-heatmap.png"
+    ]
+  ]
+}

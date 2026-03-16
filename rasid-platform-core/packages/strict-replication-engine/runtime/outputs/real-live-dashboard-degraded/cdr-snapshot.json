@@ -1,0 +1,348 @@
+{
+  "snapshot_id": "cdr::dc567b25417b::dashboard",
+  "snapshot_version": "2026-03-15.strict.2",
+  "cdr_design": {
+    "version": "1.1.0",
+    "immutable_layout_lock_flag": true,
+    "conversion_policy_id": "strict_replication",
+    "dpi_reference": 144,
+    "target_kind": "dashboard",
+    "pages": [
+      {
+        "page_id": "page-1",
+        "index": 1,
+        "size_emu": {
+          "w": 9144000,
+          "h": 5143500
+        },
+        "background_spec": {
+          "type": "solid",
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          }
+        },
+        "layers": [
+          {
+            "layer_id": "background",
+            "z_index": 0,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "guides",
+            "z_index": 1,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "containers",
+            "z_index": 2,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "text",
+            "z_index": 3,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": [
+              {
+                "element_id": "title",
+                "kind": "text",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 381000,
+                  "width": 2476500,
+                  "height": 457200
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  381000
+                ],
+                "opacity": 1.0,
+                "z_index": 1,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": true
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.0
+                },
+                "fingerprint": "be71c47568572bc1ab5cd7c97961b60669ca056705bed5814b5af7b205ea30a7",
+                "text": {
+                  "text": "LIVE SALES DASHBOARD",
+                  "direction": "LTR",
+                  "alignment": "start",
+                  "baseline_offset_emu": 0,
+                  "line_height": 1.0,
+                  "wrap": "word",
+                  "auto_fit": false,
+                  "runs": [
+                    {
+                      "range": {
+                        "start": 0,
+                        "end": 20
+                      },
+                      "font_family": "Arial",
+                      "font_weight": 400,
+                      "font_style": "normal",
+                      "font_size_emu": 152400,
+                      "letter_spacing_emu": 0,
+                      "kerning_enabled": false,
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      },
+                      "script": "mixed",
+                      "text": "LIVE SALES DASHBOARD"
+                    }
+                  ],
+                  "shaping": {
+                    "arabic_mode": "BASIC",
+                    "bidi_runs": [],
+                    "glyph_positions_emu": []
+                  },
+                  "paint": {
+                    "fill": {
+                      "type": "solid",
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "layer_id": "vectors",
+            "z_index": 4,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "data",
+            "z_index": 5,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "interactive",
+            "z_index": 6,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": [
+              {
+                "element_id": "metrics-table",
+                "kind": "chart",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 1714500,
+                  "width": 4000500,
+                  "height": 857250
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  1714500
+                ],
+                "opacity": 1.0,
+                "z_index": 2,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": false
+                },
+                "ratios": {
+                  "padding_ratio": 0.01,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.0
+                },
+                "fingerprint": "61e37b29dda2dc784cd2903c973bbf71f694cf2ccb11e8fb873309bc3e17355e",
+                "chart": {
+                  "chart_kind": "dashboard_metric_table",
+                  "encoding": {
+                    "axes": {
+                      "x": "Metric",
+                      "y": "Value"
+                    }
+                  },
+                  "style": {
+                    "colors": [
+                      {
+                        "r": 28,
+                        "g": 85,
+                        "b": 168,
+                        "a": 255
+                      }
+                    ],
+                    "fonts": {}
+                  },
+                  "data_binding": {
+                    "table_id": "dashboard-live-table",
+                    "mappings": {
+                      "category": "Metric",
+                      "y": "Value"
+                    },
+                    "binding_kind": "extracted"
+                  },
+                  "interaction": {
+                    "tooltip_fields": [
+                      "Metric",
+                      "Value"
+                    ],
+                    "drill_mapping": {
+                      "metric": "metric"
+                    }
+                  },
+                  "rtl_axis_inverted": false
+                },
+                "chart_bindings": [
+                  {
+                    "query_ref": "remote://sales_missing"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "assets": [
+      {
+        "asset_id": "source-asset-1",
+        "uri": "sha256://dc567b25417bef6ca30c7887d5db40a1e4961038fbfa9dee75c7ea39f0bf2f02",
+        "mime": "application/dashboard",
+        "sha256": "dc567b25417bef6ca30c7887d5db40a1e4961038fbfa9dee75c7ea39f0bf2f02",
+        "size_bytes": 0
+      }
+    ],
+    "layout_graph": "{\"edges\": [{\"from\": \"background\", \"to\": \"text\"}, {\"from\": \"background\", \"to\": \"interactive\"}], \"nodes\": [\"title\", \"metrics-table\"]}",
+    "constraint_matrix": "{\"constraints\": [{\"element_id\": \"title\", \"no_reflow\": true}, {\"element_id\": \"metrics-table\", \"no_reflow\": true}]}",
+    "fingerprints": {
+      "layout_hash": "a4e44d171f33a55e0c645c90221be791f038acc0def223972ffd30f67355da80",
+      "structural_hash": "dc2bb6543cdf33fc5796d451f907a553c2cb6e641f7dde440d86e5028e122b54",
+      "typography_hash": "9f669af4972d54a767045f78b9233ff7ec1920923b8ac182a2fdfc90a081e157",
+      "render_intent_hash": "d1ad6be2c9d3f372effeb3fd9a54854782d313ba9e804152de0cd3ee975d07f6"
+    }
+  },
+  "cdr_data": {
+    "tables": [
+      {
+        "table_id": "dashboard-live-table",
+        "columns": [
+          {
+            "name": "Metric",
+            "type": "string",
+            "fingerprint": "42d94a35c548bf41e862ff7e096320663fb6ff25c78cd5c34d574d0b9e2f77c0"
+          },
+          {
+            "name": "Value",
+            "type": "string",
+            "fingerprint": "f951b794a3597650ab31f2b677bc86eff3ad6798860f7caa908a8e202955b8dc"
+          }
+        ],
+        "rows": [
+          [
+            "Metric",
+            "Value"
+          ],
+          [
+            "Status",
+            "degraded"
+          ],
+          [
+            "Error",
+            "connector_not_found"
+          ]
+        ],
+        "row_source_ref": "remote://sales_missing"
+      }
+    ],
+    "lineage_ref": "lineage://real-live-dashboard-degraded",
+    "semantic_model_ref": "remote://sales_missing"
+  },
+  "lineage_ref": "lineage://real-live-dashboard-degraded",
+  "semantic_model_ref": "remote://sales_missing"
+}

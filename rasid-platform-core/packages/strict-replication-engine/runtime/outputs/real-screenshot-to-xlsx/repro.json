@@ -1,0 +1,9 @@
+{
+  "run_id": "real-screenshot-to-xlsx",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-screenshot-xlsx.png",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-screenshot-to-xlsx.xlsx",
+  "native_renderer": "office-com-pdf",
+  "independent_verifier": "independent-libreoffice-pdf",
+  "target_kind": "xlsx",
+  "ingest_strategy": "metadata"
+}

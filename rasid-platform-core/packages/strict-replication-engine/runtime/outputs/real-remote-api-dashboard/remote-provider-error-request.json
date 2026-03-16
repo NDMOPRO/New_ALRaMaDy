@@ -1,0 +1,9 @@
+{
+  "provider": "github-rest-api",
+  "request_id": "github-repo-error",
+  "method": "GET",
+  "url": "https://api.github.com/repos/openai/definitely-missing-strict-replication-repo",
+  "authenticated": true,
+  "token_source": "gh-cli",
+  "expected_status": 404
+}

@@ -1,0 +1,9 @@
+{
+  "publication_id": "publication-real-image-to-dashboard",
+  "run_id": "real-image-to-dashboard",
+  "artifact_id": "real-image-to-dashboard-dashboard-artifact",
+  "publication_ref": "sqlite://strict-backend/publications/publication-real-image-to-dashboard",
+  "backend_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-image-to-dashboard.html",
+  "strict_status": "degraded",
+  "created_at": "2026-03-15T22:54:09.102366+00:00"
+}

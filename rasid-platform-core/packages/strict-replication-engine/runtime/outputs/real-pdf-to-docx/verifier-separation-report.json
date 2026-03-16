@@ -1,0 +1,9 @@
+{
+  "run_id": "real-pdf-to-docx",
+  "primary_renderer": "runtime-parser-docx",
+  "secondary_renderer": "independent-libreoffice-pdf",
+  "native_renderer": "office-com-pdf",
+  "separated_process": true,
+  "target_hash": "e8b1a5e9c40d45330e7f1fb826a2e4479bb0d453be6c8ec81e2aba1d4cf14ec6",
+  "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-pdf-to-docx\\dual-verifier-matrix.json"
+}

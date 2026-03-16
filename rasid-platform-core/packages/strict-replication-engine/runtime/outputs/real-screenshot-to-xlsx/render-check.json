@@ -1,0 +1,9 @@
+{
+  "run_id": "real-screenshot-to-xlsx",
+  "target_kind": "xlsx",
+  "initial_pixel_diff": 0.004086538461538462,
+  "final_pixel_diff": 0.004086538461538462,
+  "repair_applied": 0,
+  "round_trip_passed": 1,
+  "created_at": "2026-03-15T22:54:03.764943+00:00"
+}

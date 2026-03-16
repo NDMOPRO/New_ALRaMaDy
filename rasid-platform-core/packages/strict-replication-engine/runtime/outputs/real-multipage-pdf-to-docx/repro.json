@@ -1,0 +1,9 @@
+{
+  "run_id": "real-multipage-pdf-to-docx",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-multipage-report.pdf",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-multipage-pdf-to-docx.docx",
+  "native_renderer": "office-com-pdf",
+  "independent_verifier": "independent-libreoffice-pdf",
+  "target_kind": "docx",
+  "ingest_strategy": "pdf_layout"
+}

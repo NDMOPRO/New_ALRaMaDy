@@ -1,0 +1,18 @@
+{
+  "strategy": "dashboard_html",
+  "dashboard_rows": [
+    [
+      "KPI",
+      "Value"
+    ],
+    [
+      "Sales",
+      "210"
+    ],
+    [
+      "Growth",
+      "17%"
+    ]
+  ],
+  "dashboard_title": "STRICT DASHBOARD"
+}

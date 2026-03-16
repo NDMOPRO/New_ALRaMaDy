@@ -20,4 +20,7 @@ export * from "./presentation";
 export * from "./schedule";
 export * from "./localization";
 export * from "./strict";
+export * from "./ai";
+export * from "./transcription";
+export * from "./governance";
 export * from "./registry";

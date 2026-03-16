@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/localization/direction-transformation-plan.schema.json",
+  "title": "DirectionTransformationPlan",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "direction_transformation_plan_id", "request_ref", "source_direction", "target_direction", "transformation_strategy"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.localization.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "direction_transformation_plan_id": { "type": "string" },
+    "request_ref": { "type": "string" },
+    "source_direction": { "enum": ["ltr", "rtl", "mixed", "preserve"] },
+    "target_direction": { "enum": ["ltr", "rtl", "mixed", "preserve"] },
+    "transformation_strategy": { "enum": ["ltr_to_rtl", "rtl_to_ltr", "preserve_mixed", "context_aware"] },
+    "target_node_refs": { "type": "array", "items": { "type": "string" } },
+    "table_transform_rules": { "type": "array", "items": { "type": "object" } },
+    "chart_transform_rules": { "type": "array", "items": { "type": "object" } },
+    "widget_transform_rules": { "type": "array", "items": { "type": "object" } },
+    "asset_transform_rules": { "type": "array", "items": { "type": "object" } },
+    "preserved_binding_refs": { "type": "array", "items": { "type": "string" } },
+    "overflow_risk_refs": { "type": "array", "items": { "type": "string" } },
+    "manual_review_required": { "type": "boolean" }
+  }
+}

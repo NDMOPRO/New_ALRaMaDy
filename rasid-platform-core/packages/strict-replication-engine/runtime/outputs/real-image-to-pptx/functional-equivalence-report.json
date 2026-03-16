@@ -1,0 +1,13 @@
+{
+  "target_kind": "pptx",
+  "checks": {
+    "editable_slides": true,
+    "master_slide_mapping": true,
+    "live_chart_binding": false,
+    "editable_text_fields": true,
+    "structured_layout_zones": true,
+    "theme_mapping": true,
+    "dynamic_data_refresh": false
+  },
+  "overall_passed": false
+}

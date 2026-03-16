@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/report-review-state.schema.json",
+  "title": "ReportReviewState",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "review_state_id", "report_ref", "version_ref", "state"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.report.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "review_state_id": { "type": "string" },
+    "report_ref": { "type": "string" },
+    "version_ref": { "type": "string" },
+    "state": { "enum": ["draft", "in_review", "changes_requested", "reviewed"] }
+  }
+}

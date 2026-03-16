@@ -1,0 +1,10 @@
+{
+  "generated_at": "2026-03-15T23:00:56.768374+00:00",
+  "connector_auth_success": true,
+  "remote_manifest_https": true,
+  "remote_pass_download_verified": true,
+  "remote_degraded_download_verified": true,
+  "release_page_screenshot": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\remote-connectors-publication\\release-page.png",
+  "live_dashboard_screenshot": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\remote-connectors-publication\\remote-dashboard-live.png",
+  "all_passed": true
+}

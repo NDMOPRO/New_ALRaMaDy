@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/excel-engine/range.schema.json",
+  "title": "Excel Range",
+  "type": "object",
+  "required": ["range_id", "workbook_ref", "worksheet_ref", "kind", "address"],
+  "properties": {
+    "range_id": { "type": "string" },
+    "workbook_ref": { "type": "string" },
+    "worksheet_ref": { "type": "string" },
+    "kind": { "enum": ["grid", "table", "selection", "pivot_source", "filter_result", "formula_spill", "header_band"] },
+    "address": {
+      "type": "object",
+      "required": ["start_row_index", "end_row_index", "start_column_index", "end_column_index", "a1_ref"],
+      "properties": {
+        "start_row_index": { "type": "integer", "minimum": 0 },
+        "end_row_index": { "type": "integer", "minimum": 0 },
+        "start_column_index": { "type": "integer", "minimum": 0 },
+        "end_column_index": { "type": "integer", "minimum": 0 },
+        "a1_ref": { "type": "string" }
+      }
+    }
+  }
+}

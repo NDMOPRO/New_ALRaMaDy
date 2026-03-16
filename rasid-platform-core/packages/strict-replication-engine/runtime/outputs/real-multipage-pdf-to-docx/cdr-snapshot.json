@@ -1,0 +1,766 @@
+{
+  "snapshot_id": "cdr::aca2f191d695::docx",
+  "snapshot_version": "2026-03-15.strict.2",
+  "cdr_design": {
+    "version": "1.1.0",
+    "immutable_layout_lock_flag": true,
+    "conversion_policy_id": "strict_replication",
+    "dpi_reference": 144,
+    "target_kind": "docx",
+    "pages": [
+      {
+        "page_id": "page-1",
+        "index": 1,
+        "size_emu": {
+          "w": 7772400,
+          "h": 10058400
+        },
+        "background_spec": {
+          "type": "solid",
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          }
+        },
+        "layers": [
+          {
+            "layer_id": "background",
+            "z_index": 0,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "guides",
+            "z_index": 1,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "containers",
+            "z_index": 2,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "text",
+            "z_index": 3,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": [
+              {
+                "element_id": "paragraph-1",
+                "kind": "text",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 381000,
+                  "width": 6096000,
+                  "height": 266700
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  381000
+                ],
+                "opacity": 1.0,
+                "z_index": 1,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": true
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.1
+                },
+                "fingerprint": "be2ff17d2227fd327938a0883714a33588fbf4d525b73e51feadced1cf214585",
+                "text": {
+                  "text": "EXECUTIVE SUMMARY",
+                  "direction": "LTR",
+                  "alignment": "start",
+                  "baseline_offset_emu": 0,
+                  "line_height": 1.0,
+                  "wrap": "word",
+                  "auto_fit": false,
+                  "runs": [
+                    {
+                      "range": {
+                        "start": 0,
+                        "end": 17
+                      },
+                      "font_family": "Arial",
+                      "font_weight": 400,
+                      "font_style": "normal",
+                      "font_size_emu": 152400,
+                      "letter_spacing_emu": 0,
+                      "kerning_enabled": false,
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      },
+                      "script": "mixed",
+                      "text": "EXECUTIVE SUMMARY"
+                    }
+                  ],
+                  "shaping": {
+                    "arabic_mode": "BASIC",
+                    "bidi_runs": [],
+                    "glyph_positions_emu": []
+                  },
+                  "paint": {
+                    "fill": {
+                      "type": "solid",
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "element_id": "paragraph-2",
+                "kind": "text",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 723900,
+                  "width": 6096000,
+                  "height": 266700
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  723900
+                ],
+                "opacity": 1.0,
+                "z_index": 2,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": true
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.1
+                },
+                "fingerprint": "058076a956d529950d94a7659364007d70d9a00aa305e25d5e2b6e7e744ddd71",
+                "text": {
+                  "text": "Revenue remained stable across the first half.",
+                  "direction": "LTR",
+                  "alignment": "start",
+                  "baseline_offset_emu": 0,
+                  "line_height": 1.0,
+                  "wrap": "word",
+                  "auto_fit": false,
+                  "runs": [
+                    {
+                      "range": {
+                        "start": 0,
+                        "end": 46
+                      },
+                      "font_family": "Arial",
+                      "font_weight": 400,
+                      "font_style": "normal",
+                      "font_size_emu": 152400,
+                      "letter_spacing_emu": 0,
+                      "kerning_enabled": false,
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      },
+                      "script": "mixed",
+                      "text": "Revenue remained stable across the first half."
+                    }
+                  ],
+                  "shaping": {
+                    "arabic_mode": "BASIC",
+                    "bidi_runs": [],
+                    "glyph_positions_emu": []
+                  },
+                  "paint": {
+                    "fill": {
+                      "type": "solid",
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "element_id": "paragraph-3",
+                "kind": "text",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 1066800,
+                  "width": 6096000,
+                  "height": 266700
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  1066800
+                ],
+                "opacity": 1.0,
+                "z_index": 3,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": true
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.1
+                },
+                "fingerprint": "3e755e49d469853f1924722865bac96923c4081e2011959db2e0a6f086b7056d",
+                "text": {
+                  "text": "Primary risk is margin compression in category B.",
+                  "direction": "LTR",
+                  "alignment": "start",
+                  "baseline_offset_emu": 0,
+                  "line_height": 1.0,
+                  "wrap": "word",
+                  "auto_fit": false,
+                  "runs": [
+                    {
+                      "range": {
+                        "start": 0,
+                        "end": 49
+                      },
+                      "font_family": "Arial",
+                      "font_weight": 400,
+                      "font_style": "normal",
+                      "font_size_emu": 152400,
+                      "letter_spacing_emu": 0,
+                      "kerning_enabled": false,
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      },
+                      "script": "mixed",
+                      "text": "Primary risk is margin compression in category B."
+                    }
+                  ],
+                  "shaping": {
+                    "arabic_mode": "BASIC",
+                    "bidi_runs": [],
+                    "glyph_positions_emu": []
+                  },
+                  "paint": {
+                    "fill": {
+                      "type": "solid",
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "element_id": "paragraph-4",
+                "kind": "text",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 1409700,
+                  "width": 6096000,
+                  "height": 266700
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  1409700
+                ],
+                "opacity": 1.0,
+                "z_index": 4,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": true
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.1
+                },
+                "fingerprint": "aa7ee7a786cf66ef50bcc12f293f3831d5580530eb378dcc9c5606eead06dfaa",
+                "text": {
+                  "text": "ACTION ITEMS",
+                  "direction": "LTR",
+                  "alignment": "start",
+                  "baseline_offset_emu": 0,
+                  "line_height": 1.0,
+                  "wrap": "word",
+                  "auto_fit": false,
+                  "runs": [
+                    {
+                      "range": {
+                        "start": 0,
+                        "end": 12
+                      },
+                      "font_family": "Arial",
+                      "font_weight": 400,
+                      "font_style": "normal",
+                      "font_size_emu": 152400,
+                      "letter_spacing_emu": 0,
+                      "kerning_enabled": false,
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      },
+                      "script": "mixed",
+                      "text": "ACTION ITEMS"
+                    }
+                  ],
+                  "shaping": {
+                    "arabic_mode": "BASIC",
+                    "bidi_runs": [],
+                    "glyph_positions_emu": []
+                  },
+                  "paint": {
+                    "fill": {
+                      "type": "solid",
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "element_id": "paragraph-5",
+                "kind": "text",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 1752600,
+                  "width": 6096000,
+                  "height": 266700
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  1752600
+                ],
+                "opacity": 1.0,
+                "z_index": 5,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": true
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.1
+                },
+                "fingerprint": "3ab4c07158f5f196b1885be80d551fcc2dfb6d18535fa6ecefaf15711a57e5cd",
+                "text": {
+                  "text": "1. Review regional discounting policy.",
+                  "direction": "LTR",
+                  "alignment": "start",
+                  "baseline_offset_emu": 0,
+                  "line_height": 1.0,
+                  "wrap": "word",
+                  "auto_fit": false,
+                  "runs": [
+                    {
+                      "range": {
+                        "start": 0,
+                        "end": 38
+                      },
+                      "font_family": "Arial",
+                      "font_weight": 400,
+                      "font_style": "normal",
+                      "font_size_emu": 152400,
+                      "letter_spacing_emu": 0,
+                      "kerning_enabled": false,
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      },
+                      "script": "mixed",
+                      "text": "1. Review regional discounting policy."
+                    }
+                  ],
+                  "shaping": {
+                    "arabic_mode": "BASIC",
+                    "bidi_runs": [],
+                    "glyph_positions_emu": []
+                  },
+                  "paint": {
+                    "fill": {
+                      "type": "solid",
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "element_id": "paragraph-6",
+                "kind": "text",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 2095500,
+                  "width": 6096000,
+                  "height": 266700
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  2095500
+                ],
+                "opacity": 1.0,
+                "z_index": 6,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": true
+                },
+                "ratios": {
+                  "padding_ratio": 0.0,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.1
+                },
+                "fingerprint": "b7fdebd191b4ac1303be6255ff798ae0bdfaaf7c2a5f3f44268600474c2b8437",
+                "text": {
+                  "text": "2. Re-price low margin SKUs before Q4 close.",
+                  "direction": "LTR",
+                  "alignment": "start",
+                  "baseline_offset_emu": 0,
+                  "line_height": 1.0,
+                  "wrap": "word",
+                  "auto_fit": false,
+                  "runs": [
+                    {
+                      "range": {
+                        "start": 0,
+                        "end": 44
+                      },
+                      "font_family": "Arial",
+                      "font_weight": 400,
+                      "font_style": "normal",
+                      "font_size_emu": 152400,
+                      "letter_spacing_emu": 0,
+                      "kerning_enabled": false,
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      },
+                      "script": "mixed",
+                      "text": "2. Re-price low margin SKUs before Q4 close."
+                    }
+                  ],
+                  "shaping": {
+                    "arabic_mode": "BASIC",
+                    "bidi_runs": [],
+                    "glyph_positions_emu": []
+                  },
+                  "paint": {
+                    "fill": {
+                      "type": "solid",
+                      "color": {
+                        "r": 0,
+                        "g": 0,
+                        "b": 0,
+                        "a": 255
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "layer_id": "vectors",
+            "z_index": 4,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          },
+          {
+            "layer_id": "data",
+            "z_index": 5,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": [
+              {
+                "element_id": "table-1",
+                "kind": "table",
+                "bbox_emu": {
+                  "x": 381000,
+                  "y": 2590800,
+                  "width": 4572000,
+                  "height": 800100
+                },
+                "transform_matrix": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  381000,
+                  2590800
+                ],
+                "opacity": 1.0,
+                "z_index": 100,
+                "clipping_overflow_rules": "visible",
+                "constraints": {
+                  "no_reflow": true,
+                  "lock_aspect": false,
+                  "snap_baseline": false
+                },
+                "ratios": {
+                  "padding_ratio": 0.02,
+                  "margin_ratio": 0.0,
+                  "whitespace_ratio": 0.0
+                },
+                "fingerprint": "c4c891ff785da332d434e4b415aa6cc6e135ff1896dcbd807f2304615472baf3",
+                "table": {
+                  "grid": {
+                    "rows": 3,
+                    "cols": 2,
+                    "row_heights_emu": [
+                      266700,
+                      266700,
+                      266700
+                    ],
+                    "col_widths_emu": [
+                      1143000,
+                      1143000
+                    ]
+                  },
+                  "cells": [
+                    {
+                      "r": 0,
+                      "c": 0,
+                      "value": "Page",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 0,
+                      "c": 1,
+                      "value": "BlockCount",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 1,
+                      "c": 0,
+                      "value": "1",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 1,
+                      "c": 1,
+                      "value": "3",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 2,
+                      "c": 0,
+                      "value": "2",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    },
+                    {
+                      "r": 2,
+                      "c": 1,
+                      "value": "3",
+                      "format": null,
+                      "style_ref": "default-cell"
+                    }
+                  ],
+                  "style": {
+                    "alignments": {
+                      "default": "start"
+                    }
+                  },
+                  "rtl": false,
+                  "binding": null
+                }
+              }
+            ]
+          },
+          {
+            "layer_id": "interactive",
+            "z_index": 6,
+            "transform_matrix": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "opacity": 1.0,
+            "blend_mode": "normal",
+            "elements": []
+          }
+        ]
+      }
+    ],
+    "assets": [
+      {
+        "asset_id": "source-asset-1",
+        "uri": "sha256://aca2f191d6955335e63698250ace3fc5660aa189372ee45160ebc01936f3af57",
+        "mime": "application/docx",
+        "sha256": "aca2f191d6955335e63698250ace3fc5660aa189372ee45160ebc01936f3af57",
+        "size_bytes": 0
+      }
+    ],
+    "layout_graph": "{\"edges\": [{\"from\": \"background\", \"to\": \"text\"}, {\"from\": \"background\", \"to\": \"data\"}], \"nodes\": [\"paragraph-1\", \"paragraph-2\", \"paragraph-3\", \"paragraph-4\", \"paragraph-5\", \"paragraph-6\", \"table-1\"]}",
+    "constraint_matrix": "{\"constraints\": [{\"element_id\": \"paragraph-1\", \"no_reflow\": true}, {\"element_id\": \"paragraph-2\", \"no_reflow\": true}, {\"element_id\": \"paragraph-3\", \"no_reflow\": true}, {\"element_id\": \"paragraph-4\", \"no_reflow\": true}, {\"element_id\": \"paragraph-5\", \"no_reflow\": true}, {\"element_id\": \"paragraph-6\", \"no_reflow\": true}, {\"element_id\": \"table-1\", \"no_reflow\": true}]}",
+    "fingerprints": {
+      "layout_hash": "cea177c2aeddb72ac3caa8b932158e907d394ac1137947383b3b44446809122b",
+      "structural_hash": "988df4bb176dd4397bfe1d4e1456c5a0b129b3d2394ed35ce56bb0b2a14fb58f",
+      "typography_hash": "01d6bef501adfb33591604a40417325adecb3b86a7ebd52f8187661107161db2",
+      "render_intent_hash": "e2727f6c106ec94ca999cf56f86e03a4da8d903b9df64dd0f4d7f8ecea6d141f"
+    }
+  },
+  "cdr_data": {
+    "tables": [
+      {
+        "table_id": "docx-table-1",
+        "columns": [
+          {
+            "name": "col_0",
+            "type": "string",
+            "fingerprint": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+          },
+          {
+            "name": "col_1",
+            "type": "string",
+            "fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+          }
+        ],
+        "rows": [
+          [
+            "Page",
+            "BlockCount"
+          ],
+          [
+            "1",
+            "3"
+          ],
+          [
+            "2",
+            "3"
+          ]
+        ],
+        "row_source_ref": "cdr://table/docx-table-1"
+      }
+    ],
+    "lineage_ref": "lineage://real-multipage-pdf-to-docx",
+    "semantic_model_ref": null
+  },
+  "lineage_ref": "lineage://real-multipage-pdf-to-docx",
+  "semantic_model_ref": null
+}

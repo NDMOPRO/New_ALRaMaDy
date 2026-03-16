@@ -1,0 +1,177 @@
+{
+  "primary": {
+    "comparison_id": "runtime-final",
+    "threshold": 0.0,
+    "passed": false,
+    "pixel_diff": 0.004086538461538462,
+    "differing_pixels": 391,
+    "total_pixels": 95680,
+    "dimensions_report": {
+      "equal": true,
+      "reference": {
+        "width": 520,
+        "height": 184
+      },
+      "candidate": {
+        "width": 520,
+        "height": 184
+      },
+      "comparison_canvas": {
+        "width": 520,
+        "height": 184
+      }
+    },
+    "normalization_proof": {
+      "reference": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 520,
+          "height": 184
+        }
+      },
+      "candidate": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 520,
+          "height": 184
+        }
+      }
+    },
+    "render_config_hash": "19963ab61bded7482df48afb1b97405b8dc4f31087aae8e669d98bca401f0643",
+    "engine_fingerprint": {
+      "renderer": "runtime-parser-xlsx",
+      "python_version": "3.14.3",
+      "target_kind": "xlsx",
+      "fingerprint_hash": "0ca23f967295342b0711a8894ea95ee543033511c2951c9b82bf278a2fc04d31"
+    },
+    "pixel_hash": {
+      "reference": "194b41dd0c8a311202952ef1dd032bb4bcc60f848a49fa7fbb175b3b9ed8a755",
+      "candidate": "3376edd5af4b41c020b04af3e36ff398af08ceea22ad08349f5b3c39216d578f"
+    },
+    "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\heatmap.png"
+  },
+  "native": {
+    "comparison_id": "native-render",
+    "threshold": 0.0,
+    "passed": false,
+    "pixel_diff": 0.006125555962951745,
+    "differing_pixels": 6148,
+    "total_pixels": 1003664,
+    "dimensions_report": {
+      "equal": false,
+      "reference": {
+        "width": 520,
+        "height": 184
+      },
+      "candidate": {
+        "width": 596,
+        "height": 1684
+      },
+      "comparison_canvas": {
+        "width": 596,
+        "height": 1684
+      }
+    },
+    "normalization_proof": {
+      "reference": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 520,
+          "height": 184
+        }
+      },
+      "candidate": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 596,
+          "height": 1684
+        }
+      }
+    },
+    "render_config_hash": "358c36b9cce98e4833571184d827b372814c45eebb6684b37037936f765f4cac",
+    "engine_fingerprint": {
+      "renderer": "office-com-pdf",
+      "target_kind": "xlsx",
+      "fingerprint_hash": "993bc07f938ae944ec2d4feb5f4b737f9c0c019eb004d778773fd721d384514f"
+    },
+    "pixel_hash": {
+      "reference": "06a3603ee49444f8ef6e479e9a9e91308f1c1080abf0bd1f80b1ddfe98b7627e",
+      "candidate": "6847aafedf97bd94c0648e0c7514442735a5e45c481376149e9f1eaa0df78361"
+    },
+    "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\native-heatmap.png"
+  },
+  "independent": {
+    "comparison_id": "independent-verifier",
+    "threshold": 0.0,
+    "passed": false,
+    "pixel_diff": 0.006514285006932066,
+    "differing_pixels": 6315,
+    "total_pixels": 969408,
+    "dimensions_report": {
+      "equal": false,
+      "reference": {
+        "width": 520,
+        "height": 184
+      },
+      "candidate": {
+        "width": 612,
+        "height": 1584
+      },
+      "comparison_canvas": {
+        "width": 612,
+        "height": 1584
+      }
+    },
+    "normalization_proof": {
+      "reference": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 520,
+          "height": 184
+        }
+      },
+      "candidate": {
+        "sRGB_normalized": true,
+        "premultiplied_alpha_normalized": true,
+        "orientation_normalized": true,
+        "original_mode": "RGB",
+        "normalized_mode": "RGBA",
+        "dimensions": {
+          "width": 612,
+          "height": 1584
+        }
+      }
+    },
+    "render_config_hash": "a8c2a9f93d201ac88078e56abb3cddab0920c9ed67a93b7020c108042d781bc8",
+    "engine_fingerprint": {
+      "renderer": "independent-libreoffice-pdf",
+      "target_kind": "xlsx",
+      "fingerprint_hash": "c417fc9888a37476eaf5baf2363a1b981438a3358aaf1951783dab75c3460beb"
+    },
+    "pixel_hash": {
+      "reference": "3972113e5642e1fae6f9d75a9277a346ce9d4d721bebc6b480a5b9699738de4b",
+      "candidate": "b38f309c5e5c34c0009d34353d494c82a277703f200ae29c31025fe4d5ff7f6f"
+    },
+    "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-screenshot-to-xlsx\\independent-heatmap.png"
+  }
+}

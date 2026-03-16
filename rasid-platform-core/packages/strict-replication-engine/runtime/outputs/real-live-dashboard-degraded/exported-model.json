@@ -1,0 +1,24 @@
+{
+  "width": 960,
+  "height": 540,
+  "title": "LIVE SALES DASHBOARD",
+  "rows": [
+    [
+      "Metric",
+      "Value"
+    ],
+    [
+      "Status",
+      "degraded"
+    ],
+    [
+      "Error",
+      "connector_not_found"
+    ]
+  ],
+  "region": "KSA",
+  "period": "2026-Q1",
+  "drill_metric": null,
+  "refresh_count": 0,
+  "binding_status": "degraded"
+}

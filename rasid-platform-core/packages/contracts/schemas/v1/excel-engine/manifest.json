@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "module": "excel_engine",
+  "schemas": [
+    { "name": "workbook", "schema": "workbook.schema.json" },
+    { "name": "worksheet", "schema": "worksheet.schema.json" },
+    { "name": "range", "schema": "range.schema.json" },
+    { "name": "cell_metadata", "schema": "cell-metadata.schema.json" },
+    { "name": "merged_cells", "schema": "merged-cells.schema.json" },
+    { "name": "named_ranges", "schema": "named-ranges.schema.json" },
+    { "name": "pivot_metadata", "schema": "pivot-metadata.schema.json" },
+    { "name": "style_metadata", "schema": "style-metadata.schema.json" },
+    { "name": "workbook_version", "schema": "workbook-version.schema.json" },
+    { "name": "transformation_plan", "schema": "transformation-plan.schema.json" },
+    { "name": "transformation_result", "schema": "transformation-result.schema.json" },
+    { "name": "formula_graph_state", "schema": "formula-graph-state.schema.json" }
+  ]
+}

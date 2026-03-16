@@ -1,0 +1,12 @@
+{
+  "target_kind": "xlsx",
+  "checks": {
+    "structured_sheets": true,
+    "editable_formulas": true,
+    "dependency_graph": true,
+    "pivots": false,
+    "conditional_formatting": true,
+    "live_recalculation": true
+  },
+  "overall_passed": false
+}

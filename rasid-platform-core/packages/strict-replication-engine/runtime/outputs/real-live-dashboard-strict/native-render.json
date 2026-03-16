@@ -1,0 +1,8 @@
+{
+  "renderer": "chromium-headless",
+  "image_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-live-dashboard-strict-native.png",
+  "url": "file:///C:/ALRaMaDy/rasid-platform-core/packages/strict-replication-engine/runtime/backend/storage/artifacts/real-live-dashboard-strict.html",
+  "source_pixel_ratio": 0.0,
+  "parser_pixel_ratio": 0.0,
+  "diff_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-live-dashboard-strict-native-diff.png"
+}

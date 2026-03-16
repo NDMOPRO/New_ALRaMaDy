@@ -1,0 +1,9 @@
+{
+  "run_id": "real-ocr-image-to-docx",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-ocr-report.png",
+  "classified_kind": "image",
+  "source_checksum": "bfee94fa15507d8914f111ad8be53cc13287e3bf115cabff976ba633a8efb649",
+  "target_kind": "docx",
+  "source_preview_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-source-input.png",
+  "normalized_source_render_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\renders\\real-ocr-image-to-docx-source.png"
+}

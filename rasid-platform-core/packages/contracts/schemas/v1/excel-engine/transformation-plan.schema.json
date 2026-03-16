@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/excel-engine/transformation-plan.schema.json",
+  "title": "Excel Transformation Plan",
+  "type": "object",
+  "required": ["plan_id", "workbook_ref", "requested_mode", "action_sequence", "execution_strategy", "created_by", "created_at"],
+  "properties": {
+    "plan_id": { "type": "string" },
+    "workbook_ref": { "type": "string" },
+    "requested_mode": { "enum": ["easy", "advanced"] },
+    "execution_strategy": { "enum": ["serial", "parallel_stages"] },
+    "action_sequence": { "type": "array", "items": { "type": "object" } },
+    "created_by": { "type": "string" },
+    "created_at": { "type": "string" }
+  }
+}

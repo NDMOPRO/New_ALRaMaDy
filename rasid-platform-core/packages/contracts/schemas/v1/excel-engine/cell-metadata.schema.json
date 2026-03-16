@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/excel-engine/cell-metadata.schema.json",
+  "title": "Excel Cell Metadata",
+  "type": "object",
+  "required": ["cell_id", "workbook_ref", "worksheet_ref", "address", "value_type"],
+  "properties": {
+    "cell_id": { "type": "string" },
+    "workbook_ref": { "type": "string" },
+    "worksheet_ref": { "type": "string" },
+    "value_type": { "enum": ["blank", "text", "number", "boolean", "date", "datetime", "time", "currency", "percentage", "error", "formula"] },
+    "formula_ref": { "type": ["string", "null"] },
+    "style_ref": { "type": ["string", "null"] }
+  }
+}

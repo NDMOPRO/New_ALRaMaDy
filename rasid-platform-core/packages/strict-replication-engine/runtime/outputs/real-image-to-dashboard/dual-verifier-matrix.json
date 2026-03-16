@@ -1,0 +1,28 @@
+{
+  "run_id": "real-image-to-dashboard",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-image-to-dashboard.html",
+  "verifiers": [
+    {
+      "verifier_id": "runtime-native-renderer",
+      "toolchain": "chromium-headless",
+      "version": "chromium-headless",
+      "input_hash": "93370898b80bcd0b52ed16699d8313dd1aae3f13668423dda85140ea793044b0",
+      "render_hash": "ee8935458060213fbe23982a215258129de9be4e371c010c30f9f5aa49349d8f",
+      "pixel_result": 0.12151684670781893,
+      "structural_result": true,
+      "pass_fail_reasoning": "native render comparison recorded",
+      "independent": false
+    },
+    {
+      "verifier_id": "independent-external-renderer",
+      "toolchain": "independent-firefox-headless",
+      "version": "independent-firefox-headless",
+      "input_hash": "93370898b80bcd0b52ed16699d8313dd1aae3f13668423dda85140ea793044b0",
+      "render_hash": "77e5844985a9a00aead6714c7e801b8332a097068015023cda56e1b118b21f46",
+      "pixel_result": 0.12293274176954733,
+      "structural_result": true,
+      "pass_fail_reasoning": "external verifier subprocess result",
+      "independent": true
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "run_id": "real-excel-to-dashboard",
+  "source_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\inputs\\source-excel-dashboard.xlsx",
+  "target_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-excel-to-dashboard.html",
+  "native_renderer": "chromium-headless",
+  "independent_verifier": "independent-firefox-headless",
+  "target_kind": "dashboard",
+  "ingest_strategy": "xlsx_file"
+}

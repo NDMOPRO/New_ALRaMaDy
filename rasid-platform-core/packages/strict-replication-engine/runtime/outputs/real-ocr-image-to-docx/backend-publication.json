@@ -1,0 +1,9 @@
+{
+  "publication_id": "publication-real-ocr-image-to-docx",
+  "run_id": "real-ocr-image-to-docx",
+  "artifact_id": "real-ocr-image-to-docx-docx-artifact",
+  "publication_ref": "sqlite://strict-backend/publications/publication-real-ocr-image-to-docx",
+  "backend_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-ocr-image-to-docx.docx",
+  "strict_status": "degraded",
+  "created_at": "2026-03-15T22:55:30.715761+00:00"
+}

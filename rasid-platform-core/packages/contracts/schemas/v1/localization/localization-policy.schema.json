@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/localization/localization-policy.schema.json",
+  "title": "LocalizationPolicy",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "localization_policy_id", "policy_name", "capability_id", "mode"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.localization.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "localization_policy_id": { "type": "string" },
+    "policy_name": { "type": "string" },
+    "capability_id": { "const": "arabic_localization_lct" },
+    "mode": { "enum": ["strict_localization", "smart_localization", "pro_localization"] },
+    "source_language_detection": { "enum": ["auto_detect", "explicit", "mixed_bilingual"] },
+    "preview_before_apply": { "type": "boolean" },
+    "approval_required_for_apply": { "type": "boolean" },
+    "auto_resolve_terminology_profile": { "type": "boolean" },
+    "apply_direction_transform": { "type": "boolean" },
+    "apply_typography_refinement": { "type": "boolean" },
+    "apply_cultural_formatting": { "type": "boolean" },
+    "preserve_editability": { "type": "boolean" },
+    "allow_degraded_apply": { "type": "boolean" },
+    "blocked_on_binding_break": { "type": "boolean" },
+    "date_policy": { "type": "string" },
+    "number_policy": { "type": "string" },
+    "currency_policy": { "type": "string" },
+    "locale_phrase_policy": { "enum": ["literal", "culturally_adapted", "brand_constrained"] },
+    "numeric_shaping_policy": { "enum": ["preserve_source", "arabic_indic", "latin", "context_aware"] }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "composite": true, "rootDir": "src", "outDir": "dist" },
+  "references": [
+    { "path": "../contracts" },
+    { "path": "../capability-registry" },
+    { "path": "../arabic-localization-lct-engine" },
+    { "path": "../dashboard-engine" },
+    { "path": "../excel-engine" },
+    { "path": "../presentations-engine" },
+    { "path": "../report-engine" },
+    { "path": "../strict-replication-engine" },
+    { "path": "../transcription-extraction-engine" }
+  ],
+  "include": ["src"]
+}

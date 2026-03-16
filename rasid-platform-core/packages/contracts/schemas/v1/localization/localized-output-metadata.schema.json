@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/localization/localized-output-metadata.schema.json",
+  "title": "LocalizedOutputMetadata",
+  "type": "object",
+  "required": ["schema_namespace", "schema_version", "localized_output_metadata_id", "request_ref", "source_artifact_ref", "localized_artifact_ref", "source_canonical_ref", "localized_canonical_ref", "output_artifact_type", "target_locale", "editable_status", "binding_integrity_status", "applied_policy_ref", "applied_terminology_profile_ref", "generated_at"],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.localization.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "localized_output_metadata_id": { "type": "string" },
+    "request_ref": { "type": "string" },
+    "source_artifact_ref": { "type": "string" },
+    "localized_artifact_ref": { "type": "string" },
+    "source_canonical_ref": { "type": "string" },
+    "localized_canonical_ref": { "type": "string" },
+    "output_artifact_type": { "enum": ["report", "presentation", "dashboard", "spreadsheet"] },
+    "target_locale": { "type": "string" },
+    "preview_artifact_ref": { "type": ["string", "null"] },
+    "diff_artifact_ref": { "type": ["string", "null"] },
+    "export_artifact_refs": { "type": "array", "items": { "type": "string" } },
+    "editable_status": { "enum": ["editable", "partially_editable", "non_editable"] },
+    "binding_integrity_status": { "enum": ["preserved", "partially_preserved", "broken"] },
+    "applied_policy_ref": { "type": "string" },
+    "applied_terminology_profile_ref": { "type": "string" },
+    "generated_at": { "type": "string" }
+  }
+}

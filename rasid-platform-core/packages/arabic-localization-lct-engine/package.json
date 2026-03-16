@@ -1,0 +1,24 @@
+{
+  "name": "@rasid/arabic-localization-lct-engine",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@rasid/dashboard-engine": "1.0.0",
+    "@rasid/capability-registry": "1.0.0",
+    "@rasid/contracts": "1.0.0",
+    "@rasid/report-engine": "1.0.0",
+    "@rasid/runtime": "1.0.0",
+    "exceljs": "^4.4.0",
+    "jszip": "^3.10.1",
+    "pptxgenjs": "^4.0.1",
+    "zod": "^3.24.2"
+  }
+}

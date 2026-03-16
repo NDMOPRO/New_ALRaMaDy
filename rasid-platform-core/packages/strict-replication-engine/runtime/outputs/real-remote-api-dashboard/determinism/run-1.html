@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>LIVE SALES DASHBOARD</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 0; background: #ffffff; }
+      .wrap { padding: 20px; width: 1120px; }
+      .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 18px; }
+      .badge { border: 1px solid #000; background: #eef6ff; padding: 8px 10px; }
+      .control-row { display: flex; gap: 8px; margin-bottom: 14px; }
+      .title { background: #ddeeff; border: 1px solid #000; padding: 14px 20px; width: 220px; }
+      .cards { display: flex; gap: 12px; margin-top: 20px; }
+      .card { border: 1px solid #000; background: #f8fbff; padding: 12px; min-width: 150px; }
+      .metric { font-size: 14px; }
+      .value { font-size: 22px; margin-top: 6px; }
+      table { border-collapse: collapse; margin-top: 28px; width: 420px; }
+      td { border: 1px solid #000; padding: 8px 10px; }
+      .compare { margin-top: 18px; border: 1px solid #000; background: #fffbe6; padding: 12px; width: 520px; }
+    </style>
+  </head>
+  <body data-binding-status="live" data-query-ref="">
+    <div class="wrap" data-dashboard-runtime="strictDashboardApi" data-query-ref="">
+      
+      <div class="toolbar">
+        <div class="badge">Region: openai</div>
+        <div class="badge">Period: openai-python</div>
+        <div class="badge">Drill: none</div>
+        <div class="badge">Refreshes: 1</div>
+      </div>
+      <div class="control-row">
+        <button type="button" id="apply-filter" data-action="apply-filter">Apply Filter</button>
+        <button type="button" id="drill-sales" data-action="drill-sales">Drill Sales</button>
+        <button type="button" id="refresh-button" data-action="refresh-button">Refresh</button>
+        <button type="button" id="compare-button" data-action="compare-button">Compare</button>
+      </div>
+      <div class="title">LIVE SALES DASHBOARD</div>
+      <div class="cards"><div class='card'><div class='metric'>Forks</div><div class='value'>4638</div></div><div class='card'><div class='metric'>OpenIssues</div><div class='value'>331</div></div><div class='card'><div class='metric'>Stars</div><div class='value'>30254</div></div><div class='card'><div class='metric'>Watchers</div><div class='value'>348</div></div></div>
+      <table><tr><td>Metric</td><td>Value</td></tr><tr><td>Forks</td><td>4638</td></tr><tr><td>OpenIssues</td><td>331</td></tr><tr><td>Stars</td><td>30254</td></tr><tr><td>Watchers</td><td>348</td></tr></table>
+      <div class='compare'><strong>Compare vs openai / openai-python</strong><ul><li>Forks: 4638 vs 4638 (0)</li><li>OpenIssues: 331 vs 331 (0)</li><li>Stars: 30254 vs 30254 (0)</li><li>Watchers: 348 vs 348 (0)</li></ul></div>
+    </div>
+    <script type="application/json" id="strict-dashboard-model">{"width": 960, "height": 540, "title": "LIVE SALES DASHBOARD", "rows": [["Metric", "Value"], ["Forks", "4638"], ["OpenIssues", "331"], ["Stars", "30254"], ["Watchers", "348"]], "region": "openai", "period": "openai-python", "drill_metric": null, "refresh_count": 1, "compare": {"baseline_region": "openai", "baseline_period": "openai-python", "deltas": [{"metric": "Forks", "current": "4638", "baseline": "4638", "delta": 0}, {"metric": "OpenIssues", "current": "331", "baseline": "331", "delta": 0}, {"metric": "Stars", "current": "30254", "baseline": "30254", "delta": 0}, {"metric": "Watchers", "current": "348", "baseline": "348", "delta": 0}]}}</script>
+    <script>
+      const strictDashboardApi = {
+        queryRef: null,
+        bindingStatus: "live",
+        refresh: () => fetch("data:application/json,%7B%22ok%22%3Atrue%7D").then((response) => response.json()),
+      };
+      window.strictDashboardApi = strictDashboardApi;
+    </script>
+  </body>
+</html>

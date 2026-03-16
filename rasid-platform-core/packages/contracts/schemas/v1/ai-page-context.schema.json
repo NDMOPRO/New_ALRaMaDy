@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/ai-page-context.schema.json",
+  "title": "AiPageContext",
+  "type": "object",
+  "required": [
+    "schema_namespace",
+    "schema_version",
+    "session_id",
+    "page_path",
+    "page_label",
+    "capability_hint",
+    "current_artifact_ref",
+    "source_refs",
+    "recent_output_refs",
+    "permission_scope",
+    "governance_tags",
+    "memory_scope"
+  ],
+  "properties": {
+    "schema_namespace": { "const": "rasid.shared.ai.v1" },
+    "schema_version": { "const": "1.0.0" },
+    "session_id": { "type": "string" },
+    "page_path": {
+      "enum": ["/home", "/data", "/excel", "/dashboards", "/reports", "/presentations", "/transcription", "/replication", "/localization", "/library", "/governance"]
+    },
+    "page_label": { "type": "string" },
+    "capability_hint": { "type": "string" },
+    "current_artifact_ref": { "type": ["string", "null"] },
+    "source_refs": { "type": "array", "items": { "type": "string" } },
+    "recent_output_refs": { "type": "array", "items": { "type": "string" } },
+    "permission_scope": { "type": "object" },
+    "governance_tags": { "type": "array", "items": { "type": "string" } },
+    "memory_scope": { "enum": ["page_isolated", "workspace_scoped"] }
+  }
+}

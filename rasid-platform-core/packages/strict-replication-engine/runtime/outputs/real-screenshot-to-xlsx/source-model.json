@@ -1,0 +1,55 @@
+{
+  "rows": [
+    [
+      "Month",
+      "Revenue",
+      "Cost",
+      "Margin"
+    ],
+    [
+      "Jan",
+      "120",
+      "60",
+      ""
+    ],
+    [
+      "Feb",
+      "140",
+      "70",
+      ""
+    ],
+    [
+      "Mar",
+      "160",
+      "85",
+      ""
+    ]
+  ],
+  "formulas": [
+    {
+      "cell": "D2",
+      "formula": "=B2-C2"
+    },
+    {
+      "cell": "D3",
+      "formula": "=B3-C3"
+    },
+    {
+      "cell": "D4",
+      "formula": "=B4-C4"
+    }
+  ],
+  "conditional_formats": [
+    {
+      "range": "D2:D4",
+      "operator": "greaterThan",
+      "formula": "50"
+    }
+  ],
+  "defined_names": [
+    {
+      "name": "RevenueRange",
+      "range": "B2:B4"
+    }
+  ]
+}

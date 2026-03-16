@@ -1,0 +1,12 @@
+{
+  "target_kind": "dashboard",
+  "checks": {
+    "interactive_filtering": true,
+    "cross_filter": true,
+    "drill_down": true,
+    "export": true,
+    "live_refresh": true,
+    "permission_aware_rendering": true
+  },
+  "overall_passed": true
+}

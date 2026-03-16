@@ -1,0 +1,10 @@
+{
+  "artifact_id": "real-live-dashboard-strict-dashboard-artifact",
+  "run_id": "real-live-dashboard-strict",
+  "artifact_kind": "dashboard",
+  "target_kind": "dashboard",
+  "path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\storage\\artifacts\\real-live-dashboard-strict.html",
+  "checksum": "46aa506639d902a6a22bd95af69bf73fc3f391b4832b9f13202d9da6579b295b",
+  "strict_status": "strict",
+  "created_at": "2026-03-15T22:54:35.280950+00:00"
+}

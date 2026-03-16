@@ -1,0 +1,9 @@
+{
+  "binding_id": "binding-real-screenshot-to-dashboard",
+  "run_id": "real-screenshot-to-dashboard",
+  "publication_id": "publication-real-screenshot-to-dashboard",
+  "dataset_ref": "dataset.sales",
+  "query_ref": "query.sales.latest",
+  "status": "degraded",
+  "last_refresh_at": "2026-03-14T23:38:59.614000+00:00"
+}

@@ -1,0 +1,9 @@
+{
+  "binding_id": "binding-real-pdf-to-bi-dashboard",
+  "run_id": "real-pdf-to-bi-dashboard",
+  "publication_id": "publication-real-pdf-to-bi-dashboard",
+  "dataset_ref": "dataset.unknown",
+  "query_ref": "query.unknown",
+  "status": "synthetic_bind",
+  "last_refresh_at": "2026-03-15T22:54:19.501086+00:00"
+}

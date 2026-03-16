@@ -11,10 +11,18 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
+      "@rasid/arabic-localization-lct-engine": ["packages/arabic-localization-lct-engine/src/index"],
+      "@rasid/ai-engine": ["packages/ai-engine/src/index"],
       "@rasid/common": ["packages/common/src/index"],
       "@rasid/contracts": ["packages/contracts/src/index"],
       "@rasid/dashboard-engine": ["packages/dashboard-engine/src/index"],
       "@rasid/excel-engine": ["packages/excel-engine/src/index"],
+      "@rasid/governance-engine": ["packages/governance-engine/src/index"],
+      "@rasid/presentations-engine": ["packages/presentations-engine/src/index"],
+      "@rasid/presentations-engine/platform": ["packages/presentations-engine/src/platform"],
+      "@rasid/report-engine": ["packages/report-engine/src/index"],
+      "@rasid/strict-replication-engine": ["packages/strict-replication-engine/src/index"],
+      "@rasid/transcription-extraction-engine": ["packages/transcription-extraction-engine/src/index"],
       "@rasid/runtime": ["packages/runtime/src/index"],
       "@rasid/artifacts": ["packages/artifacts/src/index"],
       "@rasid/jobs": ["packages/jobs/src/index"],
@@ -26,7 +34,8 @@
       "@rasid/permissions": ["packages/permissions/src/index"],
       "@rasid/connectors": ["packages/connectors/src/index"],
       "@rasid/output-publication": ["packages/output-publication/src/index"],
-      "@rasid/capability-registry": ["packages/capability-registry/src/index"]
+      "@rasid/capability-registry": ["packages/capability-registry/src/index"],
+      "@rasid/transcription-extraction-engine": ["packages/transcription-extraction-engine/src/index"]
     }
   }
 }

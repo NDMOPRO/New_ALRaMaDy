@@ -1,0 +1,851 @@
+{
+  "generated_at": "2026-03-15T23:00:04.467902+00:00",
+  "entries": [
+    {
+      "session_id": "browser-session-ksa-q1-analyst",
+      "scenario": "baseline-analyst",
+      "permission_state": "analyst",
+      "tenant_id": "tenant-alpha",
+      "action_set": [
+        "overview",
+        "filter",
+        "drill",
+        "refresh",
+        "compare",
+        "export"
+      ],
+      "expected": {
+        "region": "KSA",
+        "period": "2026-Q1",
+        "tenant_id": "tenant-alpha",
+        "permission_state": "analyst",
+        "allowed_actions": {
+          "filter": true,
+          "drill": true,
+          "refresh": true,
+          "compare": true,
+          "export": true
+        },
+        "compare_available": true,
+        "export_available": true
+      },
+      "actual": {
+        "region": "KSA",
+        "period": "2026-Q1",
+        "tenant_id": "tenant-alpha",
+        "permission_state": "analyst",
+        "refresh_count": 1,
+        "export_count": 1,
+        "allowed_actions": {
+          "filter": true,
+          "drill": true,
+          "refresh": true,
+          "compare": true,
+          "export": true
+        },
+        "compare_available": true,
+        "export_available": true,
+        "action_results": {
+          "filter": {
+            "allowed": true,
+            "executed": true
+          },
+          "drill": {
+            "allowed": true,
+            "executed": true
+          },
+          "refresh": {
+            "allowed": true,
+            "executed": true
+          },
+          "compare": {
+            "allowed": true,
+            "executed": true
+          },
+          "export": {
+            "allowed": true,
+            "executed": true
+          }
+        }
+      },
+      "pass_fail": true,
+      "diff_refs": [
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-session-diff.json",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-session-heatmap.png"
+      ],
+      "screenshot_refs": [
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-overview.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-filter.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-drill.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-refresh.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-compare.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-export.png"
+      ],
+      "pixel_change_report": {
+        "comparison_id": "browser-session-ksa-q1-analyst",
+        "threshold": 0.0,
+        "passed": false,
+        "pixel_diff": 0.08449110243055556,
+        "differing_pixels": 77867,
+        "total_pixels": 921600,
+        "dimensions_report": {
+          "equal": true,
+          "reference": {
+            "width": 1280,
+            "height": 720
+          },
+          "candidate": {
+            "width": 1280,
+            "height": 720
+          },
+          "comparison_canvas": {
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "normalization_proof": {
+          "reference": {
+            "sRGB_normalized": true,
+            "premultiplied_alpha_normalized": true,
+            "orientation_normalized": true,
+            "original_mode": "RGB",
+            "normalized_mode": "RGBA",
+            "dimensions": {
+              "width": 1280,
+              "height": 720
+            }
+          },
+          "candidate": {
+            "sRGB_normalized": true,
+            "premultiplied_alpha_normalized": true,
+            "orientation_normalized": true,
+            "original_mode": "RGB",
+            "normalized_mode": "RGBA",
+            "dimensions": {
+              "width": 1280,
+              "height": 720
+            }
+          }
+        },
+        "render_config_hash": "ccd0f31cb1e127457e504ce4ccd961f948cb61852eb5470848ce09b2ebdfac4c",
+        "engine_fingerprint": {
+          "renderer": "playwright-browser-matrix",
+          "scenario": "baseline-analyst",
+          "permission_state": "analyst",
+          "tenant_id": "tenant-alpha",
+          "fingerprint_hash": "6a64e0e3d121438deafbfe0d1d43c5ce86d36130d2cda9bf7ef467d760281027"
+        },
+        "pixel_hash": {
+          "reference": "3a4f9044f440e9641f98d0f624cd57e11362124604f717e1dffdd8be8e8da295",
+          "candidate": "79b8861f313177844a02f3ab0d475b4449a3bea41be779af61d120ba7bc773ef"
+        },
+        "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-analyst\\browser-session-heatmap.png"
+      }
+    },
+    {
+      "session_id": "browser-session-uae-q1-analyst",
+      "scenario": "regional-filter-analyst",
+      "permission_state": "analyst",
+      "tenant_id": "tenant-alpha",
+      "action_set": [
+        "overview",
+        "filter",
+        "drill",
+        "refresh",
+        "compare",
+        "export"
+      ],
+      "expected": {
+        "region": "UAE",
+        "period": "2026-Q1",
+        "tenant_id": "tenant-alpha",
+        "permission_state": "analyst",
+        "allowed_actions": {
+          "filter": true,
+          "drill": true,
+          "refresh": true,
+          "compare": true,
+          "export": true
+        },
+        "compare_available": true,
+        "export_available": true
+      },
+      "actual": {
+        "region": "UAE",
+        "period": "2026-Q1",
+        "tenant_id": "tenant-alpha",
+        "permission_state": "analyst",
+        "refresh_count": 1,
+        "export_count": 1,
+        "allowed_actions": {
+          "filter": true,
+          "drill": true,
+          "refresh": true,
+          "compare": true,
+          "export": true
+        },
+        "compare_available": true,
+        "export_available": true,
+        "action_results": {
+          "filter": {
+            "allowed": true,
+            "executed": true
+          },
+          "drill": {
+            "allowed": true,
+            "executed": true
+          },
+          "refresh": {
+            "allowed": true,
+            "executed": true
+          },
+          "compare": {
+            "allowed": true,
+            "executed": true
+          },
+          "export": {
+            "allowed": true,
+            "executed": true
+          }
+        }
+      },
+      "pass_fail": true,
+      "diff_refs": [
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-session-diff.json",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-session-heatmap.png"
+      ],
+      "screenshot_refs": [
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-overview.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-filter.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-drill.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-refresh.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-compare.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-export.png"
+      ],
+      "pixel_change_report": {
+        "comparison_id": "browser-session-uae-q1-analyst",
+        "threshold": 0.0,
+        "passed": false,
+        "pixel_diff": 0.08479275173611112,
+        "differing_pixels": 78145,
+        "total_pixels": 921600,
+        "dimensions_report": {
+          "equal": true,
+          "reference": {
+            "width": 1280,
+            "height": 720
+          },
+          "candidate": {
+            "width": 1280,
+            "height": 720
+          },
+          "comparison_canvas": {
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "normalization_proof": {
+          "reference": {
+            "sRGB_normalized": true,
+            "premultiplied_alpha_normalized": true,
+            "orientation_normalized": true,
+            "original_mode": "RGB",
+            "normalized_mode": "RGBA",
+            "dimensions": {
+              "width": 1280,
+              "height": 720
+            }
+          },
+          "candidate": {
+            "sRGB_normalized": true,
+            "premultiplied_alpha_normalized": true,
+            "orientation_normalized": true,
+            "original_mode": "RGB",
+            "normalized_mode": "RGBA",
+            "dimensions": {
+              "width": 1280,
+              "height": 720
+            }
+          }
+        },
+        "render_config_hash": "e06033f4c72fb737c405646a1453cbf8972b37572bce876a1b64b86655d864e1",
+        "engine_fingerprint": {
+          "renderer": "playwright-browser-matrix",
+          "scenario": "regional-filter-analyst",
+          "permission_state": "analyst",
+          "tenant_id": "tenant-alpha",
+          "fingerprint_hash": "9787df61e255ccfd3c440dd26a1931daf92b63790de3c891989c06e1fbe595b2"
+        },
+        "pixel_hash": {
+          "reference": "e3ebb37195dd5a2f4a8353ce4e967e265d80621ba674b084794c9fae33a8bf12",
+          "candidate": "c19ec6293d2e3b11ee4e0290f86ed56b9539aaa7e2d82ace1bf7a571e8c2fdaa"
+        },
+        "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q1-analyst\\browser-session-heatmap.png"
+      }
+    },
+    {
+      "session_id": "browser-session-uae-q2-executive",
+      "scenario": "executive-export-compare",
+      "permission_state": "executive",
+      "tenant_id": "tenant-exec",
+      "action_set": [
+        "overview",
+        "filter",
+        "drill",
+        "refresh",
+        "compare",
+        "export"
+      ],
+      "expected": {
+        "region": "UAE",
+        "period": "2026-Q2",
+        "tenant_id": "tenant-exec",
+        "permission_state": "executive",
+        "allowed_actions": {
+          "filter": true,
+          "drill": true,
+          "refresh": false,
+          "compare": true,
+          "export": true
+        },
+        "compare_available": true,
+        "export_available": true
+      },
+      "actual": {
+        "region": "UAE",
+        "period": "2026-Q2",
+        "tenant_id": "tenant-exec",
+        "permission_state": "executive",
+        "refresh_count": 0,
+        "export_count": 1,
+        "allowed_actions": {
+          "filter": true,
+          "drill": true,
+          "refresh": false,
+          "compare": true,
+          "export": true
+        },
+        "compare_available": true,
+        "export_available": true,
+        "action_results": {
+          "filter": {
+            "allowed": true,
+            "executed": true
+          },
+          "drill": {
+            "allowed": true,
+            "executed": true
+          },
+          "refresh": {
+            "allowed": false,
+            "executed": false
+          },
+          "compare": {
+            "allowed": true,
+            "executed": true
+          },
+          "export": {
+            "allowed": true,
+            "executed": true
+          }
+        }
+      },
+      "pass_fail": true,
+      "diff_refs": [
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-session-diff.json",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-session-heatmap.png"
+      ],
+      "screenshot_refs": [
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-overview.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-filter.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-drill.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-refresh.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-compare.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-export.png"
+      ],
+      "pixel_change_report": {
+        "comparison_id": "browser-session-uae-q2-executive",
+        "threshold": 0.0,
+        "passed": false,
+        "pixel_diff": 0.08395290798611112,
+        "differing_pixels": 77371,
+        "total_pixels": 921600,
+        "dimensions_report": {
+          "equal": true,
+          "reference": {
+            "width": 1280,
+            "height": 720
+          },
+          "candidate": {
+            "width": 1280,
+            "height": 720
+          },
+          "comparison_canvas": {
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "normalization_proof": {
+          "reference": {
+            "sRGB_normalized": true,
+            "premultiplied_alpha_normalized": true,
+            "orientation_normalized": true,
+            "original_mode": "RGB",
+            "normalized_mode": "RGBA",
+            "dimensions": {
+              "width": 1280,
+              "height": 720
+            }
+          },
+          "candidate": {
+            "sRGB_normalized": true,
+            "premultiplied_alpha_normalized": true,
+            "orientation_normalized": true,
+            "original_mode": "RGB",
+            "normalized_mode": "RGBA",
+            "dimensions": {
+              "width": 1280,
+              "height": 720
+            }
+          }
+        },
+        "render_config_hash": "e153d962a466ea438e72989a870a614d2e8dde0db63e966c1f06e237c8762c6b",
+        "engine_fingerprint": {
+          "renderer": "playwright-browser-matrix",
+          "scenario": "executive-export-compare",
+          "permission_state": "executive",
+          "tenant_id": "tenant-exec",
+          "fingerprint_hash": "b9f7b9f046a45bbd61cf204acd33e65cf4fc0cf9049b899543676cf8ac8dff8f"
+        },
+        "pixel_hash": {
+          "reference": "8a1903b94773e77edc4d23e05c9ed9752a73cef75d43ff3849b8aafc47cbcdab",
+          "candidate": "b3ea5b1ddd31b63358be86f2a1485f777ad36a6e64a35bf87f17a9937a71d470"
+        },
+        "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-executive\\browser-session-heatmap.png"
+      }
+    },
+    {
+      "session_id": "browser-session-ksa-q1-viewer",
+      "scenario": "viewer-readonly-compare",
+      "permission_state": "viewer",
+      "tenant_id": "tenant-readonly",
+      "action_set": [
+        "overview",
+        "filter",
+        "drill",
+        "refresh",
+        "compare",
+        "export"
+      ],
+      "expected": {
+        "region": "KSA",
+        "period": "2026-Q1",
+        "tenant_id": "tenant-readonly",
+        "permission_state": "viewer",
+        "allowed_actions": {
+          "filter": true,
+          "drill": false,
+          "refresh": false,
+          "compare": true,
+          "export": false
+        },
+        "compare_available": true,
+        "export_available": false
+      },
+      "actual": {
+        "region": "KSA",
+        "period": "2026-Q1",
+        "tenant_id": "tenant-readonly",
+        "permission_state": "viewer",
+        "refresh_count": 0,
+        "export_count": 0,
+        "allowed_actions": {
+          "filter": true,
+          "drill": false,
+          "refresh": false,
+          "compare": true,
+          "export": false
+        },
+        "compare_available": true,
+        "export_available": false,
+        "action_results": {
+          "filter": {
+            "allowed": true,
+            "executed": true
+          },
+          "drill": {
+            "allowed": false,
+            "executed": false
+          },
+          "refresh": {
+            "allowed": false,
+            "executed": false
+          },
+          "compare": {
+            "allowed": true,
+            "executed": true
+          },
+          "export": {
+            "allowed": false,
+            "executed": false
+          }
+        }
+      },
+      "pass_fail": true,
+      "diff_refs": [
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-session-diff.json",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-session-heatmap.png"
+      ],
+      "screenshot_refs": [
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-overview.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-filter.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-drill.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-refresh.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-compare.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-export.png"
+      ],
+      "pixel_change_report": {
+        "comparison_id": "browser-session-ksa-q1-viewer",
+        "threshold": 0.0,
+        "passed": false,
+        "pixel_diff": 0.07982638888888889,
+        "differing_pixels": 73568,
+        "total_pixels": 921600,
+        "dimensions_report": {
+          "equal": true,
+          "reference": {
+            "width": 1280,
+            "height": 720
+          },
+          "candidate": {
+            "width": 1280,
+            "height": 720
+          },
+          "comparison_canvas": {
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "normalization_proof": {
+          "reference": {
+            "sRGB_normalized": true,
+            "premultiplied_alpha_normalized": true,
+            "orientation_normalized": true,
+            "original_mode": "RGB",
+            "normalized_mode": "RGBA",
+            "dimensions": {
+              "width": 1280,
+              "height": 720
+            }
+          },
+          "candidate": {
+            "sRGB_normalized": true,
+            "premultiplied_alpha_normalized": true,
+            "orientation_normalized": true,
+            "original_mode": "RGB",
+            "normalized_mode": "RGBA",
+            "dimensions": {
+              "width": 1280,
+              "height": 720
+            }
+          }
+        },
+        "render_config_hash": "052ba9845fecd560d18e40306a6c0fb222ac0dc26aad269108ee4af9cf2cf8a4",
+        "engine_fingerprint": {
+          "renderer": "playwright-browser-matrix",
+          "scenario": "viewer-readonly-compare",
+          "permission_state": "viewer",
+          "tenant_id": "tenant-readonly",
+          "fingerprint_hash": "f3a495e9d216b13235b9503a7fba097226fe538cab05713e34ecce09666d5798"
+        },
+        "pixel_hash": {
+          "reference": "004112fba327cb7604e9ecdfcb380bde93a3945da9b99145e7805a111888c56a",
+          "candidate": "5dfc4766addc97e0a63e09f49436a7735c9201107ae644ed75ff0bb6f2ecc2d4"
+        },
+        "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q1-viewer\\browser-session-heatmap.png"
+      }
+    },
+    {
+      "session_id": "browser-session-uae-q2-operator",
+      "scenario": "operator-full-access",
+      "permission_state": "operator",
+      "tenant_id": "tenant-ops",
+      "action_set": [
+        "overview",
+        "filter",
+        "drill",
+        "refresh",
+        "compare",
+        "export"
+      ],
+      "expected": {
+        "region": "UAE",
+        "period": "2026-Q2",
+        "tenant_id": "tenant-ops",
+        "permission_state": "operator",
+        "allowed_actions": {
+          "filter": true,
+          "drill": true,
+          "refresh": true,
+          "compare": true,
+          "export": true
+        },
+        "compare_available": true,
+        "export_available": true
+      },
+      "actual": {
+        "region": "UAE",
+        "period": "2026-Q2",
+        "tenant_id": "tenant-ops",
+        "permission_state": "operator",
+        "refresh_count": 1,
+        "export_count": 1,
+        "allowed_actions": {
+          "filter": true,
+          "drill": true,
+          "refresh": true,
+          "compare": true,
+          "export": true
+        },
+        "compare_available": true,
+        "export_available": true,
+        "action_results": {
+          "filter": {
+            "allowed": true,
+            "executed": true
+          },
+          "drill": {
+            "allowed": true,
+            "executed": true
+          },
+          "refresh": {
+            "allowed": true,
+            "executed": true
+          },
+          "compare": {
+            "allowed": true,
+            "executed": true
+          },
+          "export": {
+            "allowed": true,
+            "executed": true
+          }
+        }
+      },
+      "pass_fail": true,
+      "diff_refs": [
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-session-diff.json",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-session-heatmap.png"
+      ],
+      "screenshot_refs": [
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-overview.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-filter.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-drill.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-refresh.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-compare.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-export.png"
+      ],
+      "pixel_change_report": {
+        "comparison_id": "browser-session-uae-q2-operator",
+        "threshold": 0.0,
+        "passed": false,
+        "pixel_diff": 0.08435980902777777,
+        "differing_pixels": 77746,
+        "total_pixels": 921600,
+        "dimensions_report": {
+          "equal": true,
+          "reference": {
+            "width": 1280,
+            "height": 720
+          },
+          "candidate": {
+            "width": 1280,
+            "height": 720
+          },
+          "comparison_canvas": {
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "normalization_proof": {
+          "reference": {
+            "sRGB_normalized": true,
+            "premultiplied_alpha_normalized": true,
+            "orientation_normalized": true,
+            "original_mode": "RGB",
+            "normalized_mode": "RGBA",
+            "dimensions": {
+              "width": 1280,
+              "height": 720
+            }
+          },
+          "candidate": {
+            "sRGB_normalized": true,
+            "premultiplied_alpha_normalized": true,
+            "orientation_normalized": true,
+            "original_mode": "RGB",
+            "normalized_mode": "RGBA",
+            "dimensions": {
+              "width": 1280,
+              "height": 720
+            }
+          }
+        },
+        "render_config_hash": "e6fb663f15b9ef8a6af01751e37c2ec61c85f50d0334efee50886bb3508ed435",
+        "engine_fingerprint": {
+          "renderer": "playwright-browser-matrix",
+          "scenario": "operator-full-access",
+          "permission_state": "operator",
+          "tenant_id": "tenant-ops",
+          "fingerprint_hash": "8cd00df9ace5046dd2c278eaca4029c9647f8b5a3b126417cc6a8f318f6168cf"
+        },
+        "pixel_hash": {
+          "reference": "638bd0a4eadc7612109c77db99aea3f2f6f1f96c95e35014b2a594a8815f3248",
+          "candidate": "3d82933b51284d71c8847342d71e8d7dd9a0a0332af4954755bb732b7b4fab57"
+        },
+        "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-uae-q2-operator\\browser-session-heatmap.png"
+      }
+    },
+    {
+      "session_id": "browser-session-ksa-q2-admin",
+      "scenario": "admin-full-access",
+      "permission_state": "admin",
+      "tenant_id": "tenant-admin",
+      "action_set": [
+        "overview",
+        "filter",
+        "drill",
+        "refresh",
+        "compare",
+        "export"
+      ],
+      "expected": {
+        "region": "KSA",
+        "period": "2026-Q2",
+        "tenant_id": "tenant-admin",
+        "permission_state": "admin",
+        "allowed_actions": {
+          "filter": true,
+          "drill": true,
+          "refresh": true,
+          "compare": true,
+          "export": true
+        },
+        "compare_available": true,
+        "export_available": true
+      },
+      "actual": {
+        "region": "KSA",
+        "period": "2026-Q2",
+        "tenant_id": "tenant-admin",
+        "permission_state": "admin",
+        "refresh_count": 1,
+        "export_count": 1,
+        "allowed_actions": {
+          "filter": true,
+          "drill": true,
+          "refresh": true,
+          "compare": true,
+          "export": true
+        },
+        "compare_available": true,
+        "export_available": true,
+        "action_results": {
+          "filter": {
+            "allowed": true,
+            "executed": true
+          },
+          "drill": {
+            "allowed": true,
+            "executed": true
+          },
+          "refresh": {
+            "allowed": true,
+            "executed": true
+          },
+          "compare": {
+            "allowed": true,
+            "executed": true
+          },
+          "export": {
+            "allowed": true,
+            "executed": true
+          }
+        }
+      },
+      "pass_fail": true,
+      "diff_refs": [
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-session-diff.json",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-session-heatmap.png"
+      ],
+      "screenshot_refs": [
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-overview.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-filter.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-drill.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-refresh.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-compare.png",
+        "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-export.png"
+      ],
+      "pixel_change_report": {
+        "comparison_id": "browser-session-ksa-q2-admin",
+        "threshold": 0.0,
+        "passed": false,
+        "pixel_diff": 0.08438042534722222,
+        "differing_pixels": 77765,
+        "total_pixels": 921600,
+        "dimensions_report": {
+          "equal": true,
+          "reference": {
+            "width": 1280,
+            "height": 720
+          },
+          "candidate": {
+            "width": 1280,
+            "height": 720
+          },
+          "comparison_canvas": {
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "normalization_proof": {
+          "reference": {
+            "sRGB_normalized": true,
+            "premultiplied_alpha_normalized": true,
+            "orientation_normalized": true,
+            "original_mode": "RGB",
+            "normalized_mode": "RGBA",
+            "dimensions": {
+              "width": 1280,
+              "height": 720
+            }
+          },
+          "candidate": {
+            "sRGB_normalized": true,
+            "premultiplied_alpha_normalized": true,
+            "orientation_normalized": true,
+            "original_mode": "RGB",
+            "normalized_mode": "RGBA",
+            "dimensions": {
+              "width": 1280,
+              "height": 720
+            }
+          }
+        },
+        "render_config_hash": "98edef11f6a3aaa60ae0ee2688b98fd412d1acd1e644e98269a5cd145c37b035",
+        "engine_fingerprint": {
+          "renderer": "playwright-browser-matrix",
+          "scenario": "admin-full-access",
+          "permission_state": "admin",
+          "tenant_id": "tenant-admin",
+          "fingerprint_hash": "967a020eeb118f6124e83283f569d447a286f0dad1310b995de25d8cbdbb1ce8"
+        },
+        "pixel_hash": {
+          "reference": "1a12b203bfc38998b4c18cdaa703b48f3f8601c8d13d442864aca7d55e166eb6",
+          "candidate": "cd9336a00061e3dfa501cc858360a51f5d75c9f2a5428ddde3922b6e2f62f542"
+        },
+        "heatmap_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\browser-matrix\\browser-session-ksa-q2-admin\\browser-session-heatmap.png"
+      }
+    }
+  ]
+}

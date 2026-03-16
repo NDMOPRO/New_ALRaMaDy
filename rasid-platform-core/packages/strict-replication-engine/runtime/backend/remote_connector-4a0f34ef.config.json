@@ -1,0 +1,6 @@
+{
+  "base_url": "http://127.0.0.1:63358",
+  "db_path": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\backend\\remote_connector-4a0f34ef.sqlite",
+  "auth_mode": "bearer",
+  "token_hint": "4a0f34..."
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rasid/schemas/v1/excel-engine/named-ranges.schema.json",
+  "title": "Excel Named Range",
+  "type": "object",
+  "required": ["named_range_id", "workbook_ref", "name", "scope", "range_ref"],
+  "properties": {
+    "named_range_id": { "type": "string" },
+    "workbook_ref": { "type": "string" },
+    "worksheet_ref": { "type": ["string", "null"] },
+    "name": { "type": "string" },
+    "scope": { "enum": ["workbook", "worksheet"] },
+    "hidden": { "type": "boolean" },
+    "range_ref": { "type": "string" }
+  }
+}

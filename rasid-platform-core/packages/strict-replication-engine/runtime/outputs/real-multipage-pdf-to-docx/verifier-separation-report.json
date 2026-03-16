@@ -1,0 +1,9 @@
+{
+  "run_id": "real-multipage-pdf-to-docx",
+  "primary_renderer": "runtime-parser-docx",
+  "secondary_renderer": "independent-libreoffice-pdf",
+  "native_renderer": "office-com-pdf",
+  "separated_process": true,
+  "target_hash": "e440acf2c4a690b9e885ffc1a4c238be759270f49e784ae558ee2789f71b0360",
+  "matrix_ref": "C:\\ALRaMaDy\\rasid-platform-core\\packages\\strict-replication-engine\\runtime\\outputs\\real-multipage-pdf-to-docx\\dual-verifier-matrix.json"
+}

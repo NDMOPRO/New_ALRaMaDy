@@ -22,6 +22,9 @@
     "canvas": "1.0.0",
     "report": "1.0.0",
     "presentation": "1.0.0",
-    "schedule": "1.0.0"
+    "schedule": "1.0.0",
+    "ai": "1.0.0",
+    "transcription": "1.0.0",
+    "governance": "1.0.0"
   }
 }
