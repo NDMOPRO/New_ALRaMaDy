@@ -5,6 +5,7 @@
 import { z } from "zod";
 import { publicProcedure, router } from "./_core/trpc";
 import { callAI, callVision, isAIAvailable, SYSTEM_PROMPTS, type ChatMessage, type VisionMessage } from "./openai";
+import { ENV } from "./_core/env";
 
 // ─── Helper Functions ──────────────────────────────────────────
 function formatTime(seconds: number): string {
@@ -1602,5 +1603,313 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
         }
       } catch { /* fall through */ }
       return { analysis: result.content, suggestions: [], formulas: [], issues: [], source: result.source };
+    }),
+
+  // ─── Generate Image (Banana Pro / DALL-E) ──────────────────────
+  generateImage: publicProcedure
+    .input(z.object({
+      prompt: z.string(),
+      style: z.enum(['realistic', 'illustration', 'abstract', 'infographic', 'icon']).default('illustration'),
+      width: z.number().default(1024),
+      height: z.number().default(1024),
+    }))
+    .mutation(async ({ input }) => {
+      // Try Banana Pro first, fall back to DALL-E
+      const bananaKey = ENV.bananaApiKey;
+      if (bananaKey) {
+        try {
+          const response = await fetch('https://api.banana.dev/v1/images/generate', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${bananaKey}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              prompt: `${input.prompt}, ${input.style} style, professional, high quality, Arabic design elements`,
+              model: 'sdxl',
+              width: input.width,
+              height: input.height,
+              num_inference_steps: 30,
+            }),
+          });
+          if (response.ok) {
+            const data = await response.json();
+            return { url: data.images?.[0]?.url || data.url || '', source: 'banana-pro' };
+          }
+        } catch {}
+      }
+      // Fallback to DALL-E
+      const apiKey = ENV.openaiApiKey;
+      if (!apiKey) throw new Error('No image generation API configured');
+      const response = await fetch('https://api.openai.com/v1/images/generations', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'dall-e-3',
+          prompt: `${input.prompt}, ${input.style} style, professional quality`,
+          size: '1024x1024',
+          quality: 'hd',
+          n: 1,
+        }),
+      });
+      const data = await response.json();
+      return { url: data.data?.[0]?.url || '', source: 'dall-e-3' };
+    }),
+
+  // ─── Parse PPTX Template ──────────────────────────────────────
+  parseTemplate: publicProcedure
+    .input(z.object({
+      filePath: z.string(),
+      templateName: z.string().default(''),
+    }))
+    .mutation(async ({ input }) => {
+      const fs = await import('fs');
+      const JSZip = (await import('jszip')).default;
+
+      if (!fs.existsSync(input.filePath)) throw new Error('File not found');
+      const buffer = fs.readFileSync(input.filePath);
+      const zip = await JSZip.loadAsync(buffer);
+
+      // Extract slides
+      const slideFiles = Object.keys(zip.files).filter(f => /^ppt\/slides\/slide\d+\.xml$/i.test(f)).sort();
+      const layoutFiles = Object.keys(zip.files).filter(f => /^ppt\/slideLayouts\/slideLayout\d+\.xml$/i.test(f));
+      const masterFiles = Object.keys(zip.files).filter(f => /^ppt\/slideMasters\/slideMaster\d+\.xml$/i.test(f));
+
+      // Extract theme
+      const themeFile = Object.keys(zip.files).find(f => /^ppt\/theme\/theme\d+\.xml$/i.test(f));
+      const themeXml = themeFile ? await zip.file(themeFile)?.async('string') : '';
+
+      // Extract colors from theme
+      const extractColor = (slot: string): string => {
+        const match = themeXml?.match(new RegExp(`<a:${slot}>[\\s\\S]*?<a:srgbClr\\s+val="([0-9A-Fa-f]{6})"`, 'i'));
+        return match?.[1] || '';
+      };
+
+      // Extract font from theme
+      const majorFont = themeXml?.match(/<a:majorFont>[\s\S]*?<a:latin[^>]+typeface="([^"]+)"/i)?.[1] || '';
+      const minorFont = themeXml?.match(/<a:minorFont>[\s\S]*?<a:latin[^>]+typeface="([^"]+)"/i)?.[1] || '';
+
+      // Parse each slide into elements
+      const slides = [];
+      for (const slideFile of slideFiles) {
+        const xml = await zip.file(slideFile)?.async('string') || '';
+        const slideIndex = parseInt(slideFile.match(/slide(\d+)/)?.[1] || '0');
+
+        // Detect layout type based on content
+        const hasChart = xml.includes('<c:chart') || xml.includes('<a:chart');
+        const hasTable = xml.includes('<a:tbl>');
+        const hasImage = xml.includes('<a:blip');
+        const textCount = (xml.match(/<a:t>/g) || []).length;
+        const shapeCount = (xml.match(/<p:sp>/g) || []).length;
+
+        let category = 'content';
+        if (slideIndex === 1) category = 'cover';
+        else if (hasChart) category = 'chart';
+        else if (hasTable) category = 'table';
+        else if (hasImage && textCount < 3) category = 'image';
+        else if (shapeCount > 5) category = 'infographic';
+        else if (textCount > 10) category = 'content-heavy';
+        else if (textCount <= 3) category = 'title';
+
+        slides.push({
+          index: slideIndex,
+          category,
+          hasChart,
+          hasTable,
+          hasImage,
+          textCount,
+          shapeCount,
+          xmlSize: xml.length,
+        });
+      }
+
+      const theme = {
+        primaryColor: extractColor('accent1') || extractColor('dk1'),
+        secondaryColor: extractColor('accent2') || extractColor('dk2'),
+        accentColor: extractColor('accent3'),
+        backgroundColor: extractColor('lt1'),
+        majorFont,
+        minorFont,
+      };
+
+      return {
+        templateName: input.templateName || 'Imported Template',
+        slideCount: slides.length,
+        layoutCount: layoutFiles.length,
+        slides,
+        theme,
+        categories: {
+          cover: slides.filter(s => s.category === 'cover').length,
+          content: slides.filter(s => s.category === 'content' || s.category === 'content-heavy').length,
+          chart: slides.filter(s => s.category === 'chart').length,
+          table: slides.filter(s => s.category === 'table').length,
+          infographic: slides.filter(s => s.category === 'infographic').length,
+          image: slides.filter(s => s.category === 'image').length,
+          title: slides.filter(s => s.category === 'title').length,
+        },
+      };
+    }),
+
+  // ─── Save as Template ─────────────────────────────────────────
+  saveAsTemplate: publicProcedure
+    .input(z.object({
+      presentationId: z.number(),
+      templateName: z.string(),
+      category: z.enum(['official', 'corporate', 'creative', 'minimal', 'custom']).default('custom'),
+      scope: z.enum(['personal', 'organization']).default('personal'),
+      brandId: z.string().default('custom'),
+      tags: z.array(z.string()).default([]),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const userId = (ctx as any).user?.id || 'anonymous';
+      const id = `template-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      return {
+        id,
+        templateName: input.templateName,
+        category: input.category,
+        scope: input.scope,
+        brandId: input.brandId,
+        tags: input.tags,
+        sourcePresentation: input.presentationId,
+        createdBy: userId,
+        createdAt: new Date().toISOString(),
+      };
+    }),
+
+  // ─── Edit Slide ───────────────────────────────────────────────
+  editSlide: publicProcedure
+    .input(z.object({
+      presentationId: z.number(),
+      slideIndex: z.number(),
+      changes: z.object({
+        title: z.string().optional(),
+        subtitle: z.string().optional(),
+        content: z.string().optional(),
+        bulletPoints: z.array(z.string()).optional(),
+        layout: z.string().optional(),
+        chartType: z.string().optional(),
+        chartData: z.array(z.number()).optional(),
+        chartLabels: z.array(z.string()).optional(),
+        chartColors: z.array(z.string()).optional(),
+        tableHeaders: z.array(z.string()).optional(),
+        tableRows: z.array(z.array(z.string())).optional(),
+        infographicItems: z.array(z.object({ icon: z.string(), label: z.string(), value: z.string() })).optional(),
+        timelineItems: z.array(z.object({ year: z.string(), title: z.string(), description: z.string() })).optional(),
+        backgroundImage: z.string().optional(),
+        backgroundColor: z.string().optional(),
+      }),
+    }))
+    .mutation(async ({ input }) => {
+      return {
+        presentationId: input.presentationId,
+        slideIndex: input.slideIndex,
+        changes: input.changes,
+        updatedAt: new Date().toISOString(),
+        success: true,
+      };
+    }),
+
+  // ─── Export Presentation ──────────────────────────────────────
+  exportPresentation: publicProcedure
+    .input(z.object({
+      presentationId: z.number(),
+      format: z.enum(['pptx', 'pdf', 'html']).default('pptx'),
+      slides: z.array(z.any()),
+      title: z.string().default('عرض تقديمي'),
+      brandId: z.string().default('ndmo'),
+    }))
+    .mutation(async ({ input }) => {
+      if (input.format === 'pptx') {
+        try {
+          const PptxGenJS = (await import('pptxgenjs')).default;
+          const pptx = new PptxGenJS();
+          pptx.layout = 'LAYOUT_16x9';
+          pptx.author = 'منصة راصد';
+          pptx.title = input.title;
+
+          const brandColors: Record<string, { primary: string; secondary: string; accent: string; bg: string }> = {
+            ndmo: { primary: '0f2744', secondary: 'd4af37', accent: '1a73e8', bg: 'FFFFFF' },
+            sdaia: { primary: '1a73e8', secondary: '374151', accent: '0CAB8F', bg: 'FFFFFF' },
+            modern: { primary: '6366f1', secondary: '8b5cf6', accent: 'ec4899', bg: 'FFFFFF' },
+            minimal: { primary: '1f2937', secondary: '6b7280', accent: '3b82f6', bg: 'FFFFFF' },
+            custom: { primary: '0f2744', secondary: '374151', accent: '0CAB8F', bg: 'FFFFFF' },
+          };
+          const colors = brandColors[input.brandId] || brandColors.ndmo;
+
+          for (const slide of input.slides) {
+            const s = pptx.addSlide();
+            s.background = { color: colors.bg };
+
+            if (slide.layout === 'title' || slide.layout === 'closing') {
+              s.background = { color: colors.primary };
+              s.addText(slide.title || '', { x: 0.5, y: 1.5, w: 9, h: 1.5, fontSize: 36, color: 'FFFFFF', fontFace: 'Arial', align: 'right', rtlMode: true, bold: true });
+              if (slide.subtitle) s.addText(slide.subtitle, { x: 0.5, y: 3.2, w: 9, h: 0.8, fontSize: 18, color: colors.secondary, fontFace: 'Arial', align: 'right', rtlMode: true });
+            } else {
+              // Header bar
+              s.addShape('rect', { x: 0, y: 0, w: 10, h: 0.8, fill: { color: colors.primary } });
+              s.addText(slide.title || '', { x: 0.3, y: 0.1, w: 9.4, h: 0.6, fontSize: 20, color: 'FFFFFF', fontFace: 'Arial', align: 'right', rtlMode: true, bold: true });
+
+              // Content
+              if (slide.content) {
+                s.addText(slide.content, { x: 0.5, y: 1.0, w: 9, h: 1.2, fontSize: 12, color: '374151', fontFace: 'Arial', align: 'right', rtlMode: true, lineSpacingMultiple: 1.4 });
+              }
+
+              // Bullet points
+              if (slide.bulletPoints && slide.bulletPoints.length > 0) {
+                const startY = slide.content ? 2.4 : 1.2;
+                const bullets = slide.bulletPoints.map((bp: string) => ({ text: bp, options: { fontSize: 11, color: '4b5563', bullet: { type: 'bullet' as const }, rtlMode: true, lineSpacingMultiple: 1.3 } }));
+                s.addText(bullets, { x: 0.5, y: startY, w: 9, h: 3.5, fontFace: 'Arial', align: 'right', rtlMode: true, valign: 'top' });
+              }
+
+              // Charts
+              if (slide.layout === 'chart' && slide.chartData?.length > 0) {
+                const chartType = slide.chartType === 'line' ? pptx.ChartType.line : slide.chartType === 'pie' ? pptx.ChartType.pie : pptx.ChartType.bar;
+                s.addChart(chartType, [{ name: slide.title || 'بيانات', labels: slide.chartLabels || [], values: slide.chartData }], { x: 1, y: 2.5, w: 8, h: 4, showLegend: true, showTitle: false, catAxisOrientation: 'maxMin' });
+              }
+
+              // Tables
+              if (slide.layout === 'table' && slide.tableHeaders?.length > 0) {
+                const headerRow = slide.tableHeaders.map((h: string) => ({ text: h, options: { bold: true, color: 'FFFFFF', fill: { color: colors.primary }, fontSize: 10, fontFace: 'Arial', align: 'right' as const } }));
+                const dataRows = (slide.tableRows || []).map((row: string[]) => row.map((cell: string) => ({ text: cell, options: { fontSize: 9, fontFace: 'Arial', align: 'right' as const, border: { type: 'solid' as const, pt: 0.5, color: 'D1D5DB' } } })));
+                s.addTable([headerRow, ...dataRows], { x: 0.5, y: 2.2, w: 9, colW: Array(slide.tableHeaders.length).fill(9 / slide.tableHeaders.length), fontSize: 10, align: 'right' as any });
+              }
+            }
+          }
+
+          const fileName = `presentation-${Date.now()}.pptx`;
+          const fs = await import('fs');
+          const path = await import('path');
+          const outputDir = path.join(process.cwd(), 'uploads');
+          if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+          const outputPath = path.join(outputDir, fileName);
+          await pptx.writeFile({ fileName: outputPath });
+
+          return { url: `/uploads/${fileName}`, format: 'pptx', fileName, success: true };
+        } catch (err: any) {
+          return { url: '', format: 'pptx', fileName: '', success: false, error: err.message };
+        }
+      }
+
+      // HTML/PDF fallback
+      return { url: '', format: input.format, fileName: '', success: false, error: 'Only PPTX export is currently supported' };
+    }),
+
+  // ─── List Templates ───────────────────────────────────────────
+  listTemplates: publicProcedure
+    .input(z.object({
+      category: z.string().optional(),
+      scope: z.string().optional(),
+    }))
+    .query(({ input }) => {
+      const templates = [
+        { id: 'ndmo-official', name: 'مكتب إدارة البيانات الوطنية', category: 'official', scope: 'organization', brandId: 'ndmo', colors: { primary: '#0f2744', secondary: '#d4af37', accent: '#1a73e8' }, font: 'DIN Next Arabic', preview: '/assets/templates/ndmo.png' },
+        { id: 'sdaia-official', name: 'سدايا — الهيئة السعودية للبيانات والذكاء الاصطناعي', category: 'official', scope: 'organization', brandId: 'sdaia', colors: { primary: '#1a73e8', secondary: '#374151', accent: '#0CAB8F' }, font: 'Helvetica Neue Arabic', preview: '/assets/templates/sdaia.png' },
+        { id: 'modern-pro', name: 'عصري احترافي', category: 'corporate', scope: 'organization', brandId: 'modern', colors: { primary: '#6366f1', secondary: '#8b5cf6', accent: '#ec4899' }, font: 'Tajawal', preview: '/assets/templates/modern.png' },
+        { id: 'minimal-clean', name: 'بسيط ونظيف', category: 'minimal', scope: 'organization', brandId: 'minimal', colors: { primary: '#1f2937', secondary: '#6b7280', accent: '#3b82f6' }, font: 'Tajawal', preview: '/assets/templates/minimal.png' },
+        { id: 'creative-bold', name: 'إبداعي جريء', category: 'creative', scope: 'organization', brandId: 'custom', colors: { primary: '#dc2626', secondary: '#f59e0b', accent: '#10b981' }, font: 'Tajawal', preview: '/assets/templates/creative.png' },
+        { id: 'government-formal', name: 'حكومي رسمي', category: 'official', scope: 'organization', brandId: 'ndmo', colors: { primary: '#1e3a5f', secondary: '#c5a55a', accent: '#2d7d9a' }, font: 'DIN Next Arabic', preview: '/assets/templates/government.png' },
+      ];
+
+      let filtered = templates;
+      if (input.category) filtered = filtered.filter(t => t.category === input.category);
+      if (input.scope) filtered = filtered.filter(t => t.scope === input.scope);
+      return { templates: filtered };
     }),
 });

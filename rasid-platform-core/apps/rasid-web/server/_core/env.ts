@@ -4,4 +4,5 @@ export const ENV = {
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
   jwtSecret: process.env.JWT_SECRET ?? "",
+  bananaApiKey: process.env.BANANA_API_KEY ?? "",
 };
