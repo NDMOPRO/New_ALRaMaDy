@@ -15,44 +15,44 @@ import {
   flattenAllElements, countElementsByKind, validateEditableCore, quantizeDesignGeometry,
   type CdrDesign, type CdrPage, type CdrElement, type TextElement, type ShapeElement,
   type ImageElement, type TableElement, type ChartElement, type LayerSpec,
-} from "../../../packages/strict-replication-engine/src/cdr-design-schema";
+} from "./engines/cdr-design-schema";
 
 import {
   normalizeImage, runImageUnderstandingPipeline,
   createPixelLockOverlay, compareWithOverlay, validateEditableLayerStructure,
   type NormalizedImage, type RawImageInput,
-} from "../../../packages/strict-replication-engine/src/image-normalization";
+} from "./engines/image-normalization";
 
 import {
   GridDetector, CellExtractor, MergeDetector, BorderStyleExtractor,
   ExcelStructuredExporter, ImageTableToExcelPipeline,
-} from "../../../packages/strict-replication-engine/src/image-table-to-excel";
+} from "./engines/image-table-to-excel";
 
 import {
   FarmConfig, FingerprintGenerator, FarmValidator,
   PixelDiffExact,
-} from "../../../packages/strict-replication-engine/src/deterministic-farm";
+} from "./engines/deterministic-farm";
 
 import {
   diagnose, executeRepairLoop, RepairCache, DEFAULT_REPAIR_CONFIG,
-} from "../../../packages/strict-replication-engine/src/diagnose-engine";
+} from "./engines/diagnose-engine";
 
 import {
   TranslationEngine, TerminologyDB, TranslationMemory,
   ArabizationEngine, ContentEmptyingEngine, ContentReinjector, ContentManifest,
   type CDRDocument, type CDRPage as TransCDRPage, type CDRElement as TransCDRElement,
-} from "../../../packages/strict-replication-engine/src/translation-engine";
+} from "./engines/translation-engine";
 
 import {
   detectSourceType, DataBindingEngine, SchemaInferenceEngine,
   DashboardReconstructor, PresentationReconstructor,
   ReportReconstructor, ExcelReconstructor,
   FunctionalValidationEngine, UniversalReconstructor,
-} from "../../../packages/strict-replication-engine/src/functional-reconstruction";
+} from "./engines/functional-reconstruction";
 
 import {
   EvidencePackGenerator, GoldenCorpusManager,
-} from "../../../packages/strict-replication-engine/src/evidence-pack-generator";
+} from "./engines/evidence-pack-generator";
 
 
 // ─── Helper: create test CDR design ───────────────────────────────────
