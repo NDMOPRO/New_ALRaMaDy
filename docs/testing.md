@@ -1,221 +1,165 @@
-# Testing
+# Testing, Monitoring, and Operational Readiness
 
-## Testing Strategy
+## 1. Test Strategy
 
-The repository uses four distinct testing styles:
+The repository uses four complementary validation layers.
 
-1. static validation through TypeScript build and custom guardrail scripts
-2. smoke tests that prove the shared foundation boots and major engines run
-3. capability-specific regression scripts that generate durable runtime evidence under `.runtime/` or package output folders
-4. app-local unit/integration tests in `apps/rasid-web`
+### A. Workspace validation
 
-This is not a conventional "unit test only" codebase. Proof artifacts are part of the testing model.
+Defined in [rasid-platform-core/package.json](/C:/ALRaMaDy/rasid-platform-core/package.json):
 
-## CI Validation
-
-GitHub Actions workflow: `rasid-platform-core/.github/workflows/shared-foundation.yml`
-
-CI steps:
-
-- `npm ci`
 - `npm run build`
 - `npm run lint`
 - `npm run test:smoke`
 - `npm run check`
 
-Implication:
-
-- the active CI path validates the monorepo runtime
-- `apps/rasid-web` is not wired into the monorepo TypeScript references or CI pipeline
-
-## Monorepo Validation Commands
-
-### Core static checks
-
-- `npm run build`
-- `npm run typecheck`
-- `npm run lint`
-- `npm run check`
-
-What they cover:
+These verify:
 
 - TypeScript project references
-- shared contract version guards
-- workspace import rules
-- shared architectural guardrails
+- shared contract/version guardrails
+- workspace import boundaries
+- the foundation smoke path
 
-### Smoke tests
+### B. Engine regression suites
 
-- `npm run test:smoke`
-- `npm run test:excel-engine`
-- `npm run test:localization-engine`
+The `scripts/` directory contains engine and cross-engine regressions, including:
 
-These prove foundational runtime viability rather than exhaustive business correctness.
+- dashboard regressions and performance probes
+- report engine regressions and bridge proofs
+- presentations regression
+- governance cross-engine proofs
+- AI engine regression
+- transcription regression and hostile revalidation
+- localization proof scripts
+- strict replication regression
+- Excel engine and cross-engine consumability runs
 
-## Capability Regression Suites
+These scripts are the main proof-oriented validation layer for the active monorepo.
 
-### Dashboard / unified gateway
+### C. `apps/rasid-web` unit/integration tests
 
-- `npm run test:dashboard-web`
-- `npm run test:dashboard-publication`
-- `npm run test:dashboard-open-items`
-- `npm run test:dashboard-drag`
-- `npm run test:dashboard-drag-completeness`
-- `npm run test:dashboard-live-performance`
-- `npm run test:dashboard-ai-surface`
-- `npm run test:dashboard-compare-governance`
-- `npm run test:dashboard-full-proof`
+Configured in [vitest.config.ts](/C:/ALRaMaDy/rasid-platform-core/apps/rasid-web/vitest.config.ts).
 
-Focus:
+Covered areas include:
 
-- page/API behavior
-- publication interactivity
-- drag/rebind flows
-- compare and governance panels
-- performance probe surfaces
+- auth/logout
+- AI router behavior
+- autosave/export behavior
+- real-data flow checks
+- presentation generation
+- phase-specific regressions
 
-### AI and governance
+### D. Live proof artifacts
 
-- `npm run test:ai-engine`
-- `npm run test:governance-engine`
-- `npm run test:governance-hostile`
-- `npm run test:governance-unauthorized`
-- `npm run test:governance-cross-engine-strict`
-- `npm run test:governance-cross-engine-coverage`
+The repository also preserves browser screenshots, JSON reports, and engine-generated proof bundles under `.runtime/` and root `.runtime/` folders. These are not a substitute for automated tests, but they are part of the operational evidence model used throughout the repo.
 
-Focus:
+## 2. CI Pipeline
 
-- planner/executor behavior
-- approval boundaries
-- hostile path validation
-- cross-engine governance coverage
+GitHub Actions workflow: [shared-foundation.yml](/C:/ALRaMaDy/rasid-platform-core/.github/workflows/shared-foundation.yml)
 
-### Report engine
+The pipeline runs:
 
-- `npm run test:report-engine`
-- `npm run test:report-complex-layout`
-- `npm run test:report-remote-externalization`
-- `npm run test:report-cross-engine-flow`
-- `npm run test:report-dashboard-platform-flow`
-- `npm run test:report-dashboard-localization-platform-flow`
-- `npm run test:report-open-items`
-- `npm run test:report-platform`
+1. checkout
+2. Node 24 setup
+3. `npm ci`
+4. `npm run build`
+5. `npm run lint`
+6. `npm run test:smoke`
+7. `npm run check`
 
-Focus:
+This validates the shared monorepo foundation, but it does not yet exercise every standalone platform server or every proof script.
 
-- import fidelity
-- review/approval/publish flows
-- downstream dashboard/presentation/localization continuation
-- remote publication
+## 3. Logging and Monitoring Model
 
-### Presentations engine
+There is no centralized logging or metrics stack in the checked-in code. Observability is mostly filesystem-native.
 
-- `npm run test:presentations-engine`
+### What exists
 
-Focus:
-
-- generation
-- theme/template behavior
-- export paths
-- parity validation
-- public/presenter/remote flows
-
-### Transcription engine
-
-- `npm run test:transcription-engine`
-- `npm run test:transcription-report-presentation-dashboard-flow`
-- `scripts/transcription-hostile-revalidation.mjs`
-
-Focus:
-
-- ingestion and extraction
-- report/presentation/dashboard continuation
-- hostile inputs
-
-### Localization and strict replication
-
-- `npm run test:localization-contextual-quality`
-- `npm run test:localization-generated-narrative`
-- `npm run test:localization-ui-strings`
-- `npm run test:localization-live-proof`
-- `npm run test:localization-remote-gateway`
-- `npm run test:localization-hostile-revalidation`
-- `npm run test:localization-cross-engine-flow`
-- `npm run test:strict-regression`
-
-### Excel engine
-
-- `npm run test:excel-engine`
-- `npm run test:excel-engine-hostile-audit`
-- `npm run test:excel-cross-engine`
-- `npm run test:excel-report-cross-engine`
-- `npm run test:excel-dashboard-cross-engine`
-
-Focus:
-
-- workbook import/export/editability
-- formula and formatting fidelity
-- hostile input behavior
-- cross-engine consumability
-
-## `apps/rasid-web` Tests
-
-`apps/rasid-web` defines:
-
-- `npm test` -> `vitest run`
-- `npm run check` -> `tsc --noEmit`
-
-Observed server test files:
-
-- `ai.test.ts`
-- `aiPresentation.test.ts`
-- `auth.logout.test.ts`
-- `autoSaveExport.test.ts`
-- `newFeatures.test.ts`
-- `openai.test.ts`
-- `phase16.test.ts`
-- `phase17.test.ts`
-- `presentationGen.test.ts`
-- `realData.test.ts`
-
-These tests are app-local and do not currently participate in the monorepo root CI path.
-
-## Test Artifacts
-
-A defining characteristic of this repo is that many tests persist proof artifacts instead of only returning pass/fail.
-
-Common artifact locations:
-
-- `rasid-platform-core/.runtime/*`
-- `rasid-platform-core/packages/*/output/*`
-- `rasid-platform-core/packages/*/artifacts/latest-run/*`
-
-Typical artifact types:
-
-- screenshots
-- JSON summaries
-- route inventories
+- per-engine JSON artifacts
 - evidence packs
-- audit and lineage outputs
-- generated exports and publication bundles
+- audit events
+- lineage edges
+- publication manifests and state files
+- screenshots and proof bundles from regression scripts
+- runtime folders segmented by engine, entity id, and job id
 
-## What Is Actually Verified Well
+### What does not exist
 
-- contract/bootstrap coherence of the active monorepo
-- capability-specific happy paths for dashboard, report, presentation, transcription, localization, governance, AI, and Excel flows
-- many cross-engine continuation paths
-- persistence of runtime evidence on disk
+- centralized log aggregation
+- metrics backend
+- tracing
+- alert routing
+- service dashboards backed by an external monitoring platform
 
-## Main Testing Gaps
+## 4. Performance Considerations
 
-- `apps/rasid-web` is not first-class in root CI
-- broad repo health can drift even when one capability-specific regression passes
-- many tests are proof-oriented integration runs, so they are heavier and harder to parallelize than isolated unit tests
-- there is limited evidence of a single, deterministic, fast unit-test layer across all packages
-- live external providers and deployment-time behavior are sometimes verified manually or through environment-specific proof runs rather than repeatable CI
+The main performance characteristics of the current platform are:
 
-## Practical Guidance
+- synchronous `fs` writes in many store implementations
+- large monolithic server files, especially `dashboard-web.ts`
+- export-heavy document generation in report and presentation engines
+- Python bridge cost in transcription/document understanding flows
+- provider round-trips for AI/image/storage/data API helpers
 
-- for shared monorepo changes, run the narrow capability regression plus the root `build`, `lint`, and `test:smoke` path
-- for `apps/rasid-web` changes, run both `npm run check` and `npm test` inside that app
-- inspect generated proof artifacts, not just exit codes, when modifying publish, export, OCR, localization, or cross-engine continuation paths
+Use [performance.md](/C:/ALRaMaDy/docs/performance.md) for the endpoint-level and bottleneck summary.
+
+## 5. Scaling Strategy
+
+### Current safe strategy
+
+- scale vertically first
+- run the unified gateway as the primary process
+- split focused platform servers when needed
+- keep runtime folders on fast local disk
+
+### Limits of the current design
+
+- filesystem state prevents easy multi-instance coordination
+- schedule/orchestration state is not broker-backed
+- no distributed lock or leader-election layer exists
+- write-heavy flows can block the event loop with synchronous file work
+
+### Prerequisites for real horizontal scale
+
+1. shared metadata database
+2. shared object store for artifacts and exports
+3. proper worker queue
+4. centralized auth/session validation
+5. centralized metrics and logging
+
+## 6. Failure Recovery
+
+### What helps recovery today
+
+- each engine persists durable runtime bundles
+- report and dashboard schedulers store state transitions and retry metadata
+- AI, transcription, governance, and strict flows store audit and lineage artifacts
+- publication manifests and file outputs are preserved on disk
+- proof scripts often leave enough artifacts to reproduce a failing path
+
+### Where recovery is weak
+
+- no transactional rollback across engines
+- no broker-backed dead-letter handling
+- no centralized reconciliation process for cross-engine partial failure
+- filesystem corruption or disk loss can remove the primary operational state
+
+## 7. Operational Guidance
+
+When debugging a failure:
+
+1. identify the entry surface: unified gateway, report platform, presentation platform, transcription server, or `rasid-web`
+2. locate the corresponding `.runtime/<engine>` folder
+3. inspect `state`, `artifacts`, `evidence`, `audit`, and `lineage` subfolders
+4. determine whether the break is in routing, governance, engine logic, export generation, or provider integration
+5. rerun the narrowest regression script that covers the failing path
+
+## 8. Recommended Next Steps
+
+The highest-value operational improvements are:
+
+1. add central metrics and structured logging
+2. move heavy work to background workers
+3. convert schedule/orchestration records into a real queue workflow
+4. add automated API tests for the standalone report and presentation servers
+5. reduce `dashboard-web.ts` into composable route modules for better test isolation

@@ -1,125 +1,163 @@
-# Architecture
+# Architecture Overview
 
-This repository contains three architectural strata that coexist in one workspace:
+## 1. System Shape
 
-1. `rasid-platform-core`, the active contract-first monorepo that currently drives the deployed unified gateway and the standalone report, presentation, and transcription HTTP servers.
-2. `apps/rasid-web`, an imported full-stack React + Express + tRPC application that preserves a richer product shell but still relies on local `sql.js` data access and optional Drizzle/MySQL metadata.
-3. `rasid_core_seed`, a historical extracted reference corpus used as implementation inspiration rather than a runnable production runtime.
+The repository contains two real runtime styles:
 
-## Primary Architectural Style
+1. The active engine-first platform in [rasid-platform-core](/C:/ALRaMaDy/rasid-platform-core).
+2. The separate full-stack app in [apps/rasid-web](/C:/ALRaMaDy/rasid-platform-core/apps/rasid-web), which still uses its own API and persistence model.
 
-The active platform is a contract-first modular monolith.
+The engine-first path is the architectural center of gravity. It uses:
 
-- Shared schemas, action registries, and tool registries live in `packages/contracts`.
-- Runtime bootstrap and hook execution live in `packages/runtime` and `packages/capability-registry`.
-- Capability packages implement domain logic as TypeScript classes with file-backed store classes under `.runtime/`.
-- Thin HTTP shells in `apps/contracts-cli/src/dashboard-web.ts`, `apps/contracts-cli/src/transcription-web.ts`, `packages/report-engine/src/platform.ts`, and `packages/presentations-engine/src/platform.ts` orchestrate the engines in-process.
+- `packages/contracts` for shared schemas and action/tool contracts
+- `packages/*-engine` for domain workflows
+- `packages/capability-registry` and `packages/runtime` for capability bootstrap, approval hooks, and evidence hooks
+- `apps/contracts-cli` as the bootstrap and server host
+- `.runtime/*` filesystem trees as the primary operational persistence layer
 
-This produces a layered system, but not a microservice fleet. Most "services" are code-level engines sharing one process and one repository.
+## 2. Active Runtime Lanes
 
-## Layer Model
+| Lane | Entry point | Role | Persistence |
+| --- | --- | --- | --- |
+| Unified gateway | [apps/contracts-cli/src/dashboard-web.ts](/C:/ALRaMaDy/rasid-platform-core/apps/contracts-cli/src/dashboard-web.ts) | Main multi-surface platform server for data, dashboards, reports, presentations, localization, governance, and AI orchestration | `.runtime/*` |
+| Transcription server | [apps/contracts-cli/src/transcription-web.ts](/C:/ALRaMaDy/rasid-platform-core/apps/contracts-cli/src/transcription-web.ts) | Narrower transcription-focused UI/API | `.runtime/transcription-*` |
+| Report platform | [packages/report-engine/src/platform.ts](/C:/ALRaMaDy/rasid-platform-core/packages/report-engine/src/platform.ts) | Standalone report UI/API | `.runtime/report-engine*` |
+| Presentations platform | [packages/presentations-engine/src/platform.ts](/C:/ALRaMaDy/rasid-platform-core/packages/presentations-engine/src/platform.ts) | Standalone presentation UI/API | `.runtime/presentations-engine` |
+| `rasid-web` | [apps/rasid-web](/C:/ALRaMaDy/rasid-platform-core/apps/rasid-web) | Separate React + Express + tRPC app shell | `data/rasid.db`, optional MySQL, `uploads/` |
 
-| Layer | Main code areas | Responsibility |
-| --- | --- | --- |
-| Presentation layer | `apps/contracts-cli/src/dashboard-web.ts`, `apps/contracts-cli/src/transcription-web.ts`, `packages/*/src/platform.ts`, `apps/rasid-web/client` | Browser routes, page rendering, API entrypoints, route-level auth, user interaction |
-| Application services | `apps/contracts-cli/src/index.ts`, `apps/rasid-web/server/_core/index.ts`, `apps/rasid-web/server/routers.ts` | Runtime bootstrap, request dispatch, orchestration, API shaping |
-| Domain logic | `packages/dashboard-engine`, `report-engine`, `presentations-engine`, `transcription-extraction-engine`, `ai-engine`, `governance-engine`, `arabic-localization-lct-engine`, `strict-replication-engine`, `excel-engine` | Capability workflows, validation, transformation, publication, review, continuation |
-| Shared kernel | `packages/contracts`, `runtime`, `capability-registry`, `common`, `artifacts`, `audit-lineage`, `evidence`, `jobs`, `library`, `permissions`, `output-publication`, `connectors`, `canvas-contract`, `brand-template` | Common types, envelopes, approval/evidence hooks, action/tool manifests, shared model vocabulary |
-| Persistence and transport | `.runtime/*`, `apps/rasid-web/server/localDb.ts`, `apps/rasid-web/drizzle`, `uploads/` | Durable execution state, local content store, optional relational metadata, uploaded files |
-| External integrations | OpenAI API, Forge APIs, optional MySQL, Railway/Nixpacks | LLM, vision, speech transcription, file/data APIs, deployment runtime |
+## 3. Dependency Graph
 
-## Active Runtime Shapes
+```mermaid
+graph TD
+  CLI["apps/contracts-cli"] --> REG["capability-registry"]
+  CLI --> AI["ai-engine"]
+  CLI --> GOV["governance-engine"]
+  CLI --> DASH["dashboard-engine"]
+  CLI --> REP["report-engine"]
+  CLI --> PRES["presentations-engine"]
+  CLI --> TRANS["transcription-extraction-engine"]
+  CLI --> LOC["arabic-localization-lct-engine"]
 
-### Unified gateway
+  AI --> DASH
+  AI --> REP
+  AI --> PRES
+  AI --> TRANS
+  AI --> LOC
+  AI --> XLS["excel-engine"]
+  AI --> STRICT["strict-replication-engine"]
 
-`npm start` launches `apps/contracts-cli/dist/index.js dashboard-serve-web`, which serves the unified canvas routes:
+  REP --> DASH
+  REP --> PRES
 
-- `/home`
-- `/data`
-- `/transcription`
-- `/excel`
-- `/reports`
-- `/presentations`
-- `/replication`
-- `/localization`
-- `/dashboards`
-- `/library`
-- `/governance`
+  REG --> RT["runtime"]
 
-This gateway is the current integration point for AI orchestration, governance, dashboard mutation, cross-engine conversion, localization, and replication.
+  AI --> CONTRACTS["contracts"]
+  DASH --> CONTRACTS
+  REP --> CONTRACTS
+  PRES --> CONTRACTS
+  TRANS --> CONTRACTS
+  GOV --> CONTRACTS
+  LOC --> CONTRACTS
+  XLS --> CONTRACTS
+  STRICT --> CONTRACTS
+  REG --> CONTRACTS
+  RT --> CONTRACTS
+```
 
-### Standalone product servers
+## 4. Internal Service Communication
 
-The repo also exposes narrower product-style servers:
+### Unified gateway path
 
-- report platform: `packages/report-engine/src/platform.ts`
-- presentations platform: `packages/presentations-engine/src/platform.ts`
-- transcription platform: `apps/contracts-cli/src/transcription-web.ts`
+1. Browser loads a page such as `/dashboards` or `/governance`.
+2. Embedded client script calls `/api/v1/...`.
+3. The gateway builds an auth and governance context.
+4. `GovernanceEngine` evaluates allow, deny, or approval-required.
+5. The selected engine executes the domain action.
+6. The engine store writes state, artifacts, evidence, audit, and lineage.
+7. The gateway returns JSON plus a continuation path such as `open_path`.
 
-These duplicate some capability-specific behavior already present in the unified gateway, but they remain useful as focused surfaces and regression targets.
+This is the standard pattern for:
 
-### Alternative full-stack app
+- dashboard create/mutate/refresh/publish/share/schedule
+- transcription start and compare
+- AI jobs
+- report-to-dashboard and report-to-presentation conversions
+- dashboard localization and strict replication consumption
 
-`apps/rasid-web` is a separate application architecture:
+### Standalone platform path
 
-- React/Vite SPA on the client
-- Express + tRPC server
-- local JWT auth via cookies
-- local `sql.js` content persistence
-- optional Drizzle/MySQL template-library metadata
-- AI helper endpoints implemented directly in the app server
+The report and presentation platform servers own their own HTML shells and route handlers, but internally they still call the same `ReportEngine` and `PresentationEngine` classes used elsewhere in the monorepo.
 
-It is architecturally important because it preserves a UI the audit trail marks as the preferred design authority, even though it is not the current deployment entrypoint.
+### `rasid-web` path
 
-## Dependency Rules Visible in Code
+1. React page/component calls `trpc.<namespace>.<procedure>`.
+2. Express exposes `/api/trpc`.
+3. `routers.ts`, `aiRouter.ts`, or `libraryRouter.ts` handles the request.
+4. The handler reads/writes either:
+   - `localDb.ts` (`sql.js`)
+   - `db.ts` + Drizzle/MySQL
+   - external AI/storage/provider helpers
 
-- Contracts are imported downstream by engines and bootstrap code; engines do not define independent private schemas for shared artifacts.
-- Store classes are part of the domain runtime, not a separate infrastructure service. They create the durable runtime graph used by later steps.
-- Queueing and scheduling are implemented as file-backed orchestration records, not Redis/SQS/Kafka style external brokers.
-- Governance is partially centralized in `packages/governance-engine`, but some surfaces still expose direct engine operations and only layer governance at the route/orchestration level.
-- `apps/rasid-web` currently duplicates business logic that the shared engines already implement elsewhere; the durable wiring guide in `docs/RASID_LITERAL_SERVICE_WIRING_GUIDE.md` records that this app should move toward adapters instead of owning the logic itself.
+This means `rasid-web` is not yet a thin adapter over the shared engines.
 
-## Major Architectural Tensions
+## 5. Architectural Seams
 
-### 1. Dual runtime model
+### Stable seams
 
-The monorepo runtime uses `.runtime/` JSON/file persistence. `apps/rasid-web` uses local relational-style CRUD and optional MySQL metadata. This creates two truth models for similar concepts such as files, reports, dashboards, and presentations.
+- Contract schemas in [packages/contracts](/C:/ALRaMaDy/rasid-platform-core/packages/contracts)
+- Capability bootstrap in [packages/capability-registry](/C:/ALRaMaDy/rasid-platform-core/packages/capability-registry)
+- Engine store boundaries in each `packages/*-engine/src/store.ts`
+- Standalone platform wrappers in `report-engine` and `presentations-engine`
 
-### 2. Dual web surfaces
+### Tension points
 
-The repository contains both:
+- `dashboard-web.ts` is a large route monolith that owns auth, rendering, governance wrapping, and many domain actions.
+- `apps/rasid-web` duplicates product concerns with a different persistence and auth model.
+- The active runtime is file-backed, so concurrency, multi-instance coordination, and transactional guarantees are weak compared with a shared database or queue broker.
 
-- a deployed unified gateway
-- a richer imported SPA with its own backend
+## 6. Dependency Management Model
 
-That is useful for migration, but it increases maintenance cost and documentation complexity.
+The monorepo uses npm workspaces declared in [package.json](/C:/ALRaMaDy/rasid-platform-core/package.json) and TypeScript project references declared in [tsconfig.json](/C:/ALRaMaDy/rasid-platform-core/tsconfig.json).
 
-### 3. Contract-first core vs app-local implementation
+Key rules:
 
-The shared engine packages are relatively disciplined around schemas, artifacts, evidence, and lineage. The imported app is much more product-local and imperative, especially in `server/aiRouter.ts` and `server/localDb.ts`.
+- shared contracts sit at the bottom of the dependency graph
+- engine packages depend on contracts, plus a small number of sibling engines where conversion is required
+- bootstrap apps depend on engines and registry/runtime packages
+- the `rasid-web` app does not consume the shared engine packages directly; it is a separate application line
 
-## Diagram Map
+## 7. Scaling Strategy
 
-- high-level architecture: `docs/diagrams/system-architecture.mmd`
-- service interactions: `docs/diagrams/service-map.mmd`
-- data pipelines: `docs/diagrams/dataflows.mmd`
-- ERD: `docs/diagrams/database-erd.mmd`
-- supporting C4 views:
-  - `docs/c4-context.md`
-  - `docs/c4-containers.md`
-  - `docs/c4-components.md`
-  - `docs/c4-code.md`
+The current architecture scales up more easily than it scales out.
 
-## Recommended Reading Order
+### What scales acceptably today
 
-1. `docs/system-overview.md`
-2. `docs/architecture.md`
-3. `docs/modules.md`
-4. `docs/apis.md`
-5. `docs/dataflows.md`
-6. `docs/database.md`
-7. `docs/infrastructure.md`
-8. `docs/deployment.md`
-9. `docs/security.md`
-10. `docs/performance.md`
-11. `docs/testing.md`
+- running the unified gateway as a single Node process
+- splitting report, presentation, and transcription servers into separate processes
+- persisting engine outputs to separate runtime folders by entity id
+
+### What blocks horizontal scale
+
+- filesystem-backed operational state
+- synchronous file I/O in stores
+- no shared queue broker for heavy jobs
+- no distributed lock or lease system for scheduled work
+- auth and policy state being process-local in several servers
+
+## 8. Future Extension Points
+
+The safest high-value extension seams are:
+
+1. Replace `.runtime/*` with a shared object store + metadata database without changing contract shapes.
+2. Extract route families from `dashboard-web.ts` into composable server modules behind one gateway.
+3. Turn `apps/rasid-web` routers into adapters that call shared engines instead of `localDb.ts`.
+4. Add a real queue/worker layer for report export, parity validation, localization, strict replication, and AI orchestration.
+5. Centralize auth and tenant policy middleware across all servers.
+
+## 9. Related Documents
+
+- [system-overview.md](/C:/ALRaMaDy/docs/system-overview.md)
+- [c4-context.md](/C:/ALRaMaDy/docs/c4-context.md)
+- [c4-containers.md](/C:/ALRaMaDy/docs/c4-containers.md)
+- [c4-components.md](/C:/ALRaMaDy/docs/c4-components.md)
+- [modules.md](/C:/ALRaMaDy/docs/modules.md)
