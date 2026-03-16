@@ -43,8 +43,16 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatMenuRef = useRef<HTMLDivElement>(null);
 
-  // AI chat mutation via tRPC — sends to the AI Agent
+  // AI mutations via tRPC
   const chatMutation = trpc.ai.chat.useMutation();
+  const generateSlidesMutation = trpc.ai.generateSlides.useMutation();
+  const generateReportMutation = trpc.ai.generateReport.useMutation();
+  const analyzeDashboardMutation = trpc.ai.analyzeDashboard.useMutation();
+  const translateMutation = trpc.ai.translate.useMutation();
+  const summarizeMutation = trpc.ai.summarize.useMutation();
+  const createPresentation = trpc.presentations.create.useMutation();
+  const createReport = trpc.reports.create.useMutation();
+  const createDashboard = trpc.dashboards.create.useMutation();
 
   const character = theme === 'dark' ? CHARACTERS.char3_dark : CHARACTERS.char1_waving;
   const [welcomeVisible, setWelcomeVisible] = useState(false);
@@ -116,6 +124,39 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
   }, []);
 
   // ==================== AI Chat — Open AI Agent ====================
+  // ─── Intent Detection ─── Detects what the user wants and routes to the right engine
+  const detectIntent = (text: string): { intent: string; topic: string } => {
+    const t = text.toLowerCase();
+    // Presentation / عرض
+    if (/\b(عرض|شرائح|سلايد|presentation|slides|pptx)\b/.test(t))
+      return { intent: 'presentation', topic: text.replace(/أنشئ|نفذ|اعمل|سوي|اصنع|لي|عرض تقديمي|عرض|عن/gi, '').trim() || text };
+    // Report / تقرير
+    if (/\b(تقرير|report|تقارير)\b/.test(t))
+      return { intent: 'report', topic: text.replace(/أنشئ|نفذ|اعمل|سوي|اصنع|لي|تقرير|عن/gi, '').trim() || text };
+    // Dashboard / لوحة
+    if (/\b(لوحة|داشبورد|مؤشر|dashboard|kpi)\b/.test(t))
+      return { intent: 'dashboard', topic: text.replace(/أنشئ|نفذ|اعمل|سوي|اصنع|لي|لوحة مؤشرات|لوحة|عن/gi, '').trim() || text };
+    // Translation / ترجمة
+    if (/\b(ترجم|ترجمة|translate)\b/.test(t))
+      return { intent: 'translate', topic: text };
+    // Summary / تلخيص
+    if (/\b(لخص|تلخيص|ملخص|summarize|summary)\b/.test(t))
+      return { intent: 'summarize', topic: text };
+    // Default — regular chat
+    return { intent: 'chat', topic: text };
+  };
+
+  const addAssistantMessage = useCallback((content: string, extras?: Partial<ChatMessage>) => {
+    setIsTyping(false);
+    setMessages(prev => [...prev, {
+      id: (Date.now() + 1).toString(),
+      role: 'assistant' as const,
+      content,
+      time: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' }),
+      ...extras,
+    }]);
+  }, []);
+
   const doSend = useCallback(async (text: string) => {
     if (!text.trim()) return;
     const userText = text.trim();
@@ -131,59 +172,182 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
     setIsTyping(true);
 
     try {
-      // Send to AI Agent — it understands intent and calls the right engine
+      const { intent, topic } = detectIntent(userText);
+
+      // ═══ PRESENTATION ENGINE ═══
+      if (intent === 'presentation') {
+        addAssistantMessage('جاري إنشاء العرض التقديمي... ⏳', {
+          stages: [
+            { name: 'تحليل الموضوع', status: 'completed', progress: 100 },
+            { name: 'توليد الشرائح', status: 'running', progress: 50 },
+            { name: 'التنسيق والتصميم', status: 'pending', progress: 0 },
+          ],
+        });
+
+        const slidesResult = await generateSlidesMutation.mutateAsync({
+          prompt: topic || userText,
+          slideCount: 8,
+          style: 'professional',
+        });
+
+        const slides = slidesResult.slides || [];
+        let savedId = '';
+        if (slides.length > 0) {
+          const saved = await createPresentation.mutateAsync({
+            title: slides[0]?.title || topic || 'عرض تقديمي جديد',
+            description: topic,
+            slides: JSON.stringify(slides),
+            theme: 'ndmo',
+          });
+          savedId = saved?.id ? String(saved.id) : '';
+        }
+
+        addAssistantMessage(
+          `تم إنشاء العرض التقديمي بنجاح! 🎉\n\n**${slides[0]?.title || 'العرض'}**\n\nيحتوي على **${slides.length} شرائح** جاهزة.\n\n${slides.map((s: any, i: number) => `${i + 1}. ${s.title}`).join('\n')}`,
+          {
+            stages: [
+              { name: 'تحليل الموضوع', status: 'completed', progress: 100 },
+              { name: 'توليد الشرائح', status: 'completed', progress: 100 },
+              { name: 'التنسيق والتصميم', status: 'completed', progress: 100 },
+            ],
+            artifacts: [{ id: savedId || 'pres-1', type: 'presentation', label: slides[0]?.title || 'عرض تقديمي', icon: 'slideshow' }],
+            actions: [
+              { id: 'open-presentation', label: 'فتح في محرر العروض', icon: 'slideshow', variant: 'primary' },
+              { id: 'new-presentation', label: 'عرض آخر', icon: 'add', variant: 'secondary' },
+            ],
+          }
+        );
+        return;
+      }
+
+      // ═══ REPORT ENGINE ═══
+      if (intent === 'report') {
+        addAssistantMessage('جاري إنشاء التقرير... ⏳', {
+          stages: [
+            { name: 'تحليل المتطلبات', status: 'completed', progress: 100 },
+            { name: 'كتابة الأقسام', status: 'running', progress: 40 },
+            { name: 'المراجعة النهائية', status: 'pending', progress: 0 },
+          ],
+        });
+
+        const reportResult = await generateReportMutation.mutateAsync({
+          prompt: topic || userText,
+          reportType: 'general',
+        });
+
+        const sections = reportResult.sections || [];
+        let savedId = '';
+        if (sections.length > 0) {
+          const saved = await createReport.mutateAsync({
+            title: topic || 'تقرير جديد',
+            description: topic,
+            reportType: 'general',
+            sections: JSON.stringify(sections),
+          });
+          savedId = saved?.id ? String(saved.id) : '';
+        }
+
+        addAssistantMessage(
+          `تم إنشاء التقرير بنجاح! 📄\n\n**${topic || 'التقرير'}**\n\nيحتوي على **${sections.length} أقسام**:\n\n${sections.map((s: any, i: number) => `${i + 1}. ${s.title || s.type || 'قسم'}`).join('\n')}`,
+          {
+            stages: [
+              { name: 'تحليل المتطلبات', status: 'completed', progress: 100 },
+              { name: 'كتابة الأقسام', status: 'completed', progress: 100 },
+              { name: 'المراجعة النهائية', status: 'completed', progress: 100 },
+            ],
+            artifacts: [{ id: savedId || 'report-1', type: 'report', label: topic || 'تقرير', icon: 'description' }],
+            actions: [
+              { id: 'open-report', label: 'فتح في محرر التقارير', icon: 'description', variant: 'primary' },
+              { id: 'new-report', label: 'تقرير آخر', icon: 'add', variant: 'secondary' },
+            ],
+          }
+        );
+        return;
+      }
+
+      // ═══ DASHBOARD ENGINE ═══
+      if (intent === 'dashboard') {
+        addAssistantMessage('جاري إنشاء لوحة المؤشرات... ⏳', {
+          stages: [
+            { name: 'تحليل المؤشرات', status: 'completed', progress: 100 },
+            { name: 'تصميم الودجات', status: 'running', progress: 50 },
+            { name: 'ربط البيانات', status: 'pending', progress: 0 },
+          ],
+        });
+
+        const dashResult = await analyzeDashboardMutation.mutateAsync({
+          prompt: topic || userText,
+        });
+
+        const widgets = dashResult.widgets || [];
+        let savedId = '';
+        if (widgets.length > 0) {
+          const saved = await createDashboard.mutateAsync({
+            title: topic || 'لوحة مؤشرات جديدة',
+            description: topic,
+            widgets: JSON.stringify(widgets),
+            layout: '{}',
+          });
+          savedId = saved?.id ? String(saved.id) : '';
+        }
+
+        addAssistantMessage(
+          `تم إنشاء لوحة المؤشرات بنجاح! 📊\n\n**${topic || 'لوحة المؤشرات'}**\n\nتحتوي على **${widgets.length} ودجات**:\n\n${widgets.map((w: any, i: number) => `${i + 1}. ${w.title || w.type || 'ودجة'}`).join('\n')}`,
+          {
+            stages: [
+              { name: 'تحليل المؤشرات', status: 'completed', progress: 100 },
+              { name: 'تصميم الودجات', status: 'completed', progress: 100 },
+              { name: 'ربط البيانات', status: 'completed', progress: 100 },
+            ],
+            artifacts: [{ id: savedId || 'dash-1', type: 'dashboard', label: topic || 'لوحة مؤشرات', icon: 'dashboard' }],
+            actions: [
+              { id: 'open-dashboard', label: 'فتح في محرر اللوحات', icon: 'dashboard', variant: 'primary' },
+              { id: 'new-dashboard', label: 'لوحة أخرى', icon: 'add', variant: 'secondary' },
+            ],
+          }
+        );
+        return;
+      }
+
+      // ═══ TRANSLATE ═══
+      if (intent === 'translate') {
+        const translateResult = await translateMutation.mutateAsync({
+          text: topic,
+          sourceLang: 'auto',
+          targetLang: /\b(إنجليزي|english|en)\b/i.test(userText) ? 'en' : 'ar',
+        });
+        addAssistantMessage(`**الترجمة:**\n\n${translateResult.translated || translateResult.content || 'تمت الترجمة'}`, {
+          actions: [{ id: 'translate-again', label: 'ترجمة أخرى', icon: 'translate', variant: 'secondary' }],
+        });
+        return;
+      }
+
+      // ═══ SUMMARIZE ═══
+      if (intent === 'summarize') {
+        const summaryResult = await summarizeMutation.mutateAsync({ text: topic });
+        addAssistantMessage(`**الملخص:**\n\n${summaryResult.summary || summaryResult.content || 'تم التلخيص'}`, {
+          actions: [{ id: 'summarize-again', label: 'تلخيص آخر', icon: 'summarize', variant: 'secondary' }],
+        });
+        return;
+      }
+
+      // ═══ REGULAR CHAT ═══
       const chatHistory = messages.map(m => ({ role: m.role, content: m.content }));
       chatHistory.push({ role: 'user' as const, content: userText });
       const result = await chatMutation.mutateAsync({ messages: chatHistory });
 
-      let responseContent = result.content || 'تم تنفيذ الطلب بنجاح.';
-      let responseActions: ChatMessage['actions'] = [];
-      let responseStages: ChatMessage['stages'] = undefined;
-      let responseArtifacts: ChatMessage['artifacts'] = undefined;
-
-      // Parse structured response if available
-      try {
-        const parsed = JSON.parse(responseContent);
-        if (parsed.message) {
-          responseContent = parsed.message;
-        }
-        if (parsed.actions) {
-          responseActions = parsed.actions;
-        }
-        if (parsed.stages) {
-          responseStages = parsed.stages;
-        }
-        if (parsed.artifacts) {
-          responseArtifacts = parsed.artifacts;
-        }
-      } catch {
-        // Not JSON — plain text response, that's fine
-      }
-
-      // Add default actions if none provided
-      if (!responseActions || responseActions.length === 0) {
-        responseActions = [
-          { id: 'analyze', label: 'تحليل البيانات', icon: 'analytics', variant: 'primary' },
-          { id: 'dashboard', label: 'إنشاء لوحة', icon: 'dashboard', variant: 'secondary' },
-          { id: 'report', label: 'إنشاء تقرير', icon: 'description', variant: 'secondary' },
-        ];
-      }
-
-      setIsTyping(false);
-      setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: responseContent,
-        time: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' }),
-        actions: responseActions,
-        stages: responseStages,
-        artifacts: responseArtifacts,
-      }]);
+      addAssistantMessage(result.content || 'تم معالجة طلبك.', {
+        actions: [
+          { id: 'presentation', label: 'أنشئ عرض تقديمي', icon: 'slideshow', variant: 'primary' },
+          { id: 'dashboard', label: 'أنشئ لوحة مؤشرات', icon: 'dashboard', variant: 'secondary' },
+          { id: 'report', label: 'أنشئ تقرير', icon: 'description', variant: 'secondary' },
+        ],
+      });
     } catch (error: any) {
       setIsTyping(false);
-      const errorMsg = error?.message?.includes('API')
-        ? 'عذراً، لم يتم تكوين مفتاح الذكاء الاصطناعي بعد. يرجى إضافة المفتاح في الإعدادات أولاً.'
-        : 'عذراً، حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى.';
+      const errorMsg = error?.message?.includes('API') || error?.message?.includes('OPENAI')
+        ? 'عذراً، لم يتم تكوين مفتاح الذكاء الاصطناعي بعد. يرجى إضافة OPENAI_API_KEY في إعدادات Railway.'
+        : `عذراً، حدث خطأ: ${error?.message || 'يرجى المحاولة مرة أخرى.'}`;
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
@@ -191,7 +355,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
         time: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' }),
       }]);
     }
-  }, [messages, chatMutation]);
+  }, [messages, chatMutation, generateSlidesMutation, generateReportMutation, analyzeDashboardMutation, translateMutation, summarizeMutation, createPresentation, createReport, createDashboard, addAssistantMessage]);
 
   const handleSend = useCallback(() => {
     if (!input.trim()) return;
