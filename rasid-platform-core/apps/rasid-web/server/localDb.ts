@@ -2,7 +2,9 @@
  * Local SQLite Database — self-contained, no external dependencies
  * ALL data stored locally in data/rasid.db
  */
-import initSqlJs, { type Database as SqlJsDatabase } from "sql.js";
+// @ts-ignore — sql.js types may not be installed
+import initSqlJs from "sql.js";
+type SqlJsDatabase = any;
 import fs from "fs";
 import path from "path";
 

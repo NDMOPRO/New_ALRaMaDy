@@ -4,7 +4,7 @@
    - الذكاء يفهم الطلب ويختار المحرك المناسب تلقائياً
    - لا wizards، لا خطوات يدوية — AI كامل مفتوح
    ═══════════════════════════════════════════════════════════════════ */
-import { useState, useRef, useEffect, useCallback, forwardRef, useImperativeHandle } from 'react';
+import { useState, useRef, useEffect, useCallback, forwardRef, useImperativeHandle, type MutableRefObject } from 'react';
 import { trpc } from '@/lib/trpc';
 import { useJobWebSocket, type JobUpdateEvent } from '@/hooks/useWebSocket';
 import { toast } from 'sonner';
@@ -42,6 +42,9 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
   const [dragOver, setDragOver] = useState(false);
   const [dropSnap, setDropSnap] = useState(false);
 
+  // Ref to doSend so it can be used in callbacks defined before doSend
+  const doSendRef = useRef<(text: string) => void>(() => {});
+
   // Pending intent — inline wizard above input (like Gamma.app creation wizard)
   const [pendingIntent, setPendingIntent] = useState<{
     type: 'presentation' | 'report' | 'dashboard';
@@ -74,11 +77,11 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
       // EXECUTE
       setPendingIntent(null);
       const typeLabel = pi.type === 'presentation' ? 'عرض' : pi.type === 'report' ? 'تقرير' : 'لوحة مؤشرات';
-      doSend(`أنشئ ${typeLabel} عن ${pi.topic}`);
+      doSendRef.current(`أنشئ ${typeLabel} عن ${pi.topic}`);
       return;
     }
     setPendingIntent(pi);
-  }, [pendingIntent, doSend]);
+  }, [pendingIntent]);
 
   // Handle typing topic in pending intent mode
   const handleIntentTopicSubmit = useCallback(() => {
@@ -398,7 +401,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
               title: topic || 'لوحة مؤشرات جديدة',
               description: topic,
               widgets: widgets,
-              layout: '{}',
+              layout: {},
             });
             savedId = saved?.id ? String(saved.id) : '';
           }
@@ -426,10 +429,10 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
       if (intent === 'translate') {
         const translateResult = await translateMutation.mutateAsync({
           text: topic,
-          sourceLang: 'auto',
-          targetLang: /\b(إنجليزي|english|en)\b/i.test(userText) ? 'en' : 'ar',
+          from: 'auto',
+          to: /\b(إنجليزي|english|en)\b/i.test(userText) ? 'en' : 'ar',
         });
-        addAssistantMessage(`**الترجمة:**\n\n${translateResult.translated || translateResult.content || 'تمت الترجمة'}`, {
+        addAssistantMessage(`**الترجمة:**\n\n${translateResult.content || 'تمت الترجمة'}`, {
           actions: [{ id: 'translate-again', label: 'ترجمة أخرى', icon: 'translate', variant: 'secondary' }],
         });
         return;
@@ -438,7 +441,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
       // ═══ SUMMARIZE ═══
       if (intent === 'summarize') {
         const summaryResult = await summarizeMutation.mutateAsync({ text: topic });
-        addAssistantMessage(`**الملخص:**\n\n${summaryResult.summary || summaryResult.content || 'تم التلخيص'}`, {
+        addAssistantMessage(`**الملخص:**\n\n${summaryResult.content || 'تم التلخيص'}`, {
           actions: [{ id: 'summarize-again', label: 'تلخيص آخر', icon: 'summarize', variant: 'secondary' }],
         });
         return;
@@ -488,7 +491,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           } else if (targetGuess === 'report' && repResult.cdr?.sections) {
             await createReport.mutateAsync({ title: repResult.cdr.title || 'تقرير مُطابَق', sections: repResult.cdr.sections });
           } else if (targetGuess === 'dashboard' && repResult.cdr?.widgets) {
-            await createDashboard.mutateAsync({ title: repResult.cdr.title || 'لوحة مُطابَقة', widgets: repResult.cdr.widgets, layout: '{}' });
+            await createDashboard.mutateAsync({ title: repResult.cdr.title || 'لوحة مُطابَقة', widgets: repResult.cdr.widgets, layout: {} });
           } else if (targetGuess === 'spreadsheet' && repResult.cdr?.sheets) {
             await createSpreadsheet.mutateAsync({ title: repResult.cdr.title || 'جدول مُطابَق', sheets: repResult.cdr.sheets });
           }
@@ -602,6 +605,9 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
       }]);
     }
   }, [messages, chatMutation, generateSlidesMutation, generateReportMutation, analyzeDashboardMutation, translateMutation, summarizeMutation, createPresentation, createReport, createDashboard, addAssistantMessage]);
+
+  // Keep ref in sync so pre-declared callbacks can call doSend
+  doSendRef.current = doSend;
 
   const handleSend = useCallback(() => {
     if (!input.trim()) return;

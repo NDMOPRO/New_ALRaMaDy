@@ -2092,7 +2092,7 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
               // Charts
               if (slide.layout === 'chart' && slide.chartData?.length > 0) {
                 const chartType = slide.chartType === 'line' ? pptx.ChartType.line : slide.chartType === 'pie' ? pptx.ChartType.pie : pptx.ChartType.bar;
-                s.addChart(chartType, [{ name: slide.title || 'بيانات', labels: slide.chartLabels || [], values: slide.chartData }], { x: 1, y: 2.5, w: 8, h: 4, showLegend: true, showTitle: false, catAxisOrientation: 'maxMin' });
+                s.addChart(chartType, [{ name: slide.title || 'بيانات', labels: slide.chartLabels || [], values: slide.chartData }], { x: 1, y: 2.5, w: 8, h: 4, showLegend: true, showTitle: false, catAxisOrientation: 'minMax' });
               }
 
               // Tables

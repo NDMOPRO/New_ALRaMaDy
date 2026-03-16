@@ -59,7 +59,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Sync user from server
   useEffect(() => {
     if (meQuery.data) {
-      setUser(meQuery.data as User);
+      const raw = meQuery.data as any;
+      setUser({ ...raw, id: String(raw.id) } as User);
       setIsLoading(false);
     } else if (meQuery.isError || meQuery.data === null) {
       setUser(null);
@@ -71,7 +72,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const result = await loginMutation.mutateAsync({ userId, password });
       if (result.success && 'user' in result) {
-        setUser(result.user as User);
+        const raw = result.user as any;
+        setUser({ ...raw, id: String(raw.id) } as User);
         utils.auth.me.invalidate();
         return { success: true };
       }
@@ -92,7 +94,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         department: data.department,
       });
       if (result.success && 'user' in result) {
-        setUser(result.user as User);
+        const raw = result.user as any;
+        setUser({ ...raw, id: String(raw.id) } as User);
         utils.auth.me.invalidate();
         return { success: true };
       }

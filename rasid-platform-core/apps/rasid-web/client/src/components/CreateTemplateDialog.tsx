@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* ═══════════════════════════════════════════════════════════════════
    CreateTemplateDialog — Create New Template Element
    

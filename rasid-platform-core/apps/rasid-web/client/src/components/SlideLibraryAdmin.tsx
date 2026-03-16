@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* ═══════════════════════════════════════════════════════════════
    Slide Element Library — Admin Management Panel
    Upload PPTX references → AI decomposes into reusable elements

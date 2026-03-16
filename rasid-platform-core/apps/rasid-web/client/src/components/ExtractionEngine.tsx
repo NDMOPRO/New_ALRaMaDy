@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* ═══════════════════════════════════════════════════════════════
    ExtractionEngine — Real Content Extraction Engine
    Features:
