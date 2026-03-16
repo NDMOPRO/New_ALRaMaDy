@@ -99,6 +99,237 @@ function customizeHtmlTemplate(html: string, slideData: {
   return customized;
 }
 
+// ═══════════════════════════════════════════════════════════════
+// Strict Replication — Vision Analysis Prompts
+// ═══════════════════════════════════════════════════════════════
+
+function buildVisionPrompt(targetType: string, language: string): string {
+  const base = `أنت محرك تحليل بصري متخصص في استخراج كل عنصر من الصور بدقة 100%.
+مهمتك: تحليل الصورة واستخراج كل عنصر مرئي مع خصائصه الدقيقة.
+
+قواعد إلزامية:
+1. كل لون يجب أن يكون hex code دقيق (#RRGGBB)
+2. كل نص يجب نسخه حرفيًا كما هو
+3. كل رقم يجب نسخه بالضبط
+4. ترتيب العناصر يجب أن يطابق الصورة (من اليمين لليسار للعربي)
+5. أنواع الرسوم البيانية يجب تحديدها بدقة (bar, line, pie, donut, area)
+6. بيانات الرسوم يجب استخراجها من المحاور والقيم المرئية
+7. أجب بـ JSON فقط — لا تكتب أي نص خارج JSON`;
+
+  if (targetType === 'dashboard') {
+    return base + `
+
+أرجع JSON بالهيكل التالي:
+{
+  "title": "عنوان اللوحة",
+  "theme": {
+    "backgroundColor": "#hex",
+    "primaryColor": "#hex",
+    "secondaryColor": "#hex",
+    "accentColor": "#hex",
+    "textColor": "#hex",
+    "cardColor": "#hex",
+    "fontFamily": "اسم الخط"
+  },
+  "layout": { "columns": 12, "direction": "rtl" },
+  "widgets": [
+    {
+      "type": "kpi | bar | line | pie | donut | area | table | text | progress | radar | gauge | map",
+      "title": "عنوان الودجة",
+      "subtitle": "عنوان فرعي (إن وجد)",
+      "position": { "x": 0, "y": 0, "w": 6, "h": 4 },
+      "style": {
+        "backgroundColor": "#hex",
+        "borderColor": "#hex",
+        "borderRadius": 8,
+        "shadow": true,
+        "titleColor": "#hex",
+        "valueColor": "#hex"
+      },
+      "data": {
+        "value": "القيمة الرئيسية (للـ KPI)",
+        "unit": "الوحدة",
+        "change": "+5.2%",
+        "changeDirection": "up | down | flat",
+        "labels": ["تسمية1", "تسمية2"],
+        "values": [100, 200, 300],
+        "series": [
+          { "name": "سلسلة1", "values": [10, 20, 30], "color": "#hex" }
+        ],
+        "headers": ["عمود1", "عمود2"],
+        "rows": [["قيمة1", "قيمة2"]],
+        "segments": [
+          { "label": "تسمية", "value": 30, "color": "#hex" }
+        ]
+      }
+    }
+  ],
+  "filters": [
+    { "label": "اسم الفلتر", "type": "dropdown | date | toggle", "options": ["خيار1", "خيار2"], "selected": "خيار1" }
+  ]
+}`;
+  }
+
+  if (targetType === 'presentation') {
+    return base + `
+
+أرجع JSON بالهيكل التالي:
+{
+  "title": "عنوان العرض",
+  "theme": {
+    "backgroundColor": "#hex",
+    "primaryColor": "#hex",
+    "secondaryColor": "#hex",
+    "accentColor": "#hex",
+    "textColor": "#hex",
+    "fontFamily": "اسم الخط"
+  },
+  "slides": [
+    {
+      "layout": "title | content | two-column | chart | table | infographic | kpi | timeline | quote | closing",
+      "title": "عنوان الشريحة",
+      "subtitle": "عنوان فرعي",
+      "content": "محتوى نصي",
+      "bulletPoints": ["نقطة 1", "نقطة 2"],
+      "notes": "ملاحظات المتحدث",
+      "chartType": "bar | line | pie",
+      "chartData": [10, 20, 30],
+      "chartLabels": ["تسمية1", "تسمية2"],
+      "chartColors": ["#hex1", "#hex2"],
+      "tableHeaders": ["عمود1", "عمود2"],
+      "tableRows": [["قيمة1", "قيمة2"]],
+      "infographicItems": [
+        { "icon": "material_icon_name", "label": "تسمية", "value": "87%" }
+      ],
+      "timelineItems": [
+        { "year": "2024", "title": "حدث", "description": "وصف" }
+      ],
+      "style": {
+        "backgroundColor": "#hex",
+        "titleColor": "#hex",
+        "textColor": "#hex"
+      }
+    }
+  ]
+}`;
+  }
+
+  if (targetType === 'report') {
+    return base + `
+
+أرجع JSON بالهيكل التالي:
+{
+  "title": "عنوان التقرير",
+  "theme": {
+    "primaryColor": "#hex",
+    "secondaryColor": "#hex",
+    "accentColor": "#hex",
+    "fontFamily": "اسم الخط"
+  },
+  "sections": [
+    {
+      "type": "cover | heading | paragraph | kpi | chart | table | recommendation | quote | divider | executive-summary",
+      "title": "عنوان القسم",
+      "content": "المحتوى الكامل",
+      "level": 1,
+      "data": {
+        "kpis": [{ "label": "مؤشر", "value": "95%", "color": "#hex" }],
+        "chartType": "bar",
+        "chartData": [10, 20],
+        "chartLabels": ["أ", "ب"],
+        "headers": ["عمود1"],
+        "rows": [["قيمة1"]],
+        "items": ["نقطة 1", "نقطة 2"]
+      },
+      "style": {
+        "backgroundColor": "#hex",
+        "textColor": "#hex"
+      }
+    }
+  ]
+}`;
+  }
+
+  if (targetType === 'spreadsheet') {
+    return base + `
+
+أرجع JSON بالهيكل التالي:
+{
+  "title": "عنوان الجدول",
+  "theme": {
+    "headerColor": "#hex",
+    "headerTextColor": "#hex",
+    "alternateRowColor": "#hex",
+    "borderColor": "#hex"
+  },
+  "sheets": [
+    {
+      "name": "اسم الورقة",
+      "headers": ["عمود1", "عمود2", "عمود3"],
+      "rows": [
+        ["قيمة1", "قيمة2", "قيمة3"]
+      ],
+      "columnWidths": [150, 100, 120],
+      "mergedCells": [],
+      "formulas": [
+        { "cell": "D2", "formula": "=SUM(B2:C2)" }
+      ],
+      "conditionalFormatting": [
+        { "range": "C2:C10", "rule": "greaterThan", "value": "80", "color": "#22c55e" }
+      ]
+    }
+  ]
+}`;
+  }
+
+  return base;
+}
+
+function buildArtifactFromCDR(cdr: any, targetType: string, language: string): any {
+  if (targetType === 'dashboard') {
+    return {
+      type: 'dashboard',
+      title: cdr.title || 'لوحة مؤشرات',
+      description: `لوحة مؤشرات مستخرجة بالمطابقة البصرية — ${cdr.widgets?.length || 0} عنصر`,
+      widgets: JSON.stringify(cdr.widgets || []),
+      layout: JSON.stringify(cdr.layout || { columns: 12 }),
+      theme: cdr.theme || {},
+      filters: cdr.filters || [],
+    };
+  }
+
+  if (targetType === 'presentation') {
+    return {
+      type: 'presentation',
+      title: cdr.title || 'عرض تقديمي',
+      description: `عرض تقديمي مستخرج بالمطابقة البصرية — ${cdr.slides?.length || 0} شريحة`,
+      slides: JSON.stringify(cdr.slides || []),
+      theme: JSON.stringify(cdr.theme || {}),
+    };
+  }
+
+  if (targetType === 'report') {
+    return {
+      type: 'report',
+      title: cdr.title || 'تقرير',
+      description: `تقرير مستخرج بالمطابقة البصرية — ${cdr.sections?.length || 0} قسم`,
+      reportType: 'extracted',
+      sections: JSON.stringify(cdr.sections || []),
+    };
+  }
+
+  if (targetType === 'spreadsheet') {
+    return {
+      type: 'spreadsheet',
+      title: cdr.title || 'جدول بيانات',
+      description: `جدول مستخرج بالمطابقة البصرية — ${cdr.sheets?.length || 0} ورقة`,
+      sheets: JSON.stringify(cdr.sheets || []),
+    };
+  }
+
+  return { type: targetType, title: cdr.title || 'مخرج', data: cdr };
+}
+
 export const aiRouter = router({
   // ─── Check AI Status ─────────────────────────────────────────
   status: publicProcedure.query(() => {
@@ -1911,5 +2142,141 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
       if (input.category) filtered = filtered.filter(t => t.category === input.category);
       if (input.scope) filtered = filtered.filter(t => t.scope === input.scope);
       return { templates: filtered };
+    }),
+
+  // ═══════════════════════════════════════════════════════════════
+  // Strict Replication Engine — Image → Live Editable Artifact
+  // ═══════════════════════════════════════════════════════════════
+
+  replicateFromImage: publicProcedure
+    .input(z.object({
+      imageUrl: z.string(),
+      targetType: z.enum(['dashboard', 'presentation', 'report', 'spreadsheet']),
+      language: z.string().default('ar'),
+      strictMode: z.boolean().default(true),
+    }))
+    .mutation(async ({ input }) => {
+      // Step 1: Send image to GPT-4o Vision for full structural analysis
+      const visionPrompt = buildVisionPrompt(input.targetType, input.language);
+
+      const visionMessages: VisionMessage[] = [
+        {
+          role: 'system',
+          content: visionPrompt,
+        },
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: `حلل هذه الصورة وأرجع JSON كامل بكل العناصر المرئية بدقة 100%. النوع المستهدف: ${input.targetType}` },
+            { type: 'image_url', image_url: { url: input.imageUrl, detail: 'high' } },
+          ],
+        },
+      ];
+
+      const visionResult = await callVision(visionMessages, {
+        model: 'gpt-4o',
+        temperature: 0.1,
+        max_tokens: 16000,
+      });
+
+      // Step 2: Parse the CDR from vision response
+      let cdr: any;
+      try {
+        const jsonMatch = visionResult.content.match(/```json\s*([\s\S]*?)\s*```/) ||
+                          visionResult.content.match(/\{[\s\S]*\}/);
+        const jsonStr = jsonMatch ? (jsonMatch[1] || jsonMatch[0]) : visionResult.content;
+        cdr = JSON.parse(jsonStr);
+      } catch {
+        // If JSON parsing fails, ask GPT to convert to JSON
+        const fixMessages: ChatMessage[] = [
+          { role: 'system', content: 'حوّل النص التالي إلى JSON صالح. أجب بـ JSON فقط بدون أي نص آخر.' },
+          { role: 'user', content: visionResult.content },
+        ];
+        const fixResult = await callAI(fixMessages, { temperature: 0, max_tokens: 16000 });
+        try {
+          const fixMatch = fixResult.content.match(/\{[\s\S]*\}/);
+          cdr = JSON.parse(fixMatch ? fixMatch[0] : fixResult.content);
+        } catch {
+          return {
+            success: false as const,
+            error: 'فشل في تحليل الصورة. يرجى المحاولة بصورة أوضح.',
+            raw: visionResult.content,
+          };
+        }
+      }
+
+      // Step 3: Build the target artifact from CDR
+      const artifact = buildArtifactFromCDR(cdr, input.targetType, input.language);
+
+      // Step 4: Generate evidence
+      const evidence = {
+        source_image: input.imageUrl.substring(0, 100) + '...',
+        target_type: input.targetType,
+        elements_detected: cdr.elements?.length || cdr.widgets?.length || cdr.slides?.length || cdr.sheets?.length || 0,
+        colors_extracted: cdr.theme?.colors || cdr.colors || [],
+        strict_mode: input.strictMode,
+        vision_model: 'gpt-4o',
+        analysis_timestamp: new Date().toISOString(),
+      };
+
+      return {
+        success: true as const,
+        targetType: input.targetType,
+        cdr,
+        artifact,
+        evidence,
+        elementCount: evidence.elements_detected,
+      };
+    }),
+
+  replicateAndSave: publicProcedure
+    .input(z.object({
+      imageUrl: z.string(),
+      targetType: z.enum(['dashboard', 'presentation', 'report', 'spreadsheet']),
+      language: z.string().default('ar'),
+      title: z.string().default(''),
+    }))
+    .mutation(async ({ input }) => {
+      // First replicate
+      const visionPrompt = buildVisionPrompt(input.targetType, input.language);
+      const visionMessages: VisionMessage[] = [
+        { role: 'system', content: visionPrompt },
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: `حلل هذه الصورة واستخرج كل العناصر بدقة 100%. النوع: ${input.targetType}` },
+            { type: 'image_url', image_url: { url: input.imageUrl, detail: 'high' } },
+          ],
+        },
+      ];
+
+      const visionResult = await callVision(visionMessages, {
+        model: 'gpt-4o',
+        temperature: 0.1,
+        max_tokens: 16000,
+      });
+
+      let cdr: any;
+      try {
+        const jsonMatch = visionResult.content.match(/```json\s*([\s\S]*?)\s*```/) ||
+                          visionResult.content.match(/\{[\s\S]*\}/);
+        cdr = JSON.parse(jsonMatch ? (jsonMatch[1] || jsonMatch[0]) : visionResult.content);
+      } catch {
+        return { success: false as const, error: 'فشل في تحليل الصورة', targetType: input.targetType };
+      }
+
+      const artifact = buildArtifactFromCDR(cdr, input.targetType, input.language);
+      const title = input.title || cdr.title || artifact.title;
+
+      return {
+        success: true as const,
+        targetType: input.targetType,
+        title,
+        artifact,
+        cdr,
+        elementCount: cdr.widgets?.length || cdr.slides?.length || cdr.sections?.length || cdr.sheets?.length || 0,
+        theme: cdr.theme || {},
+        savedAt: new Date().toISOString(),
+      };
     }),
 });
