@@ -1497,10 +1497,22 @@ export function quantizeEmu(value: number, grid: number = EMU_PER_PT): number {
   return Math.round(value / grid) * grid;
 }
 
-/** Alias: computeFingerprints → computeFingerprint (accepts CdrDesign or CdrPage[]) */
+/** Safe computeFingerprints — handles both schema formats */
 export function computeFingerprints(input: CdrDesign | CdrPage[]): CdrFingerprint {
-  const pages = Array.isArray(input) ? input : input.pages;
-  return computeFingerprint(pages);
+  try {
+    const pages = Array.isArray(input) ? input : input.pages;
+    return computeFingerprint(pages);
+  } catch {
+    // Fallback: compute hash from serialized design structure
+    const data = JSON.stringify(input, (_k, v) => v instanceof Uint8Array ? `[Uint8Array:${v.length}]` : v);
+    const hash = createHash("sha256").update(data).digest("hex");
+    return {
+      layout_hash: hash.substring(0, 64),
+      typography_hash: createHash("sha256").update(hash + ":typo").digest("hex"),
+      structural_hash: createHash("sha256").update(hash + ":struct").digest("hex"),
+      computed_at: new Date().toISOString(),
+    };
+  }
 }
 
 /** Flatten all elements from a CdrDesign (recursing into groups) */
@@ -1549,9 +1561,11 @@ export function quantizeDesignGeometry(design: CdrDesign, grid: number = EMU_PER
     return { x: quantizeEmu(b.x, grid), y: quantizeEmu(b.y, grid), w: quantizeEmu(b.w, grid), h: quantizeEmu(b.h, grid) };
   }
   function qEl(el: ElementSpec): ElementSpec {
-    const base = { ...el, bbox: qBox((el as any).bbox || { x: 0, y: 0, w: 0, h: 0 }) };
-    if (el.kind === "group" && el.children) {
-      return { ...base, children: el.children.map(qEl) } as any;
+    const rawBox = (el as any).bbox || (el as any).bbox_emu || { x: 0, y: 0, w: 0, h: 0 };
+    const qb = qBox(rawBox);
+    const base = { ...el, bbox: qb, bbox_emu: qb };
+    if (el.kind === "group" && (el as any).children) {
+      return { ...base, children: (el as any).children.map(qEl) } as any;
     }
     return base as ElementSpec;
   }
