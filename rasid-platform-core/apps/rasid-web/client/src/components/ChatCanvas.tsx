@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import MaterialIcon from './MaterialIcon';
 import { CHARACTERS, QUICK_ACTIONS } from '@/lib/assets';
 import { useTheme } from '@/contexts/ThemeContext';
+import { generateHtmlPresentation, THEMES, type SlideData } from '@/lib/slideTemplates';
 
 interface ChatMessage {
   id: string;
@@ -105,6 +106,15 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
   // File upload state for replication
   const [uploadedFile, setUploadedFile] = useState<{ url: string; name: string; type: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Slide viewer/editor state
+  const [generatedSlides, setGeneratedSlides] = useState<SlideData[]>([]);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [slideHtmls, setSlideHtmls] = useState<string[]>([]);
+  const [slideThemeId, setSlideThemeId] = useState('ndmo');
+  const [editingSlide, setEditingSlide] = useState<number | null>(null);
+  const [editField, setEditField] = useState<{ field: string; value: string }>({ field: '', value: '' });
+  const [showSlideViewer, setShowSlideViewer] = useState(false);
 
   const character = theme === 'dark' ? CHARACTERS.char3_dark : CHARACTERS.char1_waving;
   const [welcomeVisible, setWelcomeVisible] = useState(false);
@@ -276,17 +286,26 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           }
         } catch { /* save failed — show results anyway */ }
 
+        // Store slides and generate HTML previews
+        setGeneratedSlides(slides as SlideData[]);
+        const themeId = pendingIntent?.brandId || slideThemeId || 'ndmo';
+        setSlideThemeId(themeId);
+        const htmls = generateHtmlPresentation(slides as SlideData[], themeId);
+        setSlideHtmls(htmls);
+        setCurrentSlideIndex(0);
+        setShowSlideViewer(true);
+
         addAssistantMessage(
-          `تم إنشاء العرض التقديمي بنجاح! 🎉\n\n**${slides[0]?.title || 'العرض'}**\n\nيحتوي على **${slides.length} شرائح** جاهزة.\n\n${slides.map((s: any, i: number) => `${i + 1}. ${s.title}`).join('\n')}`,
+          `تم إنشاء العرض بنجاح! 🎉 — **${slides.length} شريحة**`,
           {
             stages: [
               { name: 'تحليل الموضوع', status: 'completed', progress: 100 },
               { name: 'توليد الشرائح', status: 'completed', progress: 100 },
               { name: 'التنسيق والتصميم', status: 'completed', progress: 100 },
             ],
-            artifacts: [{ id: savedId || 'pres-1', type: 'presentation', label: slides[0]?.title || 'عرض تقديمي', icon: 'slideshow' }],
             actions: [
-              { id: 'open-presentation', label: 'فتح في محرر العروض', icon: 'slideshow', variant: 'primary' },
+              { id: 'export-pptx', label: 'تصدير PPTX', icon: 'download', variant: 'primary' },
+              { id: 'export-pdf', label: 'تصدير PDF', icon: 'picture_as_pdf', variant: 'secondary' },
               { id: 'new-presentation', label: 'عرض آخر', icon: 'add', variant: 'secondary' },
             ],
           }
@@ -655,6 +674,11 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
       doSend('طابق الصورة كتقرير');
     } else if (action.id === 'match-spreadsheet') {
       doSend('طابق الصورة كجدول');
+    } else if (action.id === 'export-pptx') {
+      // TODO: trigger PPTX export via trpc.ai.exportPresentation
+      doSend('تصدير العرض كـ PPTX');
+    } else if (action.id === 'export-pdf') {
+      doSend('تصدير العرض كـ PDF');
     } else {
       doSend(action.label);
     }
@@ -959,6 +983,131 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           </div>
         )}
       </div>
+
+      {/* ═══ Slide Viewer & Editor ═══ */}
+      {showSlideViewer && slideHtmls.length > 0 && (
+        <div className="px-2 md:px-4 pb-2">
+          <div className="rounded-2xl border border-border/40 bg-card overflow-hidden shadow-lg">
+            {/* Toolbar */}
+            <div className="flex items-center justify-between px-3 py-2 border-b border-border/30 bg-muted/30">
+              <div className="flex items-center gap-2">
+                <MaterialIcon icon="slideshow" size={16} className="text-primary" />
+                <span className="text-[12px] font-bold text-foreground">عرض تقديمي — {generatedSlides.length} شريحة</span>
+              </div>
+              <div className="flex items-center gap-1">
+                {/* Theme switcher */}
+                <select
+                  value={slideThemeId}
+                  onChange={(e) => {
+                    setSlideThemeId(e.target.value);
+                    setSlideHtmls(generateHtmlPresentation(generatedSlides, e.target.value));
+                  }}
+                  className="text-[10px] bg-card border border-border rounded-lg px-2 py-1 outline-none"
+                >
+                  {Object.entries(THEMES).map(([id, t]) => (
+                    <option key={id} value={id}>{t.name}</option>
+                  ))}
+                </select>
+                <button onClick={() => setShowSlideViewer(false)} className="w-7 h-7 rounded-lg hover:bg-accent flex items-center justify-center">
+                  <MaterialIcon icon="close" size={14} className="text-muted-foreground" />
+                </button>
+              </div>
+            </div>
+
+            {/* Slide preview */}
+            <div className="relative bg-neutral-900 flex items-center justify-center" style={{ minHeight: 320 }}>
+              <iframe
+                srcDoc={slideHtmls[currentSlideIndex] || ''}
+                className="border-0 shadow-2xl"
+                style={{ width: 640, height: 360, borderRadius: 8, background: '#fff' }}
+                title={`شريحة ${currentSlideIndex + 1}`}
+              />
+              {/* Nav arrows */}
+              {currentSlideIndex > 0 && (
+                <button onClick={() => setCurrentSlideIndex(i => i - 1)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 shadow-lg flex items-center justify-center hover:bg-white transition-all active:scale-90">
+                  <MaterialIcon icon="chevron_right" size={20} className="text-neutral-700" />
+                </button>
+              )}
+              {currentSlideIndex < slideHtmls.length - 1 && (
+                <button onClick={() => setCurrentSlideIndex(i => i + 1)}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 shadow-lg flex items-center justify-center hover:bg-white transition-all active:scale-90">
+                  <MaterialIcon icon="chevron_left" size={20} className="text-neutral-700" />
+                </button>
+              )}
+              {/* Slide number */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/60 text-white text-[11px] font-bold">
+                {currentSlideIndex + 1} / {slideHtmls.length}
+              </div>
+            </div>
+
+            {/* Slide thumbnails */}
+            <div className="flex gap-1.5 p-2 overflow-x-auto bg-muted/20 border-t border-border/30">
+              {slideHtmls.map((_, i) => (
+                <button key={i} onClick={() => { setCurrentSlideIndex(i); setEditingSlide(null); }}
+                  className={`shrink-0 rounded-lg overflow-hidden border-2 transition-all ${i === currentSlideIndex ? 'border-primary shadow-md scale-105' : 'border-transparent opacity-70 hover:opacity-100'}`}>
+                  <iframe srcDoc={slideHtmls[i]} style={{ width: 120, height: 67.5, pointerEvents: 'none' }} title={`thumb-${i}`} className="border-0" />
+                </button>
+              ))}
+            </div>
+
+            {/* Edit panel for current slide */}
+            <div className="border-t border-border/30 p-3 bg-card">
+              {editingSlide === currentSlideIndex ? (
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-foreground">تعديل الشريحة {currentSlideIndex + 1}</span>
+                    <button onClick={() => {
+                      // Apply edit and regenerate HTML
+                      const updated = [...generatedSlides];
+                      if (editField.field === 'title') updated[currentSlideIndex] = { ...updated[currentSlideIndex], title: editField.value };
+                      else if (editField.field === 'content') updated[currentSlideIndex] = { ...updated[currentSlideIndex], content: editField.value };
+                      else if (editField.field === 'subtitle') updated[currentSlideIndex] = { ...updated[currentSlideIndex], subtitle: editField.value };
+                      setGeneratedSlides(updated);
+                      setSlideHtmls(generateHtmlPresentation(updated, slideThemeId));
+                      setEditingSlide(null);
+                    }} className="px-3 py-1.5 rounded-lg bg-primary text-white text-[10px] font-bold hover:bg-primary/90 transition-all active:scale-95">
+                      حفظ التعديل
+                    </button>
+                  </div>
+                  <div className="flex gap-1.5">
+                    {['title', 'subtitle', 'content'].map(f => (
+                      <button key={f} onClick={() => {
+                        const slide = generatedSlides[currentSlideIndex];
+                        setEditField({ field: f, value: (slide as any)?.[f] || '' });
+                      }} className={`px-2.5 py-1 rounded-lg text-[10px] font-medium border transition-all ${editField.field === f ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:border-primary/30'}`}>
+                        {f === 'title' ? 'العنوان' : f === 'subtitle' ? 'العنوان الفرعي' : 'المحتوى'}
+                      </button>
+                    ))}
+                  </div>
+                  <textarea
+                    value={editField.value}
+                    onChange={e => setEditField(prev => ({ ...prev, value: e.target.value }))}
+                    rows={3}
+                    className="w-full text-[12px] bg-muted/30 border border-border rounded-lg px-3 py-2 outline-none focus:border-primary/40 resize-none"
+                    placeholder="اكتب التعديل..."
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-[12px] font-bold text-foreground">{generatedSlides[currentSlideIndex]?.title}</span>
+                    <span className="text-[10px] text-muted-foreground mr-2">— {generatedSlides[currentSlideIndex]?.layout}</span>
+                  </div>
+                  <button onClick={() => {
+                    setEditingSlide(currentSlideIndex);
+                    const slide = generatedSlides[currentSlideIndex];
+                    setEditField({ field: 'title', value: slide?.title || '' });
+                  }} className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-border hover:border-primary/30 hover:bg-primary/[0.03] text-[10px] font-medium transition-all active:scale-95">
+                    <MaterialIcon icon="edit" size={13} className="text-primary" />
+                    تعديل
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ═══ Professional Creation Wizard ═══ */}
       {pendingIntent && (
