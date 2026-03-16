@@ -3,7 +3,7 @@
  * دوال إحصائية متقدمة: CHISQ.TEST, F.TEST, T.TEST, Z.TEST, NORM.DIST, etc.
  */
 
-import type { FormulaFunction, FormulaValue } from '../../types/formula.types.js';
+import type { FormulaFunction, FormulaValue } from '../../types/formula.types';
 
 // ─── Statistical Helpers (pure math, no external deps) ────────────────────────
 

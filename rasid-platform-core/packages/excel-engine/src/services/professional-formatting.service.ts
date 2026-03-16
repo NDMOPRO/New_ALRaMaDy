@@ -1,6 +1,6 @@
 import { Prisma } from './prisma-adapter';
-import { logger } from '../utils/logger.js';
-import { getThemeConfig, getAllThemes } from '../utils/theme-presets.js';
+import { logger } from '../utils/logger';
+import { getThemeConfig, getAllThemes } from '../utils/theme-presets';
 import type {
   ProfessionalFormatOptions,
   ThemePreset,
@@ -11,7 +11,7 @@ import type {
   ConditionalFormatRule,
   DesignConstraints,
   DesignValidationResult,
-} from '../types/formatting.types.js';
+} from '../types/formatting.types';
 
 // ── Font preset definitions ─────────────────────────────────────────────────
 const FONT_PRESETS: Record<string, { headerFont: string; bodyFont: string; headerSize: number; bodySize: number }> = {

@@ -1,15 +1,15 @@
-import { formulaRegistry } from '../../utils/formula-registry.js';
-import { mathTrigFunctions } from './math-trig.functions.js';
-import { statisticalFunctions } from './statistical.functions.js';
-import { statisticalAdvancedFunctions } from './statistical-advanced.functions.js';
-import { lookupReferenceFunctions } from './lookup-reference.functions.js';
-import { textFunctions } from './text.functions.js';
-import { dateTimeFunctions } from './date-time.functions.js';
-import { logicalFunctions } from './logical.functions.js';
-import { financialFunctions } from './financial.functions.js';
-import { informationFunctions } from './information.functions.js';
-import { dynamicArrayFunctions } from './dynamic-array.functions.js';
-import { databaseFunctions } from './database.functions.js';
+import { formulaRegistry } from '../../utils/formula-registry';
+import { mathTrigFunctions } from './math-trig.functions';
+import { statisticalFunctions } from './statistical.functions';
+import { statisticalAdvancedFunctions } from './statistical-advanced.functions';
+import { lookupReferenceFunctions } from './lookup-reference.functions';
+import { textFunctions } from './text.functions';
+import { dateTimeFunctions } from './date-time.functions';
+import { logicalFunctions } from './logical.functions';
+import { financialFunctions } from './financial.functions';
+import { informationFunctions } from './information.functions';
+import { dynamicArrayFunctions } from './dynamic-array.functions';
+import { databaseFunctions } from './database.functions';
 
 /**
  * Register all formula functions in the global registry.

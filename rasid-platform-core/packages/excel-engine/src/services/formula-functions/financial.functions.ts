@@ -1,4 +1,4 @@
-import type { FormulaFunction, FormulaValue, FormulaContext } from '../../types/formula.types.js';
+import type { FormulaFunction, FormulaValue, FormulaContext } from '../../types/formula.types';
 import Decimal from 'decimal.js';
 
 // ---------------------------------------------------------------------------

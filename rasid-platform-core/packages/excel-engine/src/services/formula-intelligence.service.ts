@@ -1,10 +1,10 @@
-import { logger } from '../utils/logger.js';
+import { logger } from '../utils/logger';
 import type {
   FormulaOptimization,
   FormulaAuditResult,
   FormulaIssue,
   BusinessLogicModel,
-} from '../types/formula.types.js';
+} from '../types/formula.types';
 
 export class FormulaIntelligenceService {
   /**

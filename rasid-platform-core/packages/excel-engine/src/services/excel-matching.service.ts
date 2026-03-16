@@ -1,5 +1,5 @@
 import { Prisma } from './prisma-adapter';
-import { logger } from '../utils/logger.js';
+import { logger } from '../utils/logger';
 import type {
   ExcelDimensions,
   ExcelStructure,
@@ -8,7 +8,7 @@ import type {
   FuzzyMatchResult,
   DeduplicationResult,
   ReplicationResult,
-} from '../types/matching.types.js';
+} from '../types/matching.types';
 
 interface WorkbookRecord {
   id: string;

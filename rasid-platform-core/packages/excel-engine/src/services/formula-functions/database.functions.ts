@@ -3,7 +3,7 @@
  * دوال قاعدة البيانات: DSUM, DAVERAGE, DCOUNT, DCOUNTA, DMAX, DMIN, DGET, DSTDEV
  */
 
-import type { FormulaFunction, FormulaValue, FormulaContext } from '../../types/formula.types.js';
+import type { FormulaFunction, FormulaValue, FormulaContext } from '../../types/formula.types';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

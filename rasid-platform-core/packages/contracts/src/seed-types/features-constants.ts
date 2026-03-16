@@ -5,7 +5,7 @@
  * Total: 5,412 features across 13 engines.
  */
 
-import { Engine } from '../types/engine-types';
+import { Engine } from './engine-types';
 
 // ---------------------------------------------------------------------------
 // Feature range per engine

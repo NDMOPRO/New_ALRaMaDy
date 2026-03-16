@@ -1,10 +1,10 @@
 import { Router, type Request, type Response } from 'express';
 import { z } from 'zod';
-import { RuntimeRegistryService } from '../services/runtime-registry.service.js';
+import { RuntimeRegistryService } from '../services/runtime-registry.service';
 import {
   RuntimeEvidenceService,
   RuntimeEvidenceServiceError,
-} from '../services/runtime-evidence.service.js';
+} from '../services/runtime-evidence.service';
 
 const router = Router();
 const registry = new RuntimeRegistryService();

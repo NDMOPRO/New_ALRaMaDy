@@ -1,4 +1,4 @@
-import type { FormulaFunction, FormulaCategory } from '../types/formula.types.js';
+import type { FormulaFunction, FormulaCategory } from '../types/formula.types';
 
 class FormulaRegistry {
   private functions = new Map<string, FormulaFunction>();

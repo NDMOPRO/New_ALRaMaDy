@@ -6,7 +6,7 @@ import ExcelJS from 'exceljs';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import { create, all } from 'mathjs';
-import { EXCEL_TOOL_DEFINITIONS, validateExcelToolContract } from './excel-tool-contracts.js';
+import { EXCEL_TOOL_DEFINITIONS, validateExcelToolContract } from './excel-tool-contracts';
 
 const math = create(all, {});
 
