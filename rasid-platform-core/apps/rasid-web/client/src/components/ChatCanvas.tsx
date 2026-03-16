@@ -141,14 +141,20 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
     if (/حول.*pdf|pdf.*عرض|pdf.*تقرير|pdf.*شرائح|convert.*pdf|استخرج.*pdf/i.test(t))
       return { intent: 'replicate-pdf', topic: t };
     // Presentation / عرض
-    if (/عرض|شرائح|سلايد|بريزنتيشن|presentation|slides|pptx/i.test(t))
-      return { intent: 'presentation', topic: t.replace(/أنشئ|نفذ|اعمل|سوي|سو|اصنع|صمم|جهز|حضر|لي|عرض تقديمي|عرض|عن|بعنوان|حول|يتكلم|يتحدث/gi, '').trim() || t };
+    if (/عرض|شرائح|سلايد|بريزنتيشن|presentation|slides|pptx/i.test(t)) {
+      const cleaned = t.replace(/أنشئ|نفذ|اعمل|سوي|سو|اصنع|صمم|جهز|حضر|ابني|لي|عرض تقديمي|عرض|شرائح|عن|بعنوان|حول|يتكلم|يتحدث|تقديمي/gi, '').trim();
+      return { intent: 'presentation', topic: cleaned };
+    }
     // Report / تقرير
-    if (/تقرير|تقارير|ريبورت|report/i.test(t))
-      return { intent: 'report', topic: t.replace(/أنشئ|نفذ|اعمل|سوي|سو|اصنع|صمم|جهز|حضر|لي|تقرير|عن|بعنوان|حول/gi, '').trim() || t };
+    if (/تقرير|تقارير|ريبورت|report/i.test(t)) {
+      const cleaned = t.replace(/أنشئ|نفذ|اعمل|سوي|سو|اصنع|صمم|جهز|حضر|ابني|لي|تقرير|تقارير|عن|بعنوان|حول/gi, '').trim();
+      return { intent: 'report', topic: cleaned };
+    }
     // Dashboard / لوحة
-    if (/لوحة|داشبورد|مؤشر|مؤشرات|dashboard|kpi|احصائ/i.test(t))
-      return { intent: 'dashboard', topic: t.replace(/أنشئ|نفذ|اعمل|سوي|سو|اصنع|صمم|جهز|حضر|لي|لوحة مؤشرات|لوحة|عن|بعنوان|حول/gi, '').trim() || t };
+    if (/لوحة|داشبورد|مؤشر|مؤشرات|dashboard|kpi|احصائ/i.test(t)) {
+      const cleaned = t.replace(/أنشئ|نفذ|اعمل|سوي|سو|اصنع|صمم|جهز|حضر|ابني|لي|لوحة مؤشرات|لوحة|مؤشرات|داشبورد|عن|بعنوان|حول/gi, '').trim();
+      return { intent: 'dashboard', topic: cleaned };
+    }
     // Translation / ترجمة
     if (/ترجم|ترجمة|translate/i.test(t))
       return { intent: 'translate', topic: t };
