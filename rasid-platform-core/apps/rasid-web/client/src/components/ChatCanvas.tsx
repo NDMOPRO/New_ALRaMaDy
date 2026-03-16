@@ -12,6 +12,7 @@ import MaterialIcon from './MaterialIcon';
 import { CHARACTERS, QUICK_ACTIONS } from '@/lib/assets';
 import { useTheme } from '@/contexts/ThemeContext';
 import { generateHtmlPresentation, THEMES, type SlideData } from '@/lib/slideTemplates';
+import { exportToPptx, exportToPdf } from '@/lib/exportUtils';
 
 interface ChatMessage {
   id: string;
@@ -94,7 +95,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
   // AI mutations via tRPC
   const chatMutation = trpc.ai.chat.useMutation();
-  const generateSlidesMutation = trpc.ai.generateSlides.useMutation();
+  const generateSlidesMutation = trpc.ai.generatePresentation.useMutation();
   const generateReportMutation = trpc.ai.generateReport.useMutation();
   const analyzeDashboardMutation = trpc.ai.analyzeDashboard.useMutation();
   const translateMutation = trpc.ai.translate.useMutation();
@@ -269,10 +270,20 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           ],
         });
 
+        // Use wizard options if available, otherwise defaults
+        const wizardBrand = pendingIntent?.brandId || 'ndmo';
+        const wizardCount = pendingIntent?.slideCount || 8;
+        const wizardLang = pendingIntent?.language || 'ar';
+        const wizardSource = (pendingIntent?.contentSource || 'ai') as 'ai' | 'user' | 'library' | 'file';
+        // Map brandId: 'creative' -> 'custom' for API compatibility
+        const apiBrand = (wizardBrand === 'creative' ? 'custom' : wizardBrand) as 'ndmo' | 'sdaia' | 'modern' | 'minimal' | 'custom';
+
         const slidesResult = await generateSlidesMutation.mutateAsync({
-          prompt: topic || userText,
-          slideCount: 8,
-          style: 'professional',
+          topic: topic || userText,
+          slideCount: wizardCount,
+          brandId: apiBrand,
+          language: wizardLang,
+          contentSource: wizardSource,
         });
 
         const slides = slidesResult.slides || [];
@@ -309,6 +320,8 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             actions: [
               { id: 'export-pptx', label: 'تصدير PPTX', icon: 'download', variant: 'primary' },
               { id: 'export-pdf', label: 'تصدير PDF', icon: 'picture_as_pdf', variant: 'secondary' },
+              { id: 'save-library', label: 'حفظ في المكتبة', icon: 'bookmark', variant: 'success' },
+              { id: 'save-template', label: 'حفظ كقالب', icon: 'style', variant: 'secondary' },
               { id: 'new-presentation', label: 'عرض آخر', icon: 'add', variant: 'secondary' },
             ],
           }
@@ -684,14 +697,40 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
     } else if (action.id === 'match-spreadsheet') {
       doSend('طابق الصورة كجدول');
     } else if (action.id === 'export-pptx') {
-      // TODO: trigger PPTX export via trpc.ai.exportPresentation
-      doSend('تصدير العرض كـ PPTX');
+      if (generatedSlides.length > 0) {
+        toast.promise(
+          exportToPptx(generatedSlides, slideThemeId, generatedSlides[0]?.title || 'عرض راصد'),
+          { loading: 'جاري تصدير PPTX...', success: 'تم تصدير العرض بنجاح!', error: 'فشل في التصدير' }
+        );
+      } else {
+        toast.error('لا يوجد عرض لتصديره');
+      }
     } else if (action.id === 'export-pdf') {
-      doSend('تصدير العرض كـ PDF');
+      if (slideHtmls.length > 0) {
+        toast.promise(
+          exportToPdf(slideHtmls, generatedSlides[0]?.title || 'عرض راصد'),
+          { loading: 'جاري تصدير PDF...', success: 'تم تصدير PDF بنجاح!', error: 'فشل في التصدير' }
+        );
+      } else {
+        toast.error('لا يوجد عرض لتصديره');
+      }
+    } else if (action.id === 'save-library') {
+      if (generatedSlides.length > 0) {
+        toast.promise(
+          createPresentation.mutateAsync({
+            title: generatedSlides[0]?.title || 'عرض تقديمي',
+            slides: generatedSlides,
+            theme: slideThemeId,
+          }),
+          { loading: 'جاري الحفظ...', success: 'تم حفظ العرض في المكتبة!', error: 'فشل في الحفظ' }
+        );
+      }
+    } else if (action.id === 'save-template') {
+      toast.info('سيتم حفظ العرض كقالب قريباً');
     } else {
       doSend(action.label);
     }
-  }, [doSend]);
+  }, [doSend, generatedSlides, slideHtmls, slideThemeId, createPresentation]);
 
   // Handle new conversation
   const handleNewConversation = useCallback(() => {

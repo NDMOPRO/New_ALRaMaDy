@@ -44,10 +44,22 @@ class WebSocketManager {
   private clientIdCounter = 0;
 
   /**
-   * Initialize WebSocket server attached to the HTTP server
+   * Initialize WebSocket server attached to the HTTP server.
+   * Uses noServer mode to avoid conflicts with Vite HMR WebSocket.
    */
   init(server: Server): void {
-    this.wss = new WebSocketServer({ server, path: "/ws" });
+    this.wss = new WebSocketServer({ noServer: true });
+
+    // Handle upgrade manually — only for /ws path, let Vite HMR handle the rest
+    server.on("upgrade", (request, socket, head) => {
+      const pathname = new URL(request.url || "/", `http://${request.headers.host}`).pathname;
+      if (pathname === "/ws" && this.wss) {
+        this.wss.handleUpgrade(request, socket, head, (ws) => {
+          this.wss!.emit("connection", ws, request);
+        });
+      }
+      // If not /ws, do nothing — let Vite HMR or other handlers deal with it
+    });
 
     this.wss.on("connection", (ws, req) => {
       const clientId = `client-${++this.clientIdCounter}`;
