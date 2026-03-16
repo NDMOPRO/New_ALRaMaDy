@@ -614,12 +614,15 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
   const handleFileUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const formData = new FormData();
-    formData.append('file', file);
     try {
-      const res = await fetch('/api/upload/single', { method: 'POST', body: formData, credentials: 'include' });
-      const data = await res.json();
-      const fileUrl = data.url || data.path || `/uploads/${file.name}`;
+      // Convert to base64 data URI — works on Railway without local file storage
+      const toBase64 = (f: File): Promise<string> => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(f);
+      });
+      const fileUrl = await toBase64(file);
       setUploadedFile({ url: fileUrl, name: file.name, type: file.type });
       const isPdf = file.name.toLowerCase().endsWith('.pdf');
       addAssistantMessage(
