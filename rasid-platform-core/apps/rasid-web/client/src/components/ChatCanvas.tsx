@@ -41,59 +41,50 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
   const [dragOver, setDragOver] = useState(false);
   const [dropSnap, setDropSnap] = useState(false);
 
-  // Pending intent — inline wizard above input (like Claude's follow-up chips)
+  // Pending intent — inline wizard above input (like Gamma.app creation wizard)
   const [pendingIntent, setPendingIntent] = useState<{
     type: 'presentation' | 'report' | 'dashboard';
-    step: number; // 0=topic, 1=source, 2=count, 3=brand, 4=language
+    step: number;
     topic: string;
-    contentSource: 'ai' | 'user';
+    style: string; // 'professional' | 'infographic' | 'executive' | 'creative' | 'minimal' | 'data-heavy'
+    contentSource: string; // 'ai' | 'user' | 'library'
     slideCount: number;
     brandId: string;
     language: string;
+    imageStyle: string; // 'none' | 'ai-generated' | 'icons-only' | 'photos'
+    colorScheme: string; // hex primary color or preset name
+    fontFamily: string;
+    templateId: string;
   } | null>(null);
 
-  // Handle pending intent chip selection
+  // Handle pending intent chip selection (multi-step wizard)
   const handleIntentChip = useCallback((value: string) => {
     if (!pendingIntent) return;
     const pi = { ...pendingIntent };
 
-    if (pi.step === 0) {
-      // Topic selected
-      pi.topic = value;
-      pi.step = 1;
-      setPendingIntent(pi);
-    } else if (pi.step === 1) {
-      // Content source selected
-      pi.contentSource = value as 'ai' | 'user';
-      pi.step = 2;
-      setPendingIntent(pi);
-    } else if (pi.step === 2) {
-      // Slide/section count selected
-      pi.slideCount = parseInt(value) || 8;
-      pi.step = 3;
-      setPendingIntent(pi);
-    } else if (pi.step === 3) {
-      // Brand selected
-      pi.brandId = value;
-      pi.step = 4;
-      setPendingIntent(pi);
-    } else if (pi.step === 4) {
-      // Language selected — EXECUTE!
-      pi.language = value;
+    if (pi.step === 0) { pi.topic = value; pi.step = 1; }
+    else if (pi.step === 1) { pi.style = value; pi.step = 2; }
+    else if (pi.step === 2) { pi.contentSource = value; pi.step = 3; }
+    else if (pi.step === 3) { pi.slideCount = parseInt(value) || 8; pi.step = 4; }
+    else if (pi.step === 4) { pi.brandId = value; pi.step = 5; }
+    else if (pi.step === 5) { pi.imageStyle = value; pi.step = 6; }
+    else if (pi.step === 6) { pi.language = value; pi.step = 7; }
+    else if (pi.step === 7) {
+      // EXECUTE
       setPendingIntent(null);
-      // Build the full command and send
       const typeLabel = pi.type === 'presentation' ? 'عرض' : pi.type === 'report' ? 'تقرير' : 'لوحة مؤشرات';
       doSend(`أنشئ ${typeLabel} عن ${pi.topic}`);
+      return;
     }
+    setPendingIntent(pi);
   }, [pendingIntent, doSend]);
 
   // Handle typing topic in pending intent mode
   const handleIntentTopicSubmit = useCallback(() => {
     if (!pendingIntent || !input.trim()) return;
-    const pi = { ...pendingIntent, topic: input.trim(), step: 1 };
-    setPendingIntent(pi);
+    handleIntentChip(input.trim());
     setInput('');
-  }, [pendingIntent, input]);
+  }, [pendingIntent, input, handleIntentChip]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatMenuRef = useRef<HTMLDivElement>(null);
 
@@ -252,8 +243,8 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
         if (!topic || topic.length < 3) {
           setIsTyping(false);
           setPendingIntent({
-            type: 'presentation', step: 0, topic: '', contentSource: 'ai',
-            slideCount: 8, brandId: 'ndmo', language: 'ar',
+            type: 'presentation', step: 0, topic: '', style: 'professional', contentSource: 'ai',
+            slideCount: 8, brandId: 'ndmo', language: 'ar', imageStyle: 'icons-only', colorScheme: '', fontFamily: '', templateId: '',
           });
           return;
         }
@@ -308,8 +299,8 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
         if (!topic || topic.length < 3) {
           setIsTyping(false);
           setPendingIntent({
-            type: 'report', step: 0, topic: '', contentSource: 'ai',
-            slideCount: 8, brandId: 'ndmo', language: 'ar',
+            type: 'report', step: 0, topic: '', style: 'professional', contentSource: 'ai',
+            slideCount: 8, brandId: 'ndmo', language: 'ar', imageStyle: 'none', colorScheme: '', fontFamily: '', templateId: '',
           });
           return;
         }
@@ -363,8 +354,8 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
         if (!topic || topic.length < 3) {
           setIsTyping(false);
           setPendingIntent({
-            type: 'dashboard', step: 0, topic: '', contentSource: 'ai',
-            slideCount: 8, brandId: 'ndmo', language: 'ar',
+            type: 'dashboard', step: 0, topic: '', style: 'data-heavy', contentSource: 'ai',
+            slideCount: 8, brandId: 'ndmo', language: 'ar', imageStyle: 'none', colorScheme: '', fontFamily: '', templateId: '',
           });
           return;
         }
@@ -969,118 +960,193 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
         )}
       </div>
 
-      {/* ═══ Inline Wizard Chips (above input) ═══ */}
+      {/* ═══ Professional Creation Wizard ═══ */}
       {pendingIntent && (
         <div className="px-2.5 md:px-4 pb-1 animate-slide-up">
-          <div className="rounded-xl border border-primary/20 bg-primary/[0.03] p-3 flex flex-col gap-2.5">
-            {/* Step indicator */}
-            <div className="flex items-center gap-2">
-              <div className="flex gap-1">
-                {[0,1,2,3,4].map(s => (
-                  <div key={s} className={`w-1.5 h-1.5 rounded-full transition-all ${s <= pendingIntent.step ? 'bg-primary scale-110' : 'bg-border'}`} />
-                ))}
+          <div className="rounded-2xl border border-primary/15 bg-gradient-to-b from-primary/[0.02] to-transparent p-3 sm:p-4 flex flex-col gap-3 shadow-sm">
+            {/* Header with steps + close */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <MaterialIcon icon={pendingIntent.type === 'presentation' ? 'slideshow' : pendingIntent.type === 'report' ? 'description' : 'dashboard'} size={16} className="text-primary" />
+                </div>
+                <div>
+                  <span className="text-[12px] font-bold text-foreground">
+                    {pendingIntent.type === 'presentation' ? 'عرض تقديمي جديد' : pendingIntent.type === 'report' ? 'تقرير جديد' : 'لوحة مؤشرات جديدة'}
+                  </span>
+                  <div className="flex gap-0.5 mt-0.5">
+                    {[0,1,2,3,4,5,6,7].map(s => (
+                      <div key={s} className={`h-[3px] rounded-full transition-all duration-300 ${s < pendingIntent.step ? 'w-4 bg-primary' : s === pendingIntent.step ? 'w-6 bg-primary animate-pulse' : 'w-2 bg-border'}`} />
+                    ))}
+                  </div>
+                </div>
               </div>
-              <span className="text-[10px] text-muted-foreground">
-                {pendingIntent.step === 0 ? 'الموضوع' : pendingIntent.step === 1 ? 'مصدر المحتوى' : pendingIntent.step === 2 ? (pendingIntent.type === 'presentation' ? 'عدد الشرائح' : 'عدد الأقسام') : pendingIntent.step === 3 ? 'الهوية البصرية' : 'اللغة'}
-              </span>
-              <button onClick={() => setPendingIntent(null)} className="mr-auto text-muted-foreground hover:text-foreground transition-colors">
-                <MaterialIcon icon="close" size={14} />
+              <button onClick={() => setPendingIntent(null)} className="w-7 h-7 rounded-lg hover:bg-accent flex items-center justify-center transition-colors">
+                <MaterialIcon icon="close" size={16} className="text-muted-foreground" />
               </button>
             </div>
 
-            {/* Step 0: Topic — text input (no suggestions) */}
+            {/* Step 0: Topic */}
             {pendingIntent.step === 0 && (
-              <div className="flex flex-col gap-1.5">
-                <span className="text-[12px] font-semibold text-foreground">ما موضوع {pendingIntent.type === 'presentation' ? 'العرض' : pendingIntent.type === 'report' ? 'التقرير' : 'لوحة المؤشرات'}؟</span>
-                <div className="flex gap-1.5">
+              <div className="flex flex-col gap-2">
+                <span className="text-[13px] font-semibold text-foreground">ما الموضوع؟</span>
+                <div className="flex gap-2">
                   <input
                     autoFocus
                     value={input}
                     onChange={e => setInput(e.target.value)}
-                    onKeyDown={e => { if (e.key === 'Enter' && input.trim()) { handleIntentTopicSubmit(); } }}
-                    placeholder="اكتب الموضوع هنا..."
-                    className="flex-1 text-[12px] bg-card border border-border rounded-lg px-3 py-2 outline-none focus:border-primary/40 transition-colors"
+                    onKeyDown={e => { if (e.key === 'Enter' && input.trim()) handleIntentTopicSubmit(); }}
+                    placeholder="اكتب موضوع العرض..."
+                    className="flex-1 text-[13px] bg-card border border-border/60 rounded-xl px-3.5 py-2.5 outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/10 transition-all"
                   />
-                  <button
-                    onClick={handleIntentTopicSubmit}
-                    disabled={!input.trim()}
-                    className="px-3 py-2 rounded-lg bg-primary text-white text-[11px] font-bold disabled:opacity-40 hover:bg-primary/90 transition-all active:scale-95"
-                  >
-                    التالي
+                  <button onClick={handleIntentTopicSubmit} disabled={!input.trim()}
+                    className="px-4 py-2.5 rounded-xl bg-primary text-white text-[12px] font-bold disabled:opacity-30 hover:bg-primary/90 transition-all active:scale-95 shadow-sm">
+                    التالي <MaterialIcon icon="arrow_back" size={14} className="inline-block mr-1" />
                   </button>
                 </div>
               </div>
             )}
 
-            {/* Step 1: Content source */}
+            {/* Step 1: Style */}
             {pendingIntent.step === 1 && (
-              <div className="flex flex-col gap-1.5">
-                <span className="text-[12px] font-semibold text-foreground">مصدر المحتوى</span>
-                <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-col gap-2">
+                <span className="text-[13px] font-semibold text-foreground">نمط العرض</span>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                   {[
-                    { id: 'ai', label: 'توليد بالذكاء الاصطناعي', icon: 'auto_awesome' },
-                    { id: 'user', label: 'لدي محتوى جاهز', icon: 'edit_note' },
-                  ].map(opt => (
-                    <button key={opt.id} onClick={() => handleIntentChip(opt.id)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-card hover:border-primary/30 hover:bg-primary/[0.04] text-[11px] font-medium transition-all active:scale-95">
-                      <MaterialIcon icon={opt.icon} size={15} className="text-primary" />
-                      {opt.label}
+                    { id: 'professional', label: 'احترافي', desc: 'رسمي ومتزن', icon: 'business_center' },
+                    { id: 'infographic', label: 'إنفوجرافيك', desc: 'بصري وغني', icon: 'palette' },
+                    { id: 'executive', label: 'قيادي', desc: 'للقيادات العليا', icon: 'military_tech' },
+                    { id: 'creative', label: 'إبداعي', desc: 'جريء ومبتكر', icon: 'auto_awesome' },
+                    { id: 'minimal', label: 'بسيط', desc: 'نظيف ومركّز', icon: 'crop_square' },
+                    { id: 'data-heavy', label: 'تحليلي', desc: 'كثيف بالبيانات', icon: 'analytics' },
+                  ].map(s => (
+                    <button key={s.id} onClick={() => handleIntentChip(s.id)}
+                      className="flex items-start gap-2 p-2.5 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] transition-all active:scale-[0.97] text-right">
+                      <div className="w-8 h-8 rounded-lg bg-primary/8 flex items-center justify-center shrink-0 mt-0.5">
+                        <MaterialIcon icon={s.icon} size={16} className="text-primary" />
+                      </div>
+                      <div>
+                        <div className="text-[11px] font-bold text-foreground">{s.label}</div>
+                        <div className="text-[9px] text-muted-foreground">{s.desc}</div>
+                      </div>
                     </button>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Step 2: Slide/section count */}
+            {/* Step 2: Content Source */}
             {pendingIntent.step === 2 && (
-              <div className="flex flex-col gap-1.5">
-                <span className="text-[12px] font-semibold text-foreground">{pendingIntent.type === 'presentation' ? 'عدد الشرائح' : 'عدد الأقسام'}</span>
-                <div className="flex flex-wrap gap-1.5">
-                  {['5', '8', '10', '12', '15', '20'].map(n => (
-                    <button key={n} onClick={() => handleIntentChip(n)}
-                      className="px-3 py-2 rounded-lg border border-border bg-card hover:border-primary/30 hover:bg-primary/[0.04] text-[12px] font-bold transition-all active:scale-95 min-w-[44px]">
-                      {n}
+              <div className="flex flex-col gap-2">
+                <span className="text-[13px] font-semibold text-foreground">مصدر المحتوى</span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+                  {[
+                    { id: 'ai', label: 'الذكاء الاصطناعي', desc: 'يولّد المحتوى تلقائيًا', icon: 'smart_toy' },
+                    { id: 'user', label: 'محتوى خاص', desc: 'ألصق أو اكتب محتواك', icon: 'edit_note' },
+                    { id: 'library', label: 'من المكتبة', desc: 'اختر من القوالب الجاهزة', icon: 'folder_open' },
+                  ].map(s => (
+                    <button key={s.id} onClick={() => handleIntentChip(s.id)}
+                      className="flex items-center gap-2.5 p-3 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] transition-all active:scale-[0.97]">
+                      <div className="w-9 h-9 rounded-lg bg-primary/8 flex items-center justify-center shrink-0">
+                        <MaterialIcon icon={s.icon} size={18} className="text-primary" />
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[12px] font-bold text-foreground">{s.label}</div>
+                        <div className="text-[10px] text-muted-foreground">{s.desc}</div>
+                      </div>
                     </button>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Step 3: Brand/identity */}
+            {/* Step 3: Count */}
             {pendingIntent.step === 3 && (
-              <div className="flex flex-col gap-1.5">
-                <span className="text-[12px] font-semibold text-foreground">الهوية البصرية</span>
+              <div className="flex flex-col gap-2">
+                <span className="text-[13px] font-semibold text-foreground">{pendingIntent.type === 'presentation' ? 'عدد الشرائح' : 'عدد الأقسام'}</span>
                 <div className="flex flex-wrap gap-1.5">
                   {[
-                    { id: 'ndmo', label: 'مكتب إدارة البيانات الوطنية', color: '#0f2744' },
-                    { id: 'sdaia', label: 'سدايا', color: '#1a73e8' },
-                    { id: 'modern', label: 'عصري احترافي', color: '#6366f1' },
-                    { id: 'minimal', label: 'بسيط ونظيف', color: '#1f2937' },
-                    { id: 'custom', label: 'مخصص', color: '#0CAB8F' },
+                    { n: '5', label: '5 — مختصر' },
+                    { n: '8', label: '8 — متوسط' },
+                    { n: '10', label: '10 — شامل' },
+                    { n: '12', label: '12 — مفصّل' },
+                    { n: '15', label: '15 — موسّع' },
+                    { n: '20', label: '20 — كامل' },
+                  ].map(c => (
+                    <button key={c.n} onClick={() => handleIntentChip(c.n)}
+                      className="px-3.5 py-2.5 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] text-[11px] font-bold transition-all active:scale-95">
+                      {c.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Brand */}
+            {pendingIntent.step === 4 && (
+              <div className="flex flex-col gap-2">
+                <span className="text-[13px] font-semibold text-foreground">الهوية البصرية</span>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                  {[
+                    { id: 'ndmo', label: 'NDMO', desc: 'مكتب إدارة البيانات', colors: ['#0f2744','#d4af37','#1a73e8'] },
+                    { id: 'sdaia', label: 'سدايا', desc: 'هيئة البيانات والذكاء', colors: ['#1a73e8','#374151','#0CAB8F'] },
+                    { id: 'modern', label: 'عصري', desc: 'تصميم حديث وأنيق', colors: ['#6366f1','#8b5cf6','#ec4899'] },
+                    { id: 'minimal', label: 'بسيط', desc: 'نظيف بدون زخرفة', colors: ['#1f2937','#6b7280','#3b82f6'] },
+                    { id: 'creative', label: 'إبداعي', desc: 'ألوان جريئة ومبتكرة', colors: ['#dc2626','#f59e0b','#10b981'] },
+                    { id: 'custom', label: 'مخصص', desc: 'اختر ألوانك', colors: ['#0f766e','#be185d','#7c3aed'] },
                   ].map(b => (
                     <button key={b.id} onClick={() => handleIntentChip(b.id)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-card hover:border-primary/30 hover:bg-primary/[0.04] text-[11px] font-medium transition-all active:scale-95">
-                      <div className="w-3 h-3 rounded-full shrink-0" style={{ background: b.color }} />
-                      {b.label}
+                      className="flex flex-col gap-1.5 p-2.5 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] transition-all active:scale-[0.97]">
+                      <div className="flex gap-1">
+                        {b.colors.map((c,i) => <div key={i} className="w-4 h-4 rounded-full" style={{background:c}} />)}
+                      </div>
+                      <div className="text-[11px] font-bold text-foreground">{b.label}</div>
+                      <div className="text-[9px] text-muted-foreground">{b.desc}</div>
                     </button>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Step 4: Language */}
-            {pendingIntent.step === 4 && (
-              <div className="flex flex-col gap-1.5">
-                <span className="text-[12px] font-semibold text-foreground">اللغة</span>
+            {/* Step 5: Image style */}
+            {pendingIntent.step === 5 && (
+              <div className="flex flex-col gap-2">
+                <span className="text-[13px] font-semibold text-foreground">أسلوب الصور</span>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {[
+                    { id: 'ai-generated', label: 'صور بالذكاء الاصطناعي', desc: 'Banana Pro / DALL-E', icon: 'auto_awesome' },
+                    { id: 'icons-only', label: 'أيقونات فقط', desc: 'Material Design Icons', icon: 'emoji_symbols' },
+                    { id: 'photos', label: 'صور واقعية', desc: 'Unsplash / Pexels', icon: 'photo_library' },
+                    { id: 'none', label: 'بدون صور', desc: 'نصوص وبيانات فقط', icon: 'text_fields' },
+                  ].map(s => (
+                    <button key={s.id} onClick={() => handleIntentChip(s.id)}
+                      className="flex items-center gap-2.5 p-3 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] transition-all active:scale-[0.97]">
+                      <div className="w-9 h-9 rounded-lg bg-primary/8 flex items-center justify-center shrink-0">
+                        <MaterialIcon icon={s.icon} size={18} className="text-primary" />
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[11px] font-bold text-foreground">{s.label}</div>
+                        <div className="text-[9px] text-muted-foreground">{s.desc}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Step 6: Language */}
+            {pendingIntent.step === 6 && (
+              <div className="flex flex-col gap-2">
+                <span className="text-[13px] font-semibold text-foreground">اللغة</span>
                 <div className="flex flex-wrap gap-1.5">
                   {[
-                    { id: 'ar', label: 'العربية', icon: '🇸🇦' },
-                    { id: 'en', label: 'English', icon: '🇺🇸' },
-                    { id: 'both', label: 'ثنائي اللغة', icon: '🌐' },
+                    { id: 'ar', label: 'العربية', flag: '\u{1F1F8}\u{1F1E6}' },
+                    { id: 'en', label: 'English', flag: '\u{1F1FA}\u{1F1F8}' },
+                    { id: 'both', label: 'ثنائي اللغة', flag: '\u{1F310}' },
                   ].map(l => (
                     <button key={l.id} onClick={() => handleIntentChip(l.id)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-card hover:border-primary/30 hover:bg-primary/[0.04] text-[11px] font-medium transition-all active:scale-95">
-                      <span>{l.icon}</span>
+                      className="flex items-center gap-2 px-4 py-3 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] text-[12px] font-bold transition-all active:scale-95">
+                      <span className="text-[16px]">{l.flag}</span>
                       {l.label}
                     </button>
                   ))}
@@ -1088,13 +1154,36 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
               </div>
             )}
 
-            {/* Summary of selections so far */}
-            {pendingIntent.step > 0 && (
-              <div className="flex flex-wrap gap-1 pt-0.5">
+            {/* Step 7: Confirm */}
+            {pendingIntent.step === 7 && (
+              <div className="flex flex-col gap-2.5">
+                <span className="text-[13px] font-semibold text-foreground">ملخص الطلب</span>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
+                  <span className="text-muted-foreground">الموضوع:</span><span className="font-bold text-foreground">{pendingIntent.topic}</span>
+                  <span className="text-muted-foreground">النمط:</span><span className="font-bold text-foreground">{{'professional':'احترافي','infographic':'إنفوجرافيك','executive':'قيادي','creative':'إبداعي','minimal':'بسيط','data-heavy':'تحليلي'}[pendingIntent.style] || pendingIntent.style}</span>
+                  <span className="text-muted-foreground">المحتوى:</span><span className="font-bold text-foreground">{{'ai':'ذكاء اصطناعي','user':'محتوى خاص','library':'من المكتبة'}[pendingIntent.contentSource] || pendingIntent.contentSource}</span>
+                  <span className="text-muted-foreground">العدد:</span><span className="font-bold text-foreground">{pendingIntent.slideCount} {pendingIntent.type === 'presentation' ? 'شريحة' : 'قسم'}</span>
+                  <span className="text-muted-foreground">الهوية:</span><span className="font-bold text-foreground">{{'ndmo':'NDMO','sdaia':'سدايا','modern':'عصري','minimal':'بسيط','creative':'إبداعي','custom':'مخصص'}[pendingIntent.brandId] || pendingIntent.brandId}</span>
+                  <span className="text-muted-foreground">الصور:</span><span className="font-bold text-foreground">{{'ai-generated':'ذكاء اصطناعي','icons-only':'أيقونات','photos':'واقعية','none':'بدون'}[pendingIntent.imageStyle] || pendingIntent.imageStyle}</span>
+                  <span className="text-muted-foreground">اللغة:</span><span className="font-bold text-foreground">{{'ar':'العربية','en':'English','both':'ثنائي'}[pendingIntent.language] || pendingIntent.language}</span>
+                </div>
+                <button onClick={() => handleIntentChip('execute')}
+                  className="w-full py-3 rounded-xl bg-primary text-white text-[13px] font-bold hover:bg-primary/90 transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-2">
+                  <MaterialIcon icon="rocket_launch" size={18} />
+                  ابدأ الإنشاء
+                </button>
+              </div>
+            )}
+
+            {/* Selections summary */}
+            {pendingIntent.step > 0 && pendingIntent.step < 7 && (
+              <div className="flex flex-wrap gap-1 pt-0.5 border-t border-border/20 mt-0.5 pt-1.5">
                 {pendingIntent.topic && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{pendingIntent.topic}</span>}
-                {pendingIntent.step > 1 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{pendingIntent.contentSource === 'ai' ? 'ذكاء اصطناعي' : 'محتوى جاهز'}</span>}
-                {pendingIntent.step > 2 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{pendingIntent.slideCount} {pendingIntent.type === 'presentation' ? 'شريحة' : 'قسم'}</span>}
-                {pendingIntent.step > 3 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'ndmo':'NDMO','sdaia':'سدايا','modern':'عصري','minimal':'بسيط','custom':'مخصص'}[pendingIntent.brandId]}</span>}
+                {pendingIntent.step > 1 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'professional':'احترافي','infographic':'إنفوجرافيك','executive':'قيادي','creative':'إبداعي','minimal':'بسيط','data-heavy':'تحليلي'}[pendingIntent.style]}</span>}
+                {pendingIntent.step > 2 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'ai':'AI','user':'محتوى خاص','library':'مكتبة'}[pendingIntent.contentSource]}</span>}
+                {pendingIntent.step > 3 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{pendingIntent.slideCount} شريحة</span>}
+                {pendingIntent.step > 4 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'ndmo':'NDMO','sdaia':'سدايا','modern':'عصري','minimal':'بسيط','creative':'إبداعي','custom':'مخصص'}[pendingIntent.brandId]}</span>}
+                {pendingIntent.step > 5 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'ai-generated':'صور AI','icons-only':'أيقونات','photos':'صور','none':'بدون'}[pendingIntent.imageStyle]}</span>}
               </div>
             )}
           </div>
