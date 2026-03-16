@@ -209,7 +209,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           const saved = await createPresentation.mutateAsync({
             title: slides[0]?.title || topic || 'عرض تقديمي جديد',
             description: topic,
-            slides: JSON.stringify(slides),
+            slides: slides,
             theme: 'ndmo',
           });
           savedId = saved?.id ? String(saved.id) : '';
@@ -255,7 +255,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             title: topic || 'تقرير جديد',
             description: topic,
             reportType: 'general',
-            sections: JSON.stringify(sections),
+            sections: sections,
           });
           savedId = saved?.id ? String(saved.id) : '';
         }
@@ -298,7 +298,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           const saved = await createDashboard.mutateAsync({
             title: topic || 'لوحة مؤشرات جديدة',
             description: topic,
-            widgets: JSON.stringify(widgets),
+            widgets: widgets,
             layout: '{}',
           });
           savedId = saved?.id ? String(saved.id) : '';
