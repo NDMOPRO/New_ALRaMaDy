@@ -641,3 +641,12 @@ export const startTranscriptionWebApp = (options?: TranscriptionWebServerOptions
   }
   return { host, port, base_url: `http://${host}:${port}`, storage_dir: ENGINE_ROOT };
 };
+
+export const stopTranscriptionWebApp = async (): Promise<void> => {
+  if (!server) return;
+  const current = server;
+  server = null;
+  await new Promise<void>((resolve) => {
+    current.close(() => resolve());
+  });
+};

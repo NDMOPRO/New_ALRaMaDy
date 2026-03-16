@@ -12,6 +12,94 @@ Append-only.
 - Next exact step:
 
 ## Entry
+- Timestamp: 2026-03-16T07:57:20.7973902+03:00
+- Phase: `excel_engine` shared-shell continuity to dashboards
+- Scope: add a live shared-shell `/excel` intake route, materialize workbook -> report handoff manifests inside `dashboard-web`, and prove `/excel -> report -> dashboard -> publish/share/export` from the current tree only
+- Files/Folders inspected:
+  - `C:\ALRaMaDy\rasid-platform-core\apps\contracts-cli\src\dashboard-web.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\excel-shared-platform-flow.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\package.json`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\excel-engine\output\excel-shared-platform-flow-20260316045452866\`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\dashboard-web\excel-consumptions\report-Excel-Shared-Platform-Report-04-55-12\1773636912906\`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\report-engine\reports\report-Excel-Shared-Platform-Report-04-55-12\`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\dashboard-web\dashboard-engine\dashboards\rptdash-71d2ee764d\`
+- Findings added:
+  - `/excel` on the shared shell now has a live governed intake route `POST /api/v1/excel/create-report`
+  - the route consumes the current workbook path from `excel-engine`, persists a repository-local handoff manifest under `.runtime\dashboard-web\excel-consumptions\`, and creates an editable report state
+  - the fresh proof passed from workbook -> shared `/excel` intake -> report -> dashboard -> publish/share/external-target with connected artifacts, evidence, audit, and lineage in one new root
+  - targeted commands passed on the same tree: `npx -y tsc -b ...packages/contracts ...packages/excel-engine ...packages/report-engine ...apps/contracts-cli` and `npm run test:excel-shared-platform-flow`
+- Unresolved items:
+  - this proof verifies only the shared-shell `excel -> report -> dashboard` continuity slice; it does not claim full `excel-engine` closure
+- Next exact step:
+  - return only this fresh shared-shell proof in the required strict field order
+
+## Entry
+- Timestamp: 2026-03-16T08:51:56+03:00
+- Phase: `governance_engine` report -> presentation -> dashboard governed continuation
+- Scope: extend governance cross-engine coverage with a fresh repository-local `reports -> presentations -> dashboards -> publish/share/export` proof, plus deny-before-execute probes on both bridge routes
+- Files/Folders inspected:
+  - `C:\ALRaMaDy\rasid-platform-core\apps\contracts-cli\src\dashboard-web.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\governance-unauthorized-write-regression.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\governance-cross-engine-report-presentation-proof.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\governance-cross-engine-strict-proof.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\governance-proof\governance-engine-regression.json`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\governance-proof\governance-unauthorized-write-matrix.json`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\governance-cross-engine-proof\governance-cross-engine-strict-proof.json`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\governance-cross-engine-proof\governance-cross-engine-report-presentation-proof.json`
+- Findings added:
+  - `POST /api/v1/reports/convert-to-presentation` and `POST /api/v1/presentations/convert-to-dashboard` are now covered by fresh governed runtime proof with `approval_required` on both bridge boundaries
+  - approved continuation stayed connected through downstream governed `publish`, `share`, and `export`
+  - viewer/editor denial probes on both bridge routes returned `403 governance_denied`
+  - denied probes did not add lineage on the same tenant runtime
+  - fresh supporting reruns also passed for `npm run test:governance-engine`, `npm run test:governance-unauthorized`, and `npm run test:governance-cross-engine-strict`
+- Unresolved items:
+  - a new full composite governance rerun remains heavier because the current `ai-engine` hostile script still needs a narrower governed presentations lookup path to avoid unrelated runtime-assumption retries
+- Next exact step:
+  - return only the fresh governed `report -> presentation -> dashboard -> publish/share/export` proof in the user-requested strict field order
+
+## Entry
+- Timestamp: 2026-03-16T07:02:30+03:00
+- Phase: `report_engine` reports -> dashboards -> localization -> publish fresh rerun
+- Scope: finalize a fresh repository-local rerun for the `report-engine` localization subflow with green exit code and fresh current-tree proof roots only
+- Files/Folders inspected:
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\report-dashboard-localization-platform-flow.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\apps\contracts-cli\src\dashboard-web.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\arabic-localization-lct-engine\output\report-dashboard-localization-platform-flow-20260316035850\`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\report-dashboard-localization-platform-flow\report-dashboard-localization-platform-flow-20260316035850\report-engine\reports\report-localization-platform-1773633530912\`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\dashboard-web\dashboard-engine\dashboards\rptdash-117744075a\`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\dashboard-web\dashboard-engine\dashboards\dashboard-editable_dashboard-localized-040034\`
+- Findings added:
+  - the localization subflow rerun now exits cleanly with a new proof root instead of timing out on shutdown
+  - the rerun preserves report marker continuity into the shared dashboard, the localized bundle, the shell-localized dashboard, and the localized publish transport
+  - the rerun keeps governance evidence on both localization consume and localized dashboard publish
+  - targeted validation is green on the same tree: script syntax, `npm run test:report-dashboard-localization-platform-flow`, `npx tsc -p packages/arabic-localization-lct-engine/tsconfig.json`, and `npx tsc -p packages/report-engine/tsconfig.json`
+- Unresolved items:
+  - this rerun proves only the localization subflow; it does not claim full `report-engine` closure
+- Next exact step:
+  - return only the fresh localization subflow proof in the required strict field order
+
+## Entry
+- Timestamp: 2026-03-16T04:39:54.9400000+03:00
+- Phase: `transcription_extraction` downstream continuity to `library/governance`
+- Scope: extend the live `transcription -> reports -> presentations -> dashboards` proof so the same pass also proves `dashboard -> library/governance` continuity with fresh API captures, screenshots, audit, lineage, and runtime evidence inside the current repository only
+- Files/Folders inspected:
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\transcription-report-presentation-dashboard-proof.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\apps\contracts-cli\src\dashboard-web.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\dashboard-engine\src\index.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\governance-engine\src\index.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\governance-engine\tenants\tenant-transcription-dashboard-flow\`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\transcription-extraction-engine\artifacts\latest-run\transcription-report-presentation-dashboard-proof-20260316043018817\`
+- Findings added:
+  - the live proof harness now captures `governance/library`, `governance/audit`, `governance/lineage`, and `governance/evidence` from the same dashboard publish/share/export pass
+  - the same pass now captures fresh `/library` and `/governance` screenshots and visible text, proving the downstream library/governance surfaces are exercised live
+  - the current proof asserts `dashboard_library_asset_created`, `dashboard_library_asset_mirrored_to_governance`, `dashboard_governance_audit_connected`, `dashboard_governance_evidence_connected`, `dashboard_governance_lineage_connected`, and `governance_visible_in_surface`
+  - the current proof root records one continuous chain `transcription -> reports -> presentations -> dashboards -> library/governance`
+- Unresolved items:
+  - none inside this downstream continuity slice after the fresh pass `transcription-report-presentation-dashboard-proof-20260316043018817`
+- Next exact step:
+  - return only the fresh downstream continuity proof in the required strict field order
+
+## Entry
 - Timestamp: 2026-03-16T03:44:45.8844144+03:00
 - Phase: `transcription_extraction` cross-engine flow proof repair
 - Scope: repair and rerun the live `transcription -> reports -> presentations -> dashboards` proof so the downstream dashboard assertion is driven by current visible output rather than a stale runtime field assumption
@@ -1246,6 +1334,45 @@ Append-only.
   - return only the fresh `excel -> dashboards` proof in the required field order
 
 ## Entry
+- Timestamp: 2026-03-16T04:35:00+03:00
+- Phase: `presentations-engine` live `presentations -> dashboards` handoff proof
+- Scope: prove that the current `/presentations` runtime can hand off a live deck into `dashboard-web` and continue through dashboard publish/share/export inside the same repository-local proof root
+- Files/Folders inspected:
+  - `C:\ALRaMaDy\rasid-platform-core\packages\presentations-engine\src\platform.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\apps\contracts-cli\src\dashboard-web.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\presentations-regression.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\presentations-engine\artifacts\latest-run\presentation-regression-20260316041719588\`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\dashboard-web\presentation-bridges\deck-presentations-041807\`
+- Findings added:
+  - the current tree already had a sanctioned live handoff route `POST /api/v1/presentations/convert-to-dashboard` inside `dashboard-web`
+  - repaired the presentations regression so it exercises that route from a live authenticated `/presentations` surface instead of probing a nonexistent deck-local endpoint
+  - the fresh proof root now contains bridge manifest refs, downstream dashboard runtime state, and dashboard publish/share/export artifacts from the same consumed deck
+  - the latest successful root records `command-result.json` with `exit_code = 0`, `summary.json` with `presentations_to_dashboards_supported = true`, and downstream dashboard id `dashboard-Canva-Premium-Import-outline-Dashboard-043158`
+- Unresolved items:
+  - this proof closes the handoff slice only; it does not close the wider `transcription -> reports -> presentations -> dashboards` chain
+- Next exact step:
+  - return only the fresh `presentations -> dashboards` handoff proof in the required field order
+
+## Entry
+- Timestamp: 2026-03-16T06:49:00+03:00
+- Phase: `excel_engine` live cross-engine proof to presentations
+- Scope: prove a current-tree `excel-engine` workbook is consumed by `presentations-engine` through live create/detail/publish/export surfaces with connected evidence, audit, and lineage
+- Files/Folders inspected:
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\smoke\excel-cross-engine-consumability.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\presentations-engine\src\platform.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\excel-engine\output\cross-engine-consumability-2026-03-16T03-39-18-446Z\`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\presentations-engine\decks\deck-Excel-cross-engine-consumability-proof-033918\`
+- Findings added:
+  - repaired the presentations proof harness so it resolves a current-tree workbook source from the latest repository-local excel proof instead of blocking on a fresh `runSample()` inside this flow
+  - bounded platform/browser shutdown in the presentations harness so the rerun exits cleanly after live verification
+  - fresh rerun completed through live `/presentations` create surface, deck detail surface, published viewer, and PPTX export
+  - fresh commands passed: `npm run test:excel-cross-engine` and `npx -y tsc -b packages/contracts packages/excel-engine packages/presentations-engine`
+- Unresolved items:
+  - none inside this `excel -> presentations` proof slice
+- Next exact step:
+  - return only the fresh `excel -> presentations` proof in the required field order
+
+## Entry
 - Timestamp: 2026-03-16T03:17:09.6230089+03:00
 - Phase: `presentations-engine` cross-engine/UI/runtime proof repair
 - Scope: repair the live `/presentations` proof so it exits cleanly, keeps all artifacts inside the current repository, exposes truthful capability status, and explicitly denies unsupported downstream dashboard handoff
@@ -1330,3 +1457,157 @@ Append-only.
   - none inside the fresh governance cross-engine coverage proof
 - Next exact step:
   - return only the fresh governance cross-engine proof in the required field order
+
+## Entry
+- Timestamp: 2026-03-16T06:55:57.6090016+03:00
+- Phase: `arabic-localization-lct-engine` shared-shell consume repair
+- Scope: repair the live `report -> dashboard -> localization -> shared-shell consume -> publish` flow so `/api/v1/localization/consume-dashboard-output` consumes the explicit fresh localized bundle instead of any stale fallback source, then rerun the same flow with fresh live screenshots
+- Files/Folders inspected:
+  - `C:\ALRaMaDy\rasid-platform-core\apps\contracts-cli\src\dashboard-web.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\report-dashboard-localization-platform-flow.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\arabic-localization-lct-engine\output\report-dashboard-localization-platform-flow-20260316035310\`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\dashboard-web\localization-engine\consumptions\dashboard-editable_dashboard-localized-035447\`
+- Findings added:
+  - repaired `latestLocalizationSummary()` to prefer fresh localization bundle output over stale AI execution roots
+  - repaired `/api/v1/localization/consume-dashboard-output` to accept explicit `payload_path/publish_state_path/localization_proof_path/source_kind/source_refs`
+  - added consume-side `manifest/evidence/audit/lineage` persistence for localization handoff provenance
+  - exported `stopDashboardWebApp()` so the live proof harness exits cleanly after proof generation
+  - fresh rerun now proves `source_kind = shared_runtime_localized_dashboard_bundle` and keeps marker continuity from shared dashboard through localized publish
+- Unresolved items:
+  - none inside this repaired localization subflow
+- Next exact step:
+  - return only the repaired localization proof in the required field order with `status = verified_flow`
+
+## Entry
+- Timestamp: 2026-03-16T08:03:51.8480139+03:00
+- Phase: `arabic-localization-lct-engine` cross-engine flow proof
+- Scope: prove the live `transcription -> reports -> dashboards -> localization -> publish` chain from the current shared runtime, with explicit shared-runtime localization intake and downstream localized publish continuity
+- Files/Folders inspected:
+  - `C:\ALRaMaDy\rasid-platform-core\apps\contracts-cli\src\dashboard-web.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\arabic-localization-lct-engine\src\index.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\transcription-extraction-engine\src\index.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\transcription-report-dashboard-localization-platform-flow.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\arabic-localization-lct-engine\output\transcription-report-dashboard-localization-platform-flow-20260316044909\`
+- Findings added:
+  - added a fresh repository-local harness at `scripts/transcription-report-dashboard-localization-platform-flow.mjs`
+  - fresh proof reran the live shared-platform routes:
+    - `POST /api/v1/transcription/jobs/start`
+    - `POST /api/v1/reports/create-from-transcription`
+    - `POST /api/v1/reports/convert-to-dashboard`
+    - `POST /api/v1/localization/localize-dashboard`
+    - `POST /api/v1/dashboards/publish`
+  - the fresh proof root captures connected artifacts, evidence, audit, lineage, and screenshots for the full localization-involved subflow
+  - the fresh intake proof confirms `source_of_truth = shared_dashboard_runtime_state` and `embed_payload_used_as_source = false`
+- Unresolved items:
+  - none inside this localization-owned shared-platform flow slice
+- Next exact step:
+  - return only the fresh localization cross-engine proof in the required strict field order with `status = verified_flow`
+
+## Entry
+- Timestamp: 2026-03-16T08:44:00+03:00
+- Phase: `dashboard-engine` full requirements proof
+- Scope: close live contradictions on the current tree, generate a fresh repository-local full proof root, and link all dashboard proof roots through evidence/audit/lineage
+- Files/Folders inspected:
+  - `C:\ALRaMaDy\rasid-platform-core\apps\rasid-web\server\_core\vite.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\dashboard-web-regression.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\dashboard-ai-surface-proof.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\report-engine-regression.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\dashboard-full-proof.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\dashboard-full-proof\run-2026-03-16T05-39-24-703Z\`
+- Findings added:
+  - fixed `workspace import rule` reopen in `vite.ts`
+  - lengthened startup windows in dashboard web and dashboard AI proof harnesses
+  - lengthened report publication service startup timeout for downstream export proof stability
+  - generated a successful current-repo full dashboard proof root that stitches fresh reruns with latest complete downstream roots
+- Unresolved items:
+  - none inside the generated full-proof root
+- Next exact step:
+  - return only the dashboard full proof in the required strict field order
+
+## Entry
+- Timestamp: 2026-03-16T08:47:26.0201706+03:00
+- Phase: `report-engine` cross-engine transcription localization rerun
+- Scope: generate a fresh repository-local `transcription -> reports -> dashboards -> localization -> publish` proof with current runtime refs and live screenshots
+- Files/Folders inspected:
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\transcription-report-dashboard-localization-platform-flow.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\apps\contracts-cli\src\dashboard-web.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\package.json`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\arabic-localization-lct-engine\output\transcription-report-dashboard-localization-platform-flow-20260316054325\`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\transcription-extraction-engine\jobs\job-canvas-1773639808440-transcription\`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\report-engine\reports\report-Transcription-Localization-Report-TXLOC-1773639806865-05-46-45\`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\dashboard-web\dashboard-engine\dashboards\rptdash-12918ce2db\`
+- Findings added:
+  - `node --check scripts/transcription-report-dashboard-localization-platform-flow.mjs` passed
+  - `npx tsc -p packages/arabic-localization-lct-engine/tsconfig.json --pretty false` passed
+  - `npx tsc -p packages/report-engine/tsconfig.json --pretty false` passed
+  - `npm run test:transcription-report-dashboard-localization-platform-flow` passed and wrote a fresh proof root under `packages/arabic-localization-lct-engine/output/transcription-report-dashboard-localization-platform-flow-20260316054325/`
+  - fresh flow proof kept `report-engine` as a live editable middle loop between transcription output and shared dashboard/localization publish
+- Unresolved items:
+  - none inside this verified flow slice
+- Next exact step:
+  - return only the fresh flow proof fields for `transcription -> reports -> dashboards -> localization -> publish`
+
+## Entry
+- Timestamp: 2026-03-16T08:48:42.6688793+03:00
+- Phase: `arabic-localization-lct-engine` cross-engine flow proof
+- Scope: prove the live `presentations -> dashboards -> localization -> publish` chain from the current shared runtime, with explicit shared-runtime localization intake and downstream localized publish continuity
+- Files/Folders inspected:
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\presentation-dashboard-localization-platform-flow.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\apps\contracts-cli\src\dashboard-web.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\package.json`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\arabic-localization-lct-engine\output\presentation-dashboard-localization-platform-flow-20260316054754\`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\presentations-engine\decks\deck-Presentation-Localization-Flow-PRESLOC-1773640075254-054755\`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\dashboard-web\dashboard-engine\dashboards\dashboard-Presentation-Localization-Flow-PRESLOC-1773640075254-Dashboard-054800\`
+- Findings added:
+  - added a fresh repository-local harness at `scripts/presentation-dashboard-localization-platform-flow.mjs`
+  - `npx tsc -b tsconfig.json` passed
+  - `npm run test:presentation-dashboard-localization-platform-flow` passed and wrote a fresh proof root under `packages/arabic-localization-lct-engine/output/presentation-dashboard-localization-platform-flow-20260316054754/`
+  - fresh flow proof kept localization intake grounded in `shared_dashboard_runtime_state` with `embed_payload_used_as_source = false`
+  - fresh flow proof linked presentation runtime evidence/audit/lineage, presentation-to-dashboard bridge evidence/audit/lineage, localization evidence/audit/lineage, downstream consume evidence/audit/lineage, and localized publish evidence/audit/lineage under one repository-local root
+- Unresolved items:
+  - none inside this verified flow slice
+- Next exact step:
+  - return only the fresh flow proof fields for `presentations -> dashboards -> localization -> publish`
+
+## Entry
+- Timestamp: 2026-03-16T08:52:00+03:00
+- Phase: `dashboard-engine` requirement matrix
+- Scope: map the current dashboard proof roots to literal requirement coverage and emit only `verified_flow/partial` statuses from the current repository
+- Files/Folders inspected:
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\dashboard-full-proof.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\dashboard-full-proof\run-2026-03-16T05-39-24-703Z\`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\strict-replication-engine\runtime\outputs\`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\report-engine\artifacts\latest-run\report-regression-20260316050358079\`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\presentations-engine\artifacts\latest-run\presentation-regression-20260316052737508\`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\excel-engine\output\sample-run-2026-03-16T05-28-17-545Z\`
+- Findings added:
+  - created `scripts/dashboard-requirement-matrix.mjs`
+  - emitted a repository-local literal matrix root with `13` requirements tied to current proof refs
+  - matrix result is `partial`, not a closure claim
+  - current matrix isolates six remaining partial requirement slices and seven `verified_flow` slices
+- Unresolved items:
+  - remaining partial requirement slices listed in the new matrix artifact
+- Next exact step:
+  - return only the dashboard requirement matrix proof in the required strict field order
+
+## Entry
+- Timestamp: 2026-03-16T08:57:54.0133395+03:00
+- Phase: `arabic-localization-lct-engine` cross-engine flow proof
+- Scope: prove the live `excel -> reports -> dashboards -> localization -> publish` chain from the current shared runtime, with explicit shared-runtime localization intake and downstream localized publish continuity
+- Files/Folders inspected:
+  - `C:\ALRaMaDy\rasid-platform-core\scripts\excel-report-dashboard-localization-platform-flow.mjs`
+  - `C:\ALRaMaDy\rasid-platform-core\apps\contracts-cli\src\dashboard-web.ts`
+  - `C:\ALRaMaDy\rasid-platform-core\package.json`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\arabic-localization-lct-engine\output\excel-report-dashboard-localization-platform-flow-20260316055422\`
+  - `C:\ALRaMaDy\rasid-platform-core\packages\excel-engine\output\sample-run-2026-03-16T05-54-24-449Z\`
+  - `C:\ALRaMaDy\rasid-platform-core\.runtime\dashboard-web\dashboard-engine\dashboards\rptdash-03affa83d9\`
+- Findings added:
+  - added a fresh repository-local harness at `scripts/excel-report-dashboard-localization-platform-flow.mjs`
+  - `npx tsc -b tsconfig.json` passed
+  - `npm run test:excel-report-dashboard-localization-platform-flow` passed and wrote a fresh proof root under `packages/arabic-localization-lct-engine/output/excel-report-dashboard-localization-platform-flow-20260316055422/`
+  - the fresh flow generated a fresh workbook through `ExcelEngine.runSample()`, consumed it through `/api/v1/excel/create-report`, bridged to dashboard, localized from shared runtime, and published the localized shell
+  - the fresh intake proof confirms `source_of_truth = shared_dashboard_runtime_state` and `embed_payload_used_as_source = false`
+- Unresolved items:
+  - none inside this verified flow slice
+- Next exact step:
+  - return only the fresh flow proof fields for `excel -> reports -> dashboards -> localization -> publish`

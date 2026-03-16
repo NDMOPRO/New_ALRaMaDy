@@ -143,6 +143,8 @@ let browser;
 let presentationsHandle = null;
 let dashboardHandle = null;
 let transcriptionHandle = null;
+let stopDashboardWebApp = null;
+let stopTranscriptionWebApp = null;
 
 try {
   step(`starting live proof on ${baseUrl}`);
@@ -150,10 +152,14 @@ try {
   process.env.RASID_DASHBOARD_TRANSPORT_PORT = String(transportPort);
   process.env.RASID_DEBUG_STACKS = "1";
   process.env.RASID_TRANSCRIPTION_WEB_PORT = String(transcriptionPort);
-  const { startDashboardWebApp } = await import("../apps/contracts-cli/dist/dashboard-web.js");
-  const { startTranscriptionWebApp } = await import("../apps/contracts-cli/dist/transcription-web.js");
-  dashboardHandle = startDashboardWebApp({ host, port });
-  transcriptionHandle = startTranscriptionWebApp({ host, port: transcriptionPort });
+  const dashboardWeb = await import("../apps/contracts-cli/dist/dashboard-web.js");
+  const transcriptionWeb = await import("../apps/contracts-cli/dist/transcription-web.js");
+  const { startDashboardWebApp: startDashboardWebAppFn } = dashboardWeb;
+  const { startTranscriptionWebApp: startTranscriptionWebAppFn } = transcriptionWeb;
+  stopDashboardWebApp = dashboardWeb.stopDashboardWebApp ?? null;
+  stopTranscriptionWebApp = transcriptionWeb.stopTranscriptionWebApp ?? null;
+  dashboardHandle = startDashboardWebAppFn({ host, port });
+  transcriptionHandle = startTranscriptionWebAppFn({ host, port: transcriptionPort });
   await waitForServer(host, port, "/login");
   await waitForServer(host, transcriptionPort, "/login");
   const { startPresentationPlatformServer } = await import("../packages/presentations-engine/dist/platform.js");
@@ -184,28 +190,62 @@ try {
   await presentationsPage.fill('input[name="tenantRef"]', "tenant-dashboard-web");
   await presentationsPage.click('button[type="submit"]');
   await presentationsPage.waitForURL((currentUrl) => currentUrl.toString().startsWith(`${presentationsBaseUrl}/presentations`), { timeout: 120000 });
-  const presentationsAuthQuery = new URL(presentationsPage.url()).search;
+  const presentationsAuthUrl = new URL(presentationsPage.url());
+  const presentationsAuthQuery = presentationsAuthUrl.search;
+  const presentationsAccessToken = presentationsAuthUrl.searchParams.get("access_token") ?? "";
+  const presentationsTenantRef = presentationsAuthUrl.searchParams.get("tenant_ref") ?? "tenant-dashboard-web";
 
-  const createBrowserJson = (activePage, origin, defaultHeaders = {}) => async (method, url, body = undefined, extraHeaders = {}) => {
-    const response = await activePage.context().request.fetch(`${origin}${url}`, {
-      method,
-      timeout: 900000,
-      headers: {
-        "content-type": "application/json",
-        ...defaultHeaders,
-        ...extraHeaders
-      },
-      data: body
-    });
-    const json = await response.json();
-    if (!response.ok()) {
-      throw new Error(JSON.stringify(json));
+  const createBrowserJson = (activePage, origin, defaultHeaders = {}) => async (method, url, body = undefined, extraHeaders = {}, attempt = 0) => {
+    try {
+      const response = await activePage.context().request.fetch(`${origin}${url}`, {
+        method,
+        timeout: 900000,
+        headers: {
+          "content-type": "application/json",
+          ...defaultHeaders,
+          ...extraHeaders
+        },
+        data: body
+      });
+      const json = await response.json();
+      if (!response.ok()) {
+        throw new Error(JSON.stringify(json));
+      }
+      return json;
+    } catch (error) {
+      if (
+        attempt < 3 &&
+        error instanceof Error &&
+        (error.message.includes("ECONNRESET") || error.message.includes("ECONNREFUSED") || error.message.includes("ETIMEDOUT"))
+      ) {
+        await wait(750 * (attempt + 1));
+        return createBrowserJson(activePage, origin, defaultHeaders)(method, url, body, extraHeaders, attempt + 1);
+      }
+      throw error;
     }
-    return json;
   };
 
   const browserJson = createBrowserJson(page, baseUrl);
   const transcriptionBrowserJson = createBrowserJson(transcriptionPage, transcriptionBaseUrl);
+  const presentationsBrowserJson = createBrowserJson(presentationsPage, presentationsBaseUrl, {
+    ...(presentationsAccessToken ? { Authorization: `Bearer ${presentationsAccessToken}` } : {}),
+    ...(presentationsTenantRef ? { "x-tenant-id": presentationsTenantRef } : {})
+  });
+  const waitForPresentationPlatformState = async (deckId) => {
+    for (let attempt = 0; attempt < 90; attempt += 1) {
+      const payload = await presentationsBrowserJson(
+        "GET",
+        `/api/v1/presentations/decks/${encodeURIComponent(deckId)}${presentationsAuthQuery}`
+      ).catch(() => null);
+      const platformState = payload?.data?.platform ?? null;
+      const publicViewerPath = payload?.data?.publicUrl ?? null;
+      if (platformState && typeof publicViewerPath === "string" && publicViewerPath.length > 0) {
+        return { payload, platformState, publicViewerPath };
+      }
+      await wait(2000);
+    }
+    throw new Error(`Presentation platform API did not materialize state/publicUrl for ${deckId}.`);
+  };
 
   const createBrowserText = (activePage, origin) => async (url) => {
     const response = await activePage.context().request.fetch(`${origin}${url}`, { method: "GET", timeout: 120000 });
@@ -287,6 +327,7 @@ try {
       }
     }
     await page.goto(url.toString(), { waitUntil: "domcontentloaded", timeout: 120000 });
+    step(`ui case ${name} loaded`);
     await page.fill("#ai-session-id", sessionId);
     await page.fill("#ai-prompt", prompt);
     await page.fill("#ai-resource-ref", resourceRef ?? "");
@@ -304,6 +345,7 @@ try {
       { timeout: 180000 }
     );
     await page.click("#ai-run");
+    step(`ui case ${name} submitted`);
     const postResponse = await postPromise;
     if (!postResponse.ok()) {
       throw new Error(`UI case ${name} failed with ${postResponse.status()}: ${await postResponse.text()}`);
@@ -320,6 +362,7 @@ try {
     if (!latestJob?.job_id) {
       throw new Error(`No AI job was persisted for session ${sessionId}.`);
     }
+    step(`ui case ${name} job ${latestJob.job_id}`);
     const payload = await browserJson("GET", `/api/v1/ai/jobs/${latestJob.job_id}`);
     if (payload.open_path) {
       const redirectTarget = `${baseUrl}${payload.open_path}`;
@@ -328,10 +371,13 @@ try {
         { timeout: 10000 }
       ).catch(() => wait(1000));
       await page.goto(redirectTarget, { waitUntil: "domcontentloaded", timeout: 120000 }).catch(() => null);
+      step(`ui case ${name} redirected`);
     }
     const resultText = await readAiResult();
+    step(`ui case ${name} result extracted`);
     const resultScreenshot = path.join(proofRoot, `${slug(name)}-result.png`);
     await page.screenshot({ path: resultScreenshot, fullPage: true });
+    step(`ui case ${name} screenshot saved`);
     return {
       sessionId,
       payload,
@@ -599,11 +645,13 @@ try {
   const presentationDetailScreenshot = path.join(proofRoot, "presentations-platform-detail.png");
   await presentationsPage.screenshot({ path: presentationDetailScreenshot, fullPage: true });
   const presentationPlatformStatePath = path.join(process.cwd(), ".runtime", "presentations-engine", "decks", presentationDeckId, "platform", "state.json");
-  if (!fs.existsSync(presentationPlatformStatePath)) {
-    throw new Error(`Presentation platform state was not materialized for ${presentationDeckId}.`);
-  }
-  const presentationPlatformState = JSON.parse(fs.readFileSync(presentationPlatformStatePath, "utf8"));
-  const publicViewerPath = `/published/${presentationDeckId}?share_token=${encodeURIComponent(presentationPlatformState.live_share_token)}`;
+  const presentationDeckReady = await waitForPresentationPlatformState(presentationDeckId);
+  const presentationDeckPayload = presentationDeckReady.payload;
+  const presentationPlatformState = presentationDeckReady.platformState;
+  const publicViewerPath = presentationDeckReady.publicViewerPath;
+  const persistedPresentationPlatformState = fs.existsSync(presentationPlatformStatePath)
+    ? JSON.parse(fs.readFileSync(presentationPlatformStatePath, "utf8"))
+    : null;
   await presentationsPage.goto(`${presentationsBaseUrl}${publicViewerPath}`, { waitUntil: "domcontentloaded", timeout: 120000 });
   await presentationsPage.waitForSelector("#viewerFrame", { timeout: 120000 });
   const presentationPublicScreenshot = path.join(proofRoot, "presentations-platform-public-viewer.png");
@@ -780,7 +828,9 @@ try {
         detail_screenshot: presentationDetailScreenshot,
         public_screenshot: presentationPublicScreenshot,
         platform_state_path: presentationPlatformStatePath,
-        platform_state: presentationPlatformState
+        platform_state: presentationPlatformState,
+        persisted_platform_state: persistedPresentationPlatformState,
+        deck_api_payload: presentationDeckPayload.data ?? null
       }
     },
     no_auto_apply_boundary: {
@@ -865,10 +915,10 @@ try {
   if (presentationsHandle) {
     await presentationsHandle.close().catch(() => null);
   }
-  if (transcriptionHandle?.server) {
-    await new Promise((resolve) => transcriptionHandle.server.close(() => resolve(null))).catch(() => null);
+  if (typeof stopTranscriptionWebApp === "function") {
+    await stopTranscriptionWebApp().catch(() => null);
   }
-  if (dashboardHandle?.server) {
-    await new Promise((resolve) => dashboardHandle.server.close(() => resolve(null))).catch(() => null);
+  if (typeof stopDashboardWebApp === "function") {
+    await stopDashboardWebApp().catch(() => null);
   }
 }

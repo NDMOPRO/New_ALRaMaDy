@@ -244,13 +244,13 @@ const proof = {
         route: "/api/v1/reports/convert-to-presentation",
         boundary_status: reportPresentationProof.report_to_presentation?.boundary?.status ?? null,
         deck_id: reportPresentationProof.report_to_presentation?.approved?.deck_id ?? null,
-        audit: reportPresentationProof.audit?.report_approved?.event_id ?? null
+        audit: reportPresentationProof.audit?.report_approved ?? null
       },
       presentation_to_dashboard: {
         route: "/api/v1/presentations/convert-to-dashboard",
         boundary_status: reportPresentationProof.presentation_to_dashboard?.boundary?.status ?? null,
         dashboard_id: reportPresentationProof.presentation_to_dashboard?.approved?.presentation_bridge?.dashboard_id ?? null,
-        audit: reportPresentationProof.audit?.deck_approved?.event_id ?? null
+        audit: reportPresentationProof.audit?.deck_approved ?? null
       },
       localization: {
         route: "/api/v1/localization/consume-dashboard-output",
@@ -319,8 +319,8 @@ const proof = {
     share: governanceProof.share_governance?.audit ?? null,
     export: governanceProof.export_result?.governance?.audit ?? null,
     reports: governanceProof.report_conversion?.governance?.audit ?? null,
-    report_to_presentation: reportPresentationProof.audit?.report_approved?.event_id ?? null,
-    presentation_to_dashboard: reportPresentationProof.audit?.deck_approved?.event_id ?? null,
+    report_to_presentation: reportPresentationProof.audit?.report_approved ?? null,
+    presentation_to_dashboard: reportPresentationProof.audit?.deck_approved ?? null,
     localization: governanceProof.localization_consume?.governance?.audit ?? null,
     strict: strictProof.audit,
     ai: {

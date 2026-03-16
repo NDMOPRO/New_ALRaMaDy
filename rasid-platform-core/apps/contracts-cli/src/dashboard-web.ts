@@ -5,6 +5,8 @@ import path from "node:path";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { performance } from "node:perf_hooks";
 import { pathToFileURL } from "node:url";
+import ExcelJS from "exceljs";
+import { z } from "zod";
 import { ArabicLocalizationLctEngine, buildLocalizationIntakeFromSharedDashboardRuntime } from "@rasid/arabic-localization-lct-engine";
 import { RasidAiEngine } from "@rasid/ai-engine";
 import { CanvasSessionStateSchema } from "@rasid/canvas-contract";
@@ -12,6 +14,7 @@ import {
   DashboardEngine,
   DashboardEngineStore,
   startDashboardPublicationService,
+  stopDashboardPublicationService,
   type DashboardPublicationResult,
   type DashboardWorkflowResult
 } from "@rasid/dashboard-engine";
@@ -248,6 +251,24 @@ type LocalizationDashboardConsumeResult = {
   consume_lineage_path: string;
 };
 
+type ExcelReportConsumeResult = {
+  report_id: string;
+  report_state_path: string;
+  report_editable_path: string;
+  workbook_path: string;
+  workbook_package_path: string | null;
+  excel_run_root: string;
+  evidence_path: string | null;
+  audit_path: string | null;
+  lineage_path: string | null;
+  workbook_summary: Record<string, unknown>;
+  consume_manifest_path: string;
+  consume_artifact_path: string;
+  consume_evidence_path: string;
+  consume_audit_path: string;
+  consume_lineage_path: string;
+};
+
 type SurfacePath =
   | "/home"
   | "/data"
@@ -295,6 +316,7 @@ const PORT = Number(process.env.RASID_DASHBOARD_WEB_PORT ?? process.env.PORT ?? 
 const ROOT = path.join(process.cwd(), ".runtime", "dashboard-web");
 const DASHBOARD_ROOT = path.join(ROOT, "dashboard-engine");
 const DATASET_ROOT = path.join(ROOT, "datasets");
+const EXCEL_CONSUMPTION_ROOT = path.join(ROOT, "excel-consumptions");
 const REPORT_BRIDGE_ROOT = path.join(ROOT, "report-bridges");
 const PRESENTATION_BRIDGE_ROOT = path.join(ROOT, "presentation-bridges");
 const TEMPLATE_ROOT = path.join(ROOT, "templates");
@@ -1019,17 +1041,74 @@ const latestDirectoryWithValidJson = (root: string, relativeJsonPath: string): {
   return null;
 };
 
-const latestExcelRunSummary = (): Record<string, unknown> => {
+const latestExcelRuntimeRecord = (): {
+  run_root: string;
+  workbook_path: string;
+  workbook_package_path: string | null;
+  evidence_path: string;
+  audit_path: string | null;
+  lineage_path: string | null;
+  evidence: Record<string, unknown>;
+} | null => {
   const excelRoot = path.join(process.cwd(), "packages", "excel-engine", "output");
-  const latest = latestDirectoryWithValidJson(excelRoot, path.join("evidence", "evidence-pack.json"));
+  if (!fs.existsSync(excelRoot)) {
+    return null;
+  }
+  const directories = fs
+    .readdirSync(excelRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => path.join(excelRoot, entry.name))
+    .sort((left, right) => {
+      try {
+        return fs.statSync(right).mtimeMs - fs.statSync(left).mtimeMs;
+      } catch {
+        return right.localeCompare(left);
+      }
+    });
+  for (const directory of directories) {
+    const workbookPath = path.join(directory, "artifacts", "sample-output.xlsx");
+    const evidencePath = path.join(directory, "evidence", "evidence-pack.json");
+    if (!fs.existsSync(workbookPath) || !fs.existsSync(evidencePath)) {
+      continue;
+    }
+    try {
+      return {
+        run_root: directory,
+        workbook_path: workbookPath,
+        workbook_package_path: fs.existsSync(path.join(directory, "artifacts", "workbook-package.json"))
+          ? path.join(directory, "artifacts", "workbook-package.json")
+          : null,
+        evidence_path: evidencePath,
+        audit_path: fs.existsSync(path.join(directory, "audit", "audit-events.json"))
+          ? path.join(directory, "audit", "audit-events.json")
+          : null,
+        lineage_path: fs.existsSync(path.join(directory, "lineage", "lineage-edges.json"))
+          ? path.join(directory, "lineage", "lineage-edges.json")
+          : null,
+        evidence: readJson<Record<string, unknown>>(evidencePath)
+      };
+    } catch {
+      continue;
+    }
+  }
+  return null;
+};
+
+const latestExcelRunSummary = (): Record<string, unknown> => {
+  const latest = latestExcelRuntimeRecord();
   if (!latest) {
     return { available: false };
   }
   return {
     available: true,
-    run_root: latest.root,
-    evidence_path: path.join(latest.root, "evidence", "evidence-pack.json"),
-    evidence: latest.payload
+    run_root: latest.run_root,
+    workbook_path: latest.workbook_path,
+    workbook_package_path: latest.workbook_package_path,
+    evidence_path: latest.evidence_path,
+    audit_path: latest.audit_path,
+    lineage_path: latest.lineage_path,
+    workbook_name: path.basename(latest.workbook_path),
+    evidence: latest.evidence
   };
 };
 
@@ -1191,6 +1270,141 @@ const latestReportSummary = (storageDir?: string | null, reportId?: string | nul
           };
         })
       : []
+  };
+};
+
+const worksheetSampleRows = (worksheet: ExcelJS.Worksheet): string[][] => {
+  const rows: string[][] = [];
+  const limit = Math.min(worksheet.actualRowCount || worksheet.rowCount || 0, 4);
+  for (let index = 1; index <= limit; index += 1) {
+    const row = worksheet.getRow(index);
+    const rowValues = Array.isArray(row.values) ? Array.from(row.values.slice(1)) : [];
+    const values = rowValues
+      .map((cell: unknown) => {
+        if (cell === null || cell === undefined) {
+          return "";
+        }
+        if (typeof cell === "object" && "formula" in cell) {
+          return String((cell as { result?: unknown; formula?: string }).result ?? `=${String((cell as { formula?: string }).formula ?? "")}`);
+        }
+        return `${cell}`;
+      })
+      .map((value: string) => value.trim());
+    if (values.some((value: string) => value.length > 0)) {
+      rows.push(values);
+    }
+  }
+  return rows;
+};
+
+const worksheetFormulaCount = (worksheet: ExcelJS.Worksheet): number => {
+  let count = 0;
+  worksheet.eachRow((row) => {
+    row.eachCell({ includeEmpty: false }, (cell) => {
+      if (cell.type === ExcelJS.ValueType.Formula) {
+        count += 1;
+      }
+    });
+  });
+  return count;
+};
+
+const workbookDefinedNamesCount = (workbook: ExcelJS.Workbook): number => {
+  const model = (workbook.definedNames as unknown as { model?: unknown[] }).model;
+  return Array.isArray(model) ? model.length : 0;
+};
+
+const buildExcelReportSections = async (
+  workbookPath: string,
+  workbookLabel?: string
+): Promise<{
+  sections: Array<Record<string, unknown>>;
+  summary: Record<string, unknown>;
+}> => {
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.readFile(workbookPath);
+  const visibleWorksheets = workbook.worksheets.filter((worksheet) => worksheet.state === "visible" && !worksheet.name.startsWith("__"));
+  const worksheetSummaries = visibleWorksheets.map((worksheet) => ({
+    worksheet_name: worksheet.name,
+    row_count: worksheet.rowCount,
+    column_count: worksheet.columnCount,
+    formula_count: worksheetFormulaCount(worksheet),
+    merged_range_count: worksheet.model.merges?.length ?? 0,
+    view_count: worksheet.views?.length ?? 0,
+    sample_rows: worksheetSampleRows(worksheet)
+  }));
+  const label = workbookLabel ?? path.basename(workbookPath);
+  const totalFormulaCount = worksheetSummaries.reduce((sum, worksheet) => sum + Number(worksheet.formula_count ?? 0), 0);
+  const namedRangeCount = workbookDefinedNamesCount(workbook);
+  const sections: Array<Record<string, unknown>> = [
+    {
+      section_kind: "cover",
+      title: `Excel Intake ${label}`,
+      blocks: [
+        {
+          block_type: "narrative",
+          title: "Workbook source",
+          body: `Shared shell consumed workbook ${label} from excel-engine and materialized it into editable report state.`,
+          citations: [workbookPath]
+        }
+      ]
+    },
+    {
+      section_kind: "executive_summary",
+      title: "Workbook summary",
+      blocks: [
+        {
+          block_type: "commentary",
+          title: "Workbook metrics",
+          body: `Visible worksheets: ${visibleWorksheets.length}. Named ranges: ${namedRangeCount}. Formula cells: ${totalFormulaCount}.`
+        }
+      ]
+    }
+  ];
+  for (const worksheet of worksheetSummaries.slice(0, 3)) {
+    sections.push({
+      section_kind: "body",
+      title: `Worksheet ${worksheet.worksheet_name}`,
+      blocks: [
+        {
+          block_type: "table",
+          title: `${worksheet.worksheet_name} sample`,
+          body: `Worksheet sample rows consumed from ${worksheet.worksheet_name}.`,
+          table_rows:
+            worksheet.sample_rows.length > 0
+              ? worksheet.sample_rows.map((row) => Array.from(row, (cell) => String(cell ?? "")))
+              : [["No visible data extracted from worksheet."]]
+        },
+        {
+          block_type: "commentary",
+          title: `${worksheet.worksheet_name} profile`,
+          body: `Rows=${worksheet.row_count}, columns=${worksheet.column_count}, formulas=${worksheet.formula_count}, merges=${worksheet.merged_range_count}, views=${worksheet.view_count}.`
+        }
+      ]
+    });
+  }
+  sections.push({
+    section_kind: "appendix",
+    title: "Workbook appendix",
+    blocks: [
+      {
+        block_type: "commentary",
+        title: "Runtime refs",
+        body: `Workbook path: ${workbookPath}`
+      }
+    ]
+  });
+  return {
+    sections,
+    summary: {
+      workbook_path: workbookPath,
+      workbook_label: label,
+      worksheet_count: workbook.worksheets.length,
+      visible_worksheet_count: visibleWorksheets.length,
+      named_range_count: namedRangeCount,
+      formula_count: totalFormulaCount,
+      worksheet_summaries: worksheetSummaries
+    }
   };
 };
 
@@ -4379,11 +4593,13 @@ const unifiedCanvasPage = (activeSurface: SurfacePath): string =>
            <button id="canvas-run-transcription">Run Transcription Extraction</button>
            <button id="canvas-transcription-to-report">Transcription -> Report</button>
          </section>
-         <section class="panel form">
-           <strong>Cross-Service Actions</strong>
-           <input id="canvas-report-id" value="" placeholder="report id (defaults to latest report runtime)" />
-           <input id="canvas-presentation-id" value="" placeholder="deck id (defaults to latest deck runtime)" />
-           <input id="canvas-presentation-title" value="Canvas Executive Deck" />
+          <section class="panel form">
+            <strong>Cross-Service Actions</strong>
+            <input id="canvas-excel-workbook-path" value="" placeholder="latest workbook path from /excel runtime" />
+            <input id="canvas-excel-report-title" value="Canvas Excel Report" placeholder="report title from excel" />
+            <input id="canvas-report-id" value="" placeholder="report id (defaults to latest report runtime)" />
+            <input id="canvas-presentation-id" value="" placeholder="deck id (defaults to latest deck runtime)" />
+            <input id="canvas-presentation-title" value="Canvas Executive Deck" />
            <select id="canvas-compare-source">
              <option value="report">report</option>
              <option value="presentation">presentation</option>
@@ -4399,11 +4615,12 @@ const unifiedCanvasPage = (activeSurface: SurfacePath): string =>
            <button id="canvas-refresh-dashboard">Refresh Dashboard</button>
            <button id="canvas-publish-dashboard">Publish Dashboard</button>
            <button id="canvas-compare-dashboard">Compare Dashboard</button>
-           <button id="canvas-save-template">Save Template</button>
-           <button id="canvas-create-presentation">Create Presentation</button>
-           <button id="canvas-report-to-presentation">Report -> Presentation</button>
-           <button id="canvas-presentation-to-dashboard">Presentation -> Dashboard</button>
-           <button id="canvas-report-to-dashboard">Report -> Dashboard</button>
+            <button id="canvas-save-template">Save Template</button>
+            <button id="canvas-create-presentation">Create Presentation</button>
+            <button id="canvas-excel-to-report">Excel -> Report</button>
+            <button id="canvas-report-to-presentation">Report -> Presentation</button>
+            <button id="canvas-presentation-to-dashboard">Presentation -> Dashboard</button>
+            <button id="canvas-report-to-dashboard">Report -> Dashboard</button>
            <button id="canvas-replication-to-dashboard">Replication -> Dashboard</button>
            <button id="canvas-localization-to-dashboard">Localization -> Dashboard</button>
            <button id="canvas-approve-latest">Approve Latest Pending</button>
@@ -4529,9 +4746,13 @@ const unifiedCanvasPage = (activeSurface: SurfacePath): string =>
      const renderState = (payload) => {
        fillSelect("canvas-dataset", payload.available.datasets || [], "dataset_id", (item) => item.title + " (" + item.row_count + " rows)", payload.selected.dataset?.dataset_id || params().get("dataset_id") || "");
        fillSelect("canvas-dashboard", payload.available.dashboards || [], "dashboard_id", (item) => item.title + " [" + item.dashboard_id + "]", payload.selected.dashboard?.dashboard_id || params().get("dashboard_id") || "");
-       document.getElementById("canvas-report-id").value = document.getElementById("canvas-report-id").value || params().get("report_id") || payload.service_summaries?.reports?.report_id || "";
-       document.getElementById("canvas-presentation-id").value =
-         document.getElementById("canvas-presentation-id").value || params().get("deck_id") || payload.service_summaries?.presentations?.deck_id || "";
+        document.getElementById("canvas-report-id").value = document.getElementById("canvas-report-id").value || params().get("report_id") || payload.service_summaries?.reports?.report_id || "";
+        document.getElementById("canvas-excel-workbook-path").value =
+          document.getElementById("canvas-excel-workbook-path").value ||
+          payload.service_summaries?.excel?.workbook_path ||
+          "";
+        document.getElementById("canvas-presentation-id").value =
+          document.getElementById("canvas-presentation-id").value || params().get("deck_id") || payload.service_summaries?.presentations?.deck_id || "";
        document.getElementById("canvas-mode").value = payload.canvas_state.mode_state.top_level_mode;
        document.getElementById("canvas-session-id").value = payload.canvas_state.session_id;
        document.getElementById("summary-datasets").textContent = String(payload.workspace_summary.datasets_count || 0);
@@ -4609,21 +4830,37 @@ const unifiedCanvasPage = (activeSurface: SurfacePath): string =>
        setPreview("canvas-action-result", payload);
        await loadState();
      };
-     document.getElementById("canvas-transcription-to-report").onclick = async () => {
-       const payload = await api("/api/v1/reports/create-from-transcription", "POST", {
-         title: document.getElementById("canvas-transcription-report-title").value,
-         mode: selectedMode(),
-         approval_granted: document.getElementById("canvas-approval-granted").checked
+      document.getElementById("canvas-transcription-to-report").onclick = async () => {
+        const payload = await api("/api/v1/reports/create-from-transcription", "POST", {
+          title: document.getElementById("canvas-transcription-report-title").value,
+          mode: selectedMode(),
+          approval_granted: document.getElementById("canvas-approval-granted").checked
        });
        setPreview("canvas-action-result", payload);
        if (payload.open_path) {
          location.href = payload.open_path;
          return;
-       }
-       await loadState();
-     };
-     document.getElementById("canvas-create-dashboard").onclick = async () => {
-       let datasetId = selectedDatasetId();
+        }
+        await loadState();
+      };
+      document.getElementById("canvas-excel-to-report").onclick = async () => {
+        const payload = await api("/api/v1/excel/create-report", "POST", {
+          title: document.getElementById("canvas-excel-report-title").value,
+          workbook_path: document.getElementById("canvas-excel-workbook-path").value,
+          approval_granted: document.getElementById("canvas-approval-granted").checked
+        });
+        setPreview("canvas-action-result", payload);
+        if (payload.report_id) {
+          document.getElementById("canvas-report-id").value = payload.report_id;
+        }
+        if (payload.open_path) {
+          location.href = payload.open_path;
+          return;
+        }
+        await loadState();
+      };
+      document.getElementById("canvas-create-dashboard").onclick = async () => {
+        let datasetId = selectedDatasetId();
        if (!datasetId) {
          const registered = await api("/api/v1/data/register", "POST", {
            title: document.getElementById("canvas-data-title").value,
@@ -4778,6 +5015,9 @@ const latestReportId = (storageDir?: string | null): string => String(latestRepo
 
 const reportBridgeDirectory = (reportId: string, dashboardId: string): string =>
   path.join(REPORT_BRIDGE_ROOT, reportId, `${dashboardId}-${Date.now()}`);
+
+const excelConsumeDirectory = (reportId: string): string =>
+  path.join(EXCEL_CONSUMPTION_ROOT, reportId, `${Date.now()}`);
 
 const reportBridgeLocalDatasetId = (reportId: string, sourceDatasetRef: string): string =>
   `dataset-report-${createHash("sha1").update(`${reportId}:${sourceDatasetRef}`).digest("hex").slice(0, 12)}`;
@@ -5455,6 +5695,83 @@ const createReportFromLatestTranscription = (
     report_id: result.report.report_id,
     transcription_job_id: latest.job.job_id,
     bundle_id: latest.bundle.bundle_id
+  };
+};
+
+const createReportFromLatestExcel = async (
+  auth: AuthContext,
+  input: {
+    title?: string | null;
+    description?: string | null;
+    language?: string | null;
+    workbook_path?: string | null;
+    workbook_label?: string | null;
+  }
+): Promise<ExcelReportConsumeResult> => {
+  const latestExcel = latestExcelRuntimeRecord();
+  const workbookPath = input.workbook_path && input.workbook_path.trim().length > 0 ? input.workbook_path.trim() : latestExcel?.workbook_path ?? "";
+  if (workbookPath.length === 0 || !fs.existsSync(workbookPath)) {
+    throw new Error("Excel workbook runtime is unavailable.");
+  }
+  const workbookPackagePath =
+    latestExcel && latestExcel.workbook_path === workbookPath ? latestExcel.workbook_package_path : null;
+  const workbookDraft = await buildExcelReportSections(workbookPath, input.workbook_label ?? path.basename(workbookPath));
+  const created = reportEngine().createReport({
+    tenant_ref: auth.tenantRef,
+    workspace_id: auth.workspaceId,
+    project_id: auth.projectId,
+    created_by: auth.actorRef,
+    title: input.title?.trim() || `Excel Shared Report ${path.basename(workbookPath)}`,
+    description: input.description?.trim() || "Created from /excel inside the shared platform shell.",
+    language: input.language?.trim() || "ar-SA",
+    report_type: "excel_report",
+    source_refs: [
+      workbookPath,
+      ...(workbookPackagePath ? [workbookPackagePath] : []),
+      ...(latestExcel?.evidence_path ? [latestExcel.evidence_path] : []),
+      ...(latestExcel?.audit_path ? [latestExcel.audit_path] : []),
+      ...(latestExcel?.lineage_path ? [latestExcel.lineage_path] : [])
+    ],
+    sections: workbookDraft.sections as never
+  });
+  const reportId = created.report.report_id;
+  const reportRoot = path.join(reportEngine().store.rootDir, "reports", reportId, "state");
+  const reportStatePathValue = path.join(reportRoot, "current.json");
+  const reportEditablePathValue = path.join(reportRoot, "editable-report.json");
+  const directory = excelConsumeDirectory(reportId);
+  const manifest = {
+    report_id: reportId,
+    report_state_path: reportStatePathValue,
+    report_editable_path: reportEditablePathValue,
+    workbook_path: workbookPath,
+    workbook_package_path: workbookPackagePath,
+    excel_run_root: latestExcel?.run_root ?? path.dirname(path.dirname(workbookPath)),
+    evidence_path: latestExcel?.evidence_path ?? null,
+    audit_path: latestExcel?.audit_path ?? null,
+    lineage_path: latestExcel?.lineage_path ?? null,
+    workbook_summary: workbookDraft.summary,
+    action_ref: "excel.shared.consume_report",
+    source_ref: workbookPath,
+    target_ref: reportId,
+    created_at: now()
+  };
+  const auxiliary = persistAuxiliaryRecords(directory, `excel-${reportId}`, manifest);
+  return {
+    report_id: reportId,
+    report_state_path: reportStatePathValue,
+    report_editable_path: reportEditablePathValue,
+    workbook_path: workbookPath,
+    workbook_package_path: workbookPackagePath,
+    excel_run_root: latestExcel?.run_root ?? path.dirname(path.dirname(workbookPath)),
+    evidence_path: latestExcel?.evidence_path ?? null,
+    audit_path: latestExcel?.audit_path ?? null,
+    lineage_path: latestExcel?.lineage_path ?? null,
+    workbook_summary: workbookDraft.summary,
+    consume_manifest_path: auxiliary.artifactPath,
+    consume_artifact_path: auxiliary.artifactPath,
+    consume_evidence_path: auxiliary.evidencePath,
+    consume_audit_path: auxiliary.auditPath,
+    consume_lineage_path: auxiliary.lineagePath
   };
 };
 
@@ -8229,6 +8546,53 @@ const handleApi = async (request: IncomingMessage, response: ServerResponse, aut
       }
     );
   }
+  if (request.method === "POST" && url.pathname === "/api/v1/excel/create-report") {
+    const body = z
+      .object({
+        title: z.string().optional(),
+        description: z.string().optional(),
+        language: z.string().optional(),
+        workbook_path: z.string().optional(),
+        workbook_label: z.string().optional(),
+        approval_granted: z.boolean().optional()
+      })
+      .parse(await parseBody(request));
+    return executeGovernedRoute(
+      response,
+      {
+        action_id: "governance.external.consume.v1",
+        actor: governanceActor(auth, "/excel", { sensitivity: "internal", asset_type: "report" }),
+        resource_kind: "excel",
+        resource_ref: body.workbook_path?.trim() || String(latestExcelRunSummary().workbook_path ?? "latest-excel-workbook"),
+        input_payload: { source: "excel-engine", ...body },
+        approval_granted: body.approval_granted ?? false,
+        delegate: async () => {
+          const created = await createReportFromLatestExcel(auth, body);
+          return {
+            result: created,
+            target_refs: [created.report_id],
+            output_summary: {
+              report_id: created.report_id,
+              workbook_path: created.workbook_path,
+              excel_run_root: created.excel_run_root,
+              consume_manifest_path: created.consume_manifest_path,
+              source: "excel-engine"
+            }
+          };
+        }
+      },
+      (governed) => {
+        const created = governed.result as ExcelReportConsumeResult;
+        sendJson(response, 200, {
+          open_path: `/reports?report_id=${encodeURIComponent(created.report_id)}`,
+          report_id: created.report_id,
+          excel_consume: created,
+          report_summary: latestReportSummary(),
+          governance: governanceMeta(governed)
+        });
+      }
+    );
+  }
   if (request.method === "POST" && url.pathname === "/api/v1/reports/convert-to-dashboard") {
     const body = (await parseBody(request)) as {
       report_id?: string | null;
@@ -8520,6 +8884,7 @@ const handleApi = async (request: IncomingMessage, response: ServerResponse, aut
 export const startDashboardWebApp = (options?: DashboardWebServerOptions): { host: string; port: number; base_url: string; storage_dir: string; publication_base_url: string } => {
   ensureDir(ROOT);
   ensureDir(DATASET_ROOT);
+  ensureDir(EXCEL_CONSUMPTION_ROOT);
   ensureDir(REPORT_BRIDGE_ROOT);
   ensureDir(PRESENTATION_BRIDGE_ROOT);
   ensureDir(TEMPLATE_ROOT);
@@ -8629,25 +8994,17 @@ export const startDashboardWebApp = (options?: DashboardWebServerOptions): { hos
 };
 
 export const stopDashboardWebApp = async (): Promise<void> => {
+  if (!server) return;
+  const current = server;
+  server = null;
   for (const socket of sockets) {
     try {
       socket.destroy();
-    } catch {
-      // best-effort shutdown
-    }
+    } catch {}
   }
   sockets.clear();
-  if (!server) {
-    return;
-  }
-  await new Promise<void>((resolve, reject) => {
-    server?.close((error) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      resolve();
-    });
+  await new Promise<void>((resolve) => {
+    current.close(() => resolve());
   });
-  server = null;
+  await stopDashboardPublicationService();
 };

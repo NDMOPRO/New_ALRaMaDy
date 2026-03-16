@@ -2,7 +2,6 @@ import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 import http from "node:http";
-import net from "node:net";
 import path from "node:path";
 import { chromium } from "playwright-core";
 
@@ -33,22 +32,9 @@ const writeJson = (filePath, payload) => {
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const step = (message) => console.log(`[governance-cross-engine-strict] ${message}`);
 const readJson = (filePath) => JSON.parse(fs.readFileSync(filePath, "utf8"));
-
-const allocatePort = () =>
-  new Promise((resolve, reject) => {
-    const server = net.createServer();
-    server.unref();
-    server.on("error", reject);
-    server.listen(0, host, () => {
-      const address = server.address();
-      if (!address || typeof address === "string") {
-        server.close(() => reject(new Error("failed to allocate port")));
-        return;
-      }
-      const port = address.port;
-      server.close((error) => (error ? reject(error) : resolve(port)));
-    });
-  });
+const port = 4310;
+let baseUrl = `http://${host}:${port}`;
+let spawnedServer = false;
 
 const requestJson = (port, targetPath, { method = "GET", headers = {}, body } = {}) =>
   new Promise((resolve, reject) => {
@@ -92,15 +78,19 @@ const requestJson = (port, targetPath, { method = "GET", headers = {}, body } = 
     request.end();
   });
 
-const waitForServer = async (port) => {
-  for (let attempt = 0; attempt < 80; attempt += 1) {
-    try {
-      const result = await requestJson(port, "/login");
-      if (result.status >= 200 && result.status < 500) {
-        return;
-      }
-    } catch {
-      // retry
+const isReady = async () => {
+  try {
+    const result = await requestJson(port, "/login");
+    return result.status >= 200 && result.status < 500;
+  } catch {
+    return false;
+  }
+};
+
+const waitForServer = async () => {
+  for (let attempt = 0; attempt < 240; attempt += 1) {
+    if (await isReady()) {
+      return;
     }
     await wait(250);
   }
@@ -156,31 +146,30 @@ const publicationAssetPath = (transport, asset) => {
   return transport.served_embed_html_url;
 };
 
-const port = await allocatePort();
-const transportPort = await allocatePort();
-const baseUrl = `http://${host}:${port}`;
 const tenantRef = `tenant-governance-cross-engine-${Date.now()}`;
 
 ensureDir(proofDir);
-const server = spawn("node", ["apps/contracts-cli/dist/index.js", "dashboard-serve-web"], {
-  cwd: process.cwd(),
-  env: {
-    ...process.env,
-    RASID_DASHBOARD_WEB_PORT: String(port),
-    RASID_DASHBOARD_TRANSPORT_PORT: String(transportPort),
-    RASID_DEBUG_STACKS: "1"
-  },
-  stdio: [
-    "ignore",
-    fs.openSync(serverOutFile, "a"),
-    fs.openSync(serverErrFile, "a")
-  ]
-});
+let server = null;
 
 let browser;
 
 try {
-  await waitForServer(port);
+  if (!(await isReady())) {
+    server = spawn("node", ["apps/contracts-cli/dist/index.js", "dashboard-serve-web"], {
+      cwd: process.cwd(),
+      env: {
+        ...process.env,
+        RASID_DEBUG_STACKS: "1"
+      },
+      stdio: [
+        "ignore",
+        fs.openSync(serverOutFile, "a"),
+        fs.openSync(serverErrFile, "a")
+      ]
+    });
+    spawnedServer = true;
+  }
+  await waitForServer();
   browser = await chromium.launch({ headless: true, executablePath: chromePath });
   const page = await browser.newPage({ viewport: { width: 1440, height: 1080 } });
 
@@ -194,7 +183,8 @@ try {
   await page.waitForURL(`${baseUrl}/data`);
 
   step("open /replication canvas surface and trigger approval boundary");
-  await page.goto(`${baseUrl}/replication`, { waitUntil: "networkidle" });
+  await page.goto(`${baseUrl}/replication`, { waitUntil: "domcontentloaded" });
+  await page.waitForSelector("#canvas-replication-to-dashboard");
   await page.click("#canvas-replication-to-dashboard");
   await page.waitForFunction(() => {
     const raw = document.getElementById("canvas-action-result")?.textContent ?? "";
@@ -549,6 +539,15 @@ try {
   if (browser) {
     await browser.close().catch(() => {});
   }
-  server.kill("SIGTERM");
-  await wait(500);
+  if (spawnedServer && server && server.exitCode === null && !server.killed) {
+    if (process.platform === "win32") {
+      server.kill();
+      try {
+        spawn("taskkill", ["/PID", String(server.pid), "/T", "/F"], { stdio: "ignore" });
+      } catch {}
+    } else {
+      server.kill("SIGTERM");
+    }
+    await wait(500);
+  }
 }

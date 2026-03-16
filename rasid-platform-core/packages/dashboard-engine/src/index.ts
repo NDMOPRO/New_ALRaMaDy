@@ -2260,6 +2260,17 @@ export const startDashboardPublicationService = (options?: DashboardEngineOption
   };
 };
 
+export const stopDashboardPublicationService = async (): Promise<void> => {
+  if (!dashboardTransportServer) return;
+  const current = dashboardTransportServer;
+  dashboardTransportServer = null;
+  dashboardTransportStore = null;
+  servedPublicationRoutes.clear();
+  await new Promise<void>((resolve) => {
+    current.close(() => resolve());
+  });
+};
+
 export const registerDashboardCapability = (runtime: RegistryBootstrap): void => {
   const actions = ActionRegistry.filter((action) => action.capability === "dashboards");
   const tools = ToolRegistry.filter((tool) => tool.owner_capability === "dashboards");

@@ -147,6 +147,8 @@ const reportServer = await startReportPlatformServer({
 });
 
 let browser = null;
+let resultSummary = null;
+let scriptError = null;
 
 try {
   reportEngine.createReport({
@@ -565,26 +567,29 @@ try {
     throw new Error(`Platform localization proof assertions failed: ${JSON.stringify(assertions)}`);
   }
 
-  console.log(
-    JSON.stringify(
-      {
-        runId,
-        proofRoot,
-        flowProofPath: path.join(proofRoot, "records", "flow-proof.json"),
-        marker,
-        reportId,
-        sharedDashboardId,
-        localizedShellDashboardId,
-        localizedPublicationId: localizedPublish.publication.publication_id
-      },
-      null,
-      2
-    )
-  );
+  resultSummary = {
+    runId,
+    proofRoot,
+    flowProofPath: path.join(proofRoot, "records", "flow-proof.json"),
+    marker,
+    reportId,
+    sharedDashboardId,
+    localizedShellDashboardId,
+    localizedPublicationId: localizedPublish.publication.publication_id
+  };
+} catch (error) {
+  scriptError = error;
 } finally {
   if (browser) {
     await browser.close().catch(() => undefined);
   }
-  await stopDashboardWebApp().catch(() => undefined);
-  await reportServer.close();
+  await Promise.race([stopDashboardWebApp().catch(() => undefined), wait(2000)]);
+  await Promise.race([reportServer.close(), wait(2000)]);
 }
+
+if (scriptError) {
+  throw scriptError;
+}
+
+console.log(JSON.stringify(resultSummary, null, 2));
+process.exit(0);

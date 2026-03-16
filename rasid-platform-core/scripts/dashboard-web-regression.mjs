@@ -86,14 +86,14 @@ const requestJson = (targetPath, method = "GET", headers = {}, body = undefined)
   });
 
 const waitForServer = async () => {
-  for (let attempt = 0; attempt < 40; attempt += 1) {
+  for (let attempt = 0; attempt < 120; attempt += 1) {
     try {
       const response = await fetch(`${baseUrl}/login`);
       if (response.ok) return;
     } catch {
       // keep retrying
     }
-    await wait(250);
+    await wait(500);
   }
   throw new Error("dashboard web server did not start");
 };

@@ -1,36 +1,20 @@
 import { spawn } from "node:child_process";
 import fs from "node:fs";
-import net from "node:net";
 import path from "node:path";
 import { chromium } from "playwright-core";
 
 const host = "127.0.0.1";
 const chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const allocatePort = () =>
-  new Promise((resolve, reject) => {
-    const server = net.createServer();
-    server.unref();
-    server.on("error", reject);
-    server.listen(0, host, () => {
-      const address = server.address();
-      if (!address || typeof address === "string") {
-        server.close(() => reject(new Error("failed to allocate port")));
-        return;
-      }
-      const port = address.port;
-      server.close((error) => (error ? reject(error) : resolve(port)));
-    });
-  });
-
-const port = await allocatePort();
-const transportPort = await allocatePort();
+const port = 4310;
 const baseUrl = `http://${host}:${port}`;
 const proofRoot = path.join(process.cwd(), ".runtime", "governance-proof");
 const proofFile = path.join(proofRoot, "governance-engine-regression.json");
 const screenshotFile = path.join(proofRoot, "governance-engine-regression.png");
+let spawnedServer = false;
 
 const stopServer = () => {
+  if (!spawnedServer) return;
   if (server.exitCode !== null || server.killed) return;
   if (process.platform === "win32") {
     server.kill();
@@ -42,12 +26,18 @@ const stopServer = () => {
   server.kill("SIGTERM");
 };
 
+const isReady = async () => {
+  try {
+    const response = await fetch(`${baseUrl}/login`);
+    return response.ok;
+  } catch {
+    return false;
+  }
+};
+
 const waitForServer = async () => {
-  for (let attempt = 0; attempt < 60; attempt += 1) {
-    try {
-      const response = await fetch(`${baseUrl}/login`);
-      if (response.ok) return;
-    } catch {}
+  for (let attempt = 0; attempt < 240; attempt += 1) {
+    if (await isReady()) return;
     await wait(250);
   }
   throw new Error("governance web server did not start");
@@ -60,11 +50,7 @@ const projectId = `project-governance-proof-${runId}`;
 
 const server = spawn("node", ["apps/contracts-cli/dist/index.js", "dashboard-serve-web"], {
   cwd: process.cwd(),
-  env: {
-    ...process.env,
-    RASID_DASHBOARD_WEB_PORT: String(port),
-    RASID_DASHBOARD_TRANSPORT_PORT: String(transportPort)
-  },
+  env: { ...process.env },
   stdio: "ignore"
 });
 
@@ -72,6 +58,9 @@ let browser;
 
 try {
   fs.mkdirSync(proofRoot, { recursive: true });
+  if (!(await isReady())) {
+    spawnedServer = true;
+  }
   await waitForServer();
 
   const loginResponse = await fetch(`${baseUrl}/api/v1/governance/auth/login`, {

@@ -1,5 +1,7 @@
 import { spawn, spawnSync } from "node:child_process";
 import fs from "node:fs";
+import http from "node:http";
+import https from "node:https";
 import net from "node:net";
 import path from "node:path";
 import ExcelJS from "exceljs";
@@ -289,6 +291,40 @@ const fetchText = async (url) => {
   if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}: ${text}`);
   return text;
 };
+const requestJson = (url, method, payload = undefined, headers = {}) =>
+  new Promise((resolve, reject) => {
+    const parsed = new URL(url);
+    const transport = parsed.protocol === "https:" ? https : http;
+    const body = payload === undefined ? null : JSON.stringify(payload);
+    const request = transport.request(
+      {
+        hostname: parsed.hostname,
+        port: parsed.port ? Number(parsed.port) : parsed.protocol === "https:" ? 443 : 80,
+        path: `${parsed.pathname}${parsed.search}`,
+        method,
+        headers: {
+          ...(body ? { "content-type": "application/json", "content-length": Buffer.byteLength(body) } : {}),
+          ...headers
+        }
+      },
+      (response) => {
+        const chunks = [];
+        response.on("data", (chunk) => chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)));
+        response.on("end", () => {
+          resolve({
+            status: response.statusCode ?? 0,
+            body: Buffer.concat(chunks).toString("utf8")
+          });
+        });
+      }
+    );
+    request.setTimeout(0);
+    request.on("error", reject);
+    if (body) request.write(body);
+    request.end();
+  });
+const cookieHeaderFor = async (context, baseUrl) =>
+  (await context.cookies(baseUrl)).map((cookie) => `${cookie.name}=${cookie.value}`).join("; ");
 
 const fixtures = await createFixtures();
 const transcriptionPort = await getFreePort();
@@ -316,12 +352,14 @@ try {
     RASID_DASHBOARD_WEB_PORT: String(dashboardPort)
   });
 
-  await Promise.all([
-    waitForServer(transcriptionBaseUrl),
-    waitForServer(reportBaseUrl),
-    waitForServer(presentationsBaseUrl),
-    waitForServer(dashboardBaseUrl)
-  ]);
+  await waitForServer(transcriptionBaseUrl);
+  appendLog("records/progress.log", `server ready transcription ${transcriptionBaseUrl}`);
+  await waitForServer(reportBaseUrl);
+  appendLog("records/progress.log", `server ready report ${reportBaseUrl}`);
+  await waitForServer(presentationsBaseUrl);
+  appendLog("records/progress.log", `server ready presentations ${presentationsBaseUrl}`);
+  await waitForServer(dashboardBaseUrl);
+  appendLog("records/progress.log", `server ready dashboard ${dashboardBaseUrl}`);
   appendLog("records/progress.log", "servers ready");
 
   browser = await chromium.launch(browserExecutablePath ? { executablePath: browserExecutablePath, headless: true } : { headless: true });
@@ -343,17 +381,23 @@ try {
   );
   await transcriptionPage.waitForURL(`${transcriptionBaseUrl}/transcription`);
   appendLog("records/progress.log", "transcription page ready");
-  const transcriptionStart = await pageJson(transcriptionPage, "/api/v1/transcription/jobs/start", "POST", {
-    mode: "advanced",
-    files: [
-      { file_name: path.basename(fixtures.audioPath), media_type: "audio/wav", content_base64: encodeFileBase64(fixtures.audioPath) },
-      { file_name: path.basename(fixtures.videoPath), media_type: "video/mp4", content_base64: encodeFileBase64(fixtures.videoPath) },
-      { file_name: path.basename(fixtures.scannedPdfPath), media_type: "application/pdf", content_base64: encodeFileBase64(fixtures.scannedPdfPath) },
-      { file_name: path.basename(fixtures.workbookPath), media_type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", content_base64: encodeFileBase64(fixtures.workbookPath) }
-    ]
-  });
-  if (transcriptionStart.status !== 200) throw new Error(JSON.stringify(transcriptionStart.body));
-  const transcriptionPayload = transcriptionStart.body;
+  const transcriptionCookieHeader = await cookieHeaderFor(context, transcriptionBaseUrl);
+  const transcriptionStartResponse = await requestJson(
+    `${transcriptionBaseUrl}/api/v1/transcription/jobs/start`,
+    "POST",
+    {
+      mode: "advanced",
+      files: [
+        { file_name: path.basename(fixtures.audioPath), media_type: "audio/wav", content_base64: encodeFileBase64(fixtures.audioPath) },
+        { file_name: path.basename(fixtures.videoPath), media_type: "video/mp4", content_base64: encodeFileBase64(fixtures.videoPath) },
+        { file_name: path.basename(fixtures.scannedPdfPath), media_type: "application/pdf", content_base64: encodeFileBase64(fixtures.scannedPdfPath) },
+        { file_name: path.basename(fixtures.workbookPath), media_type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", content_base64: encodeFileBase64(fixtures.workbookPath) }
+      ]
+    },
+    { cookie: transcriptionCookieHeader }
+  );
+  if (transcriptionStartResponse.status !== 200) throw new Error(transcriptionStartResponse.body);
+  const transcriptionPayload = JSON.parse(transcriptionStartResponse.body);
   appendLog("records/progress.log", "transcription job started");
   await transcriptionPage.evaluate(async (jobId) => {
     await window.loadJobs?.();
@@ -751,37 +795,23 @@ try {
           entry.to_ref === publishPayload.publication.publication_id ||
           entry.to_ref === libraryAssetId)
     ) ?? null;
-  const governanceLibraryRuntimePath =
-    (libraryAssetId &&
-      findNewestJsonInTree(governanceTenantRoot, (entry) => entry?.asset_id === libraryAssetId)) ??
-    null;
-  const governanceAuditRuntimePath = findNewestJsonInTree(
-    governanceTenantRoot,
-    (entry) =>
-      entry?.action_ref === "dashboard.publish.v1" &&
-      (entry?.target_ref === dashboardId ||
-        entry?.target_ref === publishPayload.publication.publication_id ||
-        (Array.isArray(entry?.object_refs) &&
-          (entry.object_refs.includes(dashboardId) || entry.object_refs.includes(publishPayload.publication.publication_id))))
+  const governanceLibraryRuntimePath = path.join(governanceTenantRoot, "library.json");
+  const governanceAuditRuntimePath = path.join(governanceTenantRoot, "audits.json");
+  const governanceEvidenceRuntimePath = path.join(governanceTenantRoot, "evidence-records.json");
+  const governanceLineageRuntimePath = path.join(governanceTenantRoot, "lineages.json");
+  const governanceLibraryRuntime = readJsonIfPossible(governanceLibraryRuntimePath);
+  const governanceAuditRuntime = readJsonIfPossible(governanceAuditRuntimePath);
+  const governanceEvidenceRuntime = readJsonIfPossible(governanceEvidenceRuntimePath);
+  const governanceLineageRuntime = readJsonIfPossible(governanceLineageRuntimePath);
+  const governanceLibraryRuntimeHasRecord = jsonMatches(governanceLibraryRuntime, (entry) => entry?.asset_id === libraryAssetId);
+  const governanceAuditRuntimeHasRecord = jsonMatches(governanceAuditRuntime, (entry) => entry?.event_id === governanceAuditRecord?.event_id);
+  const governanceEvidenceRuntimeHasRecord = jsonMatches(
+    governanceEvidenceRuntime,
+    (entry) => entry?.evidence_id === governanceEvidenceRecord?.evidence_id
   );
-  const governanceEvidenceRuntimePath = findNewestJsonInTree(
-    governanceTenantRoot,
-    (entry) =>
-      entry?.action_id === "dashboard.publish.v1" &&
-      (entry?.resource_ref === dashboardId ||
-        entry?.resource_ref === publishPayload.publication.publication_id ||
-        (Array.isArray(entry?.source_refs) &&
-          (entry.source_refs.includes(dashboardId) || entry.source_refs.includes(workflow.bundle.artifact_ref))))
-  );
-  const governanceLineageRuntimePath = findNewestJsonInTree(
-    governanceTenantRoot,
-    (entry) =>
-      (entry?.action_ref === "dashboard.publish.v1" ||
-        entry?.transform_ref === "dashboard.publish.v1" ||
-        entry?.transform_ref === "dashboard.publish") &&
-      (entry?.from_ref === dashboardId ||
-        entry?.to_ref === publishPayload.publication.publication_id ||
-        entry?.to_ref === libraryAssetId)
+  const governanceLineageRuntimeHasRecord = jsonMatches(
+    governanceLineageRuntime,
+    (entry) => entry?.edge_id === governanceLineageRecord?.edge_id
   );
   if (governanceLibraryRuntimePath) copyFileIntoProof(governanceLibraryRuntimePath, "intermediate/governance-library-record.json");
   if (governanceAuditRuntimePath) copyFileIntoProof(governanceAuditRuntimePath, "audit/governance-dashboard-publish-runtime.json");
@@ -822,10 +852,10 @@ try {
     shareDashboardId === dashboardId &&
     exportDashboardId === dashboardId;
   const dashboardLibraryAssetCreated = Boolean(libraryAssetId);
-  const dashboardLibraryAssetMirroredToGovernance = Boolean(governanceLibraryRecord && governanceLibraryRuntimePath);
-  const dashboardGovernanceAuditConnected = Boolean(governanceAuditRecord && governanceAuditRuntimePath);
-  const dashboardGovernanceEvidenceConnected = Boolean(governanceEvidenceRecord && governanceEvidenceRuntimePath);
-  const dashboardGovernanceLineageConnected = Boolean(governanceLineageRecord && governanceLineageRuntimePath);
+  const dashboardLibraryAssetMirroredToGovernance = Boolean(governanceLibraryRecord && governanceLibraryRuntimeHasRecord);
+  const dashboardGovernanceAuditConnected = Boolean(governanceAuditRecord && governanceAuditRuntimeHasRecord);
+  const dashboardGovernanceEvidenceConnected = Boolean(governanceEvidenceRecord && governanceEvidenceRuntimeHasRecord);
+  const dashboardGovernanceLineageConnected = Boolean(governanceLineageRecord && governanceLineageRuntimeHasRecord);
   const governanceVisibleInSurface =
     libraryLiveText.includes(dashboardId) ||
     libraryLiveText.includes(libraryAssetId ?? "") ||

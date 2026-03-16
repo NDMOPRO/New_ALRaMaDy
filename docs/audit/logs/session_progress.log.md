@@ -2324,3 +2324,42 @@ Append-only.
 - Unresolved items:
   - none for the current save request
 - Next exact step: re-run the sync only after future documentation changes in the repository
+
+- Timestamp: 2026-03-16T08:14:28.5626777+03:00
+- Phase: Presentations cross-engine repair
+- Scope: Prove `transcription -> reports -> presentations -> dashboards` repo-locally and repair `/api/v1/presentations/capabilities` so it no longer underclaims the implemented downstream chain
+- Files/Folders inspected:
+  - C:\ALRaMaDy\rasid-platform-core\scripts\transcription-report-presentation-dashboard-proof.mjs
+  - C:\ALRaMaDy\rasid-platform-core\scripts\presentations-regression.mjs
+  - C:\ALRaMaDy\rasid-platform-core\packages\presentations-engine\src\platform.ts
+  - C:\ALRaMaDy\rasid-platform-core\apps\contracts-cli\src\dashboard-web.ts
+  - C:\ALRaMaDy\rasid-platform-core\packages\dashboard-engine\src\index.ts
+  - C:\ALRaMaDy\rasid-platform-core\packages\transcription-extraction-engine\artifacts\latest-run\transcription-report-presentation-dashboard-proof-20260316045833738\
+  - C:\ALRaMaDy\rasid-platform-core\packages\presentations-engine\artifacts\latest-run\presentation-regression-20260316041719588\
+- Findings added:
+  - `node scripts/transcription-report-presentation-dashboard-proof.mjs` completed successfully and wrote a fresh proof root under `packages/transcription-extraction-engine/artifacts/latest-run/transcription-report-presentation-dashboard-proof-20260316045833738/`
+  - the fresh `flow-proof.json` confirms `transcription -> reports -> presentations -> dashboards -> library/governance`
+  - `packages/presentations-engine/src/platform.ts` now reports `transcription_reports_presentations_dashboards` as `implemented: true`
+  - fresh route proof showed `/api/v1/presentations/capabilities` returning both downstream flow flags as `true`
+  - `npx tsc -p packages/presentations-engine/tsconfig.json` passed after the disclosure patch
+- Unresolved items:
+  - provider-backed Gmail / Notion / Slack / Google Slides / Drive / OneDrive remain unimplemented
+  - literal line-by-line closure of all `P05` requirements remains open
+- Next exact step: continue only on the remaining `presentations-engine` gaps that still lack real code, route, UI, test, or artifact proof
+
+- Timestamp: 2026-03-16T08:24:00+03:00
+- Phase: Presentations provider-backed blocker verification
+- Scope: Determine whether the remaining provider-backed integrations can be closed from the current repository and machine state without inventing credentials or fake proof
+- Files/Folders inspected:
+  - C:\ALRaMaDy\rasid-platform-core\.env
+  - C:\ALRaMaDy\rasid-platform-core\.env.example
+  - C:\ALRaMaDy\rasid-platform-core\.runtime\claude-provider-debug-invalid-model.log
+  - C:\ALRaMaDy\rasid-platform-core\.runtime\claude-provider-debug-success.log
+  - C:\ALRaMaDy\rasid-platform-core\packages\presentations-engine\src\
+- Findings added:
+  - no `.env` or `.env.example` provider configuration exists for Google/Microsoft/Slack
+  - repo-local logs explicitly show missing OAuth token failures for Gmail and Google Calendar and cached needs-auth for Gmail
+  - no authenticated provider runtime is available inside the repository to produce live proof for the remaining provider-backed surfaces
+- Unresolved items:
+  - provider-backed Gmail / Notion / Slack / Google Slides / Google Drive / OneDrive
+- Next exact step: treat the provider-backed remainder as a repo-local blocker until real credentials/provider runtime are supplied inside the current environment

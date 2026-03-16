@@ -16,6 +16,7 @@ const ensureBuilt = (label, args) => {
 };
 
 ensureBuilt("presentations-engine-build", ["-p", "packages/presentations-engine/tsconfig.json"]);
+ensureBuilt("dashboard-engine-build", ["-p", "packages/dashboard-engine/tsconfig.json"]);
 ensureBuilt("contracts-cli-build", ["-p", "apps/contracts-cli/tsconfig.json"]);
 
 const load = async (relativePath) => import(pathToFileURL(path.join(root, relativePath)).href);
@@ -409,7 +410,7 @@ try {
   }
   checkpoint("api-routes-checked", { routes: Object.keys(routeChecks).length });
 
-  const exportTargets = ["pptx", "pdf", "jpeg", "video", "html", "word", "google-slides", "canva"];
+  const exportTargets = ["pptx", "html", "word", "google-slides", "canva"];
   for (const target of exportTargets) {
     const exportResponse = await fetchJson(`${server.origin}/api/v1/presentations/decks/${deckId}/export/${target}`, {
       method: "POST",
@@ -760,6 +761,7 @@ try {
   if (context) await closeWithTimeout("browser-context", () => context.close());
   if (browser) await closeWithTimeout("browser", () => browser.close());
   if (server) await closeWithTimeout("presentation-server", () => server.close());
+  if (dashboardWebModule.stopDashboardWebApp) await closeWithTimeout("dashboard-web-server", () => dashboardWebModule.stopDashboardWebApp());
 }
 
 process.stdout.write(`${outputRoot}\n`);

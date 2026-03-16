@@ -1805,3 +1805,24 @@
   - the sync result was `121` total files, `0` copied, and `121` skipped
   - the skipped-only result confirms that `C:\777\docs\` already held the current documentation suite contents
   - the repository `docs\` tree remains the source of truth and `C:\777\docs\` remains the saved external copy
+
+- Date: 2026-03-16T08:14:28.5626777+03:00
+- Presentations cross-engine truthfulness repair:
+  - `packages/transcription-extraction-engine/artifacts/latest-run/transcription-report-presentation-dashboard-proof-20260316045833738/records/flow-proof.json` proves the repo-local live chain `transcription -> reports -> presentations -> dashboards -> library/governance`
+  - `node scripts/transcription-report-presentation-dashboard-proof.mjs` exited command-level clean for that proof
+  - `packages/presentations-engine/src/platform.ts` now discloses `downstream_flows.transcription_reports_presentations_dashboards.implemented = true`
+  - a fresh live call to `/api/v1/presentations/capabilities` now returns both downstream flow flags as `implemented: true`
+  - provider-backed Gmail / Notion / Slack / Google Slides / Drive / OneDrive remain explicitly `not_implemented`
+
+- Date: 2026-03-16T08:24:00+03:00
+- Presentations provider-backed integration blocker:
+  - no provider credentials/config were found in `C:\ALRaMaDy\rasid-platform-core\.env` or `C:\ALRaMaDy\rasid-platform-core\.env.example`
+  - repo-local debug logs under `.runtime` explicitly show provider auth failures for the missing OAuth-backed surfaces
+  - direct evidence:
+    - `C:\ALRaMaDy\rasid-platform-core\.runtime\claude-provider-debug-invalid-model.log` contains:
+      - `claude.ai Gmail ... authentication_error ... MCP server requires authentication but no OAuth token is configured.`
+      - `claude.ai Google Calendar ... authentication_error ... MCP server requires authentication but no OAuth token is configured.`
+    - `C:\ALRaMaDy\rasid-platform-core\.runtime\claude-provider-debug-success.log` contains:
+      - `claude.ai Gmail: Skipping connection (cached needs-auth)`
+  - this blocks live repo-local proof for provider-backed `Gmail`, `Google Slides`, `Google Drive`, and `OneDrive`
+  - `Slack` and `Notion` provider-backed closure are also blocked for the same reason on the current machine because no authenticated tenant/provider runtime is configured inside the repository

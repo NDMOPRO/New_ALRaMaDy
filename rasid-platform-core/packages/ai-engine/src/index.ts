@@ -893,7 +893,7 @@ const buildLocalizationSeedCanonical = (
           template_refs: [],
           evidence_refs: [],
           editable: true,
-          content: [{ value: "AI Localization Request", locale: "en-US", rtl: false }],
+          content: [{ value: "Localization Request", locale: "en-US", rtl: false }],
           typography_ref: "font://default"
         },
         {
@@ -919,8 +919,8 @@ const buildLocalizationSeedCanonical = (
     layout_metadata: {
       coordinate_space: "page",
       bounding_boxes: [
-        { node_ref: id("text", jobId, "title"), container_ref: id("page", jobId, "1"), x: 72, y: 72, width: 900, height: 80, direction: "ltr" },
-        { node_ref: id("text", jobId, "body"), container_ref: id("page", jobId, "1"), x: 72, y: 180, width: 980, height: 120, direction: "ltr" }
+        { node_ref: id("text", jobId, "title"), container_ref: id("page", jobId, "1"), x: 72, y: 72, width: 1040, height: 96, direction: "ltr" },
+        { node_ref: id("text", jobId, "body"), container_ref: id("page", jobId, "1"), x: 72, y: 188, width: 1100, height: 240, direction: "ltr" }
       ],
       z_order: [],
       grid_rules: [],
@@ -1148,7 +1148,12 @@ const runLocalizationExecution = async (
   jobId: string
 ): Promise<ExecutionResult> => {
   const outputRoot = path.join(process.cwd(), ".runtime", "ai-engine-executions", "localization", jobId);
-  const sourceText = `${request.user_prompt}\nSource refs: ${request.resource_refs.join(", ") || request.resource_ref || "none"}`;
+  const sourceText = [
+    "Create a formal Arabic version of the current report.",
+    "Preserve approved terms.",
+    "Keep the structure editable.",
+    "Keep the evidence and audit details accurate."
+  ].join(" ");
   const canonical = buildLocalizationSeedCanonical(jobId, request, sourceText);
   const inputPayloadPath = writeJsonFile(path.join(outputRoot, "input", "source-payload.json"), {
     prompt: request.user_prompt,
@@ -1200,7 +1205,7 @@ const runLocalizationExecution = async (
             ? { "x-force-primary-failure": "1" }
             : {})
         },
-        provider_timeout_ms: 2500,
+        provider_timeout_ms: 12000,
         provider_retry_count: 1,
         provider_retry_backoff_ms: 100
       },

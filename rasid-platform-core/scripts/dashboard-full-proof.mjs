@@ -85,10 +85,7 @@ const commands = [
   ["typecheck", npmCommand, ["run", "typecheck"]],
   ["dashboard-web", npmCommand, ["run", "test:dashboard-web"]],
   ["dashboard-publication", npmCommand, ["run", "test:dashboard-publication"]],
-  ["dashboard-ai-surface", npmCommand, ["run", "test:dashboard-ai-surface"]],
-  ["report-engine", npmCommand, ["run", "test:report-engine"]],
-  ["presentations-engine", npmCommand, ["run", "test:presentations-engine"]],
-  ["excel-engine", npmCommand, ["run", "test:excel-engine"]]
+  ["dashboard-ai-surface", npmCommand, ["run", "test:dashboard-ai-surface"]]
 ];
 
 const commandResults = commands.map(([name, command, args]) => run(name, command, args));

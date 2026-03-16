@@ -94,7 +94,7 @@ const requestJson = (targetPath, method = "GET", headers = {}, body = undefined,
   });
 
 const waitForServer = async () => {
-  for (let attempt = 0; attempt < 60; attempt += 1) {
+  for (let attempt = 0; attempt < 120; attempt += 1) {
     try {
       const status = await new Promise((resolve, reject) => {
         const request = http.request({ host, port, path: "/login", method: "GET" }, (response) => resolve(response.statusCode ?? 0));
@@ -106,7 +106,7 @@ const waitForServer = async () => {
     } catch {
       // retry
     }
-    await wait(250);
+    await wait(500);
   }
   throw new Error("dashboard AI web server did not start");
 };
@@ -118,6 +118,21 @@ const responseJson = async (response) => {
   } catch {
     throw new Error(`Invalid JSON response from ${response.url()}: ${text.slice(0, 300)}`);
   }
+};
+
+const safeGoto = async (page, url, attempts = 3) => {
+  let lastError = null;
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try {
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 120000 });
+      await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => null);
+      return;
+    } catch (error) {
+      lastError = error;
+      await wait(750 * (attempt + 1));
+    }
+  }
+  throw lastError ?? new Error(`Failed to navigate to ${url}`);
 };
 
 const runtimePaths = (jobId) => {
@@ -243,7 +258,7 @@ try {
 
   browser = await chromium.launch({ headless: true, executablePath: chromePath });
   const page = await browser.newPage({ viewport: { width: 1440, height: 1080 } });
-  await page.goto(`${baseUrl}/login`, { waitUntil: "networkidle" });
+  await safeGoto(page, `${baseUrl}/login`);
   await page.fill("#email", "admin");
   await page.fill("#password", "1500");
   await page.fill("#tenant", tenantRef);
@@ -258,7 +273,7 @@ try {
         url.searchParams.set(key, `${value}`);
       }
     }
-    await page.goto(url.toString(), { waitUntil: "networkidle" });
+    await safeGoto(page, url.toString());
     await page.fill("#ai-session-id", sessionId);
     await page.fill("#ai-prompt", prompt);
     await page.fill("#ai-resource-ref", resourceRef);
@@ -287,7 +302,7 @@ try {
     }
     if (!detail?.job_id) throw new Error(`No AI job persisted for ${name}`);
     if (payload.open_path) {
-      await page.goto(`${baseUrl}${payload.open_path}`, { waitUntil: "networkidle" }).catch(() => null);
+      await safeGoto(page, `${baseUrl}${payload.open_path}`).catch(() => null);
     }
     await page.waitForTimeout(750);
     const resultText = await page.locator("#ai-result").textContent().catch(() => "");

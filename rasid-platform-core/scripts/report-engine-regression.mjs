@@ -60,7 +60,7 @@ const waitForJsonLine = (child) =>
     const timer = setTimeout(() => {
       child.kill("SIGTERM");
       reject(new Error(`Timed out waiting for service startup.\n${stderr}`));
-    }, 15000);
+    }, 60000);
     child.stdout.on("data", (chunk) => {
       stdout += chunk.toString();
       const trimmed = stdout.trim();

@@ -72,10 +72,10 @@ const requestJson = (port, targetPath, { method = "GET", headers = {}, body } = 
   });
 
 const waitForServer = async (port) => {
-  for (let attempt = 0; attempt < 80; attempt += 1) {
+  for (let attempt = 0; attempt < 240; attempt += 1) {
     try {
-      const response = await requestJson(port, "/login");
-      if (response.status >= 200 && response.status < 500) {
+      const response = await fetch(`http://${host}:${port}/login`);
+      if (response.ok) {
         return;
       }
     } catch {}
@@ -377,7 +377,6 @@ try {
   browser = null;
 
   const approvals = await adminApi("/api/v1/governance/approvals");
-  const audit = await adminApi("/api/v1/governance/audit");
   const lineage = lineageAfter;
   const reportApproval = latestBy(
     approvals.payload?.approvals ?? [],
@@ -386,51 +385,6 @@ try {
   const deckApproval = latestBy(
     approvals.payload?.approvals ?? [],
     (entry) => entry.action_id === "governance.external.consume.v1" && entry.resource_ref === deckId
-  );
-  const reportBoundaryAudit = latestBy(
-    audit.payload?.audit ?? [],
-    (entry) =>
-      entry.action_id === "governance.external.consume.v1" &&
-      entry.target_ref === reportId &&
-      entry.metadata?.result_status === "approval_required"
-  );
-  const reportApprovedAudit = latestBy(
-    audit.payload?.audit ?? [],
-    (entry) =>
-      entry.action_id === "governance.external.consume.v1" &&
-      entry.target_ref === reportId &&
-      entry.metadata?.result_status === "succeeded"
-  );
-  const deckBoundaryAudit = latestBy(
-    audit.payload?.audit ?? [],
-    (entry) =>
-      entry.action_id === "governance.external.consume.v1" &&
-      entry.target_ref === deckId &&
-      entry.metadata?.result_status === "approval_required"
-  );
-  const deckApprovedAudit = latestBy(
-    audit.payload?.audit ?? [],
-    (entry) =>
-      entry.action_id === "governance.external.consume.v1" &&
-      entry.target_ref === deckId &&
-      entry.metadata?.result_status === "succeeded"
-  );
-  const publishAudit = latestBy(
-    audit.payload?.audit ?? [],
-    (entry) => entry.action_id === "dashboard.publish.v1" && entry.target_ref === dashboardId && entry.metadata?.result_status === "succeeded"
-  );
-  const shareAudit = latestBy(
-    audit.payload?.audit ?? [],
-    (entry) =>
-      entry.action_id === "governance.publication.share.v1" &&
-      entry.target_ref === dashboardId &&
-      entry.metadata?.result_status === "succeeded"
-  );
-  const deniedAudits = (audit.payload?.audit ?? []).filter(
-    (entry) =>
-      entry.action_id === "governance.external.consume.v1" &&
-      entry.metadata?.result_status === "denied" &&
-      [reportId, deckId].includes(entry.target_ref)
   );
 
   const allowedReportLineage = latestBy(
@@ -496,13 +450,21 @@ try {
       presentation_allowed: allowedPresentationLineage
     },
     audit: {
-      report_boundary: reportBoundaryAudit,
-      report_approved: reportApprovedAudit,
-      deck_boundary: deckBoundaryAudit,
-      deck_approved: deckApprovedAudit,
-      publish: publishAudit,
-      share: shareAudit,
-      denied: deniedAudits.slice(-8)
+      report_boundary: reportPresentationBoundary.payload?.governance?.audit ?? null,
+      report_approved: reportPresentationApproved.payload?.governance?.audit ?? null,
+      deck_boundary: presentationDashboardBoundary.payload?.governance?.audit ?? null,
+      deck_approved: presentationDashboardApproved.payload?.governance?.audit ?? null,
+      publish_boundary: publishBoundary.payload?.governance?.audit ?? null,
+      publish: publishApproved.payload?.governance?.audit ?? null,
+      share_boundary: shareBoundary.payload?.governance?.audit ?? null,
+      share: shareApproved.payload?.governance?.audit ?? null,
+      export: exportApproved.payload?.governance?.audit ?? null,
+      denied: [
+        viewerReportDenied.payload?.governance?.audit ?? null,
+        viewerPresentationDenied.payload?.governance?.audit ?? null,
+        editorReportDenied.payload?.governance?.audit ?? null,
+        editorPresentationDenied.payload?.governance?.audit ?? null
+      ].filter(Boolean)
     },
     screenshots: {
       boundary: screenshotBoundary,

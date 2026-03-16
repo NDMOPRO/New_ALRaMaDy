@@ -659,9 +659,9 @@ const buildPresentationCapabilities = (): PresentationCapabilities => ({
       reason: "A sanctioned live presentations -> dashboards ingestion route now exists through dashboard-web at POST /api/v1/presentations/convert-to-dashboard with /presentations surface continuity."
     },
     transcription_reports_presentations_dashboards: {
-      implemented: false,
-      proof_mode: "not_implemented",
-      reason: "The current repository does not yet prove the full transcription -> reports -> presentations -> dashboards continuation from the /presentations proof surface."
+      implemented: true,
+      proof_mode: "live_route",
+      reason: "The repository now has fresh repo-local live proof for transcription -> reports -> presentations -> dashboards through the dedicated cross-engine regression at packages/transcription-extraction-engine/artifacts/latest-run/transcription-report-presentation-dashboard-proof-20260316045833738/records/flow-proof.json."
     }
   }
 });
