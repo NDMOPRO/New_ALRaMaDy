@@ -17,6 +17,7 @@ import Profile from "./pages/Profile";
 import SharedPresentation from "./pages/SharedPresentation";
 import About from "./pages/About";
 import StrictEngineTest from "./pages/StrictEngineTest";
+import ExcelEngineTest from "./pages/ExcelEngineTest";
 import PresentationAddendumTest from "./pages/PresentationAddendumTest";
 import MaterialIcon from "./components/MaterialIcon";
 
@@ -61,6 +62,7 @@ function Router() {
       
       {/* Strict Engine Test */}
       <Route path="/strict-engine-test" component={StrictEngineTest} />
+      <Route path="/excel-engine-test" component={ExcelEngineTest} />
 
       {/* Presentation Addendum Test */}
       <Route path="/presentation-addendum-test" component={PresentationAddendumTest} />
