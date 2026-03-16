@@ -1739,6 +1739,25 @@
   - the external saved copy was produced from `docs/RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md`
   - the repository copy remains the source of truth
 
+- Date: 2026-03-16T06:24:16.0971530+03:00
+- Documentation-suite architecture inventory:
+  - the active deploy path is still the unified gateway started through `node apps/contracts-cli/dist/index.js dashboard-serve-web`
+  - the existing docs set already covered system overview, C4 views, APIs, database, data flows, infrastructure, deployment, security, and performance
+  - the missing dedicated suite entrypoints before this pass were:
+    - `docs/README.md`
+    - `docs/architecture.md`
+    - `docs/modules.md`
+    - `docs/testing.md`
+  - the package dependency graph confirmed from current source imports:
+    - `ai-engine` is the orchestration apex and depends on localization, dashboard, excel, presentations, report, strict replication, and transcription engines
+    - `report-engine` depends on both `dashboard-engine` and `presentations-engine`
+    - `dashboard-engine`, `report-engine`, `presentations-engine`, `transcription-extraction-engine`, `governance-engine`, `excel-engine`, `strict-replication-engine`, and `arabic-localization-lct-engine` all depend on `contracts`
+  - `apps/rasid-web` remains a separate product/runtime line with:
+    - React/Vite/Wouter client
+    - Express/tRPC backend
+    - `sql.js` operational state in `data/rasid.db`
+    - optional Drizzle/MySQL metadata for OAuth user records and slide-library assets
+
 - Date: 2026-03-16T06:31:54.1807817+03:00
 - Architecture documentation package finalized:
   - the repository documentation suite now explicitly includes:

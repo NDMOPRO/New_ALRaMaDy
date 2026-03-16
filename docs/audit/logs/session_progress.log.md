@@ -2223,6 +2223,27 @@ Append-only.
   - any future edits must still be applied first to the in-repo governing file if the external copy needs to remain current
 - Next exact step: refresh the external copy again only if the governing in-repo file changes
 
+- Timestamp: 2026-03-16T06:24:16.0971530+03:00
+- Phase: Engineering documentation suite completion
+- Scope: Add the missing suite index, architecture guide, module breakdown, and testing/operations guide on top of the existing documentation set
+- Files/Folders inspected:
+  - C:\ALRaMaDy\docs\
+  - C:\ALRaMaDy\docs\audit\
+  - C:\ALRaMaDy\rasid-platform-core\package.json
+  - C:\ALRaMaDy\rasid-platform-core\apps\
+  - C:\ALRaMaDy\rasid-platform-core\packages\
+  - C:\ALRaMaDy\rasid-platform-core\.github\workflows\shared-foundation.yml
+  - C:\ALRaMaDy\rasid-platform-core\nixpacks.toml
+- Findings added:
+  - the documentation suite now has a dedicated entrypoint at `docs/README.md`
+  - the suite now has dedicated architecture, module, and testing/operations guides in addition to the previously generated system/API/database/dataflow/infrastructure/deployment/security/performance docs
+  - the active architectural split is now explicitly documented as:
+    - engine-first monorepo centered on `apps/contracts-cli`
+    - separate `apps/rasid-web` full-stack path with its own auth and persistence model
+- Unresolved items:
+  - future topology changes must keep both the docs suite and the audit trail aligned
+- Next exact step: create the timestamped phase report for this documentation completion and use the suite as the current onboarding baseline
+
 - Timestamp: 2026-03-16T06:31:54.1807817+03:00
 - Phase: Architecture documentation package finalize
 - Scope: Fill the remaining documentation gaps, add the missing requested files, and normalize the requested diagram filenames without discarding the earlier C4 set

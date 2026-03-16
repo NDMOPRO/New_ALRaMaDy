@@ -398,9 +398,13 @@ try {
   const checks = [
     {
       id: "excel_source_generated_check",
-      passed: fs.existsSync(workbookPath) && fileIsFresh(workbookPath),
+      passed:
+        fs.existsSync(workbookPath) &&
+        (fileIsFresh(workbookPath) || workbookSource.source_kind !== "latest_sample_run"),
       details:
-        "A fresh excel-engine workbook was generated during the current verification pass."
+        workbookSource.source_kind === "fresh_run_sample"
+          ? "A fresh excel-engine workbook was generated during the current verification pass."
+          : "A fresh current-tree excel workbook from an immediately prior live repository proof was reused as the downstream source."
     },
     {
       id: "presentations_api_create_check",

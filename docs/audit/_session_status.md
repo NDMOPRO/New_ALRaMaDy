@@ -1,9 +1,9 @@
 # Session Status
 
 - Session started: 2026-03-15T01:06:43+03:00
-- Current phase: `architecture_documentation_package_finalize` completed the architecture documentation package and normalized the requested diagram filenames
-- Last completed checkpoint: The documentation suite now includes `architecture.md`, `modules.md`, `testing.md`, and the requested `system-architecture.mmd`, `service-map.mmd`, and `dataflows.mmd` files
-- Current scope: Preserve the generated architecture package as the durable baseline for future implementation and review
+- Current phase: `engineering_documentation_suite` finalize the repository-wide engineering documentation suite and checkpoint the resulting architecture inventory
+- Last completed checkpoint: The missing suite index, architecture guide, module breakdown, and testing/operations guide were written under `docs/`
+- Current scope: Keep the documentation suite complete and durable for the current repository so new engineers can understand the active monorepo, `apps/rasid-web`, and the engine/persistence/runtime split without prior context
 - Completed folders/files:
   - docs/audit/
   - docs/audit/phases/
@@ -12,26 +12,6 @@
   - docs/audit/_knowledge_base.md
   - docs/audit/_open_questions.md
   - docs/audit/logs/session_progress.log.md
-  - rasid-platform-core/apps/contracts-cli/src/dashboard-web.ts
-  - rasid-platform-core/.runtime/dashboard-web-proof/20260316-reports-surface-fix/reports-entry-before-sync.png
-  - rasid-platform-core/.runtime/dashboard-web-proof/20260316-reports-surface-fix/reports-after-sync.png
-  - rasid-platform-core/.runtime/dashboard-web-proof/20260316-reports-surface-fix/presentations-report-context-after-sync.png
-  - rasid-platform-core/.runtime/dashboard-web-proof/20260316-reports-surface-fix/dashboards-report-context-after-sync.png
-  - rasid-platform-core/.runtime/presentations-engine/decks/rptdeck-cbd2d1f2e8/
-  - rasid-platform-core/.runtime/report-engine/integrations/dashboard-engine/dashboards/rptdash-a55669d065/
-  - git branch/remote history for `origin/codex/define-shared-contracts-for-rasid-platform-nru6ge`
-  - .runtime/github-proof/20260316-pr3-closed.png
-  - C:\ALRaMaDy_worktrees\codex-live-integration-batch-1\
-  - C:\ALRaMaDy\.runtime\railway-proof\20260316-login-page.png
-  - C:\ALRaMaDy\.runtime\railway-proof\20260316-data-page-live.png
-  - C:\ALRaMaDy\.runtime\railway-proof\20260316-dashboards-page-live.png
-  - C:\ALRaMaDy\.runtime\railway-proof\20260316-transcription-page-live.png
-  - C:\ALRaMaDy\.runtime\railway-proof\20260316-reports-page-live.png
-  - C:\ALRaMaDy\.runtime\railway-proof\20260316-presentations-page-live.png
-  - C:\ALRaMaDy\.runtime\railway-proof\20260316-governance-page-live.png
-  - rasid-platform-core/apps/rasid-web/
-  - docs/RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md
-  - docs/diagrams/
   - docs/system-overview.md
   - docs/c4-context.md
   - docs/c4-containers.md
@@ -40,15 +20,17 @@
   - docs/dataflows.md
   - docs/database.md
   - docs/apis.md
-  - docs/architecture.md
-  - docs/modules.md
   - docs/infrastructure.md
   - docs/deployment.md
   - docs/security.md
   - docs/performance.md
+  - docs/README.md
+  - docs/architecture.md
+  - docs/modules.md
   - docs/testing.md
+  - docs/RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md
+  - docs/diagrams/
   - docs/diagrams/system-context.mmd
-  - docs/diagrams/system-architecture.mmd
   - docs/diagrams/container-architecture.mmd
   - docs/diagrams/component-unified-gateway.mmd
   - docs/diagrams/component-rasid-web.mmd
@@ -56,12 +38,16 @@
   - docs/diagrams/dataflow-request-lifecycle.mmd
   - docs/diagrams/dataflow-document-ingestion.mmd
   - docs/diagrams/dataflow-cross-engine-pipeline.mmd
-  - docs/diagrams/dataflows.mmd
   - docs/diagrams/database-erd.mmd
   - docs/diagrams/integration-map.mmd
-  - docs/diagrams/service-map.mmd
   - C:\777\RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md
+  - rasid-platform-core/apps/contracts-cli/
+  - rasid-platform-core/apps/rasid-web/
+  - rasid-platform-core/packages/
+  - rasid-platform-core/.github/workflows/shared-foundation.yml
+  - rasid-platform-core/nixpacks.toml
 - Remaining scope:
-  - None for the current architecture-documentation deliverable
-- Next exact step: use the generated architecture package as the durable baseline for implementation, onboarding, and debugging
-- Last update: 2026-03-16T06:31:54.1807817+03:00
+  - Verify that the updated docs set covers the requested architecture, module, API, data-flow, and operations sections together
+  - Keep the docs and audit trail in sync if the platform topology changes again
+- Next exact step: append the completed documentation-suite inventory to the log and create a new timestamped phase report for this documentation pass
+- Last update: 2026-03-16T06:24:16.0971530+03:00
