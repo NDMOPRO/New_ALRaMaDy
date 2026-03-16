@@ -14,7 +14,12 @@
     "@rasid/capability-registry": "1.0.0",
     "@rasid/contracts": "1.0.0",
     "@rasid/runtime": "1.0.0",
+    "chartjs-node-canvas": "^4.1.6",
+    "decimal.js": "^10.4.3",
     "exceljs": "^4.4.0",
+    "hot-formula-parser": "^4.0.0",
+    "mathjs": "^13.0.0",
+    "papaparse": "^5.4.1",
     "xlsx": "^0.18.5",
     "zod": "^3.24.2"
   }

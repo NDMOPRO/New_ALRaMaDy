@@ -1910,3 +1910,9 @@ export {
   computePerceptualHash,
   GOLDEN_CORPUS_PATH
 };
+
+// ─── خدمات المنطق الحقيقي المنقولة من الحزمة المرجعية ────────────────────
+export * from './services';
+
+// ─── وحدات strict المتقدمة ─────────────────────────────────────────────────
+export * from './strict';

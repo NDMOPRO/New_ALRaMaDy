@@ -19,8 +19,12 @@
     "@rasid/contracts": "1.0.0",
     "@rasid/dashboard-engine": "1.0.0",
     "@rasid/presentations-engine": "1.0.0",
+    "archiver": "^7.0.0",
     "exceljs": "^4.4.0",
+    "handlebars": "^4.7.8",
     "jszip": "^3.10.1",
+    "pdfkit": "^0.15.0",
+    "qrcode": "^1.5.4",
     "zod": "^3.24.2"
   }
 }

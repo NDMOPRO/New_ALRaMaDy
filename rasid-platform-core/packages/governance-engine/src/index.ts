@@ -1603,3 +1603,14 @@ export const registerGovernanceCapability = (runtime: RegistryBootstrap): void =
   });
   runtime.registerManifest(createActionManifest(GOVERNANCE_CAPABILITY_ID, "1.0.0", GovernanceActionRegistry, ["approval.default"], ["evidence.default"]));
 };
+
+// ─── خدمات الأمان والحوكمة المتقدمة من الحزمة المرجعية ──────────────────
+export * from './services/compliance.service';
+export * from './services/audit.service';
+export * from './services/prompt-injection-guard.service';
+export * from './services/rbac-permissions';
+export * from './services/runtime-registry.service';
+export * from './services/feature-flags.service';
+export * from './services/auth.service';
+export * from './services/runtime-evidence.service';
+export * from './services/observability.service';
