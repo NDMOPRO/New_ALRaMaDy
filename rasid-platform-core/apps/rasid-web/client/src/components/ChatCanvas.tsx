@@ -142,17 +142,17 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
       return { intent: 'replicate-pdf', topic: t };
     // Presentation / عرض
     if (/عرض|شرائح|سلايد|بريزنتيشن|presentation|slides|pptx/i.test(t)) {
-      const cleaned = t.replace(/أنشئ|نفذ|اعمل|سوي|سو|اصنع|صمم|جهز|حضر|ابني|لي|عرض تقديمي|عرض|شرائح|عن|بعنوان|حول|يتكلم|يتحدث|تقديمي/gi, '').trim();
+      const cleaned = t.replace(/[أا]نش[ئيء]|نفذ|اعمل|سوي|سو|[أا]صنع|صمم|جهز|حضر|[أا]بني|ابغ[اىي]|[أا]بي|[أا]ريد|لي|عرض تقديمي|عرض|شرائح|عن|بعنوان|حول|يتكلم|يتحدث|تقديمي|بموضوع/gi, '').trim();
       return { intent: 'presentation', topic: cleaned };
     }
     // Report / تقرير
     if (/تقرير|تقارير|ريبورت|report/i.test(t)) {
-      const cleaned = t.replace(/أنشئ|نفذ|اعمل|سوي|سو|اصنع|صمم|جهز|حضر|ابني|لي|تقرير|تقارير|عن|بعنوان|حول/gi, '').trim();
+      const cleaned = t.replace(/[أا]نش[ئيء]|نفذ|اعمل|سوي|سو|[أا]صنع|صمم|جهز|حضر|[أا]بني|ابغ[اىي]|[أا]بي|[أا]ريد|لي|تقرير|تقارير|عن|بعنوان|حول|بموضوع/gi, '').trim();
       return { intent: 'report', topic: cleaned };
     }
     // Dashboard / لوحة
     if (/لوحة|داشبورد|مؤشر|مؤشرات|dashboard|kpi|احصائ/i.test(t)) {
-      const cleaned = t.replace(/أنشئ|نفذ|اعمل|سوي|سو|اصنع|صمم|جهز|حضر|ابني|لي|لوحة مؤشرات|لوحة|مؤشرات|داشبورد|عن|بعنوان|حول/gi, '').trim();
+      const cleaned = t.replace(/[أا]نش[ئيء]|نفذ|اعمل|سوي|سو|[أا]صنع|صمم|جهز|حضر|[أا]بني|ابغ[اىي]|[أا]بي|[أا]ريد|لي|لوحة مؤشرات|لوحة|مؤشرات|داشبورد|عن|بعنوان|حول|بموضوع/gi, '').trim();
       return { intent: 'dashboard', topic: cleaned };
     }
     // Translation / ترجمة
