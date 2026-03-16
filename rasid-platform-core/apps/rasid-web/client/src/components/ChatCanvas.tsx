@@ -50,9 +50,16 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
   const analyzeDashboardMutation = trpc.ai.analyzeDashboard.useMutation();
   const translateMutation = trpc.ai.translate.useMutation();
   const summarizeMutation = trpc.ai.summarize.useMutation();
+  const replicateFromImageMutation = trpc.ai.replicateFromImage.useMutation();
+  const replicateFromPdfMutation = trpc.ai.replicateFromPdf.useMutation();
   const createPresentation = trpc.presentations.create.useMutation();
   const createReport = trpc.reports.create.useMutation();
   const createDashboard = trpc.dashboards.create.useMutation();
+  const createSpreadsheet = trpc.spreadsheets.create.useMutation();
+
+  // File upload state for replication
+  const [uploadedFile, setUploadedFile] = useState<{ url: string; name: string; type: string } | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const character = theme === 'dark' ? CHARACTERS.char3_dark : CHARACTERS.char1_waving;
   const [welcomeVisible, setWelcomeVisible] = useState(false);
@@ -127,6 +134,12 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
   // ─── Intent Detection ─── Detects what the user wants and routes to the right engine
   const detectIntent = (text: string): { intent: string; topic: string } => {
     const t = text;
+    // Replication from image / مطابقة بصرية
+    if (/طابق|مطابقة|حول.*صورة|replicate.*image|visual.*match|استنسخ|انسخ.*صورة/i.test(t))
+      return { intent: 'replicate-image', topic: t };
+    // PDF conversion / تحويل PDF
+    if (/حول.*pdf|pdf.*عرض|pdf.*تقرير|pdf.*شرائح|convert.*pdf|استخرج.*pdf/i.test(t))
+      return { intent: 'replicate-pdf', topic: t };
     // Presentation / عرض
     if (/عرض|شرائح|سلايد|بريزنتيشن|presentation|slides|pptx/i.test(t))
       return { intent: 'presentation', topic: t.replace(/أنشئ|نفذ|اعمل|سوي|سو|اصنع|صمم|جهز|حضر|لي|عرض تقديمي|عرض|عن|بعنوان|حول|يتكلم|يتحدث/gi, '').trim() || t };
@@ -331,6 +344,131 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
         return;
       }
 
+      // ═══ REPLICATE FROM IMAGE ═══
+      if (intent === 'replicate-image') {
+        if (!uploadedFile) {
+          addAssistantMessage('📎 ارفع صورة أولاً ثم اطلب المطابقة.\n\nاضغط على زر 📎 أسفل المحادثة لرفع صورة (لوحة مؤشرات، عرض، تقرير، أو جدول).', {
+            actions: [
+              { id: 'upload-file', label: '📎 رفع صورة', icon: 'upload_file', variant: 'primary' },
+            ],
+          });
+          return;
+        }
+        const targetGuess = /لوحة|داشبورد|dashboard/i.test(topic) ? 'dashboard' as const
+          : /تقرير|report/i.test(topic) ? 'report' as const
+          : /جدول|excel|spreadsheet/i.test(topic) ? 'spreadsheet' as const
+          : 'presentation' as const;
+
+        addAssistantMessage(`جاري تحليل الصورة ومطابقتها كـ **${targetGuess === 'dashboard' ? 'لوحة مؤشرات' : targetGuess === 'report' ? 'تقرير' : targetGuess === 'spreadsheet' ? 'جدول' : 'عرض تقديمي'}**... ⏳`, {
+          stages: [
+            { name: 'تحليل الصورة بالذكاء', status: 'running', progress: 30 },
+            { name: 'استخراج العناصر', status: 'pending', progress: 0 },
+            { name: 'بناء المخرج', status: 'pending', progress: 0 },
+          ],
+        });
+
+        const repResult = await replicateFromImageMutation.mutateAsync({
+          imageUrl: uploadedFile.url,
+          targetType: targetGuess,
+          language: 'ar',
+          strictMode: true,
+        });
+
+        if (!repResult.success) {
+          addAssistantMessage(`❌ ${repResult.error || 'فشل في تحليل الصورة'}`, {
+            actions: [{ id: 'upload-file', label: 'حاول مرة أخرى', icon: 'refresh', variant: 'primary' }],
+          });
+          return;
+        }
+
+        // Save the artifact
+        if (targetGuess === 'presentation' && repResult.cdr?.slides) {
+          await createPresentation.mutateAsync({ title: repResult.cdr.title || 'عرض مُطابَق', slides: JSON.stringify(repResult.cdr.slides), theme: 'ndmo' });
+        } else if (targetGuess === 'report' && repResult.cdr?.sections) {
+          await createReport.mutateAsync({ title: repResult.cdr.title || 'تقرير مُطابَق', sections: JSON.stringify(repResult.cdr.sections) });
+        } else if (targetGuess === 'dashboard' && repResult.cdr?.widgets) {
+          await createDashboard.mutateAsync({ title: repResult.cdr.title || 'لوحة مُطابَقة', widgets: JSON.stringify(repResult.cdr.widgets), layout: '{}' });
+        } else if (targetGuess === 'spreadsheet' && repResult.cdr?.sheets) {
+          await createSpreadsheet.mutateAsync({ title: repResult.cdr.title || 'جدول مُطابَق', sheets: JSON.stringify(repResult.cdr.sheets) });
+        }
+
+        addAssistantMessage(
+          `✅ تمت المطابقة البصرية بنجاح!\n\n**${repResult.cdr?.title || 'المخرج'}**\n\nتم استخراج **${repResult.elementCount || 0} عنصر** وحفظها.`,
+          {
+            stages: [
+              { name: 'تحليل الصورة بالذكاء', status: 'completed', progress: 100 },
+              { name: 'استخراج العناصر', status: 'completed', progress: 100 },
+              { name: 'بناء المخرج', status: 'completed', progress: 100 },
+            ],
+            artifacts: [{ id: 'rep-1', type: targetGuess as any, label: repResult.cdr?.title || 'مخرج مُطابَق', icon: targetGuess === 'dashboard' ? 'dashboard' : targetGuess === 'report' ? 'description' : targetGuess === 'spreadsheet' ? 'table_chart' : 'slideshow' }],
+            actions: [
+              { id: 'replicate-another', label: 'مطابقة أخرى', icon: 'compare', variant: 'secondary' },
+            ],
+          }
+        );
+        setUploadedFile(null);
+        return;
+      }
+
+      // ═══ REPLICATE FROM PDF ═══
+      if (intent === 'replicate-pdf') {
+        if (!uploadedFile || !uploadedFile.name.toLowerCase().endsWith('.pdf')) {
+          addAssistantMessage('📎 ارفع ملف PDF أولاً ثم اطلب التحويل.\n\nاضغط على زر 📎 أسفل المحادثة لرفع ملف PDF.', {
+            actions: [{ id: 'upload-file', label: '📎 رفع PDF', icon: 'upload_file', variant: 'primary' }],
+          });
+          return;
+        }
+        const pdfTarget = /عرض|شرائح|presentation/i.test(topic) ? 'presentation' as const
+          : /تقرير|report/i.test(topic) ? 'report' as const
+          : 'presentation' as const;
+
+        addAssistantMessage(`جاري تحويل PDF إلى **${pdfTarget === 'presentation' ? 'عرض تقديمي' : 'تقرير'}**... ⏳\n\nقد يستغرق هذا دقائق حسب عدد الصفحات.`, {
+          stages: [
+            { name: 'تحليل هيكل المستند', status: 'running', progress: 20 },
+            { name: 'معالجة الصفحات', status: 'pending', progress: 0 },
+            { name: 'بناء المخرج', status: 'pending', progress: 0 },
+          ],
+        });
+
+        const pdfResult = await replicateFromPdfMutation.mutateAsync({
+          filePath: uploadedFile.url,
+          targetType: pdfTarget,
+          language: 'ar',
+          batchSize: 5,
+        });
+
+        if (!pdfResult.success) {
+          addAssistantMessage(`❌ ${(pdfResult as any).error || 'فشل في تحويل PDF'}`, {
+            actions: [{ id: 'upload-file', label: 'حاول مرة أخرى', icon: 'refresh', variant: 'primary' }],
+          });
+          return;
+        }
+
+        // Save
+        if (pdfTarget === 'presentation') {
+          await createPresentation.mutateAsync({ title: pdfResult.title || 'عرض من PDF', slides: pdfResult.artifact?.slides || '[]', theme: 'ndmo' });
+        } else {
+          await createReport.mutateAsync({ title: pdfResult.title || 'تقرير من PDF', sections: pdfResult.artifact?.sections || '[]' });
+        }
+
+        addAssistantMessage(
+          `✅ تم تحويل PDF بنجاح!\n\n**${pdfResult.title}**\n\n📄 ${pdfResult.totalSourcePages} صفحة أصلية → 📊 ${pdfResult.processedPages} ${pdfTarget === 'presentation' ? 'شريحة' : 'قسم'}`,
+          {
+            stages: [
+              { name: 'تحليل هيكل المستند', status: 'completed', progress: 100 },
+              { name: 'معالجة الصفحات', status: 'completed', progress: 100 },
+              { name: 'بناء المخرج', status: 'completed', progress: 100 },
+            ],
+            artifacts: [{ id: 'pdf-rep-1', type: pdfTarget as any, label: pdfResult.title || 'مخرج PDF', icon: pdfTarget === 'presentation' ? 'slideshow' : 'description' }],
+            actions: [
+              { id: 'replicate-another', label: 'تحويل PDF آخر', icon: 'picture_as_pdf', variant: 'secondary' },
+            ],
+          }
+        );
+        setUploadedFile(null);
+        return;
+      }
+
       // ═══ REGULAR CHAT ═══
       const chatHistory = messages.map(m => ({ role: m.role, content: m.content }));
       chatHistory.push({ role: 'user' as const, content: userText });
@@ -341,6 +479,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           { id: 'presentation', label: 'أنشئ عرض تقديمي', icon: 'slideshow', variant: 'primary' },
           { id: 'dashboard', label: 'أنشئ لوحة مؤشرات', icon: 'dashboard', variant: 'secondary' },
           { id: 'report', label: 'أنشئ تقرير', icon: 'description', variant: 'secondary' },
+          { id: 'upload-file', label: '📎 مطابقة بصرية', icon: 'compare', variant: 'secondary' },
         ],
       });
     } catch (error: any) {
@@ -364,21 +503,70 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
     doSend(text);
   }, [input, doSend]);
 
+  // Handle file upload for replication
+  const handleFileUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const res = await fetch('/api/upload/single', { method: 'POST', body: formData, credentials: 'include' });
+      const data = await res.json();
+      const fileUrl = data.url || data.path || `/uploads/${file.name}`;
+      setUploadedFile({ url: fileUrl, name: file.name, type: file.type });
+      const isPdf = file.name.toLowerCase().endsWith('.pdf');
+      addAssistantMessage(
+        `✅ تم رفع الملف: **${file.name}**\n\nالآن اكتب ماذا تريد:\n${isPdf
+          ? '• "حول PDF إلى عرض تقديمي"\n• "حول PDF إلى تقرير"'
+          : '• "طابق الصورة كلوحة مؤشرات"\n• "طابق الصورة كعرض تقديمي"\n• "طابق الصورة كتقرير"\n• "طابق الصورة كجدول"'}`,
+        {
+          actions: isPdf
+            ? [
+                { id: 'pdf-to-pres', label: 'حول إلى عرض تقديمي', icon: 'slideshow', variant: 'primary' },
+                { id: 'pdf-to-report', label: 'حول إلى تقرير', icon: 'description', variant: 'secondary' },
+              ]
+            : [
+                { id: 'match-dashboard', label: 'طابق كلوحة مؤشرات', icon: 'dashboard', variant: 'primary' },
+                { id: 'match-presentation', label: 'طابق كعرض', icon: 'slideshow', variant: 'secondary' },
+                { id: 'match-report', label: 'طابق كتقرير', icon: 'description', variant: 'secondary' },
+                { id: 'match-spreadsheet', label: 'طابق كجدول', icon: 'table_chart', variant: 'secondary' },
+              ],
+        }
+      );
+    } catch {
+      addAssistantMessage('❌ فشل رفع الملف. يرجى المحاولة مرة أخرى.');
+    }
+    if (e.target) e.target.value = '';
+  }, [addAssistantMessage]);
+
   // Handle action button clicks — route to correct engine
   const handleActionClick = useCallback((action: { id: string; label: string }) => {
-    // Direct engine triggers from action buttons
-    if (action.id === 'open-presentation' || action.id === 'presentation') {
+    if (action.id === 'upload-file') {
+      fileInputRef.current?.click();
+    } else if (action.id === 'open-presentation' || action.id === 'presentation') {
       doSend('أنشئ عرض تقديمي');
     } else if (action.id === 'open-report' || action.id === 'report') {
       doSend('أنشئ تقرير');
     } else if (action.id === 'open-dashboard' || action.id === 'dashboard' || action.id === 'analyze') {
       doSend('أنشئ لوحة مؤشرات');
-    } else if (action.id === 'new-presentation') {
-      doSend('أنشئ عرض تقديمي آخر');
+    } else if (action.id === 'new-presentation' || action.id === 'replicate-another') {
+      fileInputRef.current?.click();
     } else if (action.id === 'new-report') {
       doSend('أنشئ تقرير آخر');
     } else if (action.id === 'new-dashboard') {
       doSend('أنشئ لوحة مؤشرات أخرى');
+    } else if (action.id === 'pdf-to-pres') {
+      doSend('حول PDF إلى عرض تقديمي');
+    } else if (action.id === 'pdf-to-report') {
+      doSend('حول PDF إلى تقرير');
+    } else if (action.id === 'match-dashboard') {
+      doSend('طابق الصورة كلوحة مؤشرات');
+    } else if (action.id === 'match-presentation') {
+      doSend('طابق الصورة كعرض تقديمي');
+    } else if (action.id === 'match-report') {
+      doSend('طابق الصورة كتقرير');
+    } else if (action.id === 'match-spreadsheet') {
+      doSend('طابق الصورة كجدول');
     } else {
       doSend(action.label);
     }
@@ -701,9 +889,21 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           {inputFocused && (
             <div className="absolute top-0 left-[10%] right-[10%] h-[2px] bg-gradient-to-l from-transparent via-primary/40 to-transparent animate-fade-in" />
           )}
+          {/* Hidden file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*,.pdf"
+            className="hidden"
+            onChange={handleFileUpload}
+          />
           <div className="flex items-center gap-0.5 shrink-0 pb-0.5">
-            <button className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all active:scale-95 group ${theme === 'dark' ? 'hover:bg-gray-200' : 'hover:bg-accent'}`} title="إرفاق ملف">
-              <MaterialIcon icon="attach_file" size={19} className={`transition-colors ${theme === 'dark' ? 'text-gray-500 group-hover:text-gray-800' : 'text-muted-foreground group-hover:text-primary'}`} />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all active:scale-95 group ${uploadedFile ? 'bg-primary/10' : ''} ${theme === 'dark' ? 'hover:bg-gray-200' : 'hover:bg-accent'}`}
+              title={uploadedFile ? `ملف مرفق: ${uploadedFile.name}` : 'إرفاق ملف (صورة أو PDF) للمطابقة البصرية'}
+            >
+              <MaterialIcon icon={uploadedFile ? 'check_circle' : 'attach_file'} size={19} className={`transition-colors ${uploadedFile ? 'text-primary' : theme === 'dark' ? 'text-gray-500 group-hover:text-gray-800' : 'text-muted-foreground group-hover:text-primary'}`} />
             </button>
             <button className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all active:scale-95 hidden sm:flex group ${theme === 'dark' ? 'hover:bg-gray-200' : 'hover:bg-accent'}`} title="تسجيل صوتي">
               <MaterialIcon icon="mic" size={19} className={`transition-colors ${theme === 'dark' ? 'text-gray-500 group-hover:text-gray-800' : 'text-muted-foreground group-hover:text-primary'}`} />
