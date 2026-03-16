@@ -244,8 +244,8 @@ export default function ExcelEngine() {
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; row: number; col: number } | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
-
-  // Undo/Redo
+  const [showSavedFiles, setShowSavedFiles] = useState(false);
+  // Undo/Redoo
   const [undoStack, setUndoStack] = useState<Sheet[][]>([]);
   const [redoStack, setRedoStack] = useState<Sheet[][]>([]);
 
@@ -725,6 +725,7 @@ export default function ExcelEngine() {
       <div className="flex items-center gap-1 px-2 sm:px-3 py-2 border-b border-border/50 shrink-0 overflow-x-auto no-scrollbar glass">
         <ModeSwitcher mode={mode} onToggle={setMode} />
         <div className="h-4 w-px bg-border mx-0.5" />
+        <ToolbarBtn icon="folder_open" label="ملفاتي" active={showSavedFiles} onClick={() => setShowSavedFiles(!showSavedFiles)} />
         <ToolbarBtn icon="upload_file" label="استيراد" onClick={() => document.getElementById('excel-import')?.click()} />
         <div className="relative">
           <ToolbarBtn icon="download" label="تصدير" onClick={() => setShowExportMenu(!showExportMenu)} />
@@ -769,6 +770,60 @@ export default function ExcelEngine() {
         </span>
       </div>
 
+      {/* ── Saved Files Panel ── */}
+      {showSavedFiles && (
+        <div className="border-b border-border bg-accent/5 animate-fade-in shrink-0 max-h-[200px] overflow-y-auto">
+          <div className="flex items-center justify-between px-3 py-1.5 border-b border-border/30">
+            <div className="flex items-center gap-1.5">
+              <MaterialIcon icon="folder_open" size={14} className="text-primary" />
+              <span className="text-[11px] font-bold text-foreground">الجداول المحفوظة</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <button onClick={() => { setSheets([createDefaultSheet()]); setActiveSheetIndex(0); setCurrentSpreadsheetId(null); setShowSavedFiles(false); }}
+                className="flex items-center gap-1 px-2 py-1 rounded-lg bg-primary/10 text-primary text-[10px] font-medium hover:bg-primary/15 transition-all">
+                <MaterialIcon icon="add" size={12} />جديد
+              </button>
+              <button onClick={() => setShowSavedFiles(false)} className="text-muted-foreground hover:text-foreground">
+                <MaterialIcon icon="close" size={14} />
+              </button>
+            </div>
+          </div>
+          {savedSpreadsheets && Array.isArray(savedSpreadsheets) && savedSpreadsheets.length > 0 ? (
+            <div className="flex flex-col">
+              {(savedSpreadsheets as any[]).map((sp: any) => (
+                <button key={sp.id}
+                  onClick={() => {
+                    try {
+                      const parsed = typeof sp.sheets === 'string' ? JSON.parse(sp.sheets) : sp.sheets;
+                      if (Array.isArray(parsed) && parsed.length > 0) {
+                        setSheets(parsed);
+                        setActiveSheetIndex(0);
+                        setCurrentSpreadsheetId(sp.id);
+                      }
+                    } catch { /* ignore parse errors */ }
+                    setShowSavedFiles(false);
+                  }}
+                  className={`flex items-center gap-2 px-3 py-2 hover:bg-accent/20 transition-all text-right border-b border-border/10 ${currentSpreadsheetId === sp.id ? 'bg-primary/5 border-r-2 border-r-primary' : ''}`}>
+                  <MaterialIcon icon="table_chart" size={16} className="text-emerald-500 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[11px] font-medium text-foreground truncate">{sp.title || 'جدول بدون عنوان'}</p>
+                    <p className="text-[8px] text-muted-foreground">{sp.updatedAt ? new Date(sp.updatedAt).toLocaleDateString('ar-SA') : ''}</p>
+                  </div>
+                  <button onClick={(e) => { e.stopPropagation(); if (confirm('هل تريد حذف هذا الجدول؟')) { deleteSpreadsheetMutation.mutateAsync({ id: sp.id }).then(() => refetchSpreadsheets()); } }}
+                    className="p-1 rounded hover:bg-danger/10 transition-all">
+                    <MaterialIcon icon="delete" size={12} className="text-muted-foreground hover:text-danger" />
+                  </button>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-6 text-muted-foreground/40">
+              <MaterialIcon icon="table_chart" size={32} />
+              <p className="text-[11px] mt-1">لا توجد جداول محفوظة</p>
+            </div>
+          )}
+        </div>
+      )}
       {/* ── Search Bar ── */}
       {showSearch && (
         <div className="flex items-center gap-2 px-3 py-1.5 border-b border-border bg-accent/10 animate-fade-in shrink-0">
