@@ -1,9 +1,9 @@
 # Session Status
 
 - Session started: 2026-03-15T01:06:43+03:00
-- Current phase: `procedure_binding_spec_export` saved the governing procedure-binding spec into the requested external folder
-- Last completed checkpoint: The governing procedure-binding spec was copied to `C:\777\RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md`
-- Current scope: Preserve the governing procedure-binding spec in-repo and in the requested external folder
+- Current phase: `architecture_documentation_package_finalize` completed the architecture documentation package and normalized the requested diagram filenames
+- Last completed checkpoint: The documentation suite now includes `architecture.md`, `modules.md`, `testing.md`, and the requested `system-architecture.mmd`, `service-map.mmd`, and `dataflows.mmd` files
+- Current scope: Preserve the generated architecture package as the durable baseline for future implementation and review
 - Completed folders/files:
   - docs/audit/
   - docs/audit/phases/
@@ -40,11 +40,15 @@
   - docs/dataflows.md
   - docs/database.md
   - docs/apis.md
+  - docs/architecture.md
+  - docs/modules.md
   - docs/infrastructure.md
   - docs/deployment.md
   - docs/security.md
   - docs/performance.md
+  - docs/testing.md
   - docs/diagrams/system-context.mmd
+  - docs/diagrams/system-architecture.mmd
   - docs/diagrams/container-architecture.mmd
   - docs/diagrams/component-unified-gateway.mmd
   - docs/diagrams/component-rasid-web.mmd
@@ -52,11 +56,12 @@
   - docs/diagrams/dataflow-request-lifecycle.mmd
   - docs/diagrams/dataflow-document-ingestion.mmd
   - docs/diagrams/dataflow-cross-engine-pipeline.mmd
+  - docs/diagrams/dataflows.mmd
   - docs/diagrams/database-erd.mmd
   - docs/diagrams/integration-map.mmd
+  - docs/diagrams/service-map.mmd
   - C:\777\RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md
 - Remaining scope:
-  - Refresh the external saved copy if the governing spec changes later
-  - Apply the governing spec in code when implementation resumes
-- Next exact step: continue using `docs/RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md` as the source of truth and refresh `C:\777` only after future spec changes
-- Last update: 2026-03-16T06:31:28.8457393+03:00
+  - None for the current architecture-documentation deliverable
+- Next exact step: use the generated architecture package as the durable baseline for implementation, onboarding, and debugging
+- Last update: 2026-03-16T06:31:54.1807817+03:00

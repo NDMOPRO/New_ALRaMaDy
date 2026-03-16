@@ -1738,3 +1738,16 @@
   - a direct external copy of the governing spec now exists at `C:\777\RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md`
   - the external saved copy was produced from `docs/RASID_PROCEDURE_BY_PROCEDURE_BINDING_SPEC.md`
   - the repository copy remains the source of truth
+
+- Date: 2026-03-16T06:31:54.1807817+03:00
+- Architecture documentation package finalized:
+  - the repository documentation suite now explicitly includes:
+    - `docs/architecture.md`
+    - `docs/modules.md`
+    - `docs/testing.md`
+  - the requested diagram filenames now exist under `docs/diagrams/`:
+    - `system-architecture.mmd`
+    - `service-map.mmd`
+    - `dataflows.mmd`
+    - `database-erd.mmd`
+  - the earlier C4 documents and supporting diagrams remain present as supplemental detail rather than being replaced

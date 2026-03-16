@@ -2222,3 +2222,23 @@ Append-only.
 - Unresolved items:
   - any future edits must still be applied first to the in-repo governing file if the external copy needs to remain current
 - Next exact step: refresh the external copy again only if the governing in-repo file changes
+
+- Timestamp: 2026-03-16T06:31:54.1807817+03:00
+- Phase: Architecture documentation package finalize
+- Scope: Fill the remaining documentation gaps, add the missing requested files, and normalize the requested diagram filenames without discarding the earlier C4 set
+- Files/Folders inspected:
+  - C:\ALRaMaDy\docs\
+  - C:\ALRaMaDy\docs\diagrams\
+  - C:\ALRaMaDy\docs\c4-context.md
+  - C:\ALRaMaDy\docs\c4-containers.md
+  - C:\ALRaMaDy\docs\c4-components.md
+  - C:\ALRaMaDy\docs\c4-code.md
+- Findings added:
+  - added `docs/architecture.md` as the architectural synthesis and reading guide
+  - added `docs/modules.md` with repository-wide module inventory covering apps, shared kernel packages, domain engines, scripts, and the seed reference tree
+  - added `docs/testing.md` with the CI path, regression scripts, app-local tests, artifact-based proof model, and testing gaps
+  - added the requested diagram filenames `docs/diagrams/system-architecture.mmd`, `docs/diagrams/service-map.mmd`, and `docs/diagrams/dataflows.mmd`
+  - retained the existing topic docs and C4 diagrams as supporting detail instead of overwriting them
+- Unresolved items:
+  - SVG/PNG diagram exports were not generated because there is no renderer/export step wired in this repository
+- Next exact step: use the completed documentation package as the baseline for implementation, onboarding, and debugging
