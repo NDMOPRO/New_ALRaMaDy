@@ -45,7 +45,7 @@ export const presentationAddendumRouter = router({
     .query(({ input }) => {
       const catalog = getCatalog();
       return catalog.search({
-        kind: (input.kind as any) || undefined,
+        catalog_kind: (input.kind as any) || "layout",
         query: input.query,
         tags: input.tags,
         limit: input.limit || 20,
@@ -67,6 +67,7 @@ export const presentationAddendumRouter = router({
   catalogVariants: publicProcedure
     .input(z.object({
       asset_id: z.string(),
+      kind: z.string().optional(),
       count: z.number().optional(),
       direction: z.enum(["more_like_this", "different_direction", "simpler", "more_complex"]).optional(),
       seed: z.number().optional(),
@@ -74,7 +75,8 @@ export const presentationAddendumRouter = router({
     .query(({ input }) => {
       const catalog = getCatalog();
       return catalog.generateVariants({
-        asset_id: input.asset_id,
+        base_asset_id: input.asset_id,
+        catalog_kind: (input.kind as any) || "layout",
         count: input.count || 6,
         direction: input.direction || "more_like_this",
         seed: input.seed,
