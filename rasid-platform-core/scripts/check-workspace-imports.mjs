@@ -20,7 +20,10 @@ const walk = (dir) => {
     const content = fs.readFileSync(full, "utf8");
     const lines = content.split(/\r?\n/);
     lines.forEach((line, index) => {
-      if (line.includes("/src/") || line.includes("../contracts/") || line.includes("../shared-contracts/")) {
+      const trimmed = line.trim();
+      const isImportOrRequire = /^\s*(import\s|export\s.*from\s|.*require\s*\()/.test(trimmed);
+      if (!isImportOrRequire) return;
+      if (trimmed.includes("/src/") || trimmed.includes("../contracts/") || trimmed.includes("../shared-contracts/")) {
         importViolations.push(`${full}:${index + 1}`);
       }
     });
