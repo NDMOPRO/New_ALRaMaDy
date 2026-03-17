@@ -31,3 +31,21 @@ export * from "./utils/cell-utils";
 export * from "./utils/formula-registry";
 export * from "./utils/locale-config";
 export * from "./utils/theme-presets";
+
+// ─── SVM (Spreadsheet Virtual Machine) ──────────────────────────────────────
+export * from "./svm";
+
+// ─── Intent Parse (prompt → T-IR plan + join plan + KPI plan) ───────────────
+export * from "./intent";
+
+// ─── Auto-Analyze (dataset → summary + issues + recipes + outputs) ──────────
+export * from "./analyze";
+
+// ─── Formatting & Beautification ────────────────────────────────────────────
+export * from "./beautify";
+
+// ─── Export Pipeline (XLSX, CSV, Parquet, PDF, Slides, Dashboard) ───────────
+export * from "./export";
+
+// ─── Anti-Cheating Verification ─────────────────────────────────────────────
+export * from "./verification";

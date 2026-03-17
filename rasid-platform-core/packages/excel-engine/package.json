@@ -10,6 +10,9 @@
       "default": "./dist/index.js"
     }
   },
+  "scripts": {
+    "test:svm": "npx tsx tests/svm-engine.test.ts"
+  },
   "dependencies": {
     "@rasid/capability-registry": "1.0.0",
     "@rasid/contracts": "1.0.0",
