@@ -120,18 +120,183 @@ export default function ReportsEngine() {
   const [aiPrompt, setAiPrompt] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
   const [currentReportId, setCurrentReportId] = useState<number | null>(null);
+  const [engineReportId, setEngineReportId] = useState<string | null>(null);
+  const [tocEntries, setTocEntries] = useState<any[]>([]);
+  const [showToc, setShowToc] = useState(false);
+  const [pipelineState, setPipelineState] = useState<any>(null);
+  const [showPipeline, setShowPipeline] = useState(false);
+  const [showExportPanel, setShowExportPanel] = useState(false);
+  const [showSchedulePanel, setShowSchedulePanel] = useState(false);
+  const [showLocalizationPanel, setShowLocalizationPanel] = useState(false);
+  const [complianceResult, setComplianceResult] = useState<any>(null);
+  const [conversionLoading, setConversionLoading] = useState(false);
+  const [recalcLoading, setRecalcLoading] = useState(false);
+  const [localizationLoading, setLocalizationLoading] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
+  const [scheduleLoading, setScheduleLoading] = useState(false);
   const reportMutation = trpc.ai.generateReport.useMutation();
   const generateSectionsMutation = trpc.ai.generateReportSections.useMutation();
   const createReportMutation = trpc.reports.create.useMutation();
   const updateReportMutation = trpc.reports.update.useMutation();
   const deleteReportMutation = trpc.reports.delete.useMutation();
+  const exportHtmlMutation = trpc.reports.exportHtml.useMutation();
+  const exportPdfMutation = trpc.reports.exportPdf.useMutation();
+  const exportDocxMutation = trpc.reports.exportDocx.useMutation();
+  const reviewMutation = trpc.reports.review.useMutation();
+  const approveMutation = trpc.reports.approve.useMutation();
+  const publishMutation = trpc.reports.publish.useMutation();
+  const convertToPresentationMutation = trpc.reports.convertToPresentation.useMutation();
+  const convertToDashboardMutation = trpc.reports.convertToDashboard.useMutation();
+  const recalculateMutation = trpc.reports.recalculate.useMutation();
+  const localizationMutation = trpc.reports.applyLocalization.useMutation();
+  const scheduleMutation = trpc.reports.schedule.useMutation();
   // Load saved reports from DB
   const { data: savedReports, refetch: refetchReports } = trpc.reports.list.useQuery(undefined, { staleTime: 30_000 });
+  // Builder state queries (only when engineReportId is set)
+  const tocQuery = trpc.reports.generateToc.useQuery({ engineReportId: engineReportId! }, { enabled: !!engineReportId });
+  const pipelineQuery = trpc.reports.getPipeline.useQuery({ engineReportId: engineReportId! }, { enabled: !!engineReportId });
+  const layoutQuery = trpc.reports.buildLayout.useQuery({ engineReportId: engineReportId! }, { enabled: !!engineReportId });
   // Cross-engine navigation
   const { navigateTo, pendingNavigation, clearPendingNavigation } = useWorkspace();
   // Platform backend integration (ALRaMaDy)
   const platformReport = usePlatformReportEngine();
   const { connected: platformConnected } = usePlatformHealth();
+
+  // Update TOC and pipeline when queries resolve
+  useEffect(() => {
+    if (tocQuery.data) setTocEntries(tocQuery.data.entries || []);
+  }, [tocQuery.data]);
+  useEffect(() => {
+    if (pipelineQuery.data) setPipelineState(pipelineQuery.data);
+  }, [pipelineQuery.data]);
+
+  // ─── Engine-backed operations ────────────────────────────────
+  const handleRecalculate = useCallback(async () => {
+    if (!engineReportId || recalcLoading) return;
+    setRecalcLoading(true);
+    try {
+      const result = await recalculateMutation.mutateAsync({ engineReportId });
+      console.log('[ReportsEngine] Recalculation result:', result);
+    } catch (e) {
+      console.error('[ReportsEngine] Recalculation failed:', e);
+    } finally {
+      setRecalcLoading(false);
+    }
+  }, [engineReportId, recalcLoading, recalculateMutation]);
+
+  const handleAdvancePipeline = useCallback(async (targetStage: string) => {
+    if (!engineReportId || !currentReportId) return;
+    try {
+      if (targetStage === 'review') {
+        const result = await reviewMutation.mutateAsync({ id: String(currentReportId), engineReportId });
+        setPipelineState(result.pipeline);
+      } else if (targetStage === 'approved') {
+        const result = await approveMutation.mutateAsync({ id: String(currentReportId), engineReportId });
+        setPipelineState(result.pipeline);
+      } else if (targetStage === 'published') {
+        const result = await publishMutation.mutateAsync({ id: String(currentReportId), engineReportId });
+        setPipelineState(result.pipeline);
+      }
+    } catch (e) {
+      console.error('[ReportsEngine] Pipeline advance failed:', e);
+    }
+  }, [engineReportId, currentReportId, reviewMutation, approveMutation, publishMutation]);
+
+  const handleExportCompliant = useCallback(async (target: 'html' | 'pdf' | 'docx') => {
+    if (!engineReportId || !currentReportId || exportLoading) return;
+    setExportLoading(true);
+    try {
+      if (target === 'html') {
+        const result = await exportHtmlMutation.mutateAsync({ id: String(currentReportId), engineReportId });
+        setComplianceResult(result);
+        if (result.html) {
+          const blob = new Blob([result.html], { type: 'text/html' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'report.html';
+          a.click();
+          URL.revokeObjectURL(url);
+        }
+      } else if (target === 'pdf') {
+        const result = await exportPdfMutation.mutateAsync({ id: String(currentReportId), engineReportId });
+        setComplianceResult(result);
+      } else if (target === 'docx') {
+        const result = await exportDocxMutation.mutateAsync({ id: String(currentReportId), engineReportId });
+        setComplianceResult(result);
+      }
+    } catch (e) {
+      console.error('[ReportsEngine] Export failed:', e);
+    } finally {
+      setExportLoading(false);
+    }
+  }, [engineReportId, currentReportId, exportLoading, exportHtmlMutation, exportPdfMutation, exportDocxMutation]);
+
+  const handleConvertToSlides = useCallback(async () => {
+    if (!currentReportId || conversionLoading) return;
+    setConversionLoading(true);
+    try {
+      const result = await convertToPresentationMutation.mutateAsync({
+        id: String(currentReportId),
+        engineReportId: engineReportId || undefined,
+      });
+      console.log('[ReportsEngine] Converted to presentation:', result);
+      if (navigateTo) navigateTo('presentations');
+    } catch (e) {
+      console.error('[ReportsEngine] Conversion to slides failed:', e);
+    } finally {
+      setConversionLoading(false);
+    }
+  }, [currentReportId, engineReportId, conversionLoading, convertToPresentationMutation, navigateTo]);
+
+  const handleConvertToDashboard = useCallback(async () => {
+    if (!currentReportId || conversionLoading) return;
+    setConversionLoading(true);
+    try {
+      const result = await convertToDashboardMutation.mutateAsync({
+        id: String(currentReportId),
+        engineReportId: engineReportId || undefined,
+      });
+      console.log('[ReportsEngine] Converted to dashboard:', result);
+      if (navigateTo) navigateTo('dashboards');
+    } catch (e) {
+      console.error('[ReportsEngine] Conversion to dashboard failed:', e);
+    } finally {
+      setConversionLoading(false);
+    }
+  }, [currentReportId, engineReportId, conversionLoading, convertToDashboardMutation, navigateTo]);
+
+  const handleApplyLocalization = useCallback(async () => {
+    if (!engineReportId || localizationLoading) return;
+    setLocalizationLoading(true);
+    try {
+      const result = await localizationMutation.mutateAsync({
+        engineReportId,
+        targetLocale: 'ar-SA',
+        directionTransform: true,
+        typographyRefine: true,
+        culturalFormat: true,
+      });
+      console.log('[ReportsEngine] Localization applied:', result);
+    } catch (e) {
+      console.error('[ReportsEngine] Localization failed:', e);
+    } finally {
+      setLocalizationLoading(false);
+    }
+  }, [engineReportId, localizationLoading, localizationMutation]);
+
+  const handleSchedule = useCallback(async (cadence: 'weekly' | 'monthly' | 'on_demand') => {
+    if (!engineReportId || scheduleLoading) return;
+    setScheduleLoading(true);
+    try {
+      const result = await scheduleMutation.mutateAsync({ engineReportId, cadence });
+      console.log('[ReportsEngine] Schedule created:', result);
+    } catch (e) {
+      console.error('[ReportsEngine] Schedule failed:', e);
+    } finally {
+      setScheduleLoading(false);
+    }
+  }, [engineReportId, scheduleLoading, scheduleMutation]);
 
   // Handle incoming navigation data (e.g., from ExtractionEngine or ChatCanvas)
   useEffect(() => {
@@ -168,6 +333,7 @@ export default function ReportsEngine() {
           sections: data.sections,
           classification: data.meta.classification,
           entity: data.meta.author,
+          engineReportId: engineReportId || undefined,
         });
       } else {
         const result = await createReportMutation.mutateAsync({
@@ -176,7 +342,14 @@ export default function ReportsEngine() {
           classification: data.meta.classification,
           entity: data.meta.author,
         });
-        if ((result as any)?.id) setCurrentReportId((result as any).id);
+        if ((result as any)?.db_report?.id) {
+          setCurrentReportId((result as any).db_report.id);
+        } else if ((result as any)?.id) {
+          setCurrentReportId((result as any).id);
+        }
+        if ((result as any)?.engine_report_id) {
+          setEngineReportId((result as any).engine_report_id);
+        }
       }
     },
   });
@@ -857,12 +1030,133 @@ export default function ReportsEngine() {
 
           <div className="flex-1" />
 
-          {/* Export */}
-          <button onClick={exportPDF}
-            className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-all">
-            <MaterialIcon icon="picture_as_pdf" size={14} />
-            <span className="hidden sm:inline">تصدير PDF</span>
+          {/* Export Menu */}
+          <div className="relative">
+            <button onClick={() => setShowExportPanel(!showExportPanel)}
+              className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium transition-all ${
+                showExportPanel ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+              }`}>
+              <MaterialIcon icon="download" size={14} />
+              <span className="hidden sm:inline">تصدير</span>
+            </button>
+            {showExportPanel && (
+              <div className="absolute top-full left-0 mt-1 bg-card border border-border rounded-xl shadow-lg p-2 z-50 w-[200px] animate-fade-in">
+                <button onClick={exportPDF} className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-foreground hover:bg-accent transition-all">
+                  <MaterialIcon icon="picture_as_pdf" size={14} className="text-danger" />
+                  تصدير PDF (محلي)
+                </button>
+                <button onClick={() => handleExportCompliant('html')} disabled={exportLoading}
+                  className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-foreground hover:bg-accent transition-all disabled:opacity-50">
+                  <MaterialIcon icon="code" size={14} className="text-info" />
+                  {exportLoading ? 'جارٍ...' : 'تصدير HTML (محرك)'}
+                </button>
+                <button onClick={() => handleExportCompliant('pdf')} disabled={exportLoading}
+                  className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-foreground hover:bg-accent transition-all disabled:opacity-50">
+                  <MaterialIcon icon="picture_as_pdf" size={14} className="text-primary" />
+                  {exportLoading ? 'جارٍ...' : 'تصدير PDF (محرك)'}
+                </button>
+                <button onClick={() => handleExportCompliant('docx')} disabled={exportLoading}
+                  className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-foreground hover:bg-accent transition-all disabled:opacity-50">
+                  <MaterialIcon icon="description" size={14} className="text-success" />
+                  {exportLoading ? 'جارٍ...' : 'تصدير DOCX (قابل للتحرير)'}
+                </button>
+                {complianceResult && (
+                  <div className={`mt-1 p-1.5 rounded-lg text-[9px] ${complianceResult.compliant ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'}`}>
+                    {complianceResult.compliant ? '✓ تم التحقق من الامتثال' : '⚠ فحوصات الامتثال غير مكتملة'}
+                    {complianceResult.artifact_ref && <div className="mt-0.5 truncate">Artifact: {complianceResult.artifact_ref}</div>}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* One-Click Conversion */}
+          <div className="relative">
+            <button onClick={handleConvertToSlides} disabled={conversionLoading || !currentReportId}
+              className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-all disabled:opacity-30"
+              title="تحويل إلى عرض تقديمي">
+              <MaterialIcon icon="slideshow" size={14} />
+              <span className="hidden lg:inline">{conversionLoading ? 'جارٍ...' : 'عرض'}</span>
+            </button>
+          </div>
+          <button onClick={handleConvertToDashboard} disabled={conversionLoading || !currentReportId}
+            className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-all disabled:opacity-30"
+            title="تحويل إلى لوحة معلومات">
+            <MaterialIcon icon="dashboard" size={14} />
+            <span className="hidden lg:inline">{conversionLoading ? 'جارٍ...' : 'لوحة'}</span>
           </button>
+
+          <div className="h-4 w-px bg-border mx-0.5" />
+
+          {/* TOC */}
+          <button onClick={() => setShowToc(!showToc)}
+            className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium transition-all ${
+              showToc ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+            }`} title="فهرس المحتويات">
+            <MaterialIcon icon="toc" size={14} />
+            <span className="hidden lg:inline">فهرس</span>
+          </button>
+
+          {/* Publish Pipeline */}
+          <button onClick={() => setShowPipeline(!showPipeline)}
+            className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium transition-all ${
+              showPipeline ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+            }`} title="خط أنابيب النشر">
+            <MaterialIcon icon="publish" size={14} />
+            <span className="hidden lg:inline">نشر</span>
+          </button>
+
+          {/* Live Recalculation */}
+          {engineReportId && (
+            <button onClick={handleRecalculate} disabled={recalcLoading}
+              className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-all disabled:opacity-50"
+              title="إعادة حساب البيانات الحية">
+              <MaterialIcon icon={recalcLoading ? 'progress_activity' : 'refresh'} size={14} className={recalcLoading ? 'animate-spin' : ''} />
+              <span className="hidden xl:inline">{recalcLoading ? 'جارٍ...' : 'تحديث'}</span>
+            </button>
+          )}
+
+          {/* Arabic Localization */}
+          {engineReportId && (
+            <button onClick={handleApplyLocalization} disabled={localizationLoading}
+              className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-all disabled:opacity-50"
+              title="تعريب احترافي">
+              <MaterialIcon icon={localizationLoading ? 'progress_activity' : 'translate'} size={14} className={localizationLoading ? 'animate-spin' : ''} />
+              <span className="hidden xl:inline">{localizationLoading ? 'جارٍ...' : 'تعريب'}</span>
+            </button>
+          )}
+
+          {/* Schedule */}
+          {engineReportId && (
+            <div className="relative">
+              <button onClick={() => setShowSchedulePanel(!showSchedulePanel)}
+                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium transition-all ${
+                  showSchedulePanel ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                }`} title="جدولة التقرير">
+                <MaterialIcon icon="schedule" size={14} />
+                <span className="hidden xl:inline">جدولة</span>
+              </button>
+              {showSchedulePanel && (
+                <div className="absolute top-full left-0 mt-1 bg-card border border-border rounded-xl shadow-lg p-2 z-50 w-[180px] animate-fade-in">
+                  <button onClick={() => { handleSchedule('weekly'); setShowSchedulePanel(false); }} disabled={scheduleLoading}
+                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-foreground hover:bg-accent transition-all">
+                    <MaterialIcon icon="date_range" size={14} className="text-primary" />
+                    أسبوعي
+                  </button>
+                  <button onClick={() => { handleSchedule('monthly'); setShowSchedulePanel(false); }} disabled={scheduleLoading}
+                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-foreground hover:bg-accent transition-all">
+                    <MaterialIcon icon="calendar_month" size={14} className="text-info" />
+                    شهري
+                  </button>
+                  <button onClick={() => { handleSchedule('on_demand'); setShowSchedulePanel(false); }} disabled={scheduleLoading}
+                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-[11px] text-foreground hover:bg-accent transition-all">
+                    <MaterialIcon icon="play_arrow" size={14} className="text-success" />
+                    عند الطلب
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           {mode === 'advanced' && (
             <button onClick={() => setShowProperties(!showProperties)}
@@ -919,15 +1213,102 @@ export default function ReportsEngine() {
           </div>
         )}
 
+        {/* TOC Panel */}
+        {showToc && (
+          <div className="border-b border-border bg-accent/5 px-3 py-2 animate-fade-in max-h-[200px] overflow-y-auto">
+            <div className="flex items-center gap-2 mb-1.5">
+              <MaterialIcon icon="toc" size={14} className="text-primary" />
+              <span className="text-[11px] font-bold text-foreground">فهرس المحتويات</span>
+              <span className="text-[9px] text-muted-foreground">({tocEntries.length > 0 ? `${tocEntries.length} أقسام` : 'من الأقسام المحلية'})</span>
+            </div>
+            <div className="space-y-0.5">
+              {(tocEntries.length > 0 ? tocEntries : sections.filter(s => s.type === 'heading' || s.type === 'cover')).map((entry: any, i: number) => (
+                <button key={entry.entry_id || entry.id || i}
+                  onClick={() => setSelectedSection(entry.section_ref || entry.id)}
+                  className="flex items-center gap-1.5 w-full px-2 py-1 rounded text-[10px] text-foreground hover:bg-accent transition-all text-right">
+                  <span className="text-muted-foreground w-5 text-center shrink-0">{entry.page_index || i + 1}</span>
+                  <span className={`truncate flex-1 ${(entry.level || entry.level) === 1 ? 'font-bold' : ''}`}>
+                    {entry.title || entry.content}
+                  </span>
+                  {entry.block_count != null && <span className="text-[8px] text-muted-foreground shrink-0">{entry.block_count} عنصر</span>}
+                </button>
+              ))}
+              {tocEntries.length === 0 && sections.filter(s => s.type === 'heading' || s.type === 'cover').length === 0 && (
+                <p className="text-[10px] text-muted-foreground text-center py-2">لا توجد عناوين لإنشاء الفهرس</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Publish Pipeline Panel */}
+        {showPipeline && (
+          <div className="border-b border-border bg-accent/5 px-3 py-2 animate-fade-in">
+            <div className="flex items-center gap-2 mb-2">
+              <MaterialIcon icon="publish" size={14} className="text-primary" />
+              <span className="text-[11px] font-bold text-foreground">خط أنابيب النشر</span>
+              {pipelineState && (
+                <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${
+                  pipelineState.current_stage === 'published' ? 'bg-success/10 text-success' :
+                  pipelineState.current_stage === 'approved' ? 'bg-info/10 text-info' :
+                  pipelineState.current_stage === 'review' ? 'bg-warning/10 text-warning' :
+                  'bg-accent text-muted-foreground'
+                }`}>{pipelineState.current_stage === 'draft' ? 'مسودة' : pipelineState.current_stage === 'review' ? 'مراجعة' : pipelineState.current_stage === 'approved' ? 'معتمد' : pipelineState.current_stage === 'published' ? 'منشور' : pipelineState.current_stage}</span>
+              )}
+            </div>
+            <div className="flex items-center gap-1">
+              {/* Pipeline stages */}
+              {['draft', 'review', 'approved', 'published'].map((stage, i) => {
+                const stageLabels: Record<string, string> = { draft: 'مسودة', review: 'مراجعة', approved: 'اعتماد', published: 'نشر' };
+                const stageIcons: Record<string, string> = { draft: 'edit_note', review: 'rate_review', approved: 'verified', published: 'public' };
+                const currentIdx = ['draft', 'review', 'approved', 'published'].indexOf(pipelineState?.current_stage || 'draft');
+                const isActive = i <= currentIdx;
+                const isCurrent = i === currentIdx;
+                return (
+                  <div key={stage} className="flex items-center gap-1">
+                    <button
+                      onClick={() => {
+                        if (i > currentIdx && pipelineState?.can_advance) handleAdvancePipeline(stage);
+                      }}
+                      disabled={i <= currentIdx || !pipelineState?.can_advance}
+                      className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium transition-all ${
+                        isCurrent ? 'bg-primary/15 text-primary border border-primary/30' :
+                        isActive ? 'bg-success/10 text-success' :
+                        'bg-accent text-muted-foreground hover:bg-primary/5 disabled:opacity-40'
+                      }`}>
+                      <MaterialIcon icon={stageIcons[stage]} size={12} />
+                      {stageLabels[stage]}
+                    </button>
+                    {i < 3 && <MaterialIcon icon="arrow_forward" size={10} className="text-muted-foreground" />}
+                  </div>
+                );
+              })}
+            </div>
+            {pipelineState?.blockers?.length > 0 && (
+              <div className="mt-1 text-[9px] text-warning">
+                <MaterialIcon icon="warning" size={10} className="inline-block ml-1" />
+                {pipelineState.blockers.join(', ')}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Main Content Area */}
         <div className="flex-1 flex overflow-hidden">
           {/* Section List (sidebar) */}
           <div className="w-[180px] sm:w-[200px] border-l border-border bg-accent/5 flex flex-col shrink-0 overflow-hidden">
-            <div className="px-2 py-1.5 border-b border-border flex items-center justify-between shrink-0">
-              <span className="text-[10px] font-bold text-muted-foreground">الأقسام ({sections.length})</span>
-              <button onClick={() => addSection('paragraph')} className="w-5 h-5 rounded flex items-center justify-center hover:bg-accent transition-colors">
-                <MaterialIcon icon="add" size={12} className="text-primary" />
-              </button>
+            <div className="px-2 py-1.5 border-b border-border flex flex-col gap-0.5 shrink-0">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold text-muted-foreground">الأقسام ({sections.length})</span>
+                <button onClick={() => addSection('paragraph')} className="w-5 h-5 rounded flex items-center justify-center hover:bg-accent transition-colors">
+                  <MaterialIcon icon="add" size={12} className="text-primary" />
+                </button>
+              </div>
+              {engineReportId && (
+                <div className="flex items-center gap-1">
+                  <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+                  <span className="text-[8px] text-success truncate" title={engineReportId}>محرك متصل</span>
+                </div>
+              )}
             </div>
             <div className="flex-1 overflow-y-auto p-1.5">
               {sections.map((sec, i) => (

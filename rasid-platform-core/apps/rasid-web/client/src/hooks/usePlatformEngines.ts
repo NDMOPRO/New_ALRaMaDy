@@ -72,12 +72,35 @@ export function usePlatformReportEngine() {
   const platformCreateFromTranscription = trpc.platform.reports.createFromTranscription.useMutation();
   const platformConvertToDashboard = trpc.platform.reports.convertToDashboard.useMutation();
   const platformConvertToPresentation = trpc.platform.reports.convertToPresentation.useMutation();
+  const platformCreate = trpc.platform.reports.create.useMutation();
+  const platformRefresh = trpc.platform.reports.refresh.useMutation();
+  const platformReview = trpc.platform.reports.review.useMutation();
+  const platformApprove = trpc.platform.reports.approve.useMutation();
+  const platformPublish = trpc.platform.reports.publish.useMutation();
+  const platformExportHtml = trpc.platform.reports.exportHtml.useMutation();
+  const platformExportPdf = trpc.platform.reports.exportPdf.useMutation();
+  const platformExportDocx = trpc.platform.reports.exportDocx.useMutation();
+  const platformSchedule = trpc.platform.reports.schedule.useMutation();
+  const platformCompare = trpc.platform.reports.compare.useMutation();
 
   return {
+    platformCreate: platformCreate.mutateAsync,
     platformCreateFromTranscription: platformCreateFromTranscription.mutateAsync,
     platformConvertToDashboard: platformConvertToDashboard.mutateAsync,
     platformConvertToPresentation: platformConvertToPresentation.mutateAsync,
+    platformRefresh: platformRefresh.mutateAsync,
+    platformReview: platformReview.mutateAsync,
+    platformApprove: platformApprove.mutateAsync,
+    platformPublish: platformPublish.mutateAsync,
+    platformExportHtml: platformExportHtml.mutateAsync,
+    platformExportPdf: platformExportPdf.mutateAsync,
+    platformExportDocx: platformExportDocx.mutateAsync,
+    platformSchedule: platformSchedule.mutateAsync,
+    platformCompare: platformCompare.mutateAsync,
     isConverting: platformConvertToDashboard.isPending || platformConvertToPresentation.isPending,
+    isCreating: platformCreate.isPending,
+    isPublishing: platformPublish.isPending,
+    isExporting: platformExportHtml.isPending || platformExportPdf.isPending || platformExportDocx.isPending,
   };
 }
 

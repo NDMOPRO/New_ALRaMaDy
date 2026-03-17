@@ -327,6 +327,106 @@ const platformReportRouter = router({
       if (!result.ok) throw new Error(`Convert to presentation failed`);
       return result.data;
     }),
+
+  /** Create a report via platform gateway */
+  create: protectedProcedure
+    .input(z.object({
+      title: z.string(),
+      description: z.string().optional(),
+      reportType: z.string().optional(),
+      language: z.string().optional(),
+    }))
+    .mutation(async ({ input }) => {
+      const result = await platform.createReport({
+        title: input.title,
+        description: input.description || '',
+        report_type: input.reportType || 'operational_report',
+        language: input.language || 'ar-SA',
+      });
+      if (!result.ok) throw new Error(`Create report failed: ${JSON.stringify(result.data)}`);
+      return result.data;
+    }),
+
+  /** Refresh report data bindings via platform */
+  refresh: protectedProcedure
+    .input(z.object({ reportId: z.string() }))
+    .mutation(async ({ input }) => {
+      const result = await platform.refreshReport(input.reportId);
+      if (!result.ok) throw new Error(`Refresh report failed`);
+      return result.data;
+    }),
+
+  /** Review report via platform pipeline */
+  review: protectedProcedure
+    .input(z.object({ reportId: z.string() }))
+    .mutation(async ({ input }) => {
+      const result = await platform.reviewReport(input.reportId);
+      if (!result.ok) throw new Error(`Review report failed`);
+      return result.data;
+    }),
+
+  /** Approve report via platform pipeline */
+  approve: protectedProcedure
+    .input(z.object({ reportId: z.string() }))
+    .mutation(async ({ input }) => {
+      const result = await platform.approveReport(input.reportId);
+      if (!result.ok) throw new Error(`Approve report failed`);
+      return result.data;
+    }),
+
+  /** Publish report via platform pipeline */
+  publish: protectedProcedure
+    .input(z.object({ reportId: z.string() }))
+    .mutation(async ({ input }) => {
+      const result = await platform.publishReport(input.reportId);
+      if (!result.ok) throw new Error(`Publish report failed`);
+      return result.data;
+    }),
+
+  /** Export report as HTML via platform */
+  exportHtml: protectedProcedure
+    .input(z.object({ reportId: z.string() }))
+    .mutation(async ({ input }) => {
+      const result = await platform.exportReportHtml(input.reportId);
+      if (!result.ok) throw new Error(`Export HTML failed`);
+      return result.data;
+    }),
+
+  /** Export report as PDF via platform */
+  exportPdf: protectedProcedure
+    .input(z.object({ reportId: z.string() }))
+    .mutation(async ({ input }) => {
+      const result = await platform.exportReportPdf(input.reportId);
+      if (!result.ok) throw new Error(`Export PDF failed`);
+      return result.data;
+    }),
+
+  /** Export report as DOCX via platform */
+  exportDocx: protectedProcedure
+    .input(z.object({ reportId: z.string() }))
+    .mutation(async ({ input }) => {
+      const result = await platform.exportReportDocx(input.reportId);
+      if (!result.ok) throw new Error(`Export DOCX failed`);
+      return result.data;
+    }),
+
+  /** Schedule report via platform */
+  schedule: protectedProcedure
+    .input(z.object({ reportId: z.string() }))
+    .mutation(async ({ input }) => {
+      const result = await platform.scheduleReport(input.reportId);
+      if (!result.ok) throw new Error(`Schedule report failed`);
+      return result.data;
+    }),
+
+  /** Compare report versions via platform */
+  compare: protectedProcedure
+    .input(z.object({ reportId: z.string() }))
+    .mutation(async ({ input }) => {
+      const result = await platform.compareReport(input.reportId);
+      if (!result.ok) throw new Error(`Compare report failed`);
+      return result.data;
+    }),
 });
 
 // ─── Presentation Engine Router ──────────────────────────────────

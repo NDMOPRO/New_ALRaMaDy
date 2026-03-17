@@ -12,6 +12,10 @@
     "./platform": {
       "types": "./dist/platform.d.ts",
       "default": "./dist/platform.js"
+    },
+    "./builder": {
+      "types": "./dist/builder.d.ts",
+      "default": "./dist/builder.js"
     }
   },
   "dependencies": {
