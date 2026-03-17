@@ -31,8 +31,8 @@ export type SamplingMode = 'nearest' | 'bilinear';
 export type BindingKind = 'extracted' | 'reconstructed_synthetic';
 export type RegionKind = 'background' | 'text' | 'logo' | 'table' | 'chart' | 'figure' | 'photo' | 'ui_control' | 'unknown';
 export type ElementKind = 'text' | 'shape' | 'path' | 'image' | 'group' | 'table' | 'chart' | 'container' | 'clip_group' | 'background_fragment';
-export type ExportKind = 'pptx' | 'docx' | 'xlsx' | 'dashboard';
-export type RenderKind = 'pptx' | 'docx' | 'xlsx' | 'dashboard';
+export type ExportKind = 'pptx' | 'docx' | 'xlsx' | 'dashboard' | 'png' | 'pdf';
+export type RenderKind = 'pptx' | 'docx' | 'xlsx' | 'dashboard' | 'png' | 'pdf';
 
 // ─── Geometry Primitives ─────────────────────────────────────────────
 export interface BboxEmu {
@@ -461,6 +461,7 @@ export interface EvidencePack {
   source_renders: RenderRef[];
   target_renders: RenderRef[];
   pixel_diff_reports: DiffRef[];
+  heatmaps: HeatmapEntry[];
   structural_hashes: HashBundle[];
   determinism_report: {
     same_input_rerun_equals: boolean;
@@ -477,4 +478,47 @@ export interface EvidencePack {
   farm_image_id: string;
   font_snapshot_id: string;
   audit_log_entry_ids: string[];
+  /** Degrade records if any degradation was applied */
+  degrade_records?: DegradeEntry[];
+  /** Failure report if pipeline did not achieve STRICT */
+  failure_report?: FailureReportRef;
+  /** USE engine validation results */
+  use_validation?: USEValidationEntry;
+  /** Preservation manifest verification */
+  preservation_check?: PreservationCheckEntry;
+}
+
+export interface HeatmapEntry {
+  page_index: number;
+  heatmap_uri: string;
+  differing_pixels: number;
+  total_pixels: number;
+}
+
+export interface DegradeEntry {
+  kind: string;
+  element_ids: string[];
+  reason: string;
+  timestamp: string;
+}
+
+export interface FailureReportRef {
+  stage: string;
+  root_cause: string;
+  repair_plan: string;
+  violations: string[];
+}
+
+export interface USEValidationEntry {
+  validator_name: string;
+  source_format: string;
+  target_format: string;
+  pass: boolean;
+  violations: string[];
+}
+
+export interface PreservationCheckEntry {
+  pass: boolean;
+  violations: string[];
+  checked_properties: string[];
 }

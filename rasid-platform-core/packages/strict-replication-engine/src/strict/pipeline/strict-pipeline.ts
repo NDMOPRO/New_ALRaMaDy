@@ -93,13 +93,20 @@ function renderToolForKind(kind: ExportKind): string {
     docx: 'render.docx_to_png',
     xlsx: 'render.xlsx_to_png',
     dashboard: 'render.dashboard_to_png',
+    png: 'render.pdf_to_png',
+    pdf: 'render.pdf_to_png',
   };
   return map[kind];
 }
 
 function sourceRenderTool(inputType: InputType): string {
-  if (inputType === 'pdf' || inputType === 'image') return 'render.pdf_to_png';
-  return 'render.pdf_to_png';
+  switch (inputType) {
+    case 'pdf': return 'render.pdf_to_png';
+    case 'image': return 'render.pdf_to_png';
+    case 'pptx': return 'render.pptx_to_png';
+    case 'docx': return 'render.docx_to_png';
+    case 'xlsx': return 'render.xlsx_to_png';
+  }
 }
 
 function exportToolForKind(kind: ExportKind): string {
@@ -108,6 +115,8 @@ function exportToolForKind(kind: ExportKind): string {
     docx: 'export.docx_from_cdr',
     xlsx: 'export.xlsx_from_table_cdr',
     dashboard: 'export.dashboard_from_cdr',
+    png: 'export.png_from_cdr',
+    pdf: 'export.pdf_from_cdr',
   };
   return map[kind];
 }
@@ -229,8 +238,88 @@ export class StrictPipeline {
             this.evidenceBuilder.addAuditLogEntry(tableResponse.request_id);
           }
         }
+      } else if (inputType === 'pptx' || inputType === 'docx' || inputType === 'xlsx') {
+        // Office input extraction — extract Office DOM then build CDR
+        const officeExtractTool = `extract.office_${inputType}`;
+        const officeResponse = await executeTool<{ office_dom: { dom_id: string } }>({
+          request_id: `${runId}-extract-office`,
+          tool_id: officeExtractTool,
+          context,
+          inputs: { office_asset: sourceAsset },
+          params: {},
+        });
+
+        if (officeResponse.status === 'failed') {
+          // Fallback: render Office to PDF, then extract PDF DOM
+          // This is the Any-to-Any path for Office inputs
+          const renderResponse = await executeTool<{ renders: RenderRef[] }>({
+            request_id: `${runId}-render-office-as-source`,
+            tool_id: sourceRenderTool(inputType),
+            context,
+            inputs: {
+              source: sourceAsset,
+              render_profile: { dpi: this.config.render_dpi, colorspace: 'sRGB' as const },
+            },
+            params: {},
+          });
+          if (renderResponse.status === 'failed') {
+            return { success: false, warnings, error: `Office ${inputType} extraction and render both failed` };
+          }
+          this.evidenceBuilder.addAuditLogEntry(renderResponse.request_id);
+
+          // Build CDR from the rendered image
+          const segResponse = await executeTool<{ image_segments: { seg_id: string; regions: Array<{ region_id: string; kind: string }> } }>({
+            request_id: `${runId}-seg-office-render`,
+            tool_id: 'extract.image_segments',
+            context,
+            inputs: {
+              image_asset: {
+                asset_id: renderResponse.refs.renders[0].render_id,
+                uri: renderResponse.refs.renders[0].uri,
+                mime: 'image/png',
+                sha256: renderResponse.refs.renders[0].fingerprint.pixel_hash,
+                size_bytes: 0,
+              },
+            },
+            params: {},
+          });
+          if (segResponse.status === 'failed') {
+            return { success: false, warnings, error: 'Image segmentation of Office render failed' };
+          }
+
+          const cdrResponse = await executeTool<{ cdr_design: CdrDesignRef; font_plan: FontPlan }>({
+            request_id: `${runId}-cdr-office`,
+            tool_id: 'cdr.build_design_from_image',
+            context,
+            inputs: { image_segments: segResponse.refs.image_segments },
+            params: {},
+          });
+          if (cdrResponse.status === 'failed') {
+            return { success: false, warnings, error: 'CDR build from Office render failed' };
+          }
+          cdrDesignRef = cdrResponse.refs.cdr_design;
+          fontPlan = cdrResponse.refs.font_plan;
+          this.collectWarnings(warnings, cdrResponse);
+          this.evidenceBuilder.addAuditLogEntry(cdrResponse.request_id);
+        } else {
+          // Direct Office DOM extraction succeeded — build CDR from DOM
+          const cdrResponse = await executeTool<{ cdr_design: CdrDesignRef; font_plan: FontPlan }>({
+            request_id: `${runId}-cdr-office-dom`,
+            tool_id: `cdr.build_design_from_office`,
+            context,
+            inputs: { office_dom: officeResponse.refs.office_dom },
+            params: {},
+          });
+          if (cdrResponse.status === 'failed') {
+            return { success: false, warnings, error: 'CDR build from Office DOM failed' };
+          }
+          cdrDesignRef = cdrResponse.refs.cdr_design;
+          fontPlan = cdrResponse.refs.font_plan;
+          this.collectWarnings(warnings, cdrResponse);
+          this.evidenceBuilder.addAuditLogEntry(cdrResponse.request_id);
+        }
       } else {
-        return { success: false, warnings, error: `Input type ${inputType} not yet implemented in strict pipeline` };
+        return { success: false, warnings, error: `Input type ${inputType} not supported in strict pipeline` };
       }
 
       // ─── Font Embedding ──────────────────────────────────
@@ -418,6 +507,7 @@ export class StrictPipeline {
         this.evidenceBuilder.addAuditLogEntry(diffResponse.request_id);
       }
       this.evidenceBuilder.addDiffReports(diffRefs);
+      this.evidenceBuilder.addHeatmapsFromDiffs(diffRefs);
 
       // ─── Steps 9-11: Repair Loop ────────────────────────
       if (!allPixelPass) {

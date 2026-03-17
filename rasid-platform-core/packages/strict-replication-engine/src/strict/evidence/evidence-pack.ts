@@ -10,6 +10,11 @@ import type {
   ActionContext,
   EvidencePack,
   HashBundle,
+  HeatmapEntry,
+  DegradeEntry,
+  FailureReportRef,
+  USEValidationEntry,
+  PreservationCheckEntry,
 } from '../cdr/types';
 
 export class EvidencePackBuilder {
@@ -19,6 +24,7 @@ export class EvidencePackBuilder {
   private sourceRenders: RenderRef[] = [];
   private targetRenders: RenderRef[] = [];
   private diffReports: DiffRef[] = [];
+  private heatmaps: HeatmapEntry[] = [];
   private structuralHashes: HashBundle[] = [];
   private toolVersions: Record<string, string> = {};
   private auditLogEntryIds: string[] = [];
@@ -31,6 +37,10 @@ export class EvidencePackBuilder {
   };
   private determinismPass = false;
   private actionGraphSnapshot: string = '';
+  private degradeRecords: DegradeEntry[] = [];
+  private failureReport: FailureReportRef | undefined;
+  private useValidation: USEValidationEntry | undefined;
+  private preservationCheck: PreservationCheckEntry | undefined;
 
   init(runId: string, farmImageId: string, fontSnapshotId: string): void {
     this.runId = runId;
@@ -39,12 +49,17 @@ export class EvidencePackBuilder {
     this.sourceRenders = [];
     this.targetRenders = [];
     this.diffReports = [];
+    this.heatmaps = [];
     this.structuralHashes = [];
     this.toolVersions = {};
     this.auditLogEntryIds = [];
     this.functionalTests = {};
     this.determinismPass = false;
     this.actionGraphSnapshot = '';
+    this.degradeRecords = [];
+    this.failureReport = undefined;
+    this.useValidation = undefined;
+    this.preservationCheck = undefined;
   }
 
   addSourceRenders(renders: RenderRef[]): void {
@@ -84,6 +99,40 @@ export class EvidencePackBuilder {
     this.actionGraphSnapshot = snapshot;
   }
 
+  addHeatmap(entry: HeatmapEntry): void {
+    this.heatmaps.push(entry);
+  }
+
+  addHeatmapsFromDiffs(diffs: DiffRef[]): void {
+    for (let i = 0; i < diffs.length; i++) {
+      const diff = diffs[i];
+      if (diff.heatmap_uri) {
+        this.heatmaps.push({
+          page_index: i,
+          heatmap_uri: diff.heatmap_uri,
+          differing_pixels: Math.round(diff.pixel_diff * 1000000), // approximate
+          total_pixels: 1000000,
+        });
+      }
+    }
+  }
+
+  addDegradeRecords(records: DegradeEntry[]): void {
+    this.degradeRecords.push(...records);
+  }
+
+  setFailureReport(report: FailureReportRef): void {
+    this.failureReport = report;
+  }
+
+  setUSEValidation(validation: USEValidationEntry): void {
+    this.useValidation = validation;
+  }
+
+  setPreservationCheck(check: PreservationCheckEntry): void {
+    this.preservationCheck = check;
+  }
+
   /**
    * Build the final Evidence Pack. Returns undefined if critical data is missing.
    */
@@ -111,12 +160,13 @@ export class EvidencePackBuilder {
       throw new Error('Evidence Pack MUST NOT be built when pixel diff reports contain failures');
     }
 
-    return {
+    const pack: EvidencePack = {
       run_id: this.runId,
       timestamp: new Date().toISOString(),
       source_renders: this.sourceRenders,
       target_renders: this.targetRenders,
       pixel_diff_reports: this.diffReports,
+      heatmaps: this.heatmaps,
       structural_hashes: this.structuralHashes,
       determinism_report: {
         same_input_rerun_equals: this.determinismPass,
@@ -129,6 +179,21 @@ export class EvidencePackBuilder {
       font_snapshot_id: this.fontSnapshotId,
       audit_log_entry_ids: this.auditLogEntryIds,
     };
+
+    if (this.degradeRecords.length > 0) {
+      pack.degrade_records = this.degradeRecords;
+    }
+    if (this.failureReport) {
+      pack.failure_report = this.failureReport;
+    }
+    if (this.useValidation) {
+      pack.use_validation = this.useValidation;
+    }
+    if (this.preservationCheck) {
+      pack.preservation_check = this.preservationCheck;
+    }
+
+    return pack;
   }
 
   /**
@@ -172,6 +237,26 @@ export class EvidencePackBuilder {
     // Determinism must be validated
     if (!pack.determinism_report?.same_input_rerun_equals) {
       errors.push('Determinism report: same_input_rerun_equals MUST be true');
+    }
+
+    // Heatmaps must be present (new requirement)
+    if (!pack.heatmaps) {
+      errors.push('Missing heatmaps array');
+    }
+
+    // If degrade_records exist, verify they are allowed types only
+    if (pack.degrade_records) {
+      const allowedDegradeKinds = ['FONT_SUBSTITUTION', 'DECORATIVE_RASTERIZATION', 'SYNTHETIC_DATA_BINDING'];
+      for (const record of pack.degrade_records) {
+        if (!allowedDegradeKinds.includes(record.kind)) {
+          errors.push(`Prohibited degradation type: ${record.kind}`);
+        }
+      }
+    }
+
+    // If preservation_check exists and failed, that's an error
+    if (pack.preservation_check && !pack.preservation_check.pass) {
+      errors.push(`Preservation check failed: ${pack.preservation_check.violations.join('; ')}`);
     }
 
     return { valid: errors.length === 0, errors };

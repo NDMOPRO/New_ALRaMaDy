@@ -141,6 +141,90 @@ export const ANY_TO_ANY_STRICT: ActionGraphTemplate = {
   ],
 };
 
+// ─── Office → Target STRICT Templates ────────────────────────────────
+
+export const PPTX_TO_PPTX_STRICT: ActionGraphTemplate = {
+  template_id: 'pptx-to-pptx-strict',
+  name: 'PPTX → PPTX (Strict)',
+  description: 'Rebuild PPTX with pixel-perfect fidelity verification',
+  nodes: [
+    { id: 'extract', tool_id: 'extract.office_pptx', depends_on: [] },
+    { id: 'build_cdr', tool_id: 'cdr.build_design_from_office', depends_on: ['extract'] },
+    { id: 'embed_fonts', tool_id: 'fonts.embed_full_glyph', depends_on: ['build_cdr'], params: { embed_all_glyphs: true } },
+    { id: 'export', tool_id: 'export.pptx_from_cdr', depends_on: ['embed_fonts'] },
+    { id: 'render_source', tool_id: 'render.pptx_to_png', depends_on: [] },
+    { id: 'render_target', tool_id: 'render.pptx_to_png', depends_on: ['export'] },
+    { id: 'verify_det', tool_id: 'render.validate_determinism', depends_on: ['render_target'] },
+    { id: 'verify_struct', tool_id: 'verify.structural_equivalence', depends_on: ['export', 'build_cdr'] },
+    { id: 'verify_pixel', tool_id: 'verify.pixel_diff', depends_on: ['render_source', 'render_target'], params: { threshold: 0 } },
+    { id: 'repair', tool_id: 'repair.loop_controller', depends_on: ['verify_pixel'], params: { max_iterations: 50 } },
+  ],
+};
+
+export const DOCX_TO_DOCX_STRICT: ActionGraphTemplate = {
+  template_id: 'docx-to-docx-strict',
+  name: 'DOCX → DOCX (Strict)',
+  description: 'Rebuild DOCX with pixel-perfect fidelity verification',
+  nodes: [
+    { id: 'extract', tool_id: 'extract.office_docx', depends_on: [] },
+    { id: 'build_cdr', tool_id: 'cdr.build_design_from_office', depends_on: ['extract'] },
+    { id: 'embed_fonts', tool_id: 'fonts.embed_full_glyph', depends_on: ['build_cdr'], params: { embed_all_glyphs: true } },
+    { id: 'export', tool_id: 'export.docx_from_cdr', depends_on: ['embed_fonts'] },
+    { id: 'render_source', tool_id: 'render.docx_to_png', depends_on: [] },
+    { id: 'render_target', tool_id: 'render.docx_to_png', depends_on: ['export'] },
+    { id: 'verify_det', tool_id: 'render.validate_determinism', depends_on: ['render_target'] },
+    { id: 'verify_struct', tool_id: 'verify.structural_equivalence', depends_on: ['export', 'build_cdr'] },
+    { id: 'verify_pixel', tool_id: 'verify.pixel_diff', depends_on: ['render_source', 'render_target'], params: { threshold: 0 } },
+    { id: 'repair', tool_id: 'repair.loop_controller', depends_on: ['verify_pixel'], params: { max_iterations: 50 } },
+  ],
+};
+
+export const XLSX_TO_XLSX_STRICT: ActionGraphTemplate = {
+  template_id: 'xlsx-to-xlsx-strict',
+  name: 'XLSX → XLSX (Strict)',
+  description: 'Rebuild XLSX with pixel-perfect fidelity verification',
+  nodes: [
+    { id: 'extract', tool_id: 'extract.office_xlsx', depends_on: [] },
+    { id: 'build_cdr', tool_id: 'cdr.build_design_from_office', depends_on: ['extract'] },
+    { id: 'export', tool_id: 'export.xlsx_from_table_cdr', depends_on: ['build_cdr'] },
+    { id: 'render_source', tool_id: 'render.xlsx_to_png', depends_on: [] },
+    { id: 'render_target', tool_id: 'render.xlsx_to_png', depends_on: ['export'] },
+    { id: 'verify_pixel', tool_id: 'verify.pixel_diff', depends_on: ['render_source', 'render_target'], params: { threshold: 0 } },
+    { id: 'repair', tool_id: 'repair.loop_controller', depends_on: ['verify_pixel'], params: { max_iterations: 50 } },
+  ],
+};
+
+export const OFFICE_TO_PNG_STRICT: ActionGraphTemplate = {
+  template_id: 'office-to-png-strict',
+  name: 'Office → PNG (Strict)',
+  description: 'Convert Office document to PNG with fidelity verification',
+  nodes: [
+    { id: 'extract', tool_id: 'extract.office_pptx', depends_on: [] },
+    { id: 'build_cdr', tool_id: 'cdr.build_design_from_office', depends_on: ['extract'] },
+    { id: 'embed_fonts', tool_id: 'fonts.embed_full_glyph', depends_on: ['build_cdr'], params: { embed_all_glyphs: true } },
+    { id: 'export', tool_id: 'export.png_from_cdr', depends_on: ['embed_fonts'] },
+    { id: 'render_source', tool_id: 'render.pptx_to_png', depends_on: [] },
+    { id: 'render_target', tool_id: 'render.png_to_png', depends_on: ['export'] },
+    { id: 'verify_pixel', tool_id: 'verify.pixel_diff', depends_on: ['render_source', 'render_target'], params: { threshold: 0 } },
+  ],
+};
+
+export const ANY_TO_PDF_STRICT: ActionGraphTemplate = {
+  template_id: 'any-to-pdf-strict',
+  name: 'Any → PDF (Strict)',
+  description: 'Convert any format to PDF with fidelity verification',
+  nodes: [
+    { id: 'extract', tool_id: 'extract.pdf_dom', depends_on: [] },
+    { id: 'build_cdr', tool_id: 'cdr.build_design_from_pdf', depends_on: ['extract'] },
+    { id: 'embed_fonts', tool_id: 'fonts.embed_full_glyph', depends_on: ['build_cdr'], params: { embed_all_glyphs: true } },
+    { id: 'export', tool_id: 'export.pdf_from_cdr', depends_on: ['embed_fonts'] },
+    { id: 'render_source', tool_id: 'render.pdf_to_png', depends_on: ['extract'] },
+    { id: 'render_target', tool_id: 'render.pdf_to_png', depends_on: ['export'] },
+    { id: 'verify_det', tool_id: 'render.validate_determinism', depends_on: ['render_target'] },
+    { id: 'verify_pixel', tool_id: 'verify.pixel_diff', depends_on: ['render_source', 'render_target'], params: { threshold: 0 } },
+  ],
+};
+
 // ─── Template Registry ───────────────────────────────────────────────
 export const ALL_TEMPLATES: ActionGraphTemplate[] = [
   PDF_TO_PPTX_STRICT,
@@ -149,6 +233,11 @@ export const ALL_TEMPLATES: ActionGraphTemplate[] = [
   IMAGE_TABLE_TO_XLSX_STRICT,
   IMAGE_DASHBOARD_TO_DASHBOARD_STRICT,
   IMAGE_REPORT_TO_DOCX_STRICT,
+  PPTX_TO_PPTX_STRICT,
+  DOCX_TO_DOCX_STRICT,
+  XLSX_TO_XLSX_STRICT,
+  OFFICE_TO_PNG_STRICT,
+  ANY_TO_PDF_STRICT,
   ANY_TO_ANY_STRICT,
 ];
 
@@ -161,11 +250,28 @@ export function selectTemplate(inputMime: string, targetKind: string): ActionGra
     if (targetKind === 'pptx') return PDF_TO_PPTX_STRICT;
     if (targetKind === 'docx') return PDF_TO_DOCX_STRICT;
     if (targetKind === 'xlsx') return PDF_TO_XLSX_STRICT;
+    if (targetKind === 'pdf') return ANY_TO_PDF_STRICT;
   }
   if (inputMime.startsWith('image/')) {
     if (targetKind === 'xlsx') return IMAGE_TABLE_TO_XLSX_STRICT;
     if (targetKind === 'dashboard') return IMAGE_DASHBOARD_TO_DASHBOARD_STRICT;
     if (targetKind === 'docx') return IMAGE_REPORT_TO_DOCX_STRICT;
+    if (targetKind === 'png') return OFFICE_TO_PNG_STRICT;
+  }
+  if (inputMime.includes('presentationml') || inputMime.includes('pptx')) {
+    if (targetKind === 'pptx') return PPTX_TO_PPTX_STRICT;
+    if (targetKind === 'png') return OFFICE_TO_PNG_STRICT;
+    if (targetKind === 'pdf') return ANY_TO_PDF_STRICT;
+  }
+  if (inputMime.includes('wordprocessingml') || inputMime.includes('docx')) {
+    if (targetKind === 'docx') return DOCX_TO_DOCX_STRICT;
+    if (targetKind === 'png') return OFFICE_TO_PNG_STRICT;
+    if (targetKind === 'pdf') return ANY_TO_PDF_STRICT;
+  }
+  if (inputMime.includes('spreadsheetml') || inputMime.includes('xlsx')) {
+    if (targetKind === 'xlsx') return XLSX_TO_XLSX_STRICT;
+    if (targetKind === 'png') return OFFICE_TO_PNG_STRICT;
+    if (targetKind === 'pdf') return ANY_TO_PDF_STRICT;
   }
   return ANY_TO_ANY_STRICT;
 }
