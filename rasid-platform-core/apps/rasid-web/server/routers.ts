@@ -10,8 +10,7 @@ import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { aiRouter } from "./aiRouter";
 import { libraryRouter } from "./libraryRouter";
 import { platformRouter } from "./platformRouter";
-// import { strictEngineRouter } from "./strictEngineRouter"; // DISABLED: broken exports in strict-replication-engine package
-const strictEngineRouter = router({});
+import { strictEngineRouter } from "./strictEngineRouter";
 import { presentationAddendumRouter } from "./presentationAddendumRouter";
 import { loginUser, registerUser, setAuthCookie, clearAuthCookie } from "./localAuth";
 import * as localDb from "./localDb";

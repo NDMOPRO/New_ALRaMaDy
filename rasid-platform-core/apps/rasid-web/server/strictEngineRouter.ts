@@ -1618,8 +1618,7 @@ export const strictEngineRouter = router({
       }
     }),
 
-  // ─── 15. محرك المطابقة البصرية الحرفية 1:1 ─────────────────────
-  // المبدأ: الصورة المصدر = خلفية الشريحة/الصفحة → PixelDiff = 0
+  // ─── 15. محرك المطابقة البصرية الحرفية 1:1 + تفريغ + تعريب + ترجمة ──
   runIntegratedPipeline: publicProcedure
     .input(z.object({
       fileBase64: z.string(),
@@ -1647,6 +1646,7 @@ export const strictEngineRouter = router({
         const fileBuffer = Buffer.from(input.fileBase64, "base64");
         const fileHash = createHash("sha256").update(fileBuffer).digest("hex");
         const srcBase64 = input.fileBase64;
+        const baseName = input.fileName.replace(/\.[^.]+$/, "");
 
         // ── تحديد نوع الصورة ────────────────────────────────────
         const imageMime = input.fileType === "pdf" ? "application/pdf" : detectImageMime(fileBuffer);
@@ -1657,48 +1657,213 @@ export const strictEngineRouter = router({
           pdfContent = await extractPdfContent(fileBuffer);
         }
 
-        // ── بناء صفحات/شرائح المطابقة ───────────────────────────
-        // لكل صفحة: الصورة المصدر = الخلفية بالكامل
         const pageCount = pdfContent?.pageCount || input.pageCount || 1;
 
+        // ══════════════════════════════════════════════════════════
+        // بناء CDR Document من المحتوى المستخرج
+        // ══════════════════════════════════════════════════════════
+        const cdrElements: import("./engines/translation-engine").CDRElement[] = [];
+        const extractedTexts: string[] = pdfContent?.texts || [];
+        const extractedTables: any[] = pdfContent?.tables || [];
+        const extractedKpis: any[] = pdfContent?.kpis || [];
+
+        // إضافة العناصر النصية
+        extractedTexts.forEach((text: string, i: number) => {
+          cdrElements.push({
+            element_id: `text-${i}`,
+            element_type: "text",
+            x: 50, y: 50 + i * 60,
+            width: 700, height: 50,
+            text,
+            editable: true,
+          });
+        });
+
+        // إضافة الجداول
+        extractedTables.forEach((table: any, i: number) => {
+          const rows = [table.headers, ...table.rows];
+          cdrElements.push({
+            element_id: `table-${i}`,
+            element_type: "table",
+            x: 50, y: 400 + i * 200,
+            width: 700, height: 150,
+            rows,
+            editable: true,
+          });
+        });
+
+        // إضافة المؤشرات كعناصر نصية
+        extractedKpis.forEach((kpi: any, i: number) => {
+          cdrElements.push({
+            element_id: `kpi-${i}`,
+            element_type: "text",
+            x: 50 + i * 200, y: 350,
+            width: 180, height: 40,
+            text: `${kpi.label}: ${kpi.value}`,
+            editable: true,
+          });
+        });
+
+        const cdrDoc: import("./engines/translation-engine").CDRDocument = {
+          run_id: fileHash.substring(0, 16),
+          pages: [{
+            page_id: "page-1",
+            width: 960,
+            height: 720,
+            background: "#ffffff",
+            elements: cdrElements,
+          }],
+          source_kind: input.fileType,
+          target_kind: input.targetFormat,
+          original_name: input.fileName,
+        };
+
+        // ══════════════════════════════════════════════════════════
+        // تنفيذ العمليات الاحترافية
+        // ══════════════════════════════════════════════════════════
+        const operationResults: any[] = [];
+        let processedCdr = cdrDoc;
+
+        // ── 1. التفريغ الاحترافي (Content Emptying) ─────────────
+        let emptyingResult: any = null;
+        if (input.operations.empty) {
+          const emptyingEngine = new ContentEmptyingEngine();
+          emptyingResult = emptyingEngine.extractContent(processedCdr);
+          operationResults.push({
+            operation: "تفريغ",
+            status: "success",
+            stats: emptyingResult.stats,
+            entries: emptyingResult.manifest.size,
+          });
+        }
+
+        // ── 2. التعريب الاحترافي (Arabization) ──────────────────
+        let arabizationResult: any = null;
+        if (input.operations.arabize) {
+          const arabEngine = new ArabizationEngine();
+          arabizationResult = arabEngine.arabize(processedCdr, {
+            mirrorLayout: true,
+            convertNumbers: true,
+            convertDates: true,
+            convertCurrency: true,
+            applyKashida: false,
+            substituteFonts: true,
+            mirrorTables: true,
+          });
+          processedCdr = arabizationResult.arabizedCDR;
+          operationResults.push({
+            operation: "تعريب",
+            status: "success",
+            stats: arabizationResult.stats,
+            changes: arabizationResult.changes.length,
+          });
+        }
+
+        // ── 3. الترجمة الاحترافية (Translation) ─────────────────
+        let translationResult: any = null;
+        if (input.operations.translate) {
+          const termDB = new TerminologyDB();
+          const tm = new TranslationMemory();
+          const transEngine = new TranslationEngine(termDB, tm);
+          const transResult = transEngine.translateCDR(
+            processedCdr,
+            input.operations.translateDirection,
+          );
+          processedCdr = transResult.translatedCDR;
+          translationResult = {
+            direction: transResult.direction,
+            overallQuality: transResult.overallQuality,
+            termConsistency: transResult.termConsistency,
+            stats: transResult.stats,
+            warnings: transResult.warnings,
+          };
+          operationResults.push({
+            operation: "ترجمة",
+            status: "success",
+            direction: input.operations.translateDirection,
+            quality: transResult.overallQuality.toFixed(2),
+            stats: transResult.stats,
+          });
+        }
+
+        // ══════════════════════════════════════════════════════════
+        // استخراج النصوص المعالجة من CDR المحدّث
+        // ══════════════════════════════════════════════════════════
+        const processedTexts: string[] = [];
+        const processedTables: any[] = [];
+        for (const page of processedCdr.pages) {
+          for (const el of page.elements) {
+            if (el.element_type === "text" && el.text) {
+              processedTexts.push(el.text);
+            }
+            if (el.element_type === "table" && el.rows) {
+              const headers = el.rows[0] || [];
+              const rows = el.rows.slice(1);
+              processedTables.push({ headers, rows });
+            }
+          }
+        }
+
+        // ══════════════════════════════════════════════════════════
+        // توليد الملف الناتج
+        // ══════════════════════════════════════════════════════════
         let outputBase64 = "";
         let outputFileName = "";
         let outputMimeType = "";
-        const baseName = input.fileName.replace(/\.[^.]+$/, "");
+
+        const opsLabel = [
+          input.operations.match ? "مطابقة 1:1" : "",
+          input.operations.arabize ? "تعريب" : "",
+          input.operations.translate ? (input.operations.translateDirection === "ar-to-en" ? "ترجمة عربي→إنجليزي" : "ترجمة إنجليزي→عربي") : "",
+          input.operations.empty ? "تفريغ" : "",
+        ].filter(Boolean).join(" + ");
+
         const targetLabel = {
-          dashboard: "لوحة مؤشرات — مطابقة 1:1",
-          presentation: "عرض تقديمي — مطابقة 1:1",
-          report: "تقرير — مطابقة 1:1",
-          spreadsheet: "جدول بيانات",
+          dashboard: `لوحة مؤشرات — ${opsLabel}`,
+          presentation: `عرض تقديمي — ${opsLabel}`,
+          report: `تقرير — ${opsLabel}`,
+          spreadsheet: `جدول بيانات — ${opsLabel}`,
         }[input.targetFormat];
 
         if (input.targetFormat === "presentation") {
-          // ★ PPTX: كل صفحة = شريحة بخلفية الصورة الأصلية = PixelDiff = 0 ★
-          if (input.fileType === "pdf") {
-            // PDF → PPTX: نضع الـ PDF كصورة واحدة (أو نستخدم المحتوى المستخرج)
-            // لأن pptxgenjs لا يدعم PDF مباشرة، نحول لـ PNG placeholder مع المحتوى
-            // أفضل حل: المستخدم يرفع صورة لكل صفحة
-            const slides: any[] = [];
-            // شريحة لكل صفحة مع النصوص المستخرجة
-            for (let i = 0; i < pageCount; i++) {
-              const slideTexts = pdfContent?.texts?.slice(i * 5, (i + 1) * 5) || [];
-              slides.push({
-                imageBase64: srcBase64,
-                imageMime: "image/png", // PDF data can't be embedded directly
-                label: `صفحة ${i + 1}`,
-                textOverlays: slideTexts.map((t: string, j: number) => ({
-                  text: t, x: 0.5, y: 1 + j * 0.6, w: 12, h: 0.5,
-                })),
-              });
-            }
-            // بما أن PDF لا يمكن تضمينه كصورة في PPTX مباشرة
-            // نولد PPTX بالنصوص المستخرجة مع خلفية بيضاء
-            const PptxGenJS = (await import("pptxgenjs")).default;
-            const pres = new PptxGenJS();
-            pres.layout = "LAYOUT_WIDE";
-            pres.author = "رصد — محرك المطابقة البصرية 1:1";
-            pres.title = baseName;
+          const PptxGenJS = (await import("pptxgenjs")).default;
+          const pres = new PptxGenJS();
+          pres.layout = "LAYOUT_WIDE";
+          pres.author = "رصد — محرك المطابقة البصرية 1:1";
+          pres.title = baseName;
 
+          if (input.fileType !== "pdf") {
+            // ★ صورة → PPTX مع خلفية الصورة الأصلية = PixelDiff = 0 ★
+            const slide = pres.addSlide();
+            slide.background = { data: `data:${imageMime};base64,${srcBase64}` };
+
+            // إضافة النصوص المعالجة كطبقة شفافة قابلة للتحرير
+            processedTexts.forEach((text, j) => {
+              slide.addText(text, {
+                x: 0.3, y: 0.5 + j * 0.55, w: 12.5, h: 0.5,
+                fontSize: 14, color: "000000", align: "right", fontFace: "Tahoma",
+                transparency: 100, // شفاف — يظهر عند التحرير
+              });
+            });
+
+            // إضافة الجداول المعالجة
+            processedTables.forEach((table, ti) => {
+              const tableRows = [
+                table.headers.map((h: string) => ({ text: h, options: { bold: true, color: "FFFFFF", fill: { color: "6366f1" }, fontSize: 11, fontFace: "Tahoma", align: "right" as const } })),
+                ...table.rows.slice(0, 10).map((row: string[]) => row.map((cell: string) => ({ text: cell, options: { fontSize: 10, fontFace: "Tahoma", align: "right" as const } }))),
+              ];
+              slide.addTable(tableRows, {
+                x: 0.5, y: 5 + ti * 2, w: 12,
+                border: { type: "solid", pt: 1, color: "e5e7eb" },
+                transparency: 100,
+              });
+            });
+
+            slide.addText(`رصد | ${opsLabel} | PixelDiff = 0`, {
+              x: 0.5, y: 7.2, w: 12, h: 0.3, fontSize: 8, color: "94a3b8", align: "center", fontFace: "Tahoma",
+            });
+          } else {
+            // PDF → PPTX
             for (let i = 0; i < pageCount; i++) {
               const slide = pres.addSlide();
               slide.background = { color: "FFFFFF" };
@@ -1706,109 +1871,175 @@ export const strictEngineRouter = router({
                 x: 0.5, y: 0.3, w: 12, h: 0.6,
                 fontSize: 24, bold: true, color: "1e293b", align: "right", fontFace: "Tahoma",
               });
-              const texts = pdfContent?.texts?.slice(i * 8, (i + 1) * 8) || [];
-              texts.forEach((t: string, j: number) => {
+              const textsForSlide = processedTexts.slice(i * 8, (i + 1) * 8);
+              textsForSlide.forEach((t, j) => {
                 slide.addText(t, {
                   x: 0.5, y: 1.2 + j * 0.55, w: 12, h: 0.5,
                   fontSize: 14, color: "334155", align: "right", fontFace: "Tahoma",
                 });
               });
-              // جداول
-              if (i === 0 && pdfContent?.tables?.length > 0) {
-                const table = pdfContent.tables[0];
-                const yStart = 1.2 + (texts.length || 1) * 0.55 + 0.3;
+              if (i === 0 && processedTables.length > 0) {
+                const table = processedTables[0];
+                const yStart = 1.2 + (textsForSlide.length || 1) * 0.55 + 0.3;
                 const rows = [
                   table.headers.map((h: string) => ({ text: h, options: { bold: true, color: "FFFFFF", fill: { color: "6366f1" }, fontSize: 11, fontFace: "Tahoma", align: "right" as const } })),
                   ...table.rows.slice(0, 10).map((row: string[]) => row.map((cell: string) => ({ text: cell, options: { fontSize: 10, fontFace: "Tahoma", align: "right" as const } }))),
                 ];
-                slide.addTable(rows, {
-                  x: 0.5, y: yStart, w: 12,
-                  border: { type: "solid", pt: 1, color: "e5e7eb" },
-                });
+                slide.addTable(rows, { x: 0.5, y: yStart, w: 12, border: { type: "solid", pt: 1, color: "e5e7eb" } });
               }
-              slide.addText("رصد — محرك المطابقة البصرية 1:1 | PixelDiff = 0", {
+              slide.addText(`رصد | ${opsLabel}`, {
                 x: 0.5, y: 7, w: 12, h: 0.3, fontSize: 9, color: "94a3b8", align: "center", fontFace: "Tahoma",
               });
             }
-            const buf = await pres.write({ outputType: "nodebuffer" }) as Buffer;
-            outputBase64 = Buffer.from(buf).toString("base64");
-          } else {
-            // ★ صورة → PPTX: الصورة الأصلية = خلفية الشريحة = مطابقة 100% ★
-            const slides = [{
-              imageBase64: srcBase64,
-              imageMime,
-              label: baseName,
-            }];
-            outputBase64 = await generateMatchedPptx(slides, baseName);
           }
+          const buf = await pres.write({ outputType: "nodebuffer" }) as Buffer;
+          outputBase64 = Buffer.from(buf).toString("base64");
           outputFileName = baseName + ".pptx";
           outputMimeType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
 
         } else if (input.targetFormat === "dashboard" || input.targetFormat === "report") {
-          // ★ HTML: الصورة المصدر معروضة بالكامل = مطابقة 1:1 ★
           const mode = input.targetFormat === "dashboard" ? "dashboard" : "report";
-          if (input.fileType === "pdf") {
-            // PDF → HTML: لا يمكن تضمين PDF كصورة مباشرة، نضمنه كـ embed/object
-            const pdfDataUri = `data:application/pdf;base64,${srcBase64}`;
-            const html = `<!DOCTYPE html>
+          const imageDataUri = input.fileType !== "pdf" ? `data:${imageMime};base64,${srcBase64}` : null;
+          const pdfDataUri = input.fileType === "pdf" ? `data:application/pdf;base64,${srcBase64}` : null;
+
+          // بناء HTML احترافي مع النصوص المعالجة
+          const textsHtml = processedTexts.map(t =>
+            `<div class="text-item" contenteditable="true">${t.replace(/</g, "&lt;")}</div>`
+          ).join("\n");
+
+          const tablesHtml = processedTables.map((table, ti) => {
+            const headerCells = table.headers.map((h: string) => `<th>${h}</th>`).join("");
+            const bodyRows = table.rows.slice(0, 20).map((row: string[]) =>
+              `<tr>${row.map((c: string) => `<td contenteditable="true">${c}</td>`).join("")}</tr>`
+            ).join("\n");
+            return `<div class="table-card"><h3>جدول ${ti + 1}</h3><table><thead><tr>${headerCells}</tr></thead><tbody>${bodyRows}</tbody></table></div>`;
+          }).join("\n");
+
+          const kpisHtml = extractedKpis.map((kpi: any) =>
+            `<div class="kpi-card"><div class="kpi-value">${kpi.value}</div><div class="kpi-label">${kpi.label}</div></div>`
+          ).join("\n");
+
+          const opsStatusHtml = operationResults.map((op: any) =>
+            `<div class="op-badge">${op.operation}: ${op.status === "success" ? "✓" : "✗"}</div>`
+          ).join("");
+
+          const emptyingHtml = emptyingResult ? `
+            <div class="section"><h2>التفريغ الاحترافي</h2>
+            <div class="stats-grid">
+              <div class="stat"><span class="stat-value">${emptyingResult.stats.textEntries}</span><span class="stat-label">نصوص</span></div>
+              <div class="stat"><span class="stat-value">${emptyingResult.stats.tableEntries}</span><span class="stat-label">جداول</span></div>
+              <div class="stat"><span class="stat-value">${emptyingResult.stats.chartEntries}</span><span class="stat-label">رسوم بيانية</span></div>
+              <div class="stat"><span class="stat-value">${emptyingResult.stats.kpiEntries}</span><span class="stat-label">مؤشرات</span></div>
+              <div class="stat"><span class="stat-value">${emptyingResult.stats.totalEntries}</span><span class="stat-label">إجمالي</span></div>
+              <div class="stat"><span class="stat-value">${emptyingResult.stats.extractionDurationMs}ms</span><span class="stat-label">وقت التفريغ</span></div>
+            </div></div>` : "";
+
+          const translationHtml = translationResult ? `
+            <div class="section"><h2>الترجمة الاحترافية (${translationResult.direction === "ar-to-en" ? "عربي → إنجليزي" : "إنجليزي → عربي"})</h2>
+            <div class="stats-grid">
+              <div class="stat"><span class="stat-value">${(translationResult.overallQuality * 100).toFixed(0)}%</span><span class="stat-label">جودة الترجمة</span></div>
+              <div class="stat"><span class="stat-value">${(translationResult.termConsistency * 100).toFixed(0)}%</span><span class="stat-label">اتساق المصطلحات</span></div>
+              <div class="stat"><span class="stat-value">${translationResult.stats.translatedElements}</span><span class="stat-label">عناصر مترجمة</span></div>
+              <div class="stat"><span class="stat-value">${translationResult.stats.tmHits}</span><span class="stat-label">تطابق ذاكرة الترجمة</span></div>
+            </div>
+            ${translationResult.warnings.length > 0 ? `<div class="warnings">${translationResult.warnings.map((w: string) => `<div class="warning">${w}</div>`).join("")}</div>` : ""}
+            </div>` : "";
+
+          const arabizationHtml = arabizationResult ? `
+            <div class="section"><h2>التعريب الاحترافي</h2>
+            <div class="stats-grid">
+              <div class="stat"><span class="stat-value">${arabizationResult.stats.elementsProcessed}</span><span class="stat-label">عناصر معالجة</span></div>
+              <div class="stat"><span class="stat-value">${arabizationResult.stats.numberConverted}</span><span class="stat-label">أرقام محولة</span></div>
+              <div class="stat"><span class="stat-value">${arabizationResult.stats.datesConverted}</span><span class="stat-label">تواريخ محولة</span></div>
+              <div class="stat"><span class="stat-value">${arabizationResult.stats.layoutsMirrored}</span><span class="stat-label">تخطيطات معكوسة</span></div>
+              <div class="stat"><span class="stat-value">${arabizationResult.stats.durationMs}ms</span><span class="stat-label">وقت التعريب</span></div>
+            </div>
+            <div class="changes-list"><h3>التغييرات (${arabizationResult.changes.length})</h3>
+            ${arabizationResult.changes.slice(0, 20).map((c: any) => `<div class="change-item"><span class="change-type">${c.changeType}</span> <code>${c.before}</code> → <code>${c.after}</code></div>`).join("")}
+            </div></div>` : "";
+
+          const html = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${baseName}</title>
+<title>${baseName} — ${opsLabel}</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #0f172a; color: #e2e8f0; }
+  body { font-family: 'Segoe UI', Tahoma, 'Noto Sans Arabic', sans-serif; background: #0f172a; color: #e2e8f0; }
   .header { background: linear-gradient(135deg, #6366f1, #8b5cf6); padding: 24px; text-align: center; }
-  .header h1 { font-size: 22px; color: white; }
-  .header .badge { display: inline-block; margin-top: 8px; padding: 4px 16px; border-radius: 20px; background: rgba(34,197,94,0.2); color: #4ade80; font-size: 12px; border: 1px solid rgba(34,197,94,0.4); }
-  .pdf-frame { width: 100%; height: 90vh; border: none; }
-  .content { max-width: 1000px; margin: 20px auto; padding: 0 16px; }
-  .info { background: #1e293b; border-radius: 12px; padding: 16px; margin-top: 16px; border: 1px solid rgba(99,102,241,0.15); }
-  .info h3 { color: #a5b4fc; font-size: 14px; margin-bottom: 8px; }
-  .info p { color: #94a3b8; font-size: 13px; line-height: 1.8; }
-  .footer { text-align: center; padding: 16px; color: #475569; font-size: 11px; }
+  .header h1 { font-size: 22px; color: white; margin-bottom: 8px; }
+  .ops-badges { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+  .op-badge { padding: 4px 14px; border-radius: 20px; background: rgba(34,197,94,0.2); color: #4ade80; font-size: 12px; border: 1px solid rgba(34,197,94,0.4); }
+  .match-badge { display: inline-block; margin-top: 8px; padding: 4px 16px; border-radius: 20px; background: rgba(34,197,94,0.2); color: #4ade80; font-size: 12px; border: 1px solid rgba(34,197,94,0.4); }
+  .main { max-width: 1100px; margin: 0 auto; padding: 20px; }
+  .source-img { width: 100%; border-radius: 12px; margin: 16px 0; border: 2px solid rgba(99,102,241,0.3); }
+  .pdf-frame { width: 100%; height: 70vh; border: none; border-radius: 12px; margin: 16px 0; }
+  .section { background: #1e293b; border-radius: 12px; padding: 20px; margin: 16px 0; border: 1px solid rgba(99,102,241,0.15); }
+  .section h2 { color: #a5b4fc; font-size: 16px; margin-bottom: 12px; border-bottom: 1px solid rgba(99,102,241,0.2); padding-bottom: 8px; }
+  .section h3 { color: #818cf8; font-size: 14px; margin: 12px 0 8px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
+  .stat { text-align: center; background: rgba(99,102,241,0.08); border-radius: 8px; padding: 12px; }
+  .stat-value { display: block; font-size: 20px; font-weight: 700; color: #818cf8; }
+  .stat-label { display: block; font-size: 11px; color: #64748b; margin-top: 4px; }
+  .text-item { background: rgba(99,102,241,0.06); border: 1px solid rgba(99,102,241,0.1); border-radius: 8px; padding: 10px 14px; margin: 6px 0; font-size: 14px; line-height: 1.8; cursor: text; }
+  .text-item:focus { outline: 2px solid #6366f1; background: rgba(99,102,241,0.12); }
+  .kpi-card { display: inline-block; background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15)); border: 1px solid rgba(99,102,241,0.3); border-radius: 12px; padding: 16px 24px; margin: 6px; text-align: center; }
+  .kpi-value { font-size: 28px; font-weight: 700; color: #a5b4fc; }
+  .kpi-label { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+  .table-card { overflow-x: auto; margin: 12px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: #6366f1; color: white; padding: 10px 12px; text-align: right; font-weight: 600; }
+  td { padding: 8px 12px; border-bottom: 1px solid rgba(99,102,241,0.1); color: #cbd5e1; }
+  td:focus { outline: 2px solid #6366f1; background: rgba(99,102,241,0.1); }
+  tr:nth-child(even) td { background: rgba(99,102,241,0.04); }
+  .changes-list { margin-top: 12px; max-height: 300px; overflow-y: auto; }
+  .change-item { font-size: 12px; padding: 4px 8px; margin: 2px 0; background: rgba(99,102,241,0.05); border-radius: 4px; }
+  .change-type { background: #6366f1; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+  code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+  .warnings { margin-top: 8px; }
+  .warning { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); border-radius: 6px; padding: 6px 10px; margin: 4px 0; font-size: 12px; color: #fbbf24; }
+  .footer { text-align: center; padding: 20px; color: #475569; font-size: 11px; }
 </style>
 </head>
 <body>
   <div class="header">
     <h1>${baseName}</h1>
-    <div class="badge">مطابقة حرفية 1:1 | PixelDiff = 0 | ${pageCount} صفحة</div>
+    <div class="ops-badges">${opsStatusHtml}</div>
+    <div class="match-badge">${opsLabel} | PixelDiff = 0 | ${pageCount} صفحة</div>
   </div>
-  <embed src="${pdfDataUri}" type="application/pdf" class="pdf-frame" />
-  ${pdfContent?.texts?.length ? `<div class="content"><div class="info"><h3>المحتوى المستخرج:</h3><p>${pdfContent.texts.join("<br/>")}</p></div></div>` : ""}
-  <div class="footer">© ${new Date().getFullYear()} رصد — محرك المطابقة البصرية الحرفية 1:1</div>
+  <div class="main">
+    ${imageDataUri ? `<img src="${imageDataUri}" class="source-img" alt="${baseName}" />` : ""}
+    ${pdfDataUri ? `<embed src="${pdfDataUri}" type="application/pdf" class="pdf-frame" />` : ""}
+
+    ${emptyingHtml}
+    ${arabizationHtml}
+    ${translationHtml}
+
+    ${kpisHtml ? `<div class="section"><h2>المؤشرات</h2><div style="display:flex;flex-wrap:wrap;gap:8px">${kpisHtml}</div></div>` : ""}
+    ${textsHtml ? `<div class="section"><h2>المحتوى${input.operations.translate ? " (مترجم)" : ""}${input.operations.arabize ? " (معرّب)" : ""}</h2>${textsHtml}</div>` : ""}
+    ${tablesHtml ? `<div class="section"><h2>الجداول</h2>${tablesHtml}</div>` : ""}
+  </div>
+  <div class="footer">© ${new Date().getFullYear()} رصد — محرك المطابقة البصرية الحرفية 1:1 | ${opsLabel}</div>
 </body>
 </html>`;
-            outputBase64 = Buffer.from(html, "utf-8").toString("base64");
-          } else {
-            // ★ صورة → HTML: الصورة الأصلية معروضة بالكامل ★
-            const pages = [{
-              imageBase64: srcBase64,
-              imageMime,
-              label: baseName,
-            }];
-            const html = generateMatchedHtml(pages, baseName, mode);
-            outputBase64 = Buffer.from(html, "utf-8").toString("base64");
-          }
+          outputBase64 = Buffer.from(html, "utf-8").toString("base64");
           outputFileName = baseName + (mode === "dashboard" ? "_dashboard.html" : "_report.html");
           outputMimeType = "text/html";
 
         } else {
-          // ★ XLSX: استخراج البيانات من الملف ★
+          // ★ XLSX ★
           const sheets: any[] = [];
-          if (pdfContent) {
-            if (pdfContent.tables.length > 0) {
-              pdfContent.tables.forEach((t: any, i: number) => {
-                sheets.push({ name: `جدول ${i + 1}`, headers: t.headers, rows: t.rows });
-              });
-            }
-            if (pdfContent.kpis.length > 0) {
-              sheets.push({ name: "المؤشرات", headers: ["المؤشر", "القيمة"], rows: pdfContent.kpis.map((k: any) => [k.label, k.value]) });
-            }
-            if (pdfContent.texts.length > 0) {
-              sheets.push({ name: "المحتوى", headers: ["#", "النص"], rows: pdfContent.texts.map((t: string, i: number) => [String(i + 1), t]) });
-            }
+          if (processedTables.length > 0) {
+            processedTables.forEach((t: any, i: number) => {
+              sheets.push({ name: `جدول ${i + 1}`, headers: t.headers, rows: t.rows });
+            });
+          }
+          if (extractedKpis.length > 0) {
+            sheets.push({ name: "المؤشرات", headers: ["المؤشر", "القيمة"], rows: extractedKpis.map((k: any) => [k.label, k.value]) });
+          }
+          if (processedTexts.length > 0) {
+            sheets.push({ name: "المحتوى", headers: ["#", "النص"], rows: processedTexts.map((t: string, i: number) => [String(i + 1), t]) });
           }
           if (sheets.length === 0) {
             sheets.push({
@@ -1817,6 +2048,20 @@ export const strictEngineRouter = router({
               rows: [[input.fileName, input.fileType, `${(fileBuffer.length / 1024).toFixed(0)} KB`, fileHash.substring(0, 16)]],
             });
           }
+
+          // إضافة ورقة العمليات
+          if (operationResults.length > 0) {
+            sheets.push({
+              name: "العمليات",
+              headers: ["العملية", "الحالة", "التفاصيل"],
+              rows: operationResults.map((op: any) => [
+                op.operation,
+                op.status,
+                JSON.stringify(op.stats || {}, null, 0).substring(0, 100),
+              ]),
+            });
+          }
+
           outputBase64 = await generateMatchedXlsx(sheets, baseName);
           outputFileName = baseName + ".xlsx";
           outputMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -1839,11 +2084,30 @@ export const strictEngineRouter = router({
             pixelDiff: input.fileType !== "pdf" ? 0 : null,
             match: input.fileType !== "pdf" ? "100%" : `${pageCount} صفحة`,
           },
+          operations: operationResults,
+          emptying: emptyingResult ? {
+            totalEntries: emptyingResult.stats.totalEntries,
+            textEntries: emptyingResult.stats.textEntries,
+            tableEntries: emptyingResult.stats.tableEntries,
+            kpiEntries: emptyingResult.stats.kpiEntries,
+          } : null,
+          arabization: arabizationResult ? {
+            changes: arabizationResult.changes.length,
+            numbersConverted: arabizationResult.stats.numberConverted,
+            datesConverted: arabizationResult.stats.datesConverted,
+            layoutsMirrored: arabizationResult.stats.layoutsMirrored,
+          } : null,
+          translation: translationResult ? {
+            quality: translationResult.overallQuality,
+            termConsistency: translationResult.termConsistency,
+            translatedElements: translationResult.stats.translatedElements,
+            tmHits: translationResult.stats.tmHits,
+          } : null,
           duration_ms: Date.now() - start,
         };
 
       } catch (err: any) {
-        return { success: false, output: null, stats: null, duration_ms: Date.now() - start, error: err.message };
+        return { success: false, output: null, stats: null, operations: [], emptying: null, arabization: null, translation: null, duration_ms: Date.now() - start, error: err.message };
       }
     }),
 });
