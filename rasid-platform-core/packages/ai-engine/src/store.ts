@@ -36,6 +36,14 @@ export type AiPersistedBundle = {
   auditEvents: AuditEvent[];
   lineageEdges: LineageEdge[];
   open_path: string | null;
+  classification?: unknown;
+  proactive_analysis?: unknown;
+  conversational_query?: unknown;
+  forecast?: unknown;
+  scenario?: unknown;
+  knowledge_graph?: unknown;
+  guided_questions?: unknown;
+  recipe_ref?: string | null;
 };
 
 const ensureDir = (targetPath: string): void => {
@@ -90,10 +98,32 @@ export class AiEngineStore {
     writeJson(path.join(root, "evidence", `${bundle.evidencePack.evidence_pack_id}.json`), bundle.evidencePack);
     writeJson(path.join(root, "audit", "audit-events.json"), bundle.auditEvents);
     writeJson(path.join(root, "lineage", "lineage-edges.json"), bundle.lineageEdges);
+    if (bundle.classification) {
+      writeJson(path.join(root, "classification.json"), bundle.classification);
+    }
+    if (bundle.proactive_analysis) {
+      writeJson(path.join(root, "proactive-analysis.json"), bundle.proactive_analysis);
+    }
+    if (bundle.conversational_query) {
+      writeJson(path.join(root, "conversational-query.json"), bundle.conversational_query);
+    }
+    if (bundle.forecast) {
+      writeJson(path.join(root, "forecast.json"), bundle.forecast);
+    }
+    if (bundle.scenario) {
+      writeJson(path.join(root, "scenario.json"), bundle.scenario);
+    }
+    if (bundle.knowledge_graph) {
+      writeJson(path.join(root, "knowledge-graph.json"), bundle.knowledge_graph);
+    }
+    if (bundle.guided_questions) {
+      writeJson(path.join(root, "guided-questions.json"), bundle.guided_questions);
+    }
     writeJson(path.join(root, "result.json"), {
       summary_ref: bundle.summary.summary_id,
       artifact_refs: bundle.artifacts.map((artifact) => artifact.artifact_id),
-      open_path: bundle.open_path
+      open_path: bundle.open_path,
+      recipe_ref: bundle.recipe_ref ?? null
     });
     return bundle;
   }

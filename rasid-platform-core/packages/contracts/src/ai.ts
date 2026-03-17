@@ -63,7 +63,14 @@ export const AiOutputKindSchema = z.enum([
   "presentation",
   "spreadsheet",
   "localization",
-  "replication"
+  "replication",
+  "conversational_query",
+  "forecast",
+  "scenario",
+  "recipe",
+  "knowledge_graph",
+  "classification",
+  "guided_questions"
 ]);
 
 export const AiPhaseStatusSchema = z.enum(["pending", "running", "completed", "awaiting_approval", "failed", "skipped"]);
@@ -80,7 +87,14 @@ export const AiSuggestionSchema = aiEntity({
     "glossary",
     "verification",
     "next_action",
-    "risk_gap"
+    "risk_gap",
+    "join_suggestion",
+    "kpi_suggestion",
+    "comparison_suggestion",
+    "data_warning",
+    "forecast",
+    "scenario",
+    "recipe"
   ]),
   title: z.string(),
   detail: z.string(),
@@ -124,7 +138,14 @@ export const AiExecutionPhaseSchema = aiEntity({
     "planning",
     "approval_boundary",
     "execution",
-    "summary"
+    "summary",
+    "guided_questions",
+    "data_classification",
+    "proactive_analysis",
+    "rag_retrieval",
+    "conversational_query",
+    "predictive_analysis",
+    "recipe_operation"
   ]),
   status: AiPhaseStatusSchema,
   detail: z.string(),
@@ -189,6 +210,319 @@ export const AiExecutionSummarySchema = aiEntity({
 
 export const AI_CONTRACT = contractEnvelope("ai");
 
+/* ───────────────────────────── RAG Schemas ───────────────────────────── */
+
+export const RagQueryResultSchema = aiEntity({
+  query: z.string(),
+  tenant_ref: z.string(),
+  workspace_id: z.string(),
+  retrieved_chunks: z.array(z.object({
+    chunk_id: z.string(),
+    document_ref: z.string(),
+    content: z.string(),
+    similarity_score: z.number(),
+    metadata: z.record(z.unknown())
+  })),
+  context_window: z.string(),
+  total_tokens: z.number()
+});
+
+/* ───────────────────── Data Classification Schemas ───────────────────── */
+
+export const FileDomainClassificationSchema = aiEntity({
+  file_ref: z.string(),
+  detected_domain: z.string(),
+  confidence: z.number().min(0).max(1),
+  secondary_domains: z.array(z.object({ domain: z.string(), confidence: z.number() })),
+  evidence: z.array(z.string())
+});
+
+export const EntityKeyDetectionSchema = aiEntity({
+  file_ref: z.string(),
+  entity_keys: z.array(z.object({
+    column: z.string(),
+    key_type: z.enum(["primary", "foreign", "composite", "natural"]),
+    confidence: z.number(),
+    referenced_entity: z.string().optional(),
+    evidence: z.string()
+  }))
+});
+
+export const TimeDimensionDetectionSchema = aiEntity({
+  file_ref: z.string(),
+  time_columns: z.array(z.object({
+    column: z.string(),
+    granularity: z.enum(["year", "quarter", "month", "week", "day", "hour", "minute", "timestamp"]),
+    format_detected: z.string(),
+    coverage_pct: z.number(),
+    confidence: z.number()
+  }))
+});
+
+export const SensitiveColumnDetectionSchema = aiEntity({
+  file_ref: z.string(),
+  sensitive_columns: z.array(z.object({
+    column: z.string(),
+    sensitivity_type: z.enum(["pii", "financial", "health", "credential", "location", "contact"]),
+    pattern_matched: z.string(),
+    confidence: z.number(),
+    recommendation: z.string()
+  }))
+});
+
+export const KnowledgeGraphSchema = aiEntity({
+  file_ref: z.string(),
+  nodes: z.array(z.object({
+    node_id: z.string(),
+    node_type: z.enum(["entity", "attribute", "metric", "dimension", "relationship"]),
+    label: z.string(),
+    properties: z.record(z.unknown())
+  })),
+  edges: z.array(z.object({
+    edge_id: z.string(),
+    from_node: z.string(),
+    to_node: z.string(),
+    relationship: z.string(),
+    weight: z.number()
+  })),
+  entity_count: z.number(),
+  relationship_count: z.number()
+});
+
+export const ExecutiveSummarySchema = aiEntity({
+  file_ref: z.string(),
+  domain: z.string(),
+  row_count: z.number(),
+  column_count: z.number(),
+  key_findings: z.array(z.string()),
+  data_quality_score: z.number().min(0).max(1),
+  completeness_pct: z.number(),
+  primary_metrics: z.array(z.object({
+    name: z.string(),
+    value: z.number(),
+    interpretation: z.string()
+  })),
+  risk_flags: z.array(z.string()),
+  recommended_actions: z.array(z.string())
+});
+
+/* ───────────────────── Proactive AI Schemas ───────────────────── */
+
+export const ProactiveAnalysisSchema = aiEntity({
+  file_ref: z.string(),
+  join_suggestions: z.array(z.object({
+    suggestion_id: z.string(),
+    left_file_ref: z.string(),
+    right_file_ref: z.string(),
+    left_column: z.string(),
+    right_column: z.string(),
+    join_type: z.enum(["inner", "left", "right", "full"]),
+    confidence: z.number(),
+    rationale: z.string()
+  })),
+  cleaning_suggestions: z.array(z.object({
+    suggestion_id: z.string(),
+    column: z.string(),
+    issue_type: z.string(),
+    severity: z.enum(["low", "medium", "high", "critical"]),
+    affected_count: z.number(),
+    recommended_action: z.string()
+  })),
+  kpi_suggestions: z.array(z.object({
+    suggestion_id: z.string(),
+    kpi_name: z.string(),
+    formula: z.string(),
+    columns_involved: z.array(z.string()),
+    confidence: z.number()
+  })),
+  comparison_suggestions: z.array(z.object({
+    suggestion_id: z.string(),
+    comparison_type: z.string(),
+    dimension_column: z.string(),
+    metric_column: z.string(),
+    confidence: z.number()
+  })),
+  data_warnings: z.array(z.object({
+    warning_id: z.string(),
+    warning_type: z.string(),
+    severity: z.enum(["info", "low", "medium", "high", "critical"]),
+    title: z.string(),
+    detail: z.string(),
+    recommended_fix: z.string()
+  }))
+});
+
+/* ───────────────────── Conversational Query Schemas ───────────────────── */
+
+export const TirStepSchema = z.object({
+  step_id: z.string(),
+  step_index: z.number(),
+  kind: z.enum([
+    "select_columns", "filter_rows", "group_by", "aggregate", "sort",
+    "limit", "compute_column", "join", "pivot", "unpivot", "rename", "deduplicate"
+  ]),
+  description: z.string(),
+  params: z.record(z.unknown()),
+  input_columns: z.array(z.string()),
+  output_columns: z.array(z.string())
+});
+
+export const ConversationalQueryResultSchema = aiEntity({
+  query_id: z.string(),
+  original_query: z.string(),
+  tir_plan: z.object({
+    plan_id: z.string(),
+    query: z.string(),
+    normalized_query: z.string(),
+    steps: z.array(TirStepSchema),
+    source_refs: z.array(z.string()),
+    created_at: TimestampSchema
+  }),
+  result_table: z.object({
+    columns: z.array(z.string()),
+    rows: z.array(z.record(z.unknown())),
+    row_count: z.number(),
+    truncated: z.boolean()
+  }),
+  chart: z.object({
+    chart_type: z.enum(["bar", "line", "pie", "scatter", "area", "heatmap", "kpi_card"]),
+    title: z.string(),
+    x_axis: z.string().optional(),
+    y_axis: z.string().optional(),
+    series: z.array(z.object({ field: z.string(), label: z.string() })),
+    dimension_field: z.string().optional()
+  }).optional(),
+  explanation: z.object({
+    summary: z.string(),
+    confidence: z.number().min(0).max(1),
+    confidence_rationale: z.string(),
+    lineage_refs: z.array(z.string()),
+    assumptions: z.array(z.string()),
+    caveats: z.array(z.string())
+  }),
+  executed_at: TimestampSchema
+});
+
+/* ───────────────────── Predictive & What-If Schemas ───────────────────── */
+
+export const ForecastResultSchema = aiEntity({
+  forecast_id: z.string(),
+  file_ref: z.string(),
+  metric_column: z.string(),
+  time_column: z.string(),
+  method: z.enum(["linear_trend", "moving_average", "exponential_smoothing"]),
+  historical_points: z.number(),
+  forecast_horizon: z.number(),
+  forecasted_points: z.array(z.object({
+    period_index: z.number(),
+    period_label: z.string(),
+    predicted_value: z.number(),
+    lower_bound: z.number(),
+    upper_bound: z.number(),
+    confidence: z.number()
+  })),
+  model_confidence: z.number().min(0).max(1),
+  assumptions: z.array(z.string()),
+  limitations: z.array(z.string()),
+  source_refs: z.array(z.string()),
+  created_at: TimestampSchema
+});
+
+export const ScenarioResultSchema = aiEntity({
+  scenario_id: z.string(),
+  file_ref: z.string(),
+  scenario_name: z.string(),
+  parameters: z.array(z.object({
+    column: z.string(),
+    adjustment_type: z.enum(["absolute", "percentage", "replace"]),
+    adjustment_value: z.number(),
+    description: z.string()
+  })),
+  baseline_metrics: z.record(z.number()),
+  scenario_metrics: z.record(z.number()),
+  delta_metrics: z.record(z.object({ absolute: z.number(), percentage: z.number() })),
+  impact_summary: z.string(),
+  confidence: z.number().min(0).max(1),
+  assumptions: z.array(z.string()),
+  limitations: z.array(z.string()),
+  source_refs: z.array(z.string()),
+  created_at: TimestampSchema
+});
+
+/* ───────────────────── Recipe / Operation Memory Schemas ───────────────────── */
+
+export const RecipeSchema = aiEntity({
+  recipe_id: z.string(),
+  current_version: z.number(),
+  versions: z.array(z.object({
+    version_id: z.string(),
+    version_number: z.number(),
+    steps: z.array(TirStepSchema),
+    metadata: z.object({
+      name: z.string(),
+      description: z.string(),
+      domain: z.string().optional(),
+      tags: z.array(z.string()),
+      created_by: z.string(),
+      tenant_ref: z.string(),
+      workspace_id: z.string()
+    }),
+    created_at: TimestampSchema,
+    change_summary: z.string()
+  })),
+  replay_count: z.number(),
+  last_replayed_at: z.string().nullable(),
+  created_at: TimestampSchema,
+  updated_at: TimestampSchema
+});
+
+export const RecipeReplayResultSchema = aiEntity({
+  replay_id: z.string(),
+  recipe_id: z.string(),
+  version_used: z.number(),
+  file_ref: z.string(),
+  steps_executed: z.number(),
+  steps_skipped: z.number(),
+  skipped_reasons: z.array(z.string()),
+  output_columns: z.array(z.string()),
+  output_row_count: z.number(),
+  replayed_at: TimestampSchema,
+  lineage_ref: z.string()
+});
+
+/* ───────────────────── Guided Questions Schemas ───────────────────── */
+
+export const GuidedQuestionSetSchema = aiEntity({
+  set_id: z.string(),
+  trigger_reason: z.string(),
+  confidence_before: z.number().min(0).max(1),
+  questions: z.array(z.object({
+    question_id: z.string(),
+    question_text: z.string(),
+    question_text_ar: z.string(),
+    category: z.enum(["intent_clarification", "scope_selection", "parameter_missing", "ambiguity_resolution", "confirmation"]),
+    options: z.array(z.object({ value: z.string(), label: z.string(), label_ar: z.string() })).optional(),
+    required: z.boolean(),
+    default_value: z.string().optional()
+  })),
+  context: z.object({
+    page_path: z.string(),
+    detected_intent: z.string(),
+    ambiguous_elements: z.array(z.string())
+  }),
+  created_at: TimestampSchema
+});
+
+export const GuidedResolutionSchema = aiEntity({
+  set_id: z.string(),
+  resolved_intent: z.string(),
+  resolved_params: z.record(z.unknown()),
+  confidence_after: z.number().min(0).max(1),
+  ready_to_execute: z.boolean()
+});
+
+/* ───────────────────── Type Exports ───────────────────── */
+
 export type AiSuggestion = z.infer<typeof AiSuggestionSchema>;
 export type AiPagePath = z.infer<typeof AiPagePathSchema>;
 export type AiPageContext = z.infer<typeof AiPageContextSchema>;
@@ -196,3 +530,18 @@ export type AiExecutionRequest = z.infer<typeof AiExecutionRequestSchema>;
 export type AiExecutionPhase = z.infer<typeof AiExecutionPhaseSchema>;
 export type AiExecutionPlan = z.infer<typeof AiExecutionPlanSchema>;
 export type AiExecutionSummary = z.infer<typeof AiExecutionSummarySchema>;
+export type RagQueryResult = z.infer<typeof RagQueryResultSchema>;
+export type FileDomainClassification = z.infer<typeof FileDomainClassificationSchema>;
+export type EntityKeyDetection = z.infer<typeof EntityKeyDetectionSchema>;
+export type TimeDimensionDetection = z.infer<typeof TimeDimensionDetectionSchema>;
+export type SensitiveColumnDetection = z.infer<typeof SensitiveColumnDetectionSchema>;
+export type KnowledgeGraph = z.infer<typeof KnowledgeGraphSchema>;
+export type ExecutiveSummaryResult = z.infer<typeof ExecutiveSummarySchema>;
+export type ProactiveAnalysis = z.infer<typeof ProactiveAnalysisSchema>;
+export type ConversationalQueryResult = z.infer<typeof ConversationalQueryResultSchema>;
+export type ForecastResult = z.infer<typeof ForecastResultSchema>;
+export type ScenarioResult = z.infer<typeof ScenarioResultSchema>;
+export type RecipeContract = z.infer<typeof RecipeSchema>;
+export type RecipeReplayResult = z.infer<typeof RecipeReplayResultSchema>;
+export type GuidedQuestionSet = z.infer<typeof GuidedQuestionSetSchema>;
+export type GuidedResolution = z.infer<typeof GuidedResolutionSchema>;

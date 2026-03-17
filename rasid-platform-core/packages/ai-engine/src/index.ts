@@ -38,8 +38,29 @@ import {
 } from "@rasid/contracts";
 import { z } from "zod";
 import { AiEngineStore, type AiPersistedBundle, type AiSessionState, defaultAiEngineStorageRoot } from "./store";
+import { RagEngine } from "./rag";
+import { DataClassifier } from "./data-classification";
+import { ProactiveAiEngine } from "./proactive";
+import { ConversationalQueryEngine } from "./conversational-query";
+import { PredictiveEngine } from "./predictive";
+import { RecipeEngine } from "./recipes";
+import { GuidedQuestionEngine } from "./guided-questions";
 
 export { AiEngineStore, defaultAiEngineStorageRoot } from "./store";
+export { RagEngine } from "./rag";
+export type { RagChunk, RagDocument, RagQueryResult, RagIndexStats } from "./rag";
+export { DataClassifier } from "./data-classification";
+export type { FileDomainClassification, EntityKeyDetection, TimeDimensionDetection, SensitiveColumnDetection, KnowledgeGraph, KnowledgeGraphNode, KnowledgeGraphEdge, ExecutiveSummary } from "./data-classification";
+export { ProactiveAiEngine } from "./proactive";
+export type { JoinSuggestion, CleaningSuggestion, KpiSuggestion, ComparisonSuggestion, DataWarning, ProactiveAnalysisResult } from "./proactive";
+export { ConversationalQueryEngine } from "./conversational-query";
+export type { TirStep, TirStepKind, TirPlan, ResultTable, ChartSpec, QueryExplanation, ConversationalQueryResult } from "./conversational-query";
+export { PredictiveEngine } from "./predictive";
+export type { ForecastPoint, ForecastResult, ScenarioParam, ScenarioResult } from "./predictive";
+export { RecipeEngine } from "./recipes";
+export type { Recipe, RecipeVersion, RecipeMetadata, RecipeReplayInput, RecipeReplayResult, ScheduledRecipeApplication } from "./recipes";
+export { GuidedQuestionEngine } from "./guided-questions";
+export type { GuidedQuestion, GuidedQuestionSet, GuidedAnswers, GuidedResolution } from "./guided-questions";
 
 export type SubmitAiJobInput = {
   session_id: string;
@@ -1528,9 +1549,200 @@ const executePlan = async (
 
 export class RasidAiEngine {
   readonly store: AiEngineStore;
+  readonly rag: RagEngine;
+  readonly classifier: DataClassifier;
+  readonly proactive: ProactiveAiEngine;
+  readonly conversational: ConversationalQueryEngine;
+  readonly predictive: PredictiveEngine;
+  readonly recipes: RecipeEngine;
+  readonly guidedQuestions: GuidedQuestionEngine;
 
   constructor(options?: { storageDir?: string }) {
     this.store = new AiEngineStore(options?.storageDir);
+    this.rag = new RagEngine();
+    this.classifier = new DataClassifier();
+    this.proactive = new ProactiveAiEngine();
+    this.conversational = new ConversationalQueryEngine();
+    this.predictive = new PredictiveEngine();
+    this.recipes = new RecipeEngine();
+    this.guidedQuestions = new GuidedQuestionEngine();
+  }
+
+  /**
+   * Classify a dataset: domain, entity keys, time dimensions, sensitive columns,
+   * knowledge graph, and executive summary. Operates on real data only.
+   */
+  classifyDataset(params: {
+    file_ref: string;
+    columns: string[];
+    rows: Array<Record<string, unknown>>;
+  }) {
+    return {
+      domain: this.classifier.classifyFileDomain(params.file_ref, params.columns, params.rows),
+      entity_keys: this.classifier.detectEntityKeys(params.file_ref, params.columns, params.rows),
+      time_dimensions: this.classifier.detectTimeDimension(params.file_ref, params.columns, params.rows),
+      sensitive_columns: this.classifier.detectSensitiveColumns(params.file_ref, params.columns, params.rows),
+      knowledge_graph: this.classifier.buildKnowledgeGraph(params.file_ref, params.columns, params.rows),
+      executive_summary: this.classifier.produceExecutiveSummary(params.file_ref, params.columns, params.rows)
+    };
+  }
+
+  /**
+   * Run proactive AI analysis: suggest cleaning, KPIs, comparisons, and warn about issues.
+   */
+  runProactiveAnalysis(params: {
+    file_ref: string;
+    columns: string[];
+    rows: Array<Record<string, unknown>>;
+    domain?: string;
+  }) {
+    return this.proactive.analyzeDataset(params.file_ref, params.columns, params.rows, params.domain);
+  }
+
+  /**
+   * Suggest joins between two datasets.
+   */
+  suggestJoins(params: {
+    left_file_ref: string;
+    left_columns: string[];
+    left_rows: Array<Record<string, unknown>>;
+    right_file_ref: string;
+    right_columns: string[];
+    right_rows: Array<Record<string, unknown>>;
+  }) {
+    return this.proactive.suggestJoins(
+      params.left_file_ref, params.left_columns, params.left_rows,
+      params.right_file_ref, params.right_columns, params.right_rows
+    );
+  }
+
+  /**
+   * Execute a conversational query against real data.
+   * Returns T-IR plan, result table, optional chart, and explanation with confidence + lineage.
+   */
+  executeConversationalQuery(params: {
+    query: string;
+    file_ref: string;
+    columns: string[];
+    rows: Array<Record<string, unknown>>;
+    source_refs?: string[];
+  }) {
+    return this.conversational.executeQuery(params);
+  }
+
+  /**
+   * Generate a forecast from real time-series data. Does not invent inputs.
+   */
+  forecast(params: {
+    file_ref: string;
+    rows: Array<Record<string, unknown>>;
+    metric_column: string;
+    time_column: string;
+    horizon?: number;
+    method?: "linear_trend" | "moving_average" | "exponential_smoothing";
+  }) {
+    return this.predictive.forecast(params);
+  }
+
+  /**
+   * Run what-if scenario simulation on real data. Labels confidence and assumptions.
+   */
+  simulateScenario(params: {
+    file_ref: string;
+    rows: Array<Record<string, unknown>>;
+    scenario_name: string;
+    parameters: Array<{ column: string; adjustment_type: "absolute" | "percentage" | "replace"; adjustment_value: number; description: string }>;
+    metric_columns: string[];
+  }) {
+    return this.predictive.simulateScenario(params);
+  }
+
+  /**
+   * Create a recipe from a conversational query's T-IR plan for later replay.
+   */
+  createRecipeFromQuery(params: {
+    query_result: import("./conversational-query").ConversationalQueryResult;
+    name: string;
+    description: string;
+    tags: string[];
+    created_by: string;
+    tenant_ref: string;
+    workspace_id: string;
+  }) {
+    return this.recipes.createRecipe({
+      steps: params.query_result.tir_plan.steps,
+      metadata: {
+        name: params.name,
+        description: params.description,
+        tags: params.tags,
+        created_by: params.created_by,
+        tenant_ref: params.tenant_ref,
+        workspace_id: params.workspace_id
+      }
+    });
+  }
+
+  /**
+   * Replay a saved recipe on new data.
+   */
+  replayRecipe(params: import("./recipes").RecipeReplayInput) {
+    return this.recipes.replayRecipe(params);
+  }
+
+  /**
+   * Schedule a recipe for recurring execution on a folder (e.g., monthly).
+   */
+  scheduleRecipe(params: {
+    recipe_id: string;
+    folder_ref: string;
+    cron_expression: string;
+    tenant_ref: string;
+    workspace_id: string;
+    created_by: string;
+  }) {
+    return this.recipes.scheduleRecipe(params);
+  }
+
+  /**
+   * Index a document into the RAG store with workspace/tenant isolation.
+   */
+  indexDocumentForRag(params: {
+    document_ref: string;
+    file_name: string;
+    file_domain: string;
+    content: string;
+    tenant_ref: string;
+    workspace_id: string;
+  }) {
+    return this.rag.indexDocument(params);
+  }
+
+  /**
+   * Query the RAG index (tenant/workspace isolated).
+   */
+  queryRag(params: { query: string; tenant_ref: string; workspace_id: string; top_k?: number }) {
+    return this.rag.query(params);
+  }
+
+  /**
+   * Check if guided questions are needed before proceeding.
+   * Returns question set or null if prompt is clear enough.
+   */
+  evaluateGuidedQuestions(params: {
+    user_prompt: string;
+    page_path: string;
+    columns?: string[];
+    rows?: Array<Record<string, unknown>>;
+    confidence?: number;
+  }) {
+    return this.guidedQuestions.evaluateNeedForQuestions(params);
+  }
+
+  /**
+   * Resolve guided question answers into actionable parameters.
+   */
+  resolveGuidedAnswers(questionSet: import("./guided-questions").GuidedQuestionSet, answers: import("./guided-questions").GuidedAnswers) {
+    return this.guidedQuestions.resolveAnswers(questionSet, answers);
   }
 
   async submitJob(input: SubmitAiJobInput): Promise<AiJobBundle> {
