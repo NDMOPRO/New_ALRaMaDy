@@ -264,6 +264,28 @@ export default function StrictEngineTest() {
           </div>
         </div>
 
+        {/* ── Operations ── */}
+        <div style={sectionStyle}>
+          <h3 style={{ fontSize: 14, color: "#a5b4fc", marginBottom: 12 }}>العمليات الاحترافية</h3>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <ToggleChip label="تفريغ احترافي" checked={opEmpty} onChange={setOpEmpty} />
+            <ToggleChip label="تعريب احترافي" checked={opArabize} onChange={setOpArabize} />
+            <ToggleChip label="ترجمة احترافية" checked={opTranslate} onChange={setOpTranslate} />
+          </div>
+          {opTranslate && (
+            <div style={{ marginTop: 10, display: "flex", gap: 8 }}>
+              <button onClick={() => setOpTransDir("ar-to-en")}
+                style={{ padding: "6px 14px", borderRadius: 6, border: opTransDir === "ar-to-en" ? "2px solid #6366f1" : "1px solid rgba(99,102,241,0.2)", background: opTransDir === "ar-to-en" ? "rgba(99,102,241,0.15)" : "transparent", color: opTransDir === "ar-to-en" ? "#a5b4fc" : "#64748b", fontSize: 12, cursor: "pointer" }}>
+                عربي → إنجليزي
+              </button>
+              <button onClick={() => setOpTransDir("en-to-ar")}
+                style={{ padding: "6px 14px", borderRadius: 6, border: opTransDir === "en-to-ar" ? "2px solid #6366f1" : "1px solid rgba(99,102,241,0.2)", background: opTransDir === "en-to-ar" ? "rgba(99,102,241,0.15)" : "transparent", color: opTransDir === "en-to-ar" ? "#a5b4fc" : "#64748b", fontSize: 12, cursor: "pointer" }}>
+                إنجليزي → عربي
+              </button>
+            </div>
+          )}
+        </div>
+
         {/* ── Match Info ── */}
         <div style={{ ...sectionStyle, background: "rgba(99,102,241,0.05)", borderColor: "rgba(99,102,241,0.2)", textAlign: "center" }}>
           <div style={{ fontSize: 13, color: "#a5b4fc", fontWeight: 600 }}>
@@ -309,6 +331,45 @@ export default function StrictEngineTest() {
                 <StatBadge label="الصفحات" value={String(result.stats.pageCount)} color="#a5b4fc" />
                 <StatBadge label="الحجم" value={result.stats.sourceSize} color="#818cf8" />
                 <StatBadge label="الوقت" value={`${result.duration_ms}ms`} color="#f59e0b" />
+              </div>
+            )}
+
+            {/* Operation Results */}
+            {result.operations && result.operations.length > 0 && (
+              <div style={{ textAlign: "right", marginBottom: 16 }}>
+                {result.emptying && (
+                  <div style={{ background: "rgba(99,102,241,0.08)", borderRadius: 8, padding: 12, marginBottom: 8, border: "1px solid rgba(99,102,241,0.15)" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#a5b4fc", marginBottom: 6 }}>التفريغ الاحترافي</div>
+                    <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontSize: 12, color: "#94a3b8" }}>
+                      <span>نصوص: {result.emptying.textEntries}</span>
+                      <span>جداول: {result.emptying.tableEntries}</span>
+                      <span>مؤشرات: {result.emptying.kpiEntries}</span>
+                      <span>إجمالي: {result.emptying.totalEntries}</span>
+                    </div>
+                  </div>
+                )}
+                {result.arabization && (
+                  <div style={{ background: "rgba(139,92,246,0.08)", borderRadius: 8, padding: 12, marginBottom: 8, border: "1px solid rgba(139,92,246,0.15)" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#c4b5fd", marginBottom: 6 }}>التعريب الاحترافي</div>
+                    <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontSize: 12, color: "#94a3b8" }}>
+                      <span>تغييرات: {result.arabization.changes}</span>
+                      <span>أرقام محولة: {result.arabization.numbersConverted}</span>
+                      <span>تواريخ محولة: {result.arabization.datesConverted}</span>
+                      <span>تخطيطات معكوسة: {result.arabization.layoutsMirrored}</span>
+                    </div>
+                  </div>
+                )}
+                {result.translation && (
+                  <div style={{ background: "rgba(34,197,94,0.08)", borderRadius: 8, padding: 12, marginBottom: 8, border: "1px solid rgba(34,197,94,0.15)" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#86efac", marginBottom: 6 }}>الترجمة الاحترافية</div>
+                    <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontSize: 12, color: "#94a3b8" }}>
+                      <span>جودة: {(result.translation.quality * 100).toFixed(0)}%</span>
+                      <span>اتساق مصطلحات: {(result.translation.termConsistency * 100).toFixed(0)}%</span>
+                      <span>عناصر مترجمة: {result.translation.translatedElements}</span>
+                      <span>تطابق TM: {result.translation.tmHits}</span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
