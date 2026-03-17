@@ -19,6 +19,7 @@ import About from "./pages/About";
 import StrictEngineTest from "./pages/StrictEngineTest";
 import PresentationAddendumTest from "./pages/PresentationAddendumTest";
 import ImplementationTest from "./pages/ImplementationTest";
+import ExcelEngine from "./pages/ExcelEngine";
 import MaterialIcon from "./components/MaterialIcon";
 
 /** Loading spinner while checking auth */
@@ -68,6 +69,9 @@ function Router() {
 
       {/* Implementation Test — اختبار كل التنفيذات */}
       <Route path="/test" component={ImplementationTest} />
+
+      {/* Excel Engine — محرك البيانات الحقيقي */}
+      <Route path="/excel" component={ExcelEngine} />
 
       {/* Protected routes */}
       <Route path="/profile">{() => <ProtectedRoute component={Profile} />}</Route>

@@ -11,6 +11,7 @@ import { aiRouter } from "./aiRouter";
 import { libraryRouter } from "./libraryRouter";
 import { platformRouter } from "./platformRouter";
 import { strictEngineRouter } from "./strictEngineRouter";
+import { excelEngineRouter } from "./excelEngineRouter";
 import { presentationAddendumRouter } from "./presentationAddendumRouter";
 import { loginUser, registerUser, setAuthCookie, clearAuthCookie } from "./localAuth";
 import * as localDb from "./localDb";
@@ -782,6 +783,11 @@ export const appRouter = router({
       return localDb.getLibraryItems(userId);
     }),
   }),
+
+  // ═══════════════════════════════════════════════════════════════
+  // EXCEL ENGINE — Real data processing engine
+  // ═══════════════════════════════════════════════════════════════
+  excelEngine: excelEngineRouter,
 });
 
 export type AppRouter = typeof appRouter;
