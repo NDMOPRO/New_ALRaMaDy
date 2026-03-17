@@ -40,6 +40,38 @@ import {
   selectDataFromExcel,
   verifyLiteralFidelity,
 } from "./control-manifest";
+import {
+  type AntiCheatAuditInput,
+  type ControlledModeKnobs,
+  type ContentFidelityMode,
+  type DashboardSlideKind,
+  type DataPickerTransform,
+  type InfographicVariantKind,
+  type StrictInsertRequest,
+  ControlledModeKnobsSchema,
+  ENGINE_MODE_TOOL_SCHEMAS,
+  INFOGRAPHIC_VARIANTS,
+  INTEGRATION_CONNECTORS,
+  applyDataPickerTransforms,
+  buildDashboardSlideSpec,
+  buildDataPickerPreview,
+  buildDataPickerSelection,
+  buildEvidencePackExport,
+  buildKpiCard,
+  buildMiniChart,
+  buildParityMatrixVerify,
+  buildSlicerFilter,
+  generateDeterministicLayout,
+  getInfographicVariant,
+  processStrictInsert,
+  resolveConnectorPicker,
+  runAntiCheatChecks,
+  runFullAntiCheatAudit,
+  searchInfographicVariants,
+  swapInfographicVariant,
+  validateArabicEliteLayout,
+  validateDefinitionOfDone,
+} from "./engine-modes";
 
 const escapeHtml = (value: string): string =>
   value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -242,9 +274,226 @@ export const handleAddendumRoute = async (
     return true;
   }
 
-  // ── Tool Schemas
+  // ── Infographic Variants
+  if (method === "GET" && pathname === "/api/v1/presentations/infographic/variants") {
+    json(response, 200, { data: { variants: INFOGRAPHIC_VARIANTS } });
+    return true;
+  }
+
+  if (method === "POST" && pathname === "/api/v1/presentations/infographic/search") {
+    const body = await readJsonBody(request) as { query: string };
+    json(response, 200, { data: { variants: searchInfographicVariants(body.query ?? "") } });
+    return true;
+  }
+
+  if (method === "POST" && pathname === "/api/v1/presentations/infographic/swap") {
+    const body = await readJsonBody(request) as { current_kind: string; direction: "next" | "prev" | "random" };
+    const result = swapInfographicVariant(body.current_kind as InfographicVariantKind, body.direction ?? "next");
+    json(response, 200, { data: result });
+    return true;
+  }
+
+  if (method === "POST" && pathname === "/api/v1/presentations/infographic/get") {
+    const body = await readJsonBody(request) as { kind: string };
+    const variant = getInfographicVariant(body.kind as InfographicVariantKind);
+    json(response, 200, { data: variant ?? null });
+    return true;
+  }
+
+  // ── Integration Connectors
+  if (method === "GET" && pathname === "/api/v1/presentations/connectors") {
+    json(response, 200, { data: { connectors: INTEGRATION_CONNECTORS } });
+    return true;
+  }
+
+  if (method === "POST" && pathname === "/api/v1/presentations/connectors/pick") {
+    const body = await readJsonBody(request) as { provider: string; uri: string; file_name: string; mime_type: string };
+    const result = resolveConnectorPicker(
+      body.provider as "google_drive" | "onedrive" | "sharepoint" | "s3" | "local",
+      body.uri ?? "",
+      body.file_name ?? "file",
+      body.mime_type ?? "application/octet-stream"
+    );
+    json(response, 200, { data: result });
+    return true;
+  }
+
+  // ── Strict Insert
+  if (method === "POST" && pathname === "/api/v1/presentations/strict-insert") {
+    const body = await readJsonBody(request) as StrictInsertRequest;
+    const result = processStrictInsert(body);
+    json(response, 200, { data: result });
+    return true;
+  }
+
+  // ── Parity Matrix Verify
+  if (method === "POST" && pathname === "/api/v1/presentations/parity-matrix/verify") {
+    const body = await readJsonBody(request) as { deck_id: string; slide_count: number; has_charts: boolean; has_tables: boolean; has_media: boolean };
+    const result = buildParityMatrixVerify(
+      body.deck_id ?? "deck-test",
+      ["reader", "pptx", "pdf", "html"],
+      body.slide_count ?? 5,
+      body.has_charts ?? false,
+      body.has_tables ?? false,
+      body.has_media ?? false
+    );
+    json(response, 200, { data: result });
+    return true;
+  }
+
+  // ── Evidence Pack Export
+  if (method === "POST" && pathname === "/api/v1/presentations/evidence-pack/export") {
+    const body = await readJsonBody(request) as { deck_id: string; artifact_count: number; include_screenshots: boolean };
+    const result = buildEvidencePackExport(body.deck_id ?? "deck-test", body.artifact_count ?? 5, body.include_screenshots ?? true);
+    json(response, 200, { data: result });
+    return true;
+  }
+
+  // ── Anti-Cheat Check
+  if (method === "POST" && pathname === "/api/v1/presentations/anti-cheat/check") {
+    const body = await readJsonBody(request) as { deck_id: string };
+    const result = runAntiCheatChecks(body.deck_id ?? "deck-test", true, true, true, [], ["evidence-1"], true, true);
+    json(response, 200, { data: result });
+    return true;
+  }
+
+  // ── Definition of Done
+  if (method === "POST" && pathname === "/api/v1/presentations/definition-of-done") {
+    const body = await readJsonBody(request) as { deck_id: string };
+    const result = validateDefinitionOfDone({
+      deckId: body.deck_id ?? "deck-test",
+      autoFlowProducedDeck: true,
+      deckPassedQa: true,
+      pptxExported: true,
+      renderParityPassed: true,
+      arabicElitePassed: true,
+      evidencePackStored: true,
+      toolSchemasValidated: true,
+      antiCheatPassed: true
+    });
+    json(response, 200, { data: result });
+    return true;
+  }
+
+  // ── Deterministic Layout
+  if (method === "POST" && pathname === "/api/v1/presentations/deterministic-layout") {
+    const body = await readJsonBody(request) as { deck_id: string; slide_count: number; language: string; seed: number; density: string };
+    const result = generateDeterministicLayout({
+      deck_id: body.deck_id ?? "deck-test",
+      slide_count: body.slide_count ?? 8,
+      language: body.language ?? "ar-SA",
+      rtl: /^ar/i.test(body.language ?? "ar-SA"),
+      density: (body.density ?? "balanced") as "light" | "balanced" | "dense",
+      seed: body.seed ?? 42
+    });
+    json(response, 200, { data: result });
+    return true;
+  }
+
+  // ── Arabic ELITE Validate
+  if (method === "POST" && pathname === "/api/v1/presentations/arabic-elite/validate") {
+    const body = await readJsonBody(request) as { language: string; rtl: boolean; font_face: string };
+    const result = validateArabicEliteLayout(
+      body.language ?? "ar-SA",
+      body.rtl ?? true,
+      body.font_face ?? "Tajawal",
+      /^ar/i.test(body.language ?? "ar-SA") ? "arab" : "latn",
+      []
+    );
+    json(response, 200, { data: result });
+    return true;
+  }
+
+  // ── Data Picker
+  if (method === "POST" && pathname === "/api/v1/presentations/data-picker/select") {
+    const body = await readJsonBody(request) as {
+      file_ref: string; file_name: string; sheet_name: string; table_range: string;
+      columns: string[]; row_count: number; preview_rows: Array<Record<string, string | number | boolean | null>>;
+      transforms?: DataPickerTransform[];
+    };
+    const selection = buildDataPickerSelection(
+      body.file_ref ?? "file-ref", body.file_name ?? "data.xlsx", body.sheet_name ?? "Sheet1",
+      body.table_range ?? "A1:Z100", body.columns ?? [], body.row_count ?? 0,
+      body.preview_rows ?? [], body.transforms ?? []
+    );
+    const preview = buildDataPickerPreview(selection);
+    json(response, 200, { data: { selection, preview } });
+    return true;
+  }
+
+  if (method === "POST" && pathname === "/api/v1/presentations/data-picker/transform") {
+    const body = await readJsonBody(request) as {
+      rows: Array<Record<string, string | number | boolean | null>>;
+      transforms: DataPickerTransform[];
+    };
+    const result = applyDataPickerTransforms(body.rows ?? [], body.transforms ?? []);
+    json(response, 200, { data: { rows: result, transform_count: (body.transforms ?? []).length } });
+    return true;
+  }
+
+  // ── Dashboard Slides
+  if (method === "POST" && pathname === "/api/v1/presentations/dashboard/create") {
+    const body = await readJsonBody(request) as {
+      dashboard_kind: string; title: string; title_ar: string;
+      kpi_cards?: Array<{ label: string; label_ar: string; value: string | number; unit: string; trend: "up" | "down" | "flat"; trend_value: string }>;
+      mini_charts?: Array<{ chart_type: string; label: string; data_points: number[] }>;
+      slicer_filters?: Array<{ label: string; field: string; options: string[] }>;
+    };
+    const kpiCards = (body.kpi_cards ?? []).map(k => buildKpiCard(k.label, k.label_ar, k.value, k.unit, k.trend, k.trend_value));
+    const miniCharts = (body.mini_charts ?? []).map(c => buildMiniChart(c.chart_type as "sparkline" | "bar_mini" | "donut_mini" | "progress", c.label, c.data_points));
+    const slicerFilters = (body.slicer_filters ?? []).map(s => buildSlicerFilter(s.label, s.field, s.options));
+    const spec = buildDashboardSlideSpec(
+      `slide-dashboard-${Date.now()}`,
+      (body.dashboard_kind ?? "kpi_cards") as DashboardSlideKind,
+      body.title ?? "Dashboard",
+      body.title_ar ?? "لوحة المعلومات",
+      kpiCards, miniCharts, slicerFilters
+    );
+    json(response, 200, { data: spec });
+    return true;
+  }
+
+  // ── Full Anti-Cheat Audit (35 rules)
+  if (method === "POST" && pathname === "/api/v1/presentations/anti-cheat/full-audit") {
+    const body = await readJsonBody(request) as Partial<AntiCheatAuditInput>;
+    const input: AntiCheatAuditInput = {
+      deckId: body.deckId ?? "deck-test",
+      hasRealPptxArtifact: body.hasRealPptxArtifact ?? true,
+      hasRealPdfArtifact: body.hasRealPdfArtifact ?? true,
+      hasRealHtmlArtifact: body.hasRealHtmlArtifact ?? true,
+      pptxByteSize: body.pptxByteSize ?? 50000,
+      pdfByteSize: body.pdfByteSize ?? 30000,
+      htmlByteSize: body.htmlByteSize ?? 10000,
+      slideBlocks: body.slideBlocks ?? [],
+      slideRefs: body.slideRefs ?? [],
+      evidencePackIds: body.evidencePackIds ?? ["evidence-1"],
+      auditTrailIds: body.auditTrailIds ?? ["audit-1"],
+      contentTraces: body.contentTraces ?? [],
+      contentMode: body.contentMode ?? "smart",
+      templateLockMode: body.templateLockMode ?? "unlocked",
+      templateCompliancePassed: body.templateCompliancePassed ?? true,
+      governanceApproved: body.governanceApproved ?? true,
+      connectorConfigs: body.connectorConfigs ?? [],
+      cacheEntries: body.cacheEntries ?? [],
+      fileRefs: body.fileRefs ?? [],
+      chartBindings: body.chartBindings ?? [],
+      dataPickerSelections: body.dataPickerSelections ?? [],
+      exportTargets: body.exportTargets ?? ["pptx", "pdf", "html"],
+      parityVerified: body.parityVerified ?? true,
+      language: body.language ?? "ar-SA",
+      rtl: body.rtl ?? true,
+      claimsGenerated: body.claimsGenerated ?? true,
+      claimsExported: body.claimsExported ?? true,
+      isPublished: body.isPublished ?? false
+    };
+    const report = runFullAntiCheatAudit(input);
+    json(response, 200, { data: report });
+    return true;
+  }
+
+  // ── Tool Schemas (combined)
   if (method === "GET" && pathname === "/api/v1/presentations/tools/schemas") {
-    json(response, 200, { data: { tools: PRESENTATION_TOOL_SCHEMAS } });
+    json(response, 200, { data: { tools: [...PRESENTATION_TOOL_SCHEMAS, ...ENGINE_MODE_TOOL_SCHEMAS] } });
     return true;
   }
 

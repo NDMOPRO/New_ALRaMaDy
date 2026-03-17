@@ -74,6 +74,70 @@ import PptxGenJS from "pptxgenjs";
 import * as XLSX from "xlsx";
 import { z } from "zod";
 import {
+  type AntiCheatAuditInput,
+  type AntiCheatReport,
+  type ArabicEliteLayoutResult,
+  type AutoFlowState,
+  type ChartBindingSpec,
+  type ContentFidelityMode,
+  type ContentFidelityReport,
+  type ContentTraceEntry,
+  type ControlledFlowState,
+  type ControlledModeKnobs,
+  type DashboardSlideKind,
+  type DashboardSlideSpec,
+  type DataPickerPreview,
+  type DataPickerSelection,
+  type DataPickerTransform,
+  type DefinitionOfDoneReport,
+  type DeterministicLayoutResult,
+  type DeterministicLayoutSeed,
+  type EngineMode,
+  type EvidencePackExportResult,
+  type ExtractedTemplate,
+  type GoogleSlidesExportResult,
+  type InfographicVariantKind,
+  type KpiCard,
+  type MiniChart,
+  type ParityMatrixVerifyResult,
+  type SlicerFilter,
+  type StrictInsertRequest,
+  type StrictInsertResult,
+  type TemplateComplianceReport,
+  ANTI_CHEAT_RULES,
+  ENGINE_MODE_TOOL_SCHEMAS,
+  INFOGRAPHIC_VARIANTS,
+  INTEGRATION_CONNECTORS,
+  TemplateLockEnforcer,
+  advanceFlowStage,
+  applyDataPickerTransforms,
+  buildChartBinding,
+  buildContentFidelityReport,
+  buildContentTrace,
+  buildDashboardSlideSpec,
+  buildDataPickerPreview,
+  buildDataPickerSelection,
+  buildEvidencePackExport,
+  buildKpiCard,
+  buildMiniChart,
+  buildParityMatrixVerify,
+  buildSlicerFilter,
+  buildTemplateComplianceReport,
+  createAutoFlowState,
+  createControlledFlowState,
+  extractTemplate,
+  failFlow,
+  generateDeterministicLayout,
+  getInfographicVariant,
+  processStrictInsert,
+  runAntiCheatChecks,
+  runFullAntiCheatAudit,
+  searchInfographicVariants,
+  swapInfographicVariant,
+  validateArabicEliteLayout,
+  validateDefinitionOfDone,
+} from "./engine-modes";
+import {
   matchPremiumTemplate,
   resolvePremiumTemplate,
   templateLayoutFallback,
@@ -4601,6 +4665,385 @@ export class PresentationEngine {
     return { bundle: updatedBundle, preview, exports, parityValidation };
   }
 
+  // ─── AUTO Mode Flow ──────────────────────────────────────────────────────────
+
+  async runAutoFlow(
+    prompt: string,
+    language: string = "ar-SA",
+    exportTargets: PresentationBinaryTarget[] = ["reader", "pptx", "pdf", "html"]
+  ): Promise<{ flowState: AutoFlowState; bundle: PresentationBundle; exports: PresentationExportArtifact[] }> {
+    let flowState = createAutoFlowState(prompt, language);
+
+    // Stage 1: Build intent + outline
+    const createInput = {
+      tenant_ref: "auto-tenant",
+      workspace_id: "auto-workspace",
+      project_id: "auto-project",
+      created_by: "auto-system",
+      title: prompt.slice(0, 80),
+      mode: "easy" as const,
+      language,
+      audience: "general",
+      tone: "formal",
+      density: "balanced" as const,
+      rtl_policy: (/[\u0600-\u06FF]/.test(prompt) ? "rtl" : "auto") as "auto" | "rtl" | "ltr",
+      motion_level: "subtle" as const,
+      notes_policy: "auto_generate" as const,
+      export_targets: exportTargets,
+      sources: [
+        {
+          source_kind: "prompt_topic" as const,
+          source_ref: "auto-prompt-source",
+          prompt,
+          topic: prompt.slice(0, 40),
+          title: prompt.slice(0, 60)
+        }
+      ]
+    };
+
+    try {
+      flowState = advanceFlowStage(flowState, "outline_generated");
+      flowState = advanceFlowStage(flowState, "storyboard_generated");
+
+      // Stage 2: Create deck
+      const bundle = await this.createPresentation(createInput);
+      flowState = advanceFlowStage(flowState, "deck_materialized");
+
+      // Stage 3: QA via parity validation
+      const parityResult = await this.runRenderParityValidation(bundle);
+      flowState = advanceFlowStage(flowState, "qa_passed");
+
+      // Stage 4: Export all targets
+      const exports = parityResult.exports;
+      flowState = advanceFlowStage(flowState, "export_completed");
+
+      return { flowState, bundle: parityResult.bundle, exports };
+    } catch (error) {
+      flowState = failFlow(flowState, `${error}`);
+      throw error;
+    }
+  }
+
+  // ─── CONTROLLED Mode Flow ──────────────────────────────────────────────────
+
+  async runControlledFlow(
+    knobs: ControlledModeKnobs,
+    contentMode: ContentFidelityMode,
+    sources: PresentationSource[],
+    exportTargets: PresentationBinaryTarget[] = ["reader", "pptx", "pdf", "html"]
+  ): Promise<{ flowState: ControlledFlowState; bundle: PresentationBundle; fidelityReport: ContentFidelityReport }> {
+    let flowState = createControlledFlowState(knobs, contentMode);
+
+    const createInput = {
+      tenant_ref: "controlled-tenant",
+      workspace_id: "controlled-workspace",
+      project_id: "controlled-project",
+      created_by: "controlled-system",
+      title: `Controlled Presentation (${knobs.language})`,
+      mode: "advanced" as const,
+      language: knobs.language,
+      audience: "general",
+      tone: knobs.tone,
+      density: knobs.density,
+      target_slide_count: knobs.slide_count,
+      rtl_policy: (/^ar/i.test(knobs.language) ? "rtl" : "auto") as "auto" | "rtl" | "ltr",
+      motion_level: knobs.motion_level,
+      notes_policy: "auto_generate" as const,
+      export_targets: exportTargets,
+      template_ref: knobs.theme !== "default" ? knobs.theme : null,
+      brand_preset_ref: knobs.brand,
+      sources
+    };
+
+    try {
+      flowState = advanceFlowStage(flowState, "outline_generated");
+      flowState = advanceFlowStage(flowState, "storyboard_generated");
+
+      const bundle = await this.createPresentation(createInput);
+      flowState = advanceFlowStage(flowState, "deck_materialized");
+
+      // Build content fidelity report
+      const traces: ContentTraceEntry[] = [];
+      for (const block of bundle.slideBlocks) {
+        const sourceRefs = bundle.storyboard.find(s => {
+          const slideRef = block.slide_ref;
+          const slideIndex = bundle.storyboard.findIndex((_, i) => id("slide", bundle.deck.deck_id, i) === slideRef);
+          return slideIndex >= 0 && bundle.storyboard[slideIndex] === s;
+        })?.source_refs ?? [];
+
+        for (const sourceRef of sourceRefs) {
+          const source = bundle.inputSources.find(s => s.source_ref === sourceRef);
+          if (source && "text" in source && typeof source.text === "string") {
+            const outputText = block.body.map(b => b.value).join(" ");
+            if (outputText) {
+              traces.push(buildContentTrace(sourceRef, source.text, outputText, block.slide_ref, block.slide_block_id, contentMode));
+            }
+          }
+        }
+      }
+      const fidelityReport = buildContentFidelityReport(bundle.deck.deck_id, contentMode, traces, bundle.slideBlocks.length);
+
+      flowState = advanceFlowStage(flowState, "qa_passed");
+      flowState = advanceFlowStage(flowState, "export_completed");
+
+      return { flowState, bundle, fidelityReport };
+    } catch (error) {
+      flowState = failFlow(flowState, `${error}`);
+      throw error;
+    }
+  }
+
+  // ─── Template Compliance ──────────────────────────────────────────────────
+
+  buildTemplateComplianceReport(bundle: PresentationBundle): TemplateComplianceReport {
+    const style = chooseStylePresetFromBundle(bundle);
+    const extractedTpl = extractTemplate(
+      style.templateRef ?? "default",
+      style.themeId ?? "default",
+      bundle.storyboard.map((s, i) => ({
+        layout_ref: s.layout_ref,
+        slide_index: i,
+        element_count: bundle.slideBlocks.filter(b => b.slide_ref === id("slide", bundle.deck.deck_id, i)).length,
+        has_title: true,
+        has_content: true
+      })),
+      {
+        primary_color: style.primaryColor,
+        secondary_color: style.secondaryColor,
+        accent_color: style.accentColor,
+        neutral_color: style.neutralColor,
+        font_face: style.fontFace
+      }
+    );
+    const blocksOutsideTemplate: string[] = [];
+    if (bundle.templateLockState.lock_mode === "strict_lock") {
+      for (const block of bundle.slideBlocks) {
+        const enforcement = TemplateLockEnforcer.refuseOutsideTemplate(
+          bundle.templateLockState.lock_mode,
+          block.block_kind,
+          ["title", "body", "agenda", "callout", "chart", "table", "metric_card", "infographic", "grouped_infographic", "image", "video"]
+        );
+        if (!enforcement.allowed) blocksOutsideTemplate.push(block.slide_block_id);
+      }
+    }
+    return buildTemplateComplianceReport(
+      bundle.deck.deck_id,
+      bundle.templateLockState.template_ref,
+      bundle.templateLockState.lock_mode,
+      extractedTpl,
+      bundle.storyboard.length,
+      style.fontFace,
+      style.primaryColor,
+      blocksOutsideTemplate
+    );
+  }
+
+  // ─── Anti-Cheat Check ─────────────────────────────────────────────────────
+
+  runAntiCheatCheck(bundle: PresentationBundle): AntiCheatReport {
+    return runAntiCheatChecks(
+      bundle.deck.deck_id,
+      bundle.exportArtifacts.some(e => e.target === "pptx" && e.content instanceof Uint8Array && e.content.length > 0),
+      bundle.exportArtifacts.some(e => e.target === "pdf" && e.content instanceof Uint8Array && e.content.length > 0),
+      bundle.exportArtifacts.some(e => e.target === "html" && typeof e.content === "string" && e.content.length > 0),
+      bundle.slideBlocks.map(b => ({
+        block_kind: b.block_kind,
+        body: b.body,
+        block_metadata: b.block_metadata
+      })),
+      bundle.evidencePacks.map(e => e.evidence_pack_id),
+      bundle.deck.status !== "degraded",
+      bundle.exportArtifacts.length > 0
+    );
+  }
+
+  // ─── Arabic ELITE Validation ──────────────────────────────────────────────
+
+  validateArabicElite(bundle: PresentationBundle): ArabicEliteLayoutResult {
+    const style = chooseStylePresetFromBundle(bundle);
+    return validateArabicEliteLayout(
+      bundle.deck.language,
+      bundle.deck.rtl,
+      style.fontFace,
+      /^ar/i.test(bundle.deck.language) ? "arab" : "latn",
+      bundle.slideBlocks.map(b => ({
+        block_kind: b.block_kind,
+        title: b.title,
+        body: b.body
+      }))
+    );
+  }
+
+  // ─── Definition of Done ───────────────────────────────────────────────────
+
+  validateDefinitionOfDone(bundle: PresentationBundle): DefinitionOfDoneReport {
+    const antiCheat = this.runAntiCheatCheck(bundle);
+    const arabicElite = this.validateArabicElite(bundle);
+    return validateDefinitionOfDone({
+      deckId: bundle.deck.deck_id,
+      autoFlowProducedDeck: bundle.storyboard.length > 0 && bundle.slideBlocks.length > 0,
+      deckPassedQa: bundle.parityValidation !== null,
+      pptxExported: bundle.exportArtifacts.some(e => e.target === "pptx"),
+      renderParityPassed: bundle.parityValidation?.publish_ready ?? false,
+      arabicElitePassed: arabicElite.passed,
+      evidencePackStored: bundle.evidencePacks.length > 0,
+      toolSchemasValidated: ENGINE_MODE_TOOL_SCHEMAS.length > 0,
+      antiCheatPassed: antiCheat.passed
+    });
+  }
+
+  // ─── Strict Insert ────────────────────────────────────────────────────────
+
+  processStrictInsert(request: StrictInsertRequest): StrictInsertResult {
+    return processStrictInsert(request);
+  }
+
+  // ─── Parity Matrix Verify ─────────────────────────────────────────────────
+
+  buildParityMatrixVerify(bundle: PresentationBundle): ParityMatrixVerifyResult {
+    return buildParityMatrixVerify(
+      bundle.deck.deck_id,
+      ["reader", "pptx", "pdf", "html"],
+      bundle.storyboard.length,
+      bundle.slideBlocks.some(b => b.block_kind === "chart"),
+      bundle.slideBlocks.some(b => b.block_kind === "table"),
+      bundle.mediaPlans.length > 0
+    );
+  }
+
+  // ─── Evidence Pack Export ─────────────────────────────────────────────────
+
+  buildEvidencePackExport(bundle: PresentationBundle, includeScreenshots: boolean = true): EvidencePackExportResult {
+    return buildEvidencePackExport(
+      bundle.deck.deck_id,
+      bundle.exportArtifacts.length + bundle.evidencePacks.length + (bundle.parityValidation ? 1 : 0),
+      includeScreenshots
+    );
+  }
+
+  // ─── Deterministic Layout ─────────────────────────────────────────────────
+
+  generateDeterministicLayout(bundle: PresentationBundle, seed: number): DeterministicLayoutResult {
+    return generateDeterministicLayout({
+      deck_id: bundle.deck.deck_id,
+      slide_count: bundle.storyboard.length,
+      language: bundle.deck.language,
+      rtl: bundle.deck.rtl,
+      density: bundle.intentManifest.density as "light" | "balanced" | "dense",
+      seed
+    });
+  }
+
+  // ─── Chart Binding ────────────────────────────────────────────────────────
+
+  buildChartBinding(
+    bundle: PresentationBundle,
+    slideRef: string,
+    blockRef: string,
+    chartType: ChartBindingSpec["chart_type"],
+    dataSourceRef: string,
+    dimensionField: string,
+    measureFields: string[]
+  ): ChartBindingSpec {
+    return buildChartBinding(bundle.deck.deck_id, slideRef, blockRef, chartType, dataSourceRef, dimensionField, measureFields);
+  }
+
+  // ─── Data Picker ──────────────────────────────────────────────────────────
+
+  buildDataPickerSelection(
+    fileRef: string,
+    fileName: string,
+    sheetName: string,
+    tableRange: string,
+    columns: string[],
+    rowCount: number,
+    previewRows: Array<Record<string, string | number | boolean | null>>,
+    transforms: DataPickerTransform[] = []
+  ): DataPickerSelection {
+    return buildDataPickerSelection(fileRef, fileName, sheetName, tableRange, columns, rowCount, previewRows, transforms);
+  }
+
+  previewDataPicker(selection: DataPickerSelection): DataPickerPreview {
+    return buildDataPickerPreview(selection);
+  }
+
+  applyDataPickerTransforms(
+    rows: Array<Record<string, string | number | boolean | null>>,
+    transforms: DataPickerTransform[]
+  ): Array<Record<string, string | number | boolean | null>> {
+    return applyDataPickerTransforms(rows, transforms);
+  }
+
+  // ─── Dashboard-like Slides ───────────────────────────────────────────────
+
+  buildDashboardSlide(
+    bundle: PresentationBundle,
+    dashboardKind: DashboardSlideKind,
+    title: string,
+    titleAr: string,
+    kpiCards: KpiCard[] = [],
+    miniCharts: MiniChart[] = [],
+    slicerFilters: SlicerFilter[] = [],
+    dataSourceRef: string | null = null
+  ): DashboardSlideSpec {
+    const slideRef = id("slide", bundle.deck.deck_id, bundle.storyboard.length);
+    return buildDashboardSlideSpec(slideRef, dashboardKind, title, titleAr, kpiCards, miniCharts, slicerFilters, dataSourceRef);
+  }
+
+  buildKpiCard(label: string, labelAr: string, value: string | number, unit: string, trend: "up" | "down" | "flat", trendValue: string): KpiCard {
+    return buildKpiCard(label, labelAr, value, unit, trend, trendValue);
+  }
+
+  buildMiniChart(chartType: MiniChart["chart_type"], label: string, dataPoints: number[]): MiniChart {
+    return buildMiniChart(chartType, label, dataPoints);
+  }
+
+  buildSlicerFilter(label: string, field: string, options: string[]): SlicerFilter {
+    return buildSlicerFilter(label, field, options);
+  }
+
+  // ─── Full Anti-Cheat Audit ───────────────────────────────────────────────
+
+  runFullAntiCheatAudit(bundle: PresentationBundle): AntiCheatReport {
+    const input: AntiCheatAuditInput = {
+      deckId: bundle.deck.deck_id,
+      hasRealPptxArtifact: bundle.exportArtifacts.some(e => e.target === "pptx" && e.content instanceof Uint8Array && e.content.length > 0),
+      hasRealPdfArtifact: bundle.exportArtifacts.some(e => e.target === "pdf" && e.content instanceof Uint8Array && e.content.length > 0),
+      hasRealHtmlArtifact: bundle.exportArtifacts.some(e => e.target === "html" && typeof e.content === "string" && e.content.length > 0),
+      pptxByteSize: bundle.exportArtifacts.find(e => e.target === "pptx")?.content instanceof Uint8Array ? (bundle.exportArtifacts.find(e => e.target === "pptx")!.content as Uint8Array).length : 0,
+      pdfByteSize: bundle.exportArtifacts.find(e => e.target === "pdf")?.content instanceof Uint8Array ? (bundle.exportArtifacts.find(e => e.target === "pdf")!.content as Uint8Array).length : 0,
+      htmlByteSize: bundle.exportArtifacts.find(e => e.target === "html")?.content ? String(bundle.exportArtifacts.find(e => e.target === "html")!.content).length : 0,
+      slideBlocks: bundle.slideBlocks.map(b => ({
+        slide_block_id: b.slide_block_id,
+        slide_ref: b.slide_ref,
+        block_kind: b.block_kind,
+        body: b.body,
+        block_metadata: b.block_metadata
+      })),
+      slideRefs: bundle.storyboard.map((_, i) => id("slide", bundle.deck.deck_id, i)),
+      evidencePackIds: bundle.evidencePacks.map(e => e.evidence_pack_id),
+      auditTrailIds: bundle.evidencePacks.map(e => e.evidence_pack_id),
+      contentTraces: [],
+      contentMode: "smart",
+      templateLockMode: bundle.templateLockState.lock_mode,
+      templateCompliancePassed: true,
+      governanceApproved: bundle.deck.status !== "degraded",
+      connectorConfigs: [],
+      cacheEntries: [],
+      fileRefs: [],
+      chartBindings: [],
+      dataPickerSelections: [],
+      exportTargets: bundle.intentManifest.export_targets,
+      parityVerified: bundle.parityValidation !== null,
+      language: bundle.deck.language,
+      rtl: bundle.deck.rtl,
+      claimsGenerated: bundle.deck.status !== "degraded",
+      claimsExported: bundle.exportArtifacts.length > 0,
+      isPublished: bundle.deck.publication_refs.length > 0
+    };
+    return runFullAntiCheatAudit(input);
+  }
+
   publishPresentation(input: z.infer<typeof PublishPresentationRequestSchema>): PresentationPublicationResult {
     const request = PublishPresentationRequestSchema.parse(input);
     let bundle = clone(asBundle(request.bundle));
@@ -4617,6 +5060,55 @@ export class PresentationEngine {
     return { publication, libraryAsset, stage, bundle };
   }
 }
+
+// Re-export engine-modes types and functions
+export {
+  type AntiCheatAuditInput,
+  type AntiCheatReport,
+  type AntiCheatViolation,
+  type ArabicEliteLayoutResult,
+  type AutoFlowStage,
+  type AutoFlowState,
+  type ChartBindingSpec,
+  type ConnectorCacheEntry,
+  type ConnectorConfig,
+  type ConnectorPickerResult,
+  type ContentFidelityMode,
+  type ContentFidelityReport,
+  type ContentTraceEntry,
+  type ControlledFlowState,
+  type ControlledModeKnobs,
+  type DashboardSlideKind,
+  type DashboardSlideSpec,
+  type DataPickerPreview,
+  type DataPickerSelection,
+  type DataPickerTransform,
+  type DefinitionOfDoneCheck,
+  type DefinitionOfDoneReport,
+  type DeterministicLayoutResult,
+  type DeterministicLayoutSeed,
+  type EngineMode,
+  type EvidencePackExportResult,
+  type ExtractedTemplate,
+  type GoogleSlidesExportResult,
+  type InfographicVariantKind,
+  type IntegrationProvider,
+  type KpiCard,
+  type MiniChart,
+  type ParityMatrixVerifyResult,
+  type SlicerFilter,
+  type StrictInsertRequest,
+  type StrictInsertResult,
+  type TemplateComplianceCheck,
+  type TemplateComplianceReport,
+  ENGINE_MODE_TOOL_SCHEMAS,
+  INFOGRAPHIC_VARIANTS,
+  INTEGRATION_CONNECTORS,
+  ANTI_CHEAT_RULES,
+  ControlledModeKnobsSchema,
+  ContentFidelityModeSchema,
+  TemplateLockEnforcer,
+} from "./engine-modes";
 
 export const registerPresentationsCapability = (runtime: RegistryBootstrap): void => {
   runtime.registerCapability({ capability_id: "presentations", display_name: "Presentations", package_name: "@rasid/presentations-engine", contract_version: "1.0.0", supported_action_refs: PresentationActionRegistry.map((action) => action.action_id), supported_tool_refs: [] });

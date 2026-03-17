@@ -24,6 +24,10 @@
     "./control-manifest": {
       "types": "./dist/control-manifest.d.ts",
       "default": "./dist/control-manifest.js"
+    },
+    "./engine-modes": {
+      "types": "./dist/engine-modes.d.ts",
+      "default": "./dist/engine-modes.js"
     }
   },
   "dependencies": {
