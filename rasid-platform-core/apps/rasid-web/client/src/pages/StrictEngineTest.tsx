@@ -373,13 +373,138 @@ export default function StrictEngineTest() {
               </div>
             )}
 
+            {/* ═══ Triple Verification Gate ═══ */}
+            {result.tripleGate && (
+              <div style={{ ...sectionStyle, border: result.tripleGate.allPassed ? "2px solid rgba(34,197,94,0.4)" : "2px solid rgba(239,68,68,0.4)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                  <span style={{ fontSize: 18, fontWeight: 800, color: result.tripleGate.allPassed ? "#4ade80" : "#f87171" }}>
+                    {result.tripleGate.allPassed ? "✓" : "✗"} Triple Verification Gate
+                  </span>
+                  <span style={{
+                    padding: "4px 14px", borderRadius: 20, fontSize: 11, fontWeight: 700,
+                    background: result.tripleGate.strictLabel === "STRICT" ? "rgba(34,197,94,0.2)" : result.tripleGate.strictLabel === "STRICT_AFTER_REPAIR" ? "rgba(245,158,11,0.2)" : "rgba(239,68,68,0.2)",
+                    color: result.tripleGate.strictLabel === "STRICT" ? "#4ade80" : result.tripleGate.strictLabel === "STRICT_AFTER_REPAIR" ? "#fbbf24" : "#f87171",
+                    border: `1px solid ${result.tripleGate.strictLabel === "STRICT" ? "rgba(34,197,94,0.4)" : result.tripleGate.strictLabel === "STRICT_AFTER_REPAIR" ? "rgba(245,158,11,0.4)" : "rgba(239,68,68,0.4)"}`,
+                  }}>{result.tripleGate.strictLabel}</span>
+                </div>
+
+                {/* Pixel Gate */}
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 10 }}>
+                  <div style={{ flex: 1, minWidth: 200, background: "rgba(99,102,241,0.06)", borderRadius: 8, padding: 10, border: `1px solid ${result.tripleGate.pixelGate?.passed ? "rgba(34,197,94,0.3)" : "rgba(239,68,68,0.3)"}` }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: result.tripleGate.pixelGate?.passed ? "#4ade80" : "#f87171", marginBottom: 4 }}>
+                      {result.tripleGate.pixelGate?.passed ? "✓" : "✗"} Pixel Gate
+                    </div>
+                    <div style={{ fontSize: 11, color: "#94a3b8" }}>
+                      PixelDiff: {result.tripleGate.pixelGate?.diffCount || 0} | {(result.tripleGate.pixelGate?.diffPercentage || 0).toFixed(4)}%
+                    </div>
+                  </div>
+
+                  {/* Structural Gate */}
+                  <div style={{ flex: 1, minWidth: 200, background: "rgba(99,102,241,0.06)", borderRadius: 8, padding: 10, border: `1px solid ${result.tripleGate.structuralGate?.passed ? "rgba(34,197,94,0.3)" : "rgba(239,68,68,0.3)"}` }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: result.tripleGate.structuralGate?.passed ? "#4ade80" : "#f87171", marginBottom: 4 }}>
+                      {result.tripleGate.structuralGate?.passed ? "✓" : "✗"} Structural Gate
+                    </div>
+                    <div style={{ fontSize: 11, color: "#94a3b8" }}>
+                      نصوص: {result.tripleGate.structuralGate?.editableTextRuns} |
+                      جداول: {result.tripleGate.structuralGate?.structuredTables} |
+                      رسوم: {result.tripleGate.structuralGate?.dataCharts} |
+                      مؤشرات: {result.tripleGate.structuralGate?.kpiComponents} |
+                      تغطية: {result.tripleGate.structuralGate?.editableCoverage}%
+                    </div>
+                    {result.tripleGate.structuralGate?.violations?.length > 0 && (
+                      <div style={{ fontSize: 10, color: "#f87171", marginTop: 4 }}>
+                        {result.tripleGate.structuralGate.violations.join(" | ")}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Determinism Gate */}
+                  <div style={{ flex: 1, minWidth: 200, background: "rgba(99,102,241,0.06)", borderRadius: 8, padding: 10, border: `1px solid ${result.tripleGate.determinismGate?.passed ? "rgba(34,197,94,0.3)" : "rgba(239,68,68,0.3)"}` }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: result.tripleGate.determinismGate?.passed ? "#4ade80" : "#f87171", marginBottom: 4 }}>
+                      {result.tripleGate.determinismGate?.passed ? "✓" : "✗"} Determinism Gate
+                    </div>
+                    <div style={{ fontSize: 11, color: "#94a3b8" }}>
+                      Farm: {result.tripleGate.determinismGate?.farmId} |
+                      Hash: {result.tripleGate.determinismGate?.outputHash?.substring(0, 12)}...
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ═══ Repair Loop ═══ */}
+            {result.repairResult?.attempted && (
+              <div style={{ ...sectionStyle, border: "1px solid rgba(245,158,11,0.3)" }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#fbbf24", marginBottom: 8 }}>
+                  Repair Loop — {result.repairResult.repair?.converged ? "تم الإصلاح بنجاح" : "لم يتم الإصلاح"}
+                </div>
+                {result.repairResult.diagnostic && (
+                  <div style={{ fontSize: 12, color: "#94a3b8", marginBottom: 6 }}>
+                    أسباب جذرية: {result.repairResult.diagnostic.totalIssues} |
+                    محاولات: {result.repairResult.repair?.iterations} |
+                    خطوات: {result.repairResult.repair?.stepsApplied?.join(", ")}
+                  </div>
+                )}
+                {result.repairResult.rootCauses && (
+                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                    {result.repairResult.rootCauses.map((rc: string, i: number) => (
+                      <span key={i} style={{ padding: "2px 10px", borderRadius: 12, background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)", fontSize: 11, color: "#fbbf24" }}>{rc}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ═══ Evidence Pack ═══ */}
+            {result.evidence && (
+              <div style={{ ...sectionStyle, border: "1px solid rgba(99,102,241,0.3)" }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#a5b4fc", marginBottom: 8 }}>Evidence Pack</div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 8 }}>
+                  <div style={{ background: "rgba(99,102,241,0.06)", borderRadius: 6, padding: 8, textAlign: "center" }}>
+                    <div style={{ fontSize: 11, color: "#64748b" }}>Run ID</div>
+                    <div style={{ fontSize: 12, color: "#e2e8f0", fontFamily: "monospace", wordBreak: "break-all" }}>{result.evidence.runId?.substring(0, 24)}</div>
+                  </div>
+                  <div style={{ background: "rgba(99,102,241,0.06)", borderRadius: 6, padding: 8, textAlign: "center" }}>
+                    <div style={{ fontSize: 11, color: "#64748b" }}>Integrity Hash</div>
+                    <div style={{ fontSize: 12, color: "#e2e8f0", fontFamily: "monospace" }}>{result.evidence.integrityHash?.substring(0, 16)}...</div>
+                  </div>
+                  <div style={{ background: "rgba(99,102,241,0.06)", borderRadius: 6, padding: 8, textAlign: "center" }}>
+                    <div style={{ fontSize: 11, color: "#64748b" }}>Source Hash</div>
+                    <div style={{ fontSize: 12, color: "#e2e8f0", fontFamily: "monospace" }}>{result.evidence.sourceHash}</div>
+                  </div>
+                  <div style={{ background: "rgba(99,102,241,0.06)", borderRadius: 6, padding: 8, textAlign: "center" }}>
+                    <div style={{ fontSize: 11, color: "#64748b" }}>Target Hash</div>
+                    <div style={{ fontSize: 12, color: "#e2e8f0", fontFamily: "monospace" }}>{result.evidence.targetHash}</div>
+                  </div>
+                  <div style={{ background: "rgba(99,102,241,0.06)", borderRadius: 6, padding: 8, textAlign: "center" }}>
+                    <div style={{ fontSize: 11, color: "#64748b" }}>Editability</div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: "#818cf8" }}>{(result.evidence.editabilityScore * 100).toFixed(0)}%</div>
+                  </div>
+                  <div style={{ background: "rgba(99,102,241,0.06)", borderRadius: 6, padding: 8, textAlign: "center" }}>
+                    <div style={{ fontSize: 11, color: "#64748b" }}>Farm Config</div>
+                    <div style={{ fontSize: 12, color: "#e2e8f0", fontFamily: "monospace" }}>{result.evidence.farmConfigHash}</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ═══ Warnings ═══ */}
+            {result.warnings?.length > 0 && (
+              <div style={{ ...sectionStyle, border: "1px solid rgba(245,158,11,0.3)" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#fbbf24", marginBottom: 8 }}>تحذيرات ({result.warnings.length})</div>
+                {result.warnings.map((w: string, i: number) => (
+                  <div key={i} style={{ fontSize: 11, color: "#fbbf24", padding: "4px 8px", marginBottom: 4, background: "rgba(245,158,11,0.06)", borderRadius: 6, fontFamily: "monospace" }}>{w}</div>
+                ))}
+              </div>
+            )}
+
             <button onClick={handleDownload}
               style={{ padding: "16px 48px", borderRadius: 12, border: "none", background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#fff", fontSize: 18, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 15px rgba(34,197,94,0.3)" }}>
               تحميل الملف
             </button>
 
             <div style={{ fontSize: 11, color: "#475569", marginTop: 12 }}>
-              البصمة: {result.stats?.sourceHash}
+              البصمة: {result.stats?.sourceHash} | {result.tripleGate?.strictLabel || "N/A"}
             </div>
           </div>
         )}
