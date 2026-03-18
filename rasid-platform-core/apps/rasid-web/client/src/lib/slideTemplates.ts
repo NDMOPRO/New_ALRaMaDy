@@ -90,6 +90,11 @@ function baseCSS(theme: SlideTheme): string {
     @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; font-family: ${theme.fontBody}; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes lineGrow { from { width: 0; } to { width: 64px; } }
     .slide {
       width: 1280px; height: 720px; position: relative; overflow: hidden;
       font-family: ${theme.fontBody}; color: ${theme.textPrimary};
@@ -116,8 +121,8 @@ function baseCSS(theme: SlideTheme): string {
       content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
       background: linear-gradient(to left, ${theme.secondary}40, transparent, ${theme.warningColor}40);
     }
-    .header-title { font-size: 24px; font-weight: 800; letter-spacing: -0.3px; }
-    .header-subtitle { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+    .header-title { font-size: 24px; font-weight: 800; letter-spacing: -0.3px; animation: fadeInRight 0.5s ease 0.2s both; }
+    .header-subtitle { font-size: 13px; opacity: 0.7; margin-top: 2px; animation: fadeInRight 0.5s ease 0.3s both; }
     .header-badge {
       min-width: 40px; height: 40px; padding: 0 12px;
       background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
@@ -126,7 +131,7 @@ function baseCSS(theme: SlideTheme): string {
     }
 
     /* ─── Body ─── */
-    .slide-body { flex: 1; padding: 32px 48px; display: flex; flex-direction: column; gap: 20px; overflow: hidden; }
+    .slide-body { flex: 1; padding: 32px 48px; display: flex; flex-direction: column; gap: 20px; overflow: hidden; animation: fadeInUp 0.6s ease 0.3s both; }
 
     /* ─── Footer (NDMO official) ─── */
     .slide-footer {
@@ -146,6 +151,7 @@ function baseCSS(theme: SlideTheme): string {
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .card:hover { box-shadow: 0 8px 32px ${theme.surfaceGlow}; transform: translateY(-2px); }
+    .card { animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both; }
     .card::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
       background: linear-gradient(90deg, ${theme.primary}, ${theme.secondary});
@@ -163,6 +169,12 @@ function baseCSS(theme: SlideTheme): string {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
       background: linear-gradient(90deg, ${theme.primary}, ${theme.secondary});
     }
+    .kpi-card { animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both; }
+    .kpi-card:nth-child(2) { animation-delay: 0.5s; }
+    .kpi-card:nth-child(3) { animation-delay: 0.6s; }
+    .kpi-card:nth-child(4) { animation-delay: 0.7s; }
+    .kpi-card:nth-child(5) { animation-delay: 0.8s; }
+    .kpi-card:nth-child(6) { animation-delay: 0.9s; }
     .kpi-card::after {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 80px;
       background: linear-gradient(180deg, rgba(27,42,74,0.03), transparent);
@@ -196,6 +208,13 @@ function baseCSS(theme: SlideTheme): string {
       background: #FAFBFC; border-radius: 12px; border: 1px solid #E2E8F0;
       box-shadow: 0 1px 4px rgba(27,42,74,0.04);
     }
+    .bullet-list li { animation: fadeInRight 0.4s ease both; }
+    .bullet-list li:nth-child(1) { animation-delay: 0.3s; }
+    .bullet-list li:nth-child(2) { animation-delay: 0.4s; }
+    .bullet-list li:nth-child(3) { animation-delay: 0.5s; }
+    .bullet-list li:nth-child(4) { animation-delay: 0.6s; }
+    .bullet-list li:nth-child(5) { animation-delay: 0.7s; }
+    .bullet-list li:nth-child(6) { animation-delay: 0.8s; }
     .bullet-list li::before {
       content: ''; position: absolute; right: 18px; top: 20px;
       width: 10px; height: 10px; border-radius: 50%;
@@ -207,6 +226,7 @@ function baseCSS(theme: SlideTheme): string {
     .table-wrap {
       flex: 1; overflow: hidden; border-radius: 14px;
       border: 1px solid #E2E8F0; box-shadow: 0 2px 10px rgba(27,42,74,0.06);
+      animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
     }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     thead { background: linear-gradient(135deg, ${theme.primary}, ${theme.gradientEnd}); }
@@ -255,6 +275,13 @@ function baseCSS(theme: SlideTheme): string {
       position: relative; overflow: hidden;
       box-shadow: 0 2px 10px rgba(27,42,74,0.06);
     }
+    .info-card { animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .info-card:nth-child(1) { animation-delay: 0.3s; }
+    .info-card:nth-child(2) { animation-delay: 0.4s; }
+    .info-card:nth-child(3) { animation-delay: 0.5s; }
+    .info-card:nth-child(4) { animation-delay: 0.6s; }
+    .info-card:nth-child(5) { animation-delay: 0.7s; }
+    .info-card:nth-child(6) { animation-delay: 0.8s; }
     .info-card::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
       background: linear-gradient(90deg, ${theme.accent}, ${theme.secondary});
@@ -276,7 +303,11 @@ function baseCSS(theme: SlideTheme): string {
       width: 3px; background: linear-gradient(180deg, ${theme.primary}, ${theme.secondary}, ${theme.warningColor});
       border-radius: 2px;
     }
-    .tl-item { display: flex; gap: 20px; position: relative; padding-bottom: 20px; }
+    .tl-item { display: flex; gap: 20px; position: relative; padding-bottom: 20px; animation: fadeInRight 0.5s ease both; }
+    .tl-item:nth-child(1) { animation-delay: 0.3s; }
+    .tl-item:nth-child(2) { animation-delay: 0.5s; }
+    .tl-item:nth-child(3) { animation-delay: 0.7s; }
+    .tl-item:nth-child(4) { animation-delay: 0.9s; }
     .tl-dot {
       width: 22px; height: 22px; border-radius: 50%; background: ${theme.primary};
       border: 4px solid #F0F4F8; position: absolute; right: -36px; top: 4px;
@@ -299,6 +330,11 @@ function baseCSS(theme: SlideTheme): string {
       position: relative; overflow: hidden;
       box-shadow: 0 2px 10px rgba(27,42,74,0.06);
     }
+    .pillar-card { animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .pillar-card:nth-child(1) { animation-delay: 0.3s; }
+    .pillar-card:nth-child(2) { animation-delay: 0.45s; }
+    .pillar-card:nth-child(3) { animation-delay: 0.6s; }
+    .pillar-card:nth-child(4) { animation-delay: 0.75s; }
     .pillar-card::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
       background: linear-gradient(90deg, ${theme.primary}, ${theme.secondary});
@@ -368,26 +404,34 @@ function coverSlide(theme: SlideTheme, data: SlideData, num: number, total: numb
       content: ''; position: absolute; inset: 0;
       background: linear-gradient(180deg, rgba(11,17,35,0.55) 0%, rgba(11,17,35,0.75) 100%);
     }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes lineGrow { from { width: 0; } to { width: 80px; } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     .cover-content { position: relative; z-index: 2; max-width: 900px; padding: 0 60px; }
     .cover-accent {
       width: 80px; height: 5px; border-radius: 3px; margin: 0 auto 36px;
       background: linear-gradient(90deg, ${theme.secondary}, ${theme.warningColor});
+      animation: lineGrow 0.8s ease 0.3s both;
     }
     .cover-title {
       font-size: 44px; font-weight: 900; line-height: 1.35; letter-spacing: -0.5px;
       text-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
     }
     .cover-subtitle {
       font-size: 18px; font-weight: 400; opacity: 0.88; margin-top: 20px;
       line-height: 1.7; text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both;
     }
     .cover-accent-bottom {
       width: 80px; height: 5px; border-radius: 3px; margin: 36px auto 0;
       background: linear-gradient(90deg, ${theme.warningColor}, ${theme.secondary});
+      animation: lineGrow 0.8s ease 0.9s both;
     }
     .cover-meta {
       font-size: 13px; opacity: 0.6; margin-top: 40px;
       display: flex; align-items: center; justify-content: center; gap: 20px;
+      animation: fadeIn 1s ease 1.1s both;
     }
     .cover-meta-sep { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.4); }
     .cover-logos {
@@ -425,16 +469,12 @@ function coverSlide(theme: SlideTheme, data: SlideData, num: number, total: numb
   </body></html>`;
 }
 
-// ─── 2. TOC (Mandatory: NDMO_2024.png background) ───
+// ─── 2. TOC (Mandatory: NDMO_2024.png background) — Title on RIGHT (dark side) ───
 function tocSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
   const items = (data.bulletPoints || []).map((bp, i) => `
-    <div style="display:flex;align-items:stretch;background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);border:1px solid ${theme.borderColor};">
-      <div style="width:56px;background:${i === 0 ? theme.secondary : theme.primary};display:flex;align-items:center;justify-content:center;color:white;font-size:20px;font-weight:900;flex-shrink:0;">
-        ${String(i + 1).padStart(2, '0')}
-      </div>
-      <div style="flex:1;padding:14px 20px;display:flex;align-items:center;">
-        <span style="font-size:14px;font-weight:700;color:${theme.textPrimary};line-height:1.5;">${bp}</span>
-      </div>
+    <div class="toc-item" style="animation: tocItemIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${0.3 + i * 0.08}s both;">
+      <div class="toc-item-num">${String(i + 1).padStart(2, '0')}</div>
+      <div class="toc-item-text">${bp}</div>
     </div>
   `).join('');
 
@@ -442,26 +482,63 @@ function tocSlide(theme: SlideTheme, data: SlideData, num: number, total: number
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; font-family: ${theme.fontBody}; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes tocItemIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes lineGrow { from { width: 0; } to { width: 64px; } }
     .toc-slide {
       width: 1280px; height: 720px; position: relative; overflow: hidden;
       background: url('${ASSETS.tocBg}') center/cover no-repeat;
-      display: flex; flex-direction: column;
+      display: flex; flex-direction: row-reverse;
     }
     .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(to left, ${theme.secondary}, ${theme.accent}, ${theme.warningColor}); z-index: 100; }
-    .toc-header {
-      padding: 28px 48px 20px; position: relative; z-index: 2;
+    .toc-right {
+      width: 400px; background: linear-gradient(180deg, ${theme.gradientStart} 0%, ${theme.gradientEnd} 100%);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 60px 40px; position: relative; overflow: hidden; text-align: center;
     }
-    .toc-title { font-size: 32px; font-weight: 900; color: ${theme.primary}; }
-    .toc-subtitle { font-size: 14px; color: ${theme.textSecondary}; margin-top: 6px; }
-    .toc-accent { width: 64px; height: 5px; border-radius: 3px; background: linear-gradient(90deg, ${theme.secondary}, ${theme.warningColor}); margin-top: 12px; }
+    .toc-right-watermark {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-size: 200px; font-weight: 900; color: rgba(255,255,255,0.03); line-height: 1;
+    }
+    .toc-right-title {
+      font-size: 30px; font-weight: 900; color: white; line-height: 1.5;
+      position: relative; z-index: 2; animation: fadeInUp 0.6s ease 0.2s both;
+    }
+    .toc-right-subtitle {
+      font-size: 14px; color: rgba(255,255,255,0.65); margin-top: 12px;
+      position: relative; z-index: 2; animation: fadeInUp 0.6s ease 0.4s both;
+    }
+    .toc-right-accent {
+      width: 64px; height: 5px; border-radius: 3px; margin-top: 18px;
+      background: linear-gradient(90deg, ${theme.secondary}, ${theme.warningColor});
+      animation: lineGrow 0.8s ease 0.6s both;
+    }
+    .toc-left {
+      flex: 1; display: flex; flex-direction: column; justify-content: center;
+      padding: 28px 40px; position: relative; z-index: 2;
+    }
     .toc-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
-      padding: 0 48px 20px; flex: 1; align-content: start; position: relative; z-index: 2;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+    }
+    .toc-item {
+      display: flex; align-items: stretch; background: white; border-radius: 12px;
+      overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid ${theme.borderColor};
+      transition: all 0.3s; cursor: default;
+    }
+    .toc-item:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .toc-item-num {
+      width: 48px; background: ${theme.primary}; display: flex; align-items: center;
+      justify-content: center; color: white; font-size: 18px; font-weight: 900; flex-shrink: 0;
+    }
+    .toc-item:first-child .toc-item-num { background: ${theme.secondary}; }
+    .toc-item-text {
+      flex: 1; padding: 12px 16px; display: flex; align-items: center;
+      font-size: 13px; font-weight: 700; color: ${theme.textPrimary}; line-height: 1.5;
     }
     .toc-footer {
-      height: 44px; padding: 0 48px; display: flex; align-items: center; justify-content: space-between;
-      border-top: 1px solid ${theme.borderColor}; background: rgba(255,255,255,0.95);
-      position: relative; z-index: 2;
+      position: absolute; bottom: 0; left: 0; right: 0; height: 44px; padding: 0 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid ${theme.borderColor}; background: rgba(255,255,255,0.95); z-index: 2;
     }
     .footer-logos { display: flex; align-items: center; gap: 14px; }
     .footer-logos img { height: 28px; object-fit: contain; }
@@ -470,12 +547,15 @@ function tocSlide(theme: SlideTheme, data: SlideData, num: number, total: number
   </style></head><body>
     <div class="toc-slide">
       <div class="top-accent"></div>
-      <div class="toc-header">
-        <div class="toc-title">${data.title || 'فهرس المحتويات'}</div>
-        ${data.subtitle ? `<div class="toc-subtitle">${data.subtitle}</div>` : ''}
-        <div class="toc-accent"></div>
+      <div class="toc-right">
+        <div class="toc-right-watermark">فهرس</div>
+        <div class="toc-right-title">${data.title || 'فهرس المحتويات'}</div>
+        ${data.subtitle ? `<div class="toc-right-subtitle">${data.subtitle}</div>` : ''}
+        <div class="toc-right-accent"></div>
       </div>
-      <div class="toc-grid">${items}</div>
+      <div class="toc-left">
+        <div class="toc-grid">${items}</div>
+      </div>
       <div class="toc-footer">
         <div class="footer-logos">
           <img src="${ASSETS.ndmoLogo}" alt="NDMO" onerror="this.style.display='none'">
@@ -488,41 +568,49 @@ function tocSlide(theme: SlideTheme, data: SlideData, num: number, total: number
   </body></html>`;
 }
 
-// ─── 3. SECTION TITLE (Mandatory: NDMO_2024.png background) ───
+// ─── 3. SECTION TITLE (Mandatory: NDMO_2024.png background) — Text on RIGHT (dark side) ───
 function sectionTitleSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
   return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; font-family: ${theme.fontBody}; }
+    @keyframes fadeInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+    @keyframes lineGrow { from { width: 0; } to { width: 64px; } }
+    @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(232,168,56,0.4); } 50% { box-shadow: 0 0 20px 8px rgba(232,168,56,0.15); } }
     .section-slide {
       width: 1280px; height: 720px; position: relative; overflow: hidden;
       background: url('${ASSETS.tocBg}') center/cover no-repeat;
-      display: flex;
+      display: flex; flex-direction: row-reverse;
     }
     .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(to left, ${theme.secondary}, ${theme.accent}, ${theme.warningColor}); z-index: 100; }
     .section-right {
-      width: 480px; background: linear-gradient(180deg, ${theme.gradientStart} 0%, ${theme.gradientEnd} 100%);
+      width: 520px; background: linear-gradient(180deg, ${theme.gradientStart} 0%, ${theme.gradientEnd} 100%);
       display: flex; flex-direction: column; justify-content: center; align-items: center;
-      position: relative; overflow: hidden;
+      padding: 60px 50px; position: relative; overflow: hidden; text-align: center;
     }
     .section-watermark {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
       font-size: 280px; font-weight: 900; color: rgba(255,255,255,0.03); line-height: 1;
     }
     .section-num-box {
-      width: 100px; height: 100px; border: 3px solid ${theme.warningColor};
+      width: 90px; height: 90px; border: 3px solid ${theme.warningColor};
       display: flex; align-items: center; justify-content: center;
-      margin-bottom: 28px; position: relative; z-index: 2;
+      margin-bottom: 24px; position: relative; z-index: 2;
+      animation: scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both, pulseGlow 2s ease-in-out infinite;
     }
-    .section-num { font-size: 48px; font-weight: 900; color: ${theme.warningColor}; }
-    .section-label { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.5); position: relative; z-index: 2; }
+    .section-num { font-size: 42px; font-weight: 900; color: ${theme.warningColor}; }
+    .section-label { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.5); position: relative; z-index: 2; animation: fadeInUp 0.5s ease 0.4s both; }
+    .section-title {
+      font-size: 32px; font-weight: 900; color: white; line-height: 1.5; margin-top: 20px;
+      position: relative; z-index: 2; animation: fadeInUp 0.6s ease 0.5s both;
+    }
+    .section-desc { font-size: 14px; color: rgba(255,255,255,0.7); margin-top: 14px; line-height: 1.8; position: relative; z-index: 2; animation: fadeInUp 0.6s ease 0.7s both; }
+    .section-accent { width: 64px; height: 5px; border-radius: 3px; background: linear-gradient(90deg, ${theme.secondary}, ${theme.warningColor}); margin-top: 20px; animation: lineGrow 0.8s ease 0.9s both; }
     .section-left {
-      flex: 1; display: flex; flex-direction: column; justify-content: center;
-      padding: 60px; position: relative; z-index: 2;
+      flex: 1; position: relative; z-index: 2;
     }
-    .section-title { font-size: 36px; font-weight: 900; color: ${theme.primary}; line-height: 1.4; }
-    .section-desc { font-size: 15px; color: ${theme.textSecondary}; margin-top: 16px; line-height: 1.8; }
-    .section-accent { width: 64px; height: 5px; border-radius: 3px; background: linear-gradient(90deg, ${theme.secondary}, ${theme.warningColor}); margin-top: 20px; }
     .section-footer {
       position: absolute; bottom: 0; left: 0; right: 0; height: 44px; padding: 0 48px;
       display: flex; align-items: center; justify-content: space-between;
@@ -539,13 +627,12 @@ function sectionTitleSlide(theme: SlideTheme, data: SlideData, num: number, tota
         <div class="section-watermark">${num}</div>
         <div class="section-num-box"><span class="section-num">${String(num).padStart(2, '0')}</span></div>
         <div class="section-label">القسم</div>
-      </div>
-      <div class="section-left">
         <div class="section-title">${data.title}</div>
         ${data.subtitle ? `<div class="section-desc">${data.subtitle}</div>` : ''}
         ${data.content ? `<div class="section-desc">${data.content}</div>` : ''}
         <div class="section-accent"></div>
       </div>
+      <div class="section-left"></div>
       <div class="section-footer">
         <div class="footer-logos">
           <img src="${ASSETS.ndmoLogo}" alt="NDMO" onerror="this.style.display='none'">
@@ -767,24 +854,31 @@ function closingSlide(theme: SlideTheme, data: SlideData, num: number, total: nu
       content: ''; position: absolute; inset: 0;
       background: linear-gradient(180deg, rgba(11,17,35,0.6) 0%, rgba(11,17,35,0.8) 100%);
     }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+    @keyframes lineGrow { from { width: 0; } to { width: 80px; } }
     .closing-content { position: relative; z-index: 2; }
     .closing-icon {
       width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
       margin: 0 auto 28px; font-size: 48px;
       background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.15);
       backdrop-filter: blur(10px);
+      animation: scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
     }
     .closing-title {
       font-size: 52px; font-weight: 900; letter-spacing: -0.5px;
       text-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
     }
     .closing-accent {
       width: 80px; height: 5px; border-radius: 3px; margin: 28px auto;
       background: linear-gradient(90deg, ${theme.secondary}, ${theme.warningColor});
+      animation: lineGrow 0.8s ease 0.7s both;
     }
     .closing-subtitle {
       font-size: 18px; opacity: 0.85; max-width: 600px; margin: 0 auto;
       line-height: 1.8; text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.9s both;
     }
     .closing-meta {
       font-size: 13px; opacity: 0.5; margin-top: 36px;

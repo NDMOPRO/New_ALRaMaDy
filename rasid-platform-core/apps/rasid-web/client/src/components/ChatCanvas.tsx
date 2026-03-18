@@ -817,8 +817,11 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
         const slideData = { ...result.slide, layout: toc[i].layout } as SlideData;
         allSlides.push(slideData);
-        const html = generateHtmlPresentation([slideData], themeId)[0];
-        allHtmls.push(html);
+        // Re-generate ALL htmls with correct total count for proper page numbering
+        const updatedHtmls = generateHtmlPresentation([...allSlides], themeId);
+        allHtmls.length = 0;
+        allHtmls.push(...updatedHtmls);
+        const html = updatedHtmls[updatedHtmls.length - 1];
 
         // Update state progressively — each slide appears immediately
         setGeneratedSlides([...allSlides]);
@@ -864,8 +867,9 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
         // Add placeholder slide on error
         const placeholder = { title: toc[i].title, layout: toc[i].layout, content: 'فشل في توليد هذه الشريحة' } as SlideData;
         allSlides.push(placeholder);
-        const html = generateHtmlPresentation([placeholder], themeId)[0];
-        allHtmls.push(html);
+        const updatedHtmlsErr = generateHtmlPresentation([...allSlides], themeId);
+        allHtmls.length = 0;
+        allHtmls.push(...updatedHtmlsErr);
         setGeneratedSlides([...allSlides]);
         setSlideHtmls([...allHtmls]);
       }
@@ -1316,8 +1320,8 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
               </div>
             </div>
 
-            {/* ─── ALL SLIDES VERTICALLY — COMPACT GRID ─── */}
-            <div ref={slidesContainerRef} className="grid grid-cols-2 md:grid-cols-3 gap-2 p-2 md:p-3 max-h-[65vh] overflow-y-auto">
+            {/* ─── ALL SLIDES VERTICALLY — ONE PER ROW ─── */}
+            <div ref={slidesContainerRef} className="flex flex-col gap-3 p-3 md:p-4 max-h-[65vh] overflow-y-auto">
               {slideHtmls.map((html, i) => (
                 <div
                   key={`vslide-${i}`}
@@ -1349,23 +1353,38 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                     </div>
                   </div>
 
-                  {/* Slide iframe — THUMBNAIL with click to open slideshow */}
+                  {/* Slide iframe — LARGE THUMBNAIL with white bg + click to slideshow */}
                   <div
-                    className="bg-neutral-900 flex items-center justify-center p-1 cursor-pointer group/slide relative"
+                    className="bg-white flex items-center justify-center p-2 cursor-pointer group/slide relative rounded-b-xl"
                     onClick={() => { setSlideshowIndex(i); setSlideshowMode(true); }}
+                    style={{ background: '#f8f9fa' }}
                   >
-                    <div className="w-full relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
+                    <div className="w-full relative overflow-hidden rounded-lg shadow-sm border border-gray-100" style={{ aspectRatio: '16/9' }}>
                       <iframe
                         srcDoc={html}
-                        className="border-0 shadow-md rounded-sm pointer-events-none absolute top-0 left-0"
-                        style={{ width: '1280px', height: '720px', transform: 'scale(0.22)', transformOrigin: 'top left', background: '#fff' }}
+                        className="border-0 pointer-events-none absolute top-0 left-0"
+                        style={{ width: '1280px', height: '720px', transform: 'scale(var(--slide-scale, 0.45))', transformOrigin: 'top left', background: '#fff' }}
                         title={`شريحة ${i + 1}`}
+                        ref={(el) => {
+                          if (el) {
+                            const observer = new ResizeObserver(() => {
+                              const parent = el.parentElement;
+                              if (parent) {
+                                const scale = parent.clientWidth / 1280;
+                                el.style.setProperty('--slide-scale', String(scale));
+                                el.style.transform = `scale(${scale})`;
+                                parent.style.height = `${720 * scale}px`;
+                              }
+                            });
+                            observer.observe(el.parentElement!);
+                          }
+                        }}
                       />
                     </div>
                     {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-black/0 group-hover/slide:bg-black/20 transition-all flex items-center justify-center">
-                      <div className="opacity-0 group-hover/slide:opacity-100 transition-all w-10 h-10 rounded-full bg-white/80 flex items-center justify-center shadow-lg">
-                        <MaterialIcon icon="play_arrow" size={20} className="text-primary" />
+                    <div className="absolute inset-0 bg-black/0 group-hover/slide:bg-black/10 transition-all duration-300 flex items-center justify-center rounded-b-xl">
+                      <div className="opacity-0 group-hover/slide:opacity-100 transition-all duration-300 transform group-hover/slide:scale-100 scale-75 w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-xl backdrop-blur-sm">
+                        <MaterialIcon icon="play_arrow" size={24} className="text-primary" />
                       </div>
                     </div>
                   </div>
