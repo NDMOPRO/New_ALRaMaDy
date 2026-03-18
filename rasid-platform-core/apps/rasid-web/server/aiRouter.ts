@@ -2043,6 +2043,7 @@ ${input.additionalInstructions ? `تعليمات إضافية: ${input.additiona
       totalSlides: z.number(),
       style: z.string().default('professional'),
       language: z.string().default('ar'),
+      imageStyle: z.enum(['banana-pro', 'icons-only', 'none']).default('icons-only'),
       previousSlides: z.array(z.object({ title: z.string(), layout: z.string() })).optional().default([]),
     }))
     .mutation(async ({ input }) => {
@@ -2056,24 +2057,43 @@ ${input.additionalInstructions ? `تعليمات إضافية: ${input.additiona
       );
       const slideResult = result.slide || {};
 
-      // ═══ BANANA PRO: Generate professional background image for this slide ═══
-      const bananaKey = ENV.bananaApiKey;
-      if (bananaKey && input.slideLayout !== 'title' && input.slideLayout !== 'closing' && input.slideLayout !== 'toc' && input.slideLayout !== 'section-title') {
-        try {
-          const imagePrompt = `Professional infographic slide background for: ${input.slideTitle}. Topic: ${input.topic}. Style: ultra premium corporate presentation, royal dark blue (#1B2A4A) dominant color, clean white background, modern geometric shapes, subtle gradients, NDMO Saudi government style. NO text, NO words, abstract professional design elements only.`;
-          const imageUrl = await generateImageAndWait(imagePrompt, {
-            aspectRatio: '16:9',
-            resolution: '2K',
-            usePro: true,
-            maxWaitMs: 90000,
-          });
-          if (imageUrl) {
-            (slideResult as any).backgroundImage = imageUrl;
-            (slideResult as any).imageSource = 'nanobanana-pro';
+      // ═══ BANANA PRO: Generate professional image for ALL slide types when banana-pro selected ═══
+      if (input.imageStyle === 'banana-pro') {
+        const bananaKey = ENV.bananaApiKey;
+        if (bananaKey) {
+          try {
+            // Build specialized prompt per slide type
+            let imagePrompt = '';
+            const layout = input.slideLayout;
+            
+            if (layout === 'title') {
+              imagePrompt = `Ultra premium cover slide visual for presentation titled: "${input.slideTitle}". Topic: ${input.topic}. Style: cinematic hero image, royal dark blue (#1B2A4A) dominant, golden accents (#D4AF37), dramatic lighting, executive keynote quality, Saudi government NDMO style. Abstract futuristic data visualization elements, geometric patterns, NO text, NO words. 16:9 widescreen.`;
+            } else if (layout === 'closing') {
+              imagePrompt = `Ultra premium closing/thank you slide visual for: "${input.slideTitle}". Topic: ${input.topic}. Style: elegant dark blue gradient background, golden accent lines, abstract celebration/completion motifs, premium corporate finish, Saudi NDMO style. NO text, NO words. 16:9 widescreen.`;
+            } else if (layout === 'toc') {
+              imagePrompt = `Ultra premium table of contents slide visual for: "${input.slideTitle}". Topic: ${input.topic}. Style: clean structured layout background, royal dark blue sidebar, modern geometric index/navigation elements, premium corporate, Saudi NDMO style. NO text, NO words. 16:9 widescreen.`;
+            } else if (layout === 'section-title') {
+              imagePrompt = `Ultra premium section divider slide visual for section: "${input.slideTitle}". Topic: ${input.topic}. Style: bold royal dark blue with golden accent stripe, dramatic abstract geometric shapes, premium section break design, Saudi NDMO style. NO text, NO words. 16:9 widescreen.`;
+            } else if (layout === 'executive-summary') {
+              imagePrompt = `Ultra premium executive summary slide background for: "${input.slideTitle}". Topic: ${input.topic}. Style: clean white background with subtle royal dark blue geometric accents, premium data visualization elements, executive boardroom quality, Saudi NDMO style. NO text, NO words. 16:9 widescreen.`;
+            } else {
+              imagePrompt = `Professional infographic slide background for: ${input.slideTitle}. Topic: ${input.topic}. Style: ultra premium corporate presentation, royal dark blue (#1B2A4A) dominant color, clean white background, modern geometric shapes, subtle gradients, NDMO Saudi government style. NO text, NO words, abstract professional design elements only. 16:9 widescreen.`;
+            }
+
+            const imageUrl = await generateImageAndWait(imagePrompt, {
+              aspectRatio: '16:9',
+              resolution: '2K',
+              usePro: true,
+              maxWaitMs: 90000,
+            });
+            if (imageUrl) {
+              (slideResult as any).backgroundImage = imageUrl;
+              (slideResult as any).imageSource = 'nanobanana-pro';
+            }
+          } catch (err: any) {
+            console.error('[NanoBanana] Slide image error:', err.message);
+            // Continue without image — slide still works with CSS design
           }
-        } catch (err: any) {
-          console.error('[NanoBanana] Slide image error:', err.message);
-          // Continue without image — slide still works
         }
       }
 

@@ -71,12 +71,13 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
     else if (pi.step === 1) { pi.style = value; pi.step = 2; }
     else if (pi.step === 2) { pi.contentSource = value; pi.step = 3; }
     else if (pi.step === 3) { pi.slideCount = parseInt(value) || 8; pi.step = 4; }
-    else if (pi.step === 4) { pi.brandId = value; pi.imageStyle = 'ai-generated'; pi.step = 5;
+    else if (pi.step === 4) { pi.brandId = value; pi.step = 5; }
+    else if (pi.step === 5) { pi.imageStyle = value; pi.step = 6;
       // Auto-skip language step if language already detected from Arabic text
-      if (pi.language === 'ar' || pi.language === 'en') { pi.step = 6; }
+      if (pi.language === 'ar' || pi.language === 'en') { pi.step = 7; }
     }
-    else if (pi.step === 5) { pi.language = value; pi.step = 6; }
-    else if (pi.step === 6) {
+    else if (pi.step === 6) { pi.language = value; pi.step = 7; }
+    else if (pi.step === 7) {
       // EXECUTE — save wizard choices to ref BEFORE clearing pendingIntent
       wizardChoicesRef.current = {
         topic: pi.topic,
@@ -812,6 +813,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           totalSlides: toc.length,
           style: wizardChoicesRef.current?.style || 'professional',
           language: wizardChoicesRef.current?.language || 'ar',
+          imageStyle: (wizardChoicesRef.current?.imageStyle as 'banana-pro' | 'icons-only' | 'none') || 'icons-only',
           previousSlides: allSlides.map(s => ({ title: s.title || '', layout: s.layout || '' })),
         });
 
@@ -1541,7 +1543,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                     {pendingIntent.type === 'presentation' ? 'عرض تقديمي جديد' : pendingIntent.type === 'report' ? 'تقرير جديد' : 'لوحة مؤشرات جديدة'}
                   </span>
                   <div className="flex gap-0.5 mt-0.5">
-                    {[0,1,2,3,4,5,6].map(s => (
+                    {[0,1,2,3,4,5,6,7].map(s => (
                       <div key={s} className={`h-[3px] rounded-full transition-all duration-300 ${s < pendingIntent.step ? 'w-4 bg-primary' : s === pendingIntent.step ? 'w-6 bg-primary animate-pulse' : 'w-2 bg-border'}`} />
                     ))}
                   </div>
@@ -1674,8 +1676,42 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
               </div>
             )}
 
-            {/* Step 5: Language */}
+            {/* Step 5: Image Style — Banana Pro / Icons Only / None */}
             {pendingIntent.step === 5 && (
+              <div className="flex flex-col gap-2">
+                <span className="text-[13px] font-semibold text-foreground">نمط الصور</span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+                  {[
+                    { id: 'banana-pro', label: 'Banana Pro', desc: 'صور احترافية بالذكاء الاصطناعي لكل شريحة', icon: 'auto_awesome', badge: 'PRO' },
+                    { id: 'icons-only', label: 'أيقونات فقط', desc: 'تصميم نظيف بأيقونات Material', icon: 'category', badge: '' },
+                    { id: 'none', label: 'بدون صور', desc: 'محتوى نصي فقط', icon: 'text_fields', badge: '' },
+                  ].map(s => (
+                    <button key={s.id} onClick={() => handleIntentChip(s.id)}
+                      className={`flex items-center gap-2.5 p-3 rounded-xl border transition-all active:scale-[0.97] ${
+                        s.id === 'banana-pro' 
+                          ? 'border-amber-400/60 bg-gradient-to-br from-amber-50 to-amber-100/30 hover:border-amber-500 hover:shadow-md hover:shadow-amber-100' 
+                          : 'border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03]'
+                      }`}>
+                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
+                        s.id === 'banana-pro' ? 'bg-gradient-to-br from-amber-400 to-amber-600' : 'bg-primary/8'
+                      }`}>
+                        <MaterialIcon icon={s.icon} size={18} className={s.id === 'banana-pro' ? 'text-white' : 'text-primary'} />
+                      </div>
+                      <div className="text-right flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <div className="text-[12px] font-bold text-foreground">{s.label}</div>
+                          {s.badge && <span className="text-[8px] font-black px-1.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-amber-600 text-white">{s.badge}</span>}
+                        </div>
+                        <div className="text-[10px] text-muted-foreground">{s.desc}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Step 6: Language */}
+            {pendingIntent.step === 6 && (
               <div className="flex flex-col gap-2">
                 <span className="text-[13px] font-semibold text-foreground">اللغة</span>
                 <div className="flex flex-wrap gap-1.5">
@@ -1694,8 +1730,8 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
               </div>
             )}
 
-            {/* Step 6: Confirm */}
-            {pendingIntent.step === 6 && (
+            {/* Step 7: Confirm */}
+            {pendingIntent.step === 7 && (
               <div className="flex flex-col gap-2.5">
                 <span className="text-[13px] font-semibold text-foreground">ملخص الطلب</span>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
@@ -1704,6 +1740,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                   <span className="text-muted-foreground">المحتوى:</span><span className="font-bold text-foreground">{{'ai':'ذكاء اصطناعي','user':'محتوى خاص','library':'من المكتبة'}[pendingIntent.contentSource] || pendingIntent.contentSource}</span>
                   <span className="text-muted-foreground">العدد:</span><span className="font-bold text-foreground">{pendingIntent.slideCount} {pendingIntent.type === 'presentation' ? 'شريحة' : 'قسم'}</span>
                   <span className="text-muted-foreground">الهوية:</span><span className="font-bold text-foreground">{{'ndmo':'NDMO','sdaia':'سدايا','modern':'عصري','minimal':'بسيط','creative':'إبداعي','custom':'مخصص'}[pendingIntent.brandId] || pendingIntent.brandId}</span>
+                  <span className="text-muted-foreground">الصور:</span><span className="font-bold text-foreground">{{'banana-pro':'Banana Pro ✨','icons-only':'أيقونات','none':'بدون'}[pendingIntent.imageStyle] || pendingIntent.imageStyle}</span>
                   <span className="text-muted-foreground">اللغة:</span><span className="font-bold text-foreground">{{'ar':'العربية','en':'English','both':'ثنائي'}[pendingIntent.language] || pendingIntent.language}</span>
                 </div>
                 <button onClick={() => handleIntentChip('execute')}
@@ -1715,13 +1752,14 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             )}
 
             {/* Selections summary */}
-            {pendingIntent.step > 0 && pendingIntent.step < 6 && (
+            {pendingIntent.step > 0 && pendingIntent.step < 7 && (
               <div className="flex flex-wrap gap-1 pt-0.5 border-t border-border/20 mt-0.5 pt-1.5">
                 {pendingIntent.topic && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{pendingIntent.topic}</span>}
                 {pendingIntent.step > 1 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'professional':'احترافي','infographic':'إنفوجرافيك','executive':'قيادي','creative':'إبداعي','minimal':'بسيط','data-heavy':'تحليلي'}[pendingIntent.style]}</span>}
                 {pendingIntent.step > 2 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'ai':'AI','user':'محتوى خاص','library':'مكتبة'}[pendingIntent.contentSource]}</span>}
                 {pendingIntent.step > 3 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{pendingIntent.slideCount} شريحة</span>}
                 {pendingIntent.step > 4 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'ndmo':'NDMO','sdaia':'سدايا','modern':'عصري','minimal':'بسيط','creative':'إبداعي','custom':'مخصص'}[pendingIntent.brandId]}</span>}
+                {pendingIntent.step > 5 && <span className={`text-[9px] px-2 py-0.5 rounded-full font-medium ${pendingIntent.imageStyle === 'banana-pro' ? 'bg-amber-100 text-amber-700' : 'bg-primary/10 text-primary'}`}>{{'banana-pro':'Banana Pro ✨','icons-only':'أيقونات','none':'بدون صور'}[pendingIntent.imageStyle]}</span>}
 
               </div>
             )}
