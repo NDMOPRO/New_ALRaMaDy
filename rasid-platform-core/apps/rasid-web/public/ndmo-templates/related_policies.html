@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 16px 40px 10px 40px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+        .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; height: 70px; }
+        .stat-card { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 10px 14px; display: flex; align-items: center; gap: 12px; }
+        .sc-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+        .sc-info { flex: 1; }
+        .sc-value { font-size: 26px; font-weight: 800; color: #1B2A4A; line-height: 1; }
+        .sc-label { font-size: 11px; color: #888; font-weight: 700; }
+
+        .table-container { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.06); flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .tc-header { padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1B2A4A; }
+        .tc-title { font-size: 15px; font-weight: 800; color: #1B2A4A; }
+        .tc-filter { font-size: 11px; color: #666; display: flex; gap: 10px; }
+        .filter-chip { padding: 4px 10px; background: #f0f0f0; font-weight: 700; cursor: default; }
+        .filter-active { background: #1B2A4A; color: white; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f8f8f8; font-size: 11px; font-weight: 800; color: #1B2A4A; padding: 6px 12px; text-align: right; border-bottom: 1px solid #eee; }
+        td { font-size: 11px; padding: 6px 12px; border-bottom: 1px solid #f5f5f5; color: #333; }
+        tr:nth-child(even) td { background: #fcfcfc; }
+        .status-dot { width: 10px; height: 10px; display: inline-block; margin-left: 6px; }
+        .sd-green { background: #00B388; }
+        .sd-yellow { background: #E8A838; }
+        .sd-red { background: #E85B7A; }
+        .sd-blue { background: #2B5EA7; }
+        .compliance-bar { width: 70px; height: 8px; background: #eee; display: inline-block; position: relative; vertical-align: middle; margin-left: 6px; }
+        .cb-fill { height: 100%; position: absolute; right: 0; top: 0; }
+        .policy-code { font-weight: 800; color: #2B5EA7; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">السياسات المرتبطة - قائمة السياسات الوطنية لإدارة البيانات</div>
+            <div class="header-badge">26</div>
+        </div>
+
+        <div class="content-area">
+            <div class="stats-row">
+                <div class="stat-card"><div class="sc-icon" style="background:rgba(27,42,74,0.06);color:#1B2A4A"><i class="fas fa-file-alt"></i></div><div class="sc-info"><div class="sc-value">18</div><div class="sc-label">إجمالي السياسات</div></div></div>
+                <div class="stat-card"><div class="sc-icon" style="background:rgba(0,179,136,0.08);color:#00B388"><i class="fas fa-check-circle"></i></div><div class="sc-info"><div class="sc-value">12</div><div class="sc-label">سياسة معتمدة ومفعّلة</div></div></div>
+                <div class="stat-card"><div class="sc-icon" style="background:rgba(232,168,56,0.08);color:#E8A838"><i class="fas fa-edit"></i></div><div class="sc-info"><div class="sc-value">4</div><div class="sc-label">قيد المراجعة والتحديث</div></div></div>
+                <div class="stat-card"><div class="sc-icon" style="background:rgba(43,94,167,0.08);color:#2B5EA7"><i class="fas fa-drafting-compass"></i></div><div class="sc-info"><div class="sc-value">2</div><div class="sc-label">قيد الإعداد (مسودة)</div></div></div>
+                <div class="stat-card"><div class="sc-icon" style="background:rgba(232,91,122,0.08);color:#E85B7A"><i class="fas fa-exclamation-triangle"></i></div><div class="sc-info"><div class="sc-value">78%</div><div class="sc-label">متوسط الامتثال العام</div></div></div>
+            </div>
+
+            <div class="table-container">
+                <div class="tc-header">
+                    <div class="tc-title"><i class="fas fa-list-alt" style="margin-left:8px;color:#2B5EA7"></i>سجل السياسات الوطنية لإدارة البيانات</div>
+                    <div class="tc-filter"><span class="filter-chip filter-active">الكل</span><span class="filter-chip">معتمدة</span><span class="filter-chip">قيد المراجعة</span><span class="filter-chip">مسودة</span></div>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>#</th><th>رمز السياسة</th><th>اسم السياسة</th><th>النطاق</th><th>الجهة المسؤولة</th><th>الحالة</th><th>تاريخ الاعتماد</th><th>الامتثال</th><th>المراجعة القادمة</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td class="policy-code">POL-DG-001</td><td>سياسة حوكمة البيانات الوطنية</td><td>جميع الجهات</td><td>NDMO</td><td><span class="status-dot sd-green"></span>معتمدة</td><td>2024/01/15</td><td>92% <span class="compliance-bar"><span class="cb-fill" style="width:92%;background:#00B388"></span></span></td><td>2026/01/15</td></tr>
+                        <tr><td>2</td><td class="policy-code">POL-DP-002</td><td>سياسة حماية البيانات الشخصية</td><td>جميع الجهات</td><td>NDMO / PDPL</td><td><span class="status-dot sd-green"></span>معتمدة</td><td>2023/09/14</td><td>85% <span class="compliance-bar"><span class="cb-fill" style="width:85%;background:#00B388"></span></span></td><td>2025/09/14</td></tr>
+                        <tr><td>3</td><td class="policy-code">POL-OD-003</td><td>سياسة البيانات المفتوحة</td><td>جميع الجهات</td><td>NDMO</td><td><span class="status-dot sd-green"></span>معتمدة</td><td>2023/03/01</td><td>76% <span class="compliance-bar"><span class="cb-fill" style="width:76%;background:#E8A838"></span></span></td><td>2025/03/01</td></tr>
+                        <tr><td>4</td><td class="policy-code">POL-DC-004</td><td>سياسة تصنيف البيانات</td><td>جميع الجهات</td><td>NDMO / NCA</td><td><span class="status-dot sd-green"></span>معتمدة</td><td>2024/06/20</td><td>88% <span class="compliance-bar"><span class="cb-fill" style="width:88%;background:#00B388"></span></span></td><td>2026/06/20</td></tr>
+                        <tr><td>5</td><td class="policy-code">POL-DS-005</td><td>سياسة مشاركة البيانات</td><td>جميع الجهات</td><td>NDMO</td><td><span class="status-dot sd-green"></span>معتمدة</td><td>2024/02/10</td><td>71% <span class="compliance-bar"><span class="cb-fill" style="width:71%;background:#E8A838"></span></span></td><td>2026/02/10</td></tr>
+                        <tr><td>6</td><td class="policy-code">POL-DQ-006</td><td>سياسة جودة البيانات</td><td>جميع الجهات</td><td>NDMO</td><td><span class="status-dot sd-green"></span>معتمدة</td><td>2024/04/05</td><td>68% <span class="compliance-bar"><span class="cb-fill" style="width:68%;background:#E8A838"></span></span></td><td>2026/04/05</td></tr>
+                        <tr><td>7</td><td class="policy-code">POL-MD-007</td><td>سياسة البيانات الوصفية (Metadata)</td><td>جميع الجهات</td><td>NDMO</td><td><span class="status-dot sd-green"></span>معتمدة</td><td>2024/08/12</td><td>82% <span class="compliance-bar"><span class="cb-fill" style="width:82%;background:#00B388"></span></span></td><td>2026/08/12</td></tr>
+                        <tr><td>8</td><td class="policy-code">POL-DL-008</td><td>سياسة دورة حياة البيانات</td><td>جميع الجهات</td><td>NDMO</td><td><span class="status-dot sd-yellow"></span>قيد المراجعة</td><td>2023/11/01</td><td>55% <span class="compliance-bar"><span class="cb-fill" style="width:55%;background:#E8A838"></span></span></td><td>2025/11/01</td></tr>
+                        <tr><td>9</td><td class="policy-code">POL-DA-009</td><td>سياسة الوصول للبيانات</td><td>جميع الجهات</td><td>NDMO / NCA</td><td><span class="status-dot sd-yellow"></span>قيد المراجعة</td><td>2023/07/20</td><td>62% <span class="compliance-bar"><span class="cb-fill" style="width:62%;background:#E8A838"></span></span></td><td>2025/07/20</td></tr>
+                        <tr><td>10</td><td class="policy-code">POL-DM-010</td><td>سياسة تسييل البيانات</td><td>القطاع الحكومي</td><td>NDMO</td><td><span class="status-dot sd-blue"></span>مسودة</td><td>—</td><td>— <span class="compliance-bar"><span class="cb-fill" style="width:0%;background:#ccc"></span></span></td><td>2026/Q4</td></tr>
+                        <tr><td>11</td><td class="policy-code">POL-AI-011</td><td>سياسة أخلاقيات بيانات الذكاء الاصطناعي</td><td>جميع الجهات</td><td>SDAIA</td><td><span class="status-dot sd-blue"></span>مسودة</td><td>—</td><td>— <span class="compliance-bar"><span class="cb-fill" style="width:0%;background:#ccc"></span></span></td><td>2026/Q3</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">26</div>
+    </div>
+</body>
+</html>

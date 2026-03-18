@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+            flex-shrink: 0;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 20px 40px;
+            flex: 1;
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Matrix Container */
+        .matrix-container {
+            flex: 2;
+            display: grid;
+            grid-template-columns: 40px 1fr 1fr;
+            grid-template-rows: 1fr 1fr 40px;
+            gap: 10px;
+        }
+
+        /* Axis Labels */
+        .y-axis {
+            grid-row: 1 / 3; grid-column: 1;
+            writing-mode: vertical-rl; transform: rotate(180deg);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            font-weight: 800; color: #1B2A4A; font-size: 14px;
+            background: #eef2f7; border-radius: 4px;
+        }
+        .x-axis {
+            grid-row: 3; grid-column: 2 / 4;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            font-weight: 800; color: #1B2A4A; font-size: 14px;
+            background: #eef2f7; border-radius: 4px;
+        }
+
+        /* Quadrants */
+        .quadrant {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+            border: 1px solid #eee;
+        }
+        .q-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 5px; padding-bottom: 5px; border-bottom: 1px solid #eee;
+        }
+        .q-title { font-size: 13px; font-weight: 800; }
+        .q-strategy { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 2px; color: white; }
+
+        /* Q1: High Power, High Interest (Manage Closely) */
+        .q-manage { border-top: 4px solid #00B388; }
+        .q-manage .q-title { color: #00B388; }
+        .q-manage .q-strategy { background: #00B388; }
+
+        /* Q2: High Power, Low Interest (Keep Satisfied) */
+        .q-satisfy { border-top: 4px solid #2B5EA7; }
+        .q-satisfy .q-title { color: #2B5EA7; }
+        .q-satisfy .q-strategy { background: #2B5EA7; }
+
+        /* Q3: Low Power, High Interest (Keep Informed) */
+        .q-inform { border-top: 4px solid #E8A838; }
+        .q-inform .q-title { color: #E8A838; }
+        .q-inform .q-strategy { background: #E8A838; }
+
+        /* Q4: Low Power, Low Interest (Monitor) */
+        .q-monitor { border-top: 4px solid #888; }
+        .q-monitor .q-title { color: #666; }
+        .q-monitor .q-strategy { background: #888; }
+
+        /* Stakeholder Cards */
+        .stake-card {
+            background: #f9f9f9;
+            padding: 8px;
+            border-right: 3px solid #ccc;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .sc-icon {
+            width: 24px; height: 24px; background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; color: #555; border: 1px solid #eee;
+        }
+        .sc-info { flex: 1; }
+        .sc-name { font-size: 11px; font-weight: 700; color: #333; }
+        .sc-role { font-size: 9px; color: #666; }
+
+        /* Right Panel: Engagement Plan */
+        .plan-panel {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .pp-title {
+            font-size: 14px; font-weight: 800; color: #1B2A4A;
+            border-bottom: 2px solid #1B2A4A; padding-bottom: 8px;
+        }
+
+        .plan-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .plan-table th {
+            background: #f5f5f5; color: #1B2A4A; font-size: 10px; font-weight: 700;
+            padding: 8px; text-align: right; border-bottom: 2px solid #ddd;
+        }
+        .plan-table td {
+            padding: 8px; border-bottom: 1px solid #eee; font-size: 10px; color: #555; vertical-align: middle;
+        }
+        .pt-group { font-weight: 700; color: #1B2A4A; }
+        .pt-channel { display: flex; gap: 5px; flex-wrap: wrap; }
+        .chan-tag {
+            background: #eef2f7; padding: 2px 6px; border-radius: 2px; font-size: 9px; color: #2B5EA7;
+        }
+
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">أصحاب المصلحة - مصفوفة التأثير والاهتمام</div>
+            <div class="header-badge">21</div>
+        </div>
+
+        <div class="content-area">
+            <!-- Matrix -->
+            <div class="matrix-container">
+                <div class="y-axis">
+                    <span>التأثير / السلطة (Power)</span>
+                    <i class="fas fa-arrow-up"></i>
+                </div>
+                
+                <!-- Q2: Keep Satisfied -->
+                <div class="quadrant q-satisfy">
+                    <div class="q-header">
+                        <div class="q-title">إرضاء (Keep Satisfied)</div>
+                        <div class="q-strategy">تأثير عالي / اهتمام منخفض</div>
+                    </div>
+                    <div class="stake-card" style="border-color: #2B5EA7;">
+                        <div class="sc-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div class="sc-info">
+                            <div class="sc-name">الهيئة الوطنية للأمن السيبراني</div>
+                            <div class="sc-role">الامتثال للضوابط الأمنية</div>
+                        </div>
+                    </div>
+                    <div class="stake-card" style="border-color: #2B5EA7;">
+                        <div class="sc-icon"><i class="fas fa-coins"></i></div>
+                        <div class="sc-info">
+                            <div class="sc-name">وزارة المالية</div>
+                            <div class="sc-role">تمويل المبادرات والمشاريع</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q1: Manage Closely -->
+                <div class="quadrant q-manage">
+                    <div class="q-header">
+                        <div class="q-title">إدارة عن قرب (Manage Closely)</div>
+                        <div class="q-strategy">تأثير عالي / اهتمام عالي</div>
+                    </div>
+                    <div class="stake-card" style="border-color: #00B388;">
+                        <div class="sc-icon"><i class="fas fa-university"></i></div>
+                        <div class="sc-info">
+                            <div class="sc-name">مكتب إدارة البيانات الوطنية (NDMO)</div>
+                            <div class="sc-role">الجهة التنظيمية والتشريعية</div>
+                        </div>
+                    </div>
+                    <div class="stake-card" style="border-color: #00B388;">
+                        <div class="sc-icon"><i class="fas fa-brain"></i></div>
+                        <div class="sc-info">
+                            <div class="sc-name">سدايا (SDAIA)</div>
+                            <div class="sc-role">الممكن التقني والاستراتيجي</div>
+                        </div>
+                    </div>
+                    <div class="stake-card" style="border-color: #00B388;">
+                        <div class="sc-icon"><i class="fas fa-user-tie"></i></div>
+                        <div class="sc-info">
+                            <div class="sc-name">اللجنة التوجيهية للبيانات</div>
+                            <div class="sc-role">اتخاذ القرارات الاستراتيجية</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q4: Monitor -->
+                <div class="quadrant q-monitor">
+                    <div class="q-header">
+                        <div class="q-title">مراقبة (Monitor)</div>
+                        <div class="q-strategy">تأثير منخفض / اهتمام منخفض</div>
+                    </div>
+                    <div class="stake-card" style="border-color: #888;">
+                        <div class="sc-icon"><i class="fas fa-truck"></i></div>
+                        <div class="sc-info">
+                            <div class="sc-name">الموردين الخارجيين</div>
+                            <div class="sc-role">توفير الحلول التقنية</div>
+                        </div>
+                    </div>
+                    <div class="stake-card" style="border-color: #888;">
+                        <div class="sc-icon"><i class="fas fa-users"></i></div>
+                        <div class="sc-info">
+                            <div class="sc-name">الجمهور العام</div>
+                            <div class="sc-role">الاطلاع العام</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q3: Keep Informed -->
+                <div class="quadrant q-inform">
+                    <div class="q-header">
+                        <div class="q-title">إطلاع (Keep Informed)</div>
+                        <div class="q-strategy">تأثير منخفض / اهتمام عالي</div>
+                    </div>
+                    <div class="stake-card" style="border-color: #E8A838;">
+                        <div class="sc-icon"><i class="fas fa-laptop-code"></i></div>
+                        <div class="sc-info">
+                            <div class="sc-name">إدارة تقنية المعلومات</div>
+                            <div class="sc-role">التنفيذ التقني</div>
+                        </div>
+                    </div>
+                    <div class="stake-card" style="border-color: #E8A838;">
+                        <div class="sc-icon"><i class="fas fa-flask"></i></div>
+                        <div class="sc-info">
+                            <div class="sc-name">الباحثين والمطورين</div>
+                            <div class="sc-role">استخدام البيانات المفتوحة</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="x-axis">
+                    <span>الاهتمام (Interest)</span>
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+            </div>
+
+            <!-- Engagement Plan -->
+            <div class="plan-panel">
+                <div class="pp-title">خطة التواصل والمشاركة</div>
+                <table class="plan-table">
+                    <thead>
+                        <tr>
+                            <th>الفئة</th>
+                            <th>قنوات التواصل</th>
+                            <th>التواتر</th>
+                            <th>الهدف</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="pt-group">إدارة عن قرب</td>
+                            <td>
+                                <div class="pt-channel">
+                                    <span class="chan-tag">اجتماعات</span>
+                                    <span class="chan-tag">تقارير</span>
+                                </div>
+                            </td>
+                            <td>شهري / ربع سنوي</td>
+                            <td>المواءمة الاستراتيجية والحصول على الموافقات</td>
+                        </tr>
+                        <tr>
+                            <td class="pt-group">إرضاء</td>
+                            <td>
+                                <div class="pt-channel">
+                                    <span class="chan-tag">تقارير امتثال</span>
+                                    <span class="chan-tag">مخاطبات</span>
+                                </div>
+                            </td>
+                            <td>ربع سنوي</td>
+                            <td>ضمان الامتثال وتأمين الموارد</td>
+                        </tr>
+                        <tr>
+                            <td class="pt-group">إطلاع</td>
+                            <td>
+                                <div class="pt-channel">
+                                    <span class="chan-tag">نشرة دورية</span>
+                                    <span class="chan-tag">ورش عمل</span>
+                                </div>
+                            </td>
+                            <td>عند الحاجة</td>
+                            <td>بناء الوعي وضمان الجاهزية</td>
+                        </tr>
+                        <tr>
+                            <td class="pt-group">مراقبة</td>
+                            <td>
+                                <div class="pt-channel">
+                                    <span class="chan-tag">الموقع الإلكتروني</span>
+                                </div>
+                            </td>
+                            <td>مستمر</td>
+                            <td>الشفافية العامة</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">21</div>
+    </div>
+</body>
+</html>

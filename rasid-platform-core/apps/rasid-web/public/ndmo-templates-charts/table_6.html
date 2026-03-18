@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 16px 4px 16px; display: flex; flex-direction: column; gap: 6px; }
+        .legend-row { display: flex; gap: 16px; align-items: center; flex-shrink: 0; }
+        .legend-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: #64748B; }
+        .legend-bar { width: 20px; height: 8px; }
+        .table-wrap { flex: 1; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        thead th { background: #1B2A4A; color: white; font-size: 10px; font-weight: 700; padding: 6px 3px; text-align: center; }
+        thead th:first-child { text-align: right; min-width: 140px; padding-right: 8px; font-size: 11px; }
+        thead th:nth-child(2) { text-align: center; min-width: 50px; font-size: 11px; }
+        tbody td { font-size: 10px; color: #1B2A4A; padding: 5px 3px; border-bottom: 1px solid #E2E8F0; text-align: center; }
+        tbody td:first-child { text-align: right; font-weight: 700; font-size: 11px; padding-right: 8px; }
+        tbody td:nth-child(2) { font-size: 10px; color: #64748B; }
+        tbody tr:nth-child(even) { background: #F8FAFC; }
+        .bar-cell { padding: 5px 1px; }
+        .gantt-bar { height: 16px; width: 100%; display: block; }
+        .phase-1 { background: #1B2A4A; }
+        .phase-2 { background: #2B5EA7; }
+        .phase-3 { background: #00B388; }
+        .phase-4 { background: #E8A838; }
+        .phase-5 { background: #8E44AD; }
+        .phase-6 { background: #C0392B; }
+        .milestone { width: 12px; height: 12px; background: #E8A838; transform: rotate(45deg); display: inline-block; }
+        .today-line { border-right: 2px dashed #C0392B; }
+        .summary-bar { background: #1B2A4A; display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; flex-shrink: 0; }
+        .sb-item { padding: 6px 8px; text-align: center; }
+        .sb-label { font-size: 10px; color: rgba(255,255,255,0.6); }
+        .sb-val { font-size: 16px; font-weight: 800; color: white; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-project-diagram" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> عنوان الجدول الزمني / خريطة الطريق يكتب هنا</div>
+            <div class="header-num">3.48</div>
+        </div>
+        <div class="content">
+            <div class="legend-row">
+                <div class="legend-item"><div class="legend-bar phase-1"></div> المرحلة الأولى يكتب هنا</div>
+                <div class="legend-item"><div class="legend-bar phase-2"></div> المرحلة الثانية يكتب هنا</div>
+                <div class="legend-item"><div class="legend-bar phase-3"></div> المرحلة الثالثة يكتب هنا</div>
+                <div class="legend-item"><div class="legend-bar phase-4"></div> المرحلة الرابعة يكتب هنا</div>
+                <div class="legend-item"><div class="legend-bar phase-5"></div> المرحلة الخامسة يكتب هنا</div>
+                <div class="legend-item"><div class="milestone" style="width:8px;height:8px;"></div> نقطة فاصلة يكتب هنا</div>
+                <div style="margin-right:auto;font-size:10px;color:#C0392B;"><i class="fas fa-map-pin"></i> اليوم</div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>المشروع / المهمة يكتب هنا</th><th>الحالة</th><th>يناير</th><th>فبراير</th><th>مارس</th><th class="today-line">أبريل</th><th>مايو</th><th>يونيو</th><th>يوليو</th><th>أغسطس</th><th>سبتمبر</th><th>أكتوبر</th><th>نوفمبر</th><th>ديسمبر</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><i class="fas fa-circle" style="font-size:5px;color:#1B2A4A;margin-left:4px;"></i> اسم المشروع الأول يكتب هنا</td><td style="font-size:9px;color:#00B388;font-weight:700;">مكتمل</td><td class="bar-cell"><span class="gantt-bar phase-1"></span></td><td class="bar-cell"><span class="gantt-bar phase-1"></span></td><td class="bar-cell"><span class="gantt-bar phase-1"></span></td><td class="bar-cell today-line"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td></tr>
+                        <tr><td><i class="fas fa-circle" style="font-size:5px;color:#2B5EA7;margin-left:4px;"></i> اسم المشروع الثاني يكتب هنا</td><td style="font-size:9px;color:#2B5EA7;font-weight:700;">جاري</td><td class="bar-cell"></td><td class="bar-cell"><span class="gantt-bar phase-2"></span></td><td class="bar-cell"><span class="gantt-bar phase-2"></span></td><td class="bar-cell today-line"><span class="gantt-bar phase-2"></span></td><td class="bar-cell"><span class="gantt-bar phase-2"></span></td><td class="bar-cell"><span class="gantt-bar phase-2"></span></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td></tr>
+                        <tr><td><i class="fas fa-circle" style="font-size:5px;color:#00B388;margin-left:4px;"></i> اسم المشروع الثالث يكتب هنا</td><td style="font-size:9px;color:#2B5EA7;font-weight:700;">جاري</td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"><span class="gantt-bar phase-3"></span></td><td class="bar-cell today-line"><span class="gantt-bar phase-3"></span></td><td class="bar-cell"><span class="gantt-bar phase-3"></span></td><td class="bar-cell"><span class="gantt-bar phase-3"></span></td><td class="bar-cell"><span class="gantt-bar phase-3"></span></td><td class="bar-cell"><span class="gantt-bar phase-3"></span></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td></tr>
+                        <tr><td><i class="fas fa-circle" style="font-size:5px;color:#E8A838;margin-left:4px;"></i> اسم المشروع الرابع يكتب هنا</td><td style="font-size:9px;color:#64748B;font-weight:700;">مخطط</td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell today-line"></td><td class="bar-cell"><span class="gantt-bar phase-4"></span></td><td class="bar-cell"><span class="gantt-bar phase-4"></span></td><td class="bar-cell"><span class="gantt-bar phase-4"></span></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td></tr>
+                        <tr><td><i class="fas fa-circle" style="font-size:5px;color:#8E44AD;margin-left:4px;"></i> اسم المشروع الخامس يكتب هنا</td><td style="font-size:9px;color:#64748B;font-weight:700;">مخطط</td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell today-line"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"><span class="gantt-bar phase-5"></span></td><td class="bar-cell"><span class="gantt-bar phase-5"></span></td><td class="bar-cell"><span class="gantt-bar phase-5"></span></td><td class="bar-cell"><span class="gantt-bar phase-5"></span></td><td class="bar-cell"></td><td class="bar-cell"></td></tr>
+                        <tr><td><i class="fas fa-circle" style="font-size:5px;color:#C0392B;margin-left:4px;"></i> اسم المشروع السادس يكتب هنا</td><td style="font-size:9px;color:#E8A838;font-weight:700;">متأخر</td><td class="bar-cell"><span class="gantt-bar phase-6"></span></td><td class="bar-cell"><span class="gantt-bar phase-6"></span></td><td class="bar-cell"><span class="gantt-bar phase-6"></span></td><td class="bar-cell today-line"><span class="gantt-bar phase-6"></span></td><td class="bar-cell"><span class="gantt-bar phase-6"></span></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td></tr>
+                        <tr><td><i class="fas fa-circle" style="font-size:5px;color:#1B2A4A;margin-left:4px;"></i> اسم المشروع السابع يكتب هنا</td><td style="font-size:9px;color:#64748B;font-weight:700;">مخطط</td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell today-line"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"><span class="gantt-bar phase-1"></span></td><td class="bar-cell"><span class="gantt-bar phase-1"></span></td><td class="bar-cell"><span class="gantt-bar phase-1"></span></td><td class="bar-cell"><span class="gantt-bar phase-1"></span></td></tr>
+                        <tr><td><i class="fas fa-circle" style="font-size:5px;color:#2B5EA7;margin-left:4px;"></i> اسم المشروع الثامن يكتب هنا</td><td style="font-size:9px;color:#00B388;font-weight:700;">مكتمل</td><td class="bar-cell"><span class="gantt-bar phase-2"></span></td><td class="bar-cell"><span class="gantt-bar phase-2"></span></td><td class="bar-cell"></td><td class="bar-cell today-line"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td><td class="bar-cell"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="summary-bar">
+                <div class="sb-item"><div class="sb-label">إجمالي المشاريع يكتب هنا</div><div class="sb-val">8</div></div>
+                <div class="sb-item"><div class="sb-label">المكتمل يكتب هنا</div><div class="sb-val" style="color:#00B388;">2</div></div>
+                <div class="sb-item"><div class="sb-label">قيد التنفيذ يكتب هنا</div><div class="sb-val" style="color:#2B9BE6;">2</div></div>
+                <div class="sb-item"><div class="sb-label">مخطط يكتب هنا</div><div class="sb-val">3</div></div>
+                <div class="sb-item"><div class="sb-label">متأخر يكتب هنا</div><div class="sb-val" style="color:#E8A838;">1</div></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

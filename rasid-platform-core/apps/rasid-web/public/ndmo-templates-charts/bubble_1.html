@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 16px 4px 16px; display: flex; flex-direction: column; justify-content: center; }
+        .timeline-wrap { display: flex; flex-direction: column; gap: 0; }
+        .top-cards { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+        .tl-card { padding: 8px; border: 1px solid #E2E8F0; display: flex; flex-direction: column; }
+        .tl-card-top { margin-bottom: auto; }
+        .tl-card-bottom { margin-top: auto; }
+        .tc-date { font-size: 10px; font-weight: 800; color: #2B5EA7; }
+        .tc-title { font-size: 11px; font-weight: 700; color: #1B2A4A; margin-top: 2px; }
+        .tc-desc { font-size: 9px; color: #64748B; margin-top: 2px; line-height: 1.4; }
+        .tc-status { font-size: 8px; font-weight: 700; padding: 1px 6px; display: inline-block; margin-top: 4px; }
+        .st-done { background: #ECFDF5; color: #00B388; }
+        .st-progress { background: #EFF6FF; color: #2B5EA7; }
+        .st-planned { background: #F8FAFC; color: #64748B; }
+        .timeline-line { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; padding: 8px 0; }
+        .tl-dot-wrap { display: flex; flex-direction: column; align-items: center; }
+        .tl-connector-top { width: 2px; height: 8px; }
+        .tl-dot { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 7px; }
+        .td-1 { background: #1B2A4A; }
+        .td-2 { background: #2B5EA7; }
+        .td-3 { background: #00B388; }
+        .td-4 { background: #E8A838; }
+        .td-5 { background: #8E44AD; }
+        .td-6 { background: #C0392B; }
+        .tl-connector-bottom { width: 2px; height: 8px; }
+        .tl-line-bg { height: 3px; background: #E2E8F0; grid-column: 1 / -1; margin-top: -20px; z-index: 0; }
+        .bottom-cards { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+        .summary-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; flex-shrink: 0; }
+        .sum-card { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 8px 12px; display: flex; align-items: center; gap: 10px; }
+        .sum-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
+        .sum-info { }
+        .sum-val { font-size: 18px; font-weight: 800; color: #1B2A4A; }
+        .sum-label { font-size: 10px; color: #64748B; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-road" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> عنوان خريطة الطريق / الجدول الزمني يكتب هنا</div>
+            <div class="header-num">3.61</div>
+        </div>
+        <div class="content">
+            <div class="timeline-wrap">
+                <div class="top-cards">
+                    <div class="tl-card tl-card-top" style="border-top:3px solid #1B2A4A;"><div class="tc-date">الربع الأول يكتب هنا</div><div class="tc-title">عنوان المرحلة الأولى يكتب هنا</div><div class="tc-desc">وصف مختصر للمرحلة يكتب هنا</div><div class="tc-status st-done"><i class="fas fa-check" style="margin-left:2px;"></i> مكتمل</div></div>
+                    <div class="tl-card tl-card-top" style="border-top:3px solid #2B5EA7;"><div class="tc-date">الربع الثاني يكتب هنا</div><div class="tc-title">عنوان المرحلة الثانية يكتب هنا</div><div class="tc-desc">وصف مختصر للمرحلة يكتب هنا</div><div class="tc-status st-done"><i class="fas fa-check" style="margin-left:2px;"></i> مكتمل</div></div>
+                    <div class="tl-card tl-card-top" style="border-top:3px solid #00B388;"><div class="tc-date">الربع الثالث يكتب هنا</div><div class="tc-title">عنوان المرحلة الثالثة يكتب هنا</div><div class="tc-desc">وصف مختصر للمرحلة يكتب هنا</div><div class="tc-status st-progress"><i class="fas fa-spinner" style="margin-left:2px;"></i> جاري</div></div>
+                    <div class="tl-card tl-card-top" style="border-top:3px solid #E8A838;"><div class="tc-date">الربع الرابع يكتب هنا</div><div class="tc-title">عنوان المرحلة الرابعة يكتب هنا</div><div class="tc-desc">وصف مختصر للمرحلة يكتب هنا</div><div class="tc-status st-planned">مخطط</div></div>
+                    <div class="tl-card tl-card-top" style="border-top:3px solid #8E44AD;"><div class="tc-date">الربع الخامس يكتب هنا</div><div class="tc-title">عنوان المرحلة الخامسة يكتب هنا</div><div class="tc-desc">وصف مختصر للمرحلة يكتب هنا</div><div class="tc-status st-planned">مخطط</div></div>
+                    <div class="tl-card tl-card-top" style="border-top:3px solid #C0392B;"><div class="tc-date">الربع السادس يكتب هنا</div><div class="tc-title">عنوان المرحلة السادسة يكتب هنا</div><div class="tc-desc">وصف مختصر للمرحلة يكتب هنا</div><div class="tc-status st-planned">مخطط</div></div>
+                </div>
+                <div class="timeline-line">
+                    <div class="tl-dot-wrap"><div class="tl-connector-top" style="background:#1B2A4A;"></div><div class="tl-dot td-1"><i class="fas fa-check"></i></div><div class="tl-connector-bottom" style="background:#1B2A4A;"></div></div>
+                    <div class="tl-dot-wrap"><div class="tl-connector-top" style="background:#2B5EA7;"></div><div class="tl-dot td-2"><i class="fas fa-check"></i></div><div class="tl-connector-bottom" style="background:#2B5EA7;"></div></div>
+                    <div class="tl-dot-wrap"><div class="tl-connector-top" style="background:#00B388;"></div><div class="tl-dot td-3"><i class="fas fa-play"></i></div><div class="tl-connector-bottom" style="background:#00B388;"></div></div>
+                    <div class="tl-dot-wrap"><div class="tl-connector-top" style="background:#E8A838;"></div><div class="tl-dot td-4"><i class="fas fa-clock"></i></div><div class="tl-connector-bottom" style="background:#E8A838;"></div></div>
+                    <div class="tl-dot-wrap"><div class="tl-connector-top" style="background:#8E44AD;"></div><div class="tl-dot td-5"><i class="fas fa-clock"></i></div><div class="tl-connector-bottom" style="background:#8E44AD;"></div></div>
+                    <div class="tl-dot-wrap"><div class="tl-connector-top" style="background:#C0392B;"></div><div class="tl-dot td-6"><i class="fas fa-flag"></i></div><div class="tl-connector-bottom" style="background:#C0392B;"></div></div>
+                </div>
+                <div class="bottom-cards">
+                    <div class="tl-card" style="border-bottom:3px solid #1B2A4A;"><div class="tc-title" style="font-size:10px;">المخرجات يكتب هنا</div><div class="tc-desc">وصف المخرجات للمرحلة الأولى يكتب هنا</div></div>
+                    <div class="tl-card" style="border-bottom:3px solid #2B5EA7;"><div class="tc-title" style="font-size:10px;">المخرجات يكتب هنا</div><div class="tc-desc">وصف المخرجات للمرحلة الثانية يكتب هنا</div></div>
+                    <div class="tl-card" style="border-bottom:3px solid #00B388;"><div class="tc-title" style="font-size:10px;">المخرجات يكتب هنا</div><div class="tc-desc">وصف المخرجات للمرحلة الثالثة يكتب هنا</div></div>
+                    <div class="tl-card" style="border-bottom:3px solid #E8A838;"><div class="tc-title" style="font-size:10px;">المخرجات يكتب هنا</div><div class="tc-desc">وصف المخرجات للمرحلة الرابعة يكتب هنا</div></div>
+                    <div class="tl-card" style="border-bottom:3px solid #8E44AD;"><div class="tc-title" style="font-size:10px;">المخرجات يكتب هنا</div><div class="tc-desc">وصف المخرجات للمرحلة الخامسة يكتب هنا</div></div>
+                    <div class="tl-card" style="border-bottom:3px solid #C0392B;"><div class="tc-title" style="font-size:10px;">المخرجات يكتب هنا</div><div class="tc-desc">وصف المخرجات للمرحلة السادسة يكتب هنا</div></div>
+                </div>
+            </div>
+            <div class="summary-row">
+                <div class="sum-card"><div class="sum-icon" style="background:#00B388;"><i class="fas fa-check-circle"></i></div><div class="sum-info"><div class="sum-val">2</div><div class="sum-label">مراحل مكتملة يكتب هنا</div></div></div>
+                <div class="sum-card"><div class="sum-icon" style="background:#2B5EA7;"><i class="fas fa-spinner"></i></div><div class="sum-info"><div class="sum-val">1</div><div class="sum-label">مرحلة جارية يكتب هنا</div></div></div>
+                <div class="sum-card"><div class="sum-icon" style="background:#64748B;"><i class="fas fa-clock"></i></div><div class="sum-info"><div class="sum-val">3</div><div class="sum-label">مراحل مخططة يكتب هنا</div></div></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

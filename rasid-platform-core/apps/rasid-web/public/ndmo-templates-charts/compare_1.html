@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 16px 4px 16px; display: flex; flex-direction: column; gap: 8px; }
+        .col-headers { display: grid; grid-template-columns: 200px 1fr 60px 1fr; gap: 0; flex-shrink: 0; }
+        .col-h { padding: 10px 12px; font-size: 14px; font-weight: 800; text-align: center; }
+        .col-h-before { background: #C0392B; color: white; }
+        .col-h-arrow { display: flex; align-items: center; justify-content: center; background: #1B2A4A; color: white; font-size: 18px; }
+        .col-h-after { background: #00B388; color: white; }
+        .col-h-label { background: #1B2A4A; color: white; text-align: right; display: flex; align-items: center; }
+        .rows-wrap { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+        .comp-row { display: grid; grid-template-columns: 200px 1fr 60px 1fr; gap: 0; min-height: 52px; }
+        .comp-row:nth-child(even) .cr-label { background: #F1F5F9; }
+        .comp-row:nth-child(even) .cr-before { background: #FEF2F2; }
+        .comp-row:nth-child(even) .cr-arrow { background: #F8FAFC; }
+        .comp-row:nth-child(even) .cr-after { background: #ECFDF5; }
+        .cr-label { background: #F8FAFC; padding: 8px 12px; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #1B2A4A; border-bottom: 1px solid #E2E8F0; }
+        .cr-label i { color: #2B5EA7; font-size: 10px; }
+        .cr-before { background: #FFF5F5; padding: 8px 12px; display: flex; align-items: center; font-size: 11px; color: #64748B; border-bottom: 1px solid #E2E8F0; }
+        .cr-arrow { display: flex; align-items: center; justify-content: center; font-size: 14px; color: #2B5EA7; border-bottom: 1px solid #E2E8F0; }
+        .cr-after { background: #F0FDF9; padding: 8px 12px; display: flex; align-items: center; font-size: 11px; color: #1B2A4A; font-weight: 600; border-bottom: 1px solid #E2E8F0; }
+        .improvement { display: inline-flex; align-items: center; gap: 3px; background: #ECFDF5; color: #00B388; font-size: 9px; font-weight: 700; padding: 1px 6px; margin-right: 6px; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-exchange-alt" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> عنوان مصفوفة المقارنة - قبل وبعد يكتب هنا</div>
+            <div class="header-num">3.49</div>
+        </div>
+        <div class="content">
+            <div class="col-headers">
+                <div class="col-h col-h-label">المعيار يكتب هنا</div>
+                <div class="col-h col-h-before"><i class="fas fa-times-circle" style="margin-left:6px;"></i> الوضع السابق يكتب هنا</div>
+                <div class="col-h col-h-arrow"><i class="fas fa-arrow-left"></i></div>
+                <div class="col-h col-h-after"><i class="fas fa-check-circle" style="margin-left:6px;"></i> الوضع الجديد يكتب هنا</div>
+            </div>
+            <div class="rows-wrap">
+                <div class="comp-row">
+                    <div class="cr-label"><i class="fas fa-cog"></i> اسم المعيار الأول يكتب هنا</div>
+                    <div class="cr-before">وصف الوضع السابق للمعيار الأول يكتب هنا</div>
+                    <div class="cr-arrow"><i class="fas fa-arrow-left"></i></div>
+                    <div class="cr-after"><span class="improvement"><i class="fas fa-arrow-up"></i> +45%</span> وصف الوضع الجديد يكتب هنا</div>
+                </div>
+                <div class="comp-row">
+                    <div class="cr-label"><i class="fas fa-clock"></i> اسم المعيار الثاني يكتب هنا</div>
+                    <div class="cr-before">وصف الوضع السابق للمعيار الثاني يكتب هنا</div>
+                    <div class="cr-arrow"><i class="fas fa-arrow-left"></i></div>
+                    <div class="cr-after"><span class="improvement"><i class="fas fa-arrow-up"></i> +60%</span> وصف الوضع الجديد يكتب هنا</div>
+                </div>
+                <div class="comp-row">
+                    <div class="cr-label"><i class="fas fa-shield-alt"></i> اسم المعيار الثالث يكتب هنا</div>
+                    <div class="cr-before">وصف الوضع السابق للمعيار الثالث يكتب هنا</div>
+                    <div class="cr-arrow"><i class="fas fa-arrow-left"></i></div>
+                    <div class="cr-after"><span class="improvement"><i class="fas fa-arrow-up"></i> +30%</span> وصف الوضع الجديد يكتب هنا</div>
+                </div>
+                <div class="comp-row">
+                    <div class="cr-label"><i class="fas fa-users"></i> اسم المعيار الرابع يكتب هنا</div>
+                    <div class="cr-before">وصف الوضع السابق للمعيار الرابع يكتب هنا</div>
+                    <div class="cr-arrow"><i class="fas fa-arrow-left"></i></div>
+                    <div class="cr-after"><span class="improvement"><i class="fas fa-arrow-up"></i> +55%</span> وصف الوضع الجديد يكتب هنا</div>
+                </div>
+                <div class="comp-row">
+                    <div class="cr-label"><i class="fas fa-chart-line"></i> اسم المعيار الخامس يكتب هنا</div>
+                    <div class="cr-before">وصف الوضع السابق للمعيار الخامس يكتب هنا</div>
+                    <div class="cr-arrow"><i class="fas fa-arrow-left"></i></div>
+                    <div class="cr-after"><span class="improvement"><i class="fas fa-arrow-up"></i> +72%</span> وصف الوضع الجديد يكتب هنا</div>
+                </div>
+                <div class="comp-row">
+                    <div class="cr-label"><i class="fas fa-database"></i> اسم المعيار السادس يكتب هنا</div>
+                    <div class="cr-before">وصف الوضع السابق للمعيار السادس يكتب هنا</div>
+                    <div class="cr-arrow"><i class="fas fa-arrow-left"></i></div>
+                    <div class="cr-after"><span class="improvement"><i class="fas fa-arrow-up"></i> +38%</span> وصف الوضع الجديد يكتب هنا</div>
+                </div>
+                <div class="comp-row">
+                    <div class="cr-label"><i class="fas fa-bolt"></i> اسم المعيار السابع يكتب هنا</div>
+                    <div class="cr-before">وصف الوضع السابق للمعيار السابع يكتب هنا</div>
+                    <div class="cr-arrow"><i class="fas fa-arrow-left"></i></div>
+                    <div class="cr-after"><span class="improvement"><i class="fas fa-arrow-up"></i> +50%</span> وصف الوضع الجديد يكتب هنا</div>
+                </div>
+                <div class="comp-row">
+                    <div class="cr-label"><i class="fas fa-check-double"></i> اسم المعيار الثامن يكتب هنا</div>
+                    <div class="cr-before">وصف الوضع السابق للمعيار الثامن يكتب هنا</div>
+                    <div class="cr-arrow"><i class="fas fa-arrow-left"></i></div>
+                    <div class="cr-after"><span class="improvement"><i class="fas fa-arrow-up"></i> +65%</span> وصف الوضع الجديد يكتب هنا</div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

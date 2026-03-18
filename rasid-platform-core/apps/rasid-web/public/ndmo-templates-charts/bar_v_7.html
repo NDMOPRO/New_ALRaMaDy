@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        .slide-container { width: 1280px; min-height: 720px; font-family: 'Tajawal', sans-serif; background: #EEF1F5; display: flex; flex-direction: column; }
+        .header { height: 62px; background: #0C1E3A; display: flex; align-items: center; justify-content: center; position: relative; }
+        .header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #2E86AB 0%, #0EA47A 50%, #D4A843 100%); }
+        .header-tag { position: absolute; top: 10px; right: 40px; font-size: 7px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.3); font-family: 'Inter', sans-serif; }
+        .header-title { font-size: 21px; font-weight: 700; color: #FFFFFF; }
+        .header-deco { position: absolute; left: 30px; top: 50%; transform: translateY(-50%); display: flex; gap: 4px; align-items: flex-end; }
+        .deco-bar { width: 4px; border-radius: 2px; }
+        .deco-bar:nth-child(1) { height: 18px; background: #2E86AB; }
+        .deco-bar:nth-child(2) { height: 28px; background: #5BA4C9; }
+        .deco-bar:nth-child(3) { height: 14px; background: #0EA47A; }
+
+        .body { flex: 1; padding: 10px 14px 6px; display: flex; flex-direction: column; gap: 8px; }
+
+        .compare-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .compare-card { background: #FFFFFF; border-radius: 10px; padding: 10px 14px; box-shadow: 0 2px 10px rgba(12,30,58,0.06); display: flex; align-items: center; gap: 14px; }
+        .compare-info { flex: 1; }
+        .compare-label { font-size: 10px; font-weight: 600; color: #64748B; }
+        .compare-vals { display: flex; align-items: baseline; gap: 8px; margin-top: 2px; }
+        .compare-new { font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 800; color: #0C1E3A; }
+        .compare-old { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #A0AEC0; text-decoration: line-through; }
+        .compare-badge { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; text-align: center; min-width: 60px; }
+        .badge-green { background: rgba(14,164,122,0.1); color: #0EA47A; }
+        .badge-red { background: rgba(224,82,82,0.1); color: #E05252; }
+
+        .chart-area { flex: 1; background: #FFFFFF; border-radius: 10px; padding: 10px 14px 6px; box-shadow: 0 2px 10px rgba(12,30,58,0.06); display: flex; flex-direction: column; }
+        .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+        .chart-title { font-size: 13px; font-weight: 700; color: #0C1E3A; }
+        .chart-subtitle { font-size: 9px; color: #A0AEC0; margin-top: 1px; }
+        .chart-body { flex: 1; position: relative; min-height: 0; }
+        .chart-legend { display: flex; gap: 20px; justify-content: center; margin-top: 4px; }
+        .legend-item { display: flex; align-items: center; gap: 5px; font-size: 9px; color: #64748B; font-weight: 500; }
+        .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+        .footer-area { height: 26px; background: #FFFFFF; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; box-shadow: 0 -1px 4px rgba(12,30,58,0.04); }
+        .footer-right { display: flex; align-items: center; gap: 8px; }
+        .footer-logo { height: 22px; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #E2E8F0; }
+        .footer-text { font-size: 8.5px; color: #A0AEC0; }
+        .footer-page { font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 700; color: #0C1E3A; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header">
+            <div class="header-deco"><div class="deco-bar"></div><div class="deco-bar"></div><div class="deco-bar"></div></div>
+            <div class="header-tag">TEMPLATE — YEAR-OVER-YEAR COMPARISON</div>
+            <div class="header-title">عنوان المقارنة السنوية يكتب هنا</div>
+        </div>
+        <div class="body">
+            <div class="compare-strip">
+                <div class="compare-card">
+                    <div class="compare-info"><div class="compare-label">مؤشر أول يكتب هنا</div><div class="compare-vals"><span class="compare-new">42,500</span><span class="compare-old">36,800</span></div></div>
+                    <div class="compare-badge badge-green">▲ 15.5%</div>
+                </div>
+                <div class="compare-card">
+                    <div class="compare-info"><div class="compare-label">مؤشر ثاني يكتب هنا</div><div class="compare-vals"><span class="compare-new">89.2%</span><span class="compare-old">82.7%</span></div></div>
+                    <div class="compare-badge badge-green">▲ 6.5%</div>
+                </div>
+                <div class="compare-card">
+                    <div class="compare-info"><div class="compare-label">مؤشر ثالث يكتب هنا</div><div class="compare-vals"><span class="compare-new">2,180</span><span class="compare-old">2,450</span></div></div>
+                    <div class="compare-badge badge-red">▼ 11%</div>
+                </div>
+            </div>
+            <div class="chart-area">
+                <div class="chart-header">
+                    <div><div class="chart-title">عنوان مقارنة الأداء بين السنتين يكتب هنا</div><div class="chart-subtitle">وصف مختصر يكتب هنا — مصدر البيانات</div></div>
+                </div>
+                <div class="chart-body"><canvas id="yoyChart"></canvas></div>
+                <div class="chart-legend">
+                    <div class="legend-item"><div class="legend-dot" style="background:#3498DB"></div>السنة الحالية يكتب هنا (2026)</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#CBD5E0"></div>السنة السابقة يكتب هنا (2025)</div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-area">
+            <div class="footer-right">
+                <img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" class="footer-logo" alt="NDMO">
+                <div class="footer-sep"></div>
+                <img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" class="footer-logo" alt="SDAIA">
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+            <div class="footer-page">07 / 60</div>
+        </div>
+    </div>
+    <script>
+        Chart.register(ChartDataLabels);
+        Chart.defaults.font.family = 'Inter';
+        const ctx = document.getElementById('yoyChart').getContext('2d');
+        const g1 = ctx.createLinearGradient(0,0,0,350); g1.addColorStop(0,'#3498DB'); g1.addColorStop(1,'#1A6FA0');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],
+                datasets: [
+                    { label: '2026', data: [3200,3500,3800,4100,3900,4200,4500,4800,4600,5000,5200,5500], backgroundColor: g1, borderRadius: 5, barPercentage: 0.55, categoryPercentage: 0.7 },
+                    { label: '2025', data: [2800,3000,3200,3500,3300,3600,3800,4100,3900,4200,4400,4700], backgroundColor: '#CBD5E0', borderRadius: 5, barPercentage: 0.55, categoryPercentage: 0.7 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { backgroundColor: '#0C1E3A', titleFont: { family: 'Tajawal', size: 11, weight: '700' }, bodyFont: { family: 'Inter', size: 10, weight: '600' }, cornerRadius: 8, padding: 10, mode: 'index' },
+                    datalabels: { display: false }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#A0AEC0', font: { family: 'Tajawal', size: 8, weight: '500' } } },
+                    y: { grid: { color: 'rgba(0,0,0,0.025)', drawBorder: false }, ticks: { color: '#CBD5E0', font: { size: 8 }, callback: function(v) { return v >= 1000 ? (v/1000)+'K' : v; } }, beginAtZero: true }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

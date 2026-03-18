@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 600px;
+        }
+
+        /* Vision Pillars */
+        .vision-pillars {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            height: 140px;
+        }
+        .pillar-card {
+            background: white;
+            border-top: 4px solid #ccc;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            opacity: 0.6;
+            transition: all 0.3s;
+        }
+        .pillar-card.active {
+            opacity: 1;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+        .p-green { border-color: #00B388; } /* Vibrant Society */
+        .p-blue { border-color: #2B5EA7; } /* Thriving Economy */
+        .p-gold { border-color: #E8A838; } /* Ambitious Nation */
+
+        .pillar-icon {
+            font-size: 24px; margin-bottom: 10px;
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+        }
+        .p-green .pillar-icon { background: #00B388; }
+        .p-blue .pillar-icon { background: #2B5EA7; }
+        .p-gold .pillar-icon { background: #E8A838; }
+
+        .pillar-title { font-size: 16px; font-weight: 800; color: #1B2A4A; margin-bottom: 5px; }
+        .pillar-desc { font-size: 11px; color: #666; }
+
+        /* Alignment Cascade */
+        .cascade-container {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+        }
+        .cascade-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .col-header {
+            font-size: 12px; font-weight: 700; color: #1B2A4A;
+            padding-bottom: 8px; border-bottom: 2px solid #ddd;
+            margin-bottom: 5px;
+        }
+        
+        .obj-box {
+            background: white;
+            padding: 15px;
+            border-right: 3px solid #E8A838;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .obj-box::after {
+            content: '◀';
+            position: absolute;
+            left: -16px; top: 50%; transform: translateY(-50%);
+            color: #ccc; font-size: 12px;
+        }
+        .cascade-col:last-child .obj-box::after { display: none; }
+
+        .obj-lvl { font-size: 10px; color: #E8A838; font-weight: 700; margin-bottom: 4px; }
+        .obj-text { font-size: 13px; font-weight: 700; color: #333; line-height: 1.4; }
+        .obj-desc { font-size: 11px; color: #666; margin-top: 6px; line-height: 1.4; }
+
+        /* Contribution Stats */
+        .contribution-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .cont-card {
+            background: #1B2A4A;
+            color: white;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .cont-val { font-size: 24px; font-weight: 800; color: #E8A838; }
+        .cont-label { font-size: 11px; opacity: 0.8; line-height: 1.3; }
+
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الارتباط برؤية المملكة 2030</div>
+            <div class="header-badge">08</div>
+        </div>
+
+        <div class="content-area">
+            <!-- Vision Pillars -->
+            <div class="vision-pillars">
+                <div class="pillar-card p-green">
+                    <div class="pillar-icon"><i class="fas fa-users"></i></div>
+                    <div class="pillar-title">مجتمع حيوي</div>
+                    <div class="pillar-desc">بيئة عامرة، بنيان متين</div>
+                </div>
+                <div class="pillar-card p-blue">
+                    <div class="pillar-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="pillar-title">اقتصاد مزدهر</div>
+                    <div class="pillar-desc">فرص مثمرة، تنافسية جاذبة</div>
+                </div>
+                <div class="pillar-card p-gold active">
+                    <div class="pillar-icon"><i class="fas fa-flag"></i></div>
+                    <div class="pillar-title">وطن طموح</div>
+                    <div class="pillar-desc">حكومة فاعلة، مواطن مسؤول</div>
+                </div>
+            </div>
+
+            <!-- Alignment Cascade -->
+            <div class="cascade-container">
+                <div class="cascade-col">
+                    <div class="col-header">المستوى الأول (L1)</div>
+                    <div class="obj-box">
+                        <div class="obj-lvl">الهدف الاستراتيجي العام</div>
+                        <div class="obj-text">تعزيز فاعلية الحكومة</div>
+                        <div class="obj-desc">رفع كفاءة الأداء الحكومي والتحول الرقمي لتعزيز الشفافية والجودة.</div>
+                    </div>
+                </div>
+                <div class="cascade-col">
+                    <div class="col-header">المستوى الثاني (L2)</div>
+                    <div class="obj-box">
+                        <div class="obj-lvl">الهدف التفصيلي</div>
+                        <div class="obj-text">تطوير الحكومة الإلكترونية</div>
+                        <div class="obj-desc">تحسين جودة الخدمات الرقمية وتكامل البيانات الحكومية.</div>
+                    </div>
+                </div>
+                <div class="cascade-col">
+                    <div class="col-header">المستوى الثالث (L3)</div>
+                    <div class="obj-box">
+                        <div class="obj-lvl">الهدف الفرعي</div>
+                        <div class="obj-text">تحسين جودة البيانات الوطنية</div>
+                        <div class="obj-desc">ضمان دقة وموثوقية البيانات لدعم اتخاذ القرار.</div>
+                    </div>
+                </div>
+                <div class="cascade-col">
+                    <div class="col-header">مساهمة المبادرة</div>
+                    <div class="obj-box" style="border-right-color: #00B388; background: #f9fcfb;">
+                        <div class="obj-lvl" style="color: #00B388;">الأثر المباشر</div>
+                        <div class="obj-text">حوكمة البيانات الوطنية</div>
+                        <div class="obj-desc">تأسيس إطار تنظيمي شامل لإدارة وحوكمة البيانات.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contribution Stats -->
+            <div class="contribution-row">
+                <div class="cont-card">
+                    <div class="cont-val">96%</div>
+                    <div class="cont-label">نسبة الارتباط<br>بأهداف الرؤية</div>
+                </div>
+                <div class="cont-card">
+                    <div class="cont-val">3</div>
+                    <div class="cont-label">مؤشرات أداء<br>رئيسية للرؤية</div>
+                </div>
+                <div class="cont-card">
+                    <div class="cont-val">عالي</div>
+                    <div class="cont-label">مستوى الأثر<br>الاستراتيجي</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">08</div>
+    </div>
+</body>
+</html>

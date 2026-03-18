@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: white; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 40px; flex: 1; display: flex; flex-direction: column; gap: 30px; }
+
+        .abbr-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        
+        .abbr-card { background: #f9f9f9; border-radius: 8px; padding: 24px; display: flex; align-items: center; gap: 20px; border-left: 4px solid #ccc; transition: all 0.2s; }
+        .abbr-card:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left-color: #2B5EA7; background: white; }
+        
+        .ac-abbr { font-size: 24px; font-weight: 800; color: #1B2A4A; width: 80px; text-align: center; border-right: 1px solid #ddd; padding-right: 16px; }
+        .ac-full { font-size: 14px; color: #555; font-weight: 500; line-height: 1.4; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">قائمة الاختصارات - الرموز الشائعة</div>
+            <div class="header-badge">57</div>
+        </div>
+
+        <div class="content-area">
+            <div class="abbr-grid">
+                <!-- Item 1 -->
+                <div class="abbr-card">
+                    <div class="ac-abbr">NDMO</div>
+                    <div class="ac-full">مكتب إدارة البيانات الوطنية<br>National Data Management Office</div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="abbr-card">
+                    <div class="ac-abbr">SDAIA</div>
+                    <div class="ac-full">الهيئة السعودية للبيانات والذكاء الاصطناعي<br>Saudi Data & AI Authority</div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="abbr-card">
+                    <div class="ac-abbr">NCA</div>
+                    <div class="ac-full">الهيئة الوطنية للأمن السيبراني<br>National Cybersecurity Authority</div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="abbr-card">
+                    <div class="ac-abbr">KPI</div>
+                    <div class="ac-full">مؤشر الأداء الرئيسي<br>Key Performance Indicator</div>
+                </div>
+
+                <!-- Item 5 -->
+                <div class="abbr-card">
+                    <div class="ac-abbr">DAMA</div>
+                    <div class="ac-full">رابطة إدارة البيانات الدولية<br>Data Management Association</div>
+                </div>
+
+                <!-- Item 6 -->
+                <div class="abbr-card">
+                    <div class="ac-abbr">RACI</div>
+                    <div class="ac-full">مصفوفة المسؤوليات (مسؤول، مساءل، مستشار، مُبلغ)<br>Responsible, Accountable, Consulted, Informed</div>
+                </div>
+
+                <!-- Item 7 -->
+                <div class="abbr-card">
+                    <div class="ac-abbr">CDO</div>
+                    <div class="ac-full">مدير مكتب البيانات<br>Chief Data Officer</div>
+                </div>
+
+                <!-- Item 8 -->
+                <div class="abbr-card">
+                    <div class="ac-abbr">DQ</div>
+                    <div class="ac-full">جودة البيانات<br>Data Quality</div>
+                </div>
+
+                <!-- Item 9 -->
+                <div class="abbr-card">
+                    <div class="ac-abbr">SLA</div>
+                    <div class="ac-full">اتفاقية مستوى الخدمة<br>Service Level Agreement</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">57</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 20px 4px 20px; display: flex; flex-direction: column; gap: 4px; }
+        .agenda-info { display: flex; gap: 20px; align-items: center; flex-shrink: 0; padding-bottom: 6px; border-bottom: 2px solid #1B2A4A; margin-bottom: 4px; }
+        .ai-item { font-size: 11px; color: #64748B; display: flex; align-items: center; gap: 4px; }
+        .ai-item i { color: #2B5EA7; }
+        .ai-item span { font-weight: 700; color: #1B2A4A; }
+        .agenda-list { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+        .agenda-item { display: grid; grid-template-columns: 100px 1fr 180px; gap: 12px; padding: 8px 10px; border-bottom: 1px solid #E2E8F0; align-items: center; }
+        .agenda-item:nth-child(even) { background: #F8FAFC; }
+        .ag-time { display: flex; flex-direction: column; align-items: center; }
+        .ag-time-val { font-size: 14px; font-weight: 800; color: #1B2A4A; }
+        .ag-time-dur { font-size: 9px; color: #64748B; }
+        .ag-content { }
+        .ag-title { font-size: 12px; font-weight: 700; color: #1B2A4A; }
+        .ag-desc { font-size: 10px; color: #64748B; margin-top: 1px; }
+        .ag-speaker { display: flex; align-items: center; gap: 6px; }
+        .ag-avatar { width: 28px; height: 28px; background: #2B5EA7; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+        .ag-sp-info { }
+        .ag-sp-name { font-size: 10px; font-weight: 700; color: #1B2A4A; }
+        .ag-sp-role { font-size: 9px; color: #64748B; }
+        .break-item { background: #EFF6FF; }
+        .break-item .ag-title { color: #2B5EA7; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-calendar-alt" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> أجندة الاجتماع / الفعالية يكتب هنا</div>
+            <div class="header-num">3.54</div>
+        </div>
+        <div class="content">
+            <div class="agenda-info">
+                <div class="ai-item"><i class="fas fa-calendar"></i> التاريخ: <span>التاريخ يكتب هنا</span></div>
+                <div class="ai-item"><i class="fas fa-clock"></i> الوقت: <span>09:00 - 14:00 يكتب هنا</span></div>
+                <div class="ai-item"><i class="fas fa-map-marker-alt"></i> المكان: <span>اسم المكان يكتب هنا</span></div>
+                <div class="ai-item"><i class="fas fa-users"></i> المشاركون: <span>العدد يكتب هنا</span></div>
+            </div>
+            <div class="agenda-list">
+                <div class="agenda-item"><div class="ag-time"><div class="ag-time-val">09:00</div><div class="ag-time-dur">30 دقيقة</div></div><div class="ag-content"><div class="ag-title"><i class="fas fa-door-open" style="color:#1B2A4A;font-size:10px;margin-left:4px;"></i> عنوان البند الأول يكتب هنا</div><div class="ag-desc">وصف مختصر للبند يكتب هنا</div></div><div class="ag-speaker"><div class="ag-avatar">أ.ب</div><div class="ag-sp-info"><div class="ag-sp-name">اسم المتحدث يكتب هنا</div><div class="ag-sp-role">المسمى الوظيفي يكتب هنا</div></div></div></div>
+                <div class="agenda-item"><div class="ag-time"><div class="ag-time-val">09:30</div><div class="ag-time-dur">45 دقيقة</div></div><div class="ag-content"><div class="ag-title"><i class="fas fa-chart-bar" style="color:#2B5EA7;font-size:10px;margin-left:4px;"></i> عنوان البند الثاني يكتب هنا</div><div class="ag-desc">وصف مختصر للبند يكتب هنا</div></div><div class="ag-speaker"><div class="ag-avatar" style="background:#00B388;">م.ع</div><div class="ag-sp-info"><div class="ag-sp-name">اسم المتحدث يكتب هنا</div><div class="ag-sp-role">المسمى الوظيفي يكتب هنا</div></div></div></div>
+                <div class="agenda-item"><div class="ag-time"><div class="ag-time-val">10:15</div><div class="ag-time-dur">30 دقيقة</div></div><div class="ag-content"><div class="ag-title"><i class="fas fa-lightbulb" style="color:#E8A838;font-size:10px;margin-left:4px;"></i> عنوان البند الثالث يكتب هنا</div><div class="ag-desc">وصف مختصر للبند يكتب هنا</div></div><div class="ag-speaker"><div class="ag-avatar" style="background:#E8A838;">ف.ك</div><div class="ag-sp-info"><div class="ag-sp-name">اسم المتحدث يكتب هنا</div><div class="ag-sp-role">المسمى الوظيفي يكتب هنا</div></div></div></div>
+                <div class="agenda-item break-item"><div class="ag-time"><div class="ag-time-val">10:45</div><div class="ag-time-dur">15 دقيقة</div></div><div class="ag-content"><div class="ag-title"><i class="fas fa-coffee" style="font-size:10px;margin-left:4px;"></i> استراحة يكتب هنا</div><div class="ag-desc">استراحة قهوة وتواصل</div></div><div class="ag-speaker"></div></div>
+                <div class="agenda-item"><div class="ag-time"><div class="ag-time-val">11:00</div><div class="ag-time-dur">45 دقيقة</div></div><div class="ag-content"><div class="ag-title"><i class="fas fa-users" style="color:#8E44AD;font-size:10px;margin-left:4px;"></i> عنوان البند الرابع يكتب هنا</div><div class="ag-desc">وصف مختصر للبند يكتب هنا</div></div><div class="ag-speaker"><div class="ag-avatar" style="background:#8E44AD;">س.ن</div><div class="ag-sp-info"><div class="ag-sp-name">اسم المتحدث يكتب هنا</div><div class="ag-sp-role">المسمى الوظيفي يكتب هنا</div></div></div></div>
+                <div class="agenda-item"><div class="ag-time"><div class="ag-time-val">11:45</div><div class="ag-time-dur">45 دقيقة</div></div><div class="ag-content"><div class="ag-title"><i class="fas fa-shield-alt" style="color:#C0392B;font-size:10px;margin-left:4px;"></i> عنوان البند الخامس يكتب هنا</div><div class="ag-desc">وصف مختصر للبند يكتب هنا</div></div><div class="ag-speaker"><div class="ag-avatar" style="background:#C0392B;">ع.ر</div><div class="ag-sp-info"><div class="ag-sp-name">اسم المتحدث يكتب هنا</div><div class="ag-sp-role">المسمى الوظيفي يكتب هنا</div></div></div></div>
+                <div class="agenda-item"><div class="ag-time"><div class="ag-time-val">12:30</div><div class="ag-time-dur">30 دقيقة</div></div><div class="ag-content"><div class="ag-title"><i class="fas fa-comments" style="color:#00B388;font-size:10px;margin-left:4px;"></i> عنوان البند السادس يكتب هنا</div><div class="ag-desc">وصف مختصر للبند يكتب هنا</div></div><div class="ag-speaker"><div class="ag-avatar" style="background:#1B2A4A;">ج.م</div><div class="ag-sp-info"><div class="ag-sp-name">اسم المتحدث يكتب هنا</div><div class="ag-sp-role">المسمى الوظيفي يكتب هنا</div></div></div></div>
+                <div class="agenda-item"><div class="ag-time"><div class="ag-time-val">13:00</div><div class="ag-time-dur">30 دقيقة</div></div><div class="ag-content"><div class="ag-title"><i class="fas fa-flag-checkered" style="color:#1B2A4A;font-size:10px;margin-left:4px;"></i> عنوان البند السابع - الختام يكتب هنا</div><div class="ag-desc">وصف مختصر للبند يكتب هنا</div></div><div class="ag-speaker"><div class="ag-avatar" style="background:#2B5EA7;">ر.ح</div><div class="ag-sp-info"><div class="ag-sp-name">اسم المتحدث يكتب هنا</div><div class="ag-sp-role">المسمى الوظيفي يكتب هنا</div></div></div></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

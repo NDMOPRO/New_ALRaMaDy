@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; background: #FFFFFF; position: relative; display: flex; flex-direction: column; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 12px 20px 8px 20px; display: grid; grid-template-columns: 1.8fr 1fr; gap: 10px; }
+
+        .chart-box { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px 12px; display: flex; flex-direction: column; }
+        .chart-title { font-size: 12px; font-weight: 700; color: #1B2A4A; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .chart-title i { color: #2B5EA7; font-size: 11px; }
+        .chart-body { flex: 1; position: relative; }
+
+        .right-col { display: flex; flex-direction: column; gap: 8px; }
+        .scenario-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-top: 3px solid #2B5EA7; padding: 10px 12px; flex: 1; }
+        .scenario-card:nth-child(1) { border-top-color: #00B388; }
+        .scenario-card:nth-child(2) { border-top-color: #2B5EA7; }
+        .scenario-card:nth-child(3) { border-top-color: #C0392B; }
+        .sc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+        .sc-name { font-size: 12px; font-weight: 700; color: #1B2A4A; }
+        .sc-badge { font-size: 8px; font-weight: 700; padding: 2px 6px; color: white; }
+        .sc-value { font-size: 28px; font-weight: 800; color: #1B2A4A; line-height: 1; margin-bottom: 4px; }
+        .sc-desc { font-size: 9px; color: #64748B; line-height: 1.5; }
+        .sc-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 6px; }
+        .sc-metric { font-size: 9px; }
+        .sc-metric-label { color: #94A3B8; }
+        .sc-metric-val { color: #1B2A4A; font-weight: 700; }
+
+        .divider-card { background: #1B2A4A; padding: 10px 12px; text-align: center; }
+        .div-label { font-size: 9px; color: rgba(255,255,255,0.6); }
+        .div-val { font-size: 18px; font-weight: 800; color: white; }
+
+        .footer { height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 22px; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-crystal-ball" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> عنوان الرسم البياني الخطي - مع توقعات مستقبلية يكتب هنا</div>
+            <div class="header-num">3.25</div>
+        </div>
+        <div class="content">
+            <div class="chart-box">
+                <div class="chart-title"><i class="fas fa-chart-line"></i> عنوان البيانات التاريخية والتوقعات المستقبلية يكتب هنا</div>
+                <div class="chart-body"><canvas id="forecastChart"></canvas></div>
+            </div>
+            <div class="right-col">
+                <div class="scenario-card">
+                    <div class="sc-header"><div class="sc-name"><i class="fas fa-arrow-up" style="color:#00B388;margin-left:4px;font-size:10px;"></i> السيناريو المتفائل يكتب هنا</div><div class="sc-badge" style="background:#00B388;">متفائل</div></div>
+                    <div class="sc-value">5,200</div>
+                    <div class="sc-desc">وصف السيناريو المتفائل يكتب هنا مع الافتراضات الأساسية</div>
+                    <div class="sc-metrics"><div class="sc-metric"><div class="sc-metric-label">النمو المتوقع</div><div class="sc-metric-val">+35%</div></div><div class="sc-metric"><div class="sc-metric-label">الاحتمالية</div><div class="sc-metric-val">25%</div></div></div>
+                </div>
+                <div class="scenario-card">
+                    <div class="sc-header"><div class="sc-name"><i class="fas fa-equals" style="color:#2B5EA7;margin-left:4px;font-size:10px;"></i> السيناريو الأساسي يكتب هنا</div><div class="sc-badge" style="background:#2B5EA7;">أساسي</div></div>
+                    <div class="sc-value">4,200</div>
+                    <div class="sc-desc">وصف السيناريو الأساسي يكتب هنا مع الافتراضات الأساسية</div>
+                    <div class="sc-metrics"><div class="sc-metric"><div class="sc-metric-label">النمو المتوقع</div><div class="sc-metric-val">+18%</div></div><div class="sc-metric"><div class="sc-metric-label">الاحتمالية</div><div class="sc-metric-val">50%</div></div></div>
+                </div>
+                <div class="scenario-card">
+                    <div class="sc-header"><div class="sc-name"><i class="fas fa-arrow-down" style="color:#C0392B;margin-left:4px;font-size:10px;"></i> السيناريو المتشائم يكتب هنا</div><div class="sc-badge" style="background:#C0392B;">متشائم</div></div>
+                    <div class="sc-value">3,100</div>
+                    <div class="sc-desc">وصف السيناريو المتشائم يكتب هنا مع الافتراضات الأساسية</div>
+                    <div class="sc-metrics"><div class="sc-metric"><div class="sc-metric-label">النمو المتوقع</div><div class="sc-metric-val">-5%</div></div><div class="sc-metric"><div class="sc-metric-label">الاحتمالية</div><div class="sc-metric-val">25%</div></div></div>
+                </div>
+                <div class="divider-card"><div class="div-label">القيمة الحالية يكتب هنا</div><div class="div-val">3,560</div></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+    <script>
+        new Chart(document.getElementById('forecastChart'), {
+            type: 'line',
+            data: {
+                labels: ['Q1-24','Q2-24','Q3-24','Q4-24','Q1-25','Q2-25','Q3-25','Q4-25','Q1-26','Q2-26'],
+                datasets: [
+                    { label: 'البيانات التاريخية يكتب هنا', data: [1800,2100,2500,2800,3100,3350,3560,null,null,null], borderColor: '#1B2A4A', backgroundColor: 'rgba(27,42,74,0.08)', fill: true, tension: 0.4, pointRadius: 4, borderWidth: 2.5 },
+                    { label: 'التوقع المتفائل يكتب هنا', data: [null,null,null,null,null,null,3560,3900,4500,5200], borderColor: '#00B388', borderDash: [6,3], fill: false, tension: 0.4, pointRadius: 3, borderWidth: 2 },
+                    { label: 'التوقع الأساسي يكتب هنا', data: [null,null,null,null,null,null,3560,3700,3950,4200], borderColor: '#2B5EA7', borderDash: [6,3], fill: false, tension: 0.4, pointRadius: 3, borderWidth: 2 },
+                    { label: 'التوقع المتشائم يكتب هنا', data: [null,null,null,null,null,null,3560,3400,3250,3100], borderColor: '#C0392B', borderDash: [6,3], fill: false, tension: 0.4, pointRadius: 3, borderWidth: 2 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', labels: { font: { family: 'Tajawal', size: 9 }, boxWidth: 10, padding: 6 } } },
+                scales: {
+                    y: { grid: { color: '#F1F5F9' }, ticks: { font: { family: 'Tajawal', size: 9 }, callback: v => v.toLocaleString() } },
+                    x: { grid: { display: false }, ticks: { font: { family: 'Tajawal', size: 9 } } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+            flex-shrink: 0;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 20px 40px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* KPI Row */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            height: 110px;
+        }
+        .kpi-card {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-top: 3px solid #ccc;
+            position: relative;
+        }
+        .kc-teal { border-color: #00B388; }
+        .kc-blue { border-color: #2B5EA7; }
+        .kc-gold { border-color: #E8A838; }
+        .kc-purple { border-color: #8B7EC8; }
+
+        .kpi-label { font-size: 12px; color: #666; font-weight: 700; }
+        .kpi-value-row { display: flex; align-items: baseline; gap: 8px; }
+        .kpi-value { font-size: 36px; font-weight: 800; color: #1B2A4A; line-height: 1; }
+        .kpi-unit { font-size: 14px; color: #888; }
+        .kpi-trend { font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+        .trend-up { color: #00B388; }
+        .trend-down { color: #E85B7A; }
+
+        /* Main Split */
+        .main-split {
+            display: flex;
+            gap: 20px;
+            height: 340px;
+        }
+        .split-left {
+            flex: 1.2;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .split-right {
+            flex: 0.8;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-head {
+            font-size: 14px; font-weight: 800; color: #1B2A4A;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .highlight-list { list-style: none; }
+        .highlight-item {
+            display: flex; gap: 12px; margin-bottom: 15px;
+        }
+        .hl-icon {
+            width: 32px; height: 32px;
+            background: rgba(27,42,74,0.05);
+            color: #1B2A4A;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .hl-content { flex: 1; }
+        .hl-title { font-size: 13px; font-weight: 700; color: #333; margin-bottom: 4px; }
+        .hl-desc { font-size: 11px; color: #666; line-height: 1.4; }
+
+        /* Status Grid in Right Panel */
+        .status-grid {
+            display: flex; flex-direction: column; gap: 10px; flex: 1;
+        }
+        .status-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 10px;
+            background: #f9f9f9;
+            border-right: 3px solid #ccc;
+        }
+        .sr-done { border-color: #00B388; background: rgba(0,179,136,0.05); }
+        .sr-prog { border-color: #E8A838; background: rgba(232,168,56,0.05); }
+        .sr-wait { border-color: #888; }
+
+        .sr-name { font-size: 11px; font-weight: 700; color: #333; }
+        .sr-badge {
+            font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 2px;
+        }
+        .sb-done { color: #00B388; background: rgba(0,179,136,0.15); }
+        .sb-prog { color: #E8A838; background: rgba(232,168,56,0.15); }
+        .sb-wait { color: #666; background: #eee; }
+
+        /* Bottom Recommendations */
+        .bottom-row {
+            height: 90px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .rec-card {
+            background: #1B2A4A;
+            color: white;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .rec-num {
+            font-size: 24px; font-weight: 800; color: rgba(255,255,255,0.2);
+        }
+        .rec-text { font-size: 11px; line-height: 1.4; }
+
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الملخص التنفيذي - أبرز النتائج والمؤشرات</div>
+            <div class="header-badge">04</div>
+        </div>
+
+        <div class="content-area">
+            <!-- KPI Row -->
+            <div class="kpi-row">
+                <div class="kpi-card kc-teal">
+                    <div class="kpi-label">نسبة الامتثال العام</div>
+                    <div class="kpi-value-row">
+                        <div class="kpi-value">85.4</div>
+                        <div class="kpi-unit">%</div>
+                    </div>
+                    <div class="kpi-trend trend-up"><i class="fas fa-arrow-up"></i> +4.2% عن الربع السابق</div>
+                </div>
+                <div class="kpi-card kc-blue">
+                    <div class="kpi-label">مجموعات البيانات المنشورة</div>
+                    <div class="kpi-value-row">
+                        <div class="kpi-value">5,240</div>
+                        <div class="kpi-unit">مجموعة</div>
+                    </div>
+                    <div class="kpi-trend trend-up"><i class="fas fa-arrow-up"></i> +120 مجموعة جديدة</div>
+                </div>
+                <div class="kpi-card kc-gold">
+                    <div class="kpi-label">مستوى نضج البيانات</div>
+                    <div class="kpi-value-row">
+                        <div class="kpi-value">3.8</div>
+                        <div class="kpi-unit">/ 5.0</div>
+                    </div>
+                    <div class="kpi-trend trend-up"><i class="fas fa-minus"></i> ثابت منذ 2024</div>
+                </div>
+                <div class="kpi-card kc-purple">
+                    <div class="kpi-label">الكوادر الوطنية المؤهلة</div>
+                    <div class="kpi-value-row">
+                        <div class="kpi-value">1,850</div>
+                        <div class="kpi-unit">موظف</div>
+                    </div>
+                    <div class="kpi-trend trend-up"><i class="fas fa-arrow-up"></i> +15% زيادة سنوية</div>
+                </div>
+            </div>
+
+            <!-- Main Split -->
+            <div class="main-split">
+                <div class="split-left">
+                    <div class="section-head">
+                        <span>أبرز الإنجازات الاستراتيجية</span>
+                        <i class="fas fa-trophy" style="color:#E8A838"></i>
+                    </div>
+                    <ul class="highlight-list">
+                        <li class="highlight-item">
+                            <div class="hl-icon"><i class="fas fa-check"></i></div>
+                            <div class="hl-content">
+                                <div class="hl-title">إطلاق منصة الحوكمة الوطنية (نسخة 2.0)</div>
+                                <div class="hl-desc">تم تدشين المنصة الجديدة التي تربط 140 جهة حكومية بشكل آلي، مما قلل وقت المعالجة بنسبة 60%.</div>
+                            </div>
+                        </li>
+                        <li class="highlight-item">
+                            <div class="hl-icon"><i class="fas fa-check"></i></div>
+                            <div class="hl-content">
+                                <div class="hl-title">اعتماد سياسة تصنيف البيانات</div>
+                                <div class="hl-desc">صدور الموافقة السامية على السياسة المحدثة والبدء في ورش العمل التعريفية لجميع القطاعات.</div>
+                            </div>
+                        </li>
+                        <li class="highlight-item">
+                            <div class="hl-icon"><i class="fas fa-check"></i></div>
+                            <div class="hl-content">
+                                <div class="hl-title">مشروع بحيرة البيانات الوطنية</div>
+                                <div class="hl-desc">اكتمال المرحلة الأولى من ربط السجلات الأساسية (الهوية، التجارة، العقار) بنسبة دقة 98%.</div>
+                            </div>
+                        </li>
+                        <li class="highlight-item">
+                            <div class="hl-icon"><i class="fas fa-check"></i></div>
+                            <div class="hl-content">
+                                <div class="hl-title">مؤشر البيانات المفتوحة العالمي</div>
+                                <div class="hl-desc">تقدم المملكة 12 مرتبة في المؤشر العالمي لتصل إلى المرتبة 9 ضمن دول مجموعة العشرين.</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="split-right">
+                    <div class="section-head">
+                        <span>حالة المبادرات الرئيسية</span>
+                        <i class="fas fa-tasks" style="color:#2B5EA7"></i>
+                    </div>
+                    <div class="status-grid">
+                        <div class="status-row sr-done">
+                            <span class="sr-name">مبادرة حوكمة البيانات</span>
+                            <span class="sr-badge sb-done">مكتمل</span>
+                        </div>
+                        <div class="status-row sr-done">
+                            <span class="sr-name">مبادرة حماية البيانات الشخصية</span>
+                            <span class="sr-badge sb-done">مكتمل</span>
+                        </div>
+                        <div class="status-row sr-prog">
+                            <span class="sr-name">مبادرة البيانات المفتوحة</span>
+                            <span class="sr-badge sb-prog">قيد التنفيذ 85%</span>
+                        </div>
+                        <div class="status-row sr-prog">
+                            <span class="sr-name">مبادرة جودة البيانات</span>
+                            <span class="sr-badge sb-prog">قيد التنفيذ 60%</span>
+                        </div>
+                        <div class="status-row sr-prog">
+                            <span class="sr-name">مبادرة بناء القدرات</span>
+                            <span class="sr-badge sb-prog">قيد التنفيذ 45%</span>
+                        </div>
+                        <div class="status-row sr-wait">
+                            <span class="sr-name">مبادرة تسييل البيانات</span>
+                            <span class="sr-badge sb-wait">مخطط</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Recommendations -->
+            <div class="bottom-row">
+                <div class="rec-card">
+                    <div class="rec-num">01</div>
+                    <div class="rec-text">تسريع وتيرة الربط التقني مع الجهات المتبقية لضمان شمولية البيانات الوطنية.</div>
+                </div>
+                <div class="rec-card">
+                    <div class="rec-num">02</div>
+                    <div class="rec-text">تفعيل آليات التدقيق الخارجي المستقل لضمان مصداقية تقارير الامتثال.</div>
+                </div>
+                <div class="rec-card">
+                    <div class="rec-num">03</div>
+                    <div class="rec-text">إطلاق مسار تدريبي تنفيذي للقيادات لتعزيز ثقافة البيانات في صنع القرار.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">04</div>
+    </div>
+</body>
+</html>

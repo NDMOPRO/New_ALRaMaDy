@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 20px 40px 10px 40px; flex: 1; display: flex; gap: 20px; }
+
+        .left-col { flex: 1.5; display: flex; flex-direction: column; gap: 16px; }
+        .right-col { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+
+        .comp-card { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 16px; display: flex; flex-direction: column; flex: 1; }
+        .cc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #eee; padding-bottom: 8px; }
+        .cc-title { font-size: 16px; font-weight: 800; color: #1B2A4A; }
+        .cc-score { font-size: 14px; font-weight: 700; color: #00B388; background: rgba(0,179,136,0.1); padding: 4px 8px; }
+
+        .domain-row { display: flex; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #f9f9f9; }
+        .domain-row:last-child { border-bottom: none; margin-bottom: 0; }
+        .dr-icon { width: 36px; height: 36px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; color: #1B2A4A; font-size: 16px; margin-left: 12px; }
+        .dr-info { flex: 1; }
+        .dr-name { font-size: 14px; font-weight: 700; color: #333; margin-bottom: 4px; }
+        .dr-bar-bg { width: 100%; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
+        .dr-bar-fill { height: 100%; border-radius: 3px; }
+        .dr-val { font-size: 12px; font-weight: 800; color: #1B2A4A; width: 40px; text-align: left; }
+
+        .audit-card { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 16px; flex: 1; display: flex; flex-direction: column; }
+        .ac-title { font-size: 15px; font-weight: 800; color: #1B2A4A; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .finding-item { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; }
+        .fi-icon { font-size: 14px; margin-top: 2px; }
+        .fi-content { flex: 1; }
+        .fi-text { font-size: 12px; color: #444; line-height: 1.4; margin-bottom: 4px; }
+        .fi-meta { font-size: 10px; color: #888; display: flex; gap: 10px; }
+        .fi-high { color: #E85B7A; }
+        .fi-med { color: #E8A838; }
+        .fi-low { color: #2B5EA7; }
+
+        .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .kpi-box { background: #1B2A4A; color: white; padding: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .kb-val { font-size: 24px; font-weight: 800; color: #E8A838; margin-bottom: 4px; }
+        .kb-label { font-size: 11px; color: rgba(255,255,255,0.8); }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الامتثال التنظيمي - تقرير الالتزام بالضوابط الوطنية</div>
+            <div class="header-badge">29</div>
+        </div>
+
+        <div class="content-area">
+            <div class="left-col">
+                <div class="comp-card">
+                    <div class="cc-header">
+                        <div class="cc-title"><i class="fas fa-chart-pie" style="margin-left:8px;color:#2B5EA7"></i>نسبة الامتثال حسب المجال</div>
+                        <div class="cc-score">المتوسط العام: 82%</div>
+                    </div>
+                    
+                    <div class="domain-row">
+                        <div class="dr-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div class="dr-info">
+                            <div class="dr-name">الأمن السيبراني (NCA-ECC)</div>
+                            <div class="dr-bar-bg"><div class="dr-bar-fill" style="width:95%;background:#00B388"></div></div>
+                        </div>
+                        <div class="dr-val">95%</div>
+                    </div>
+
+                    <div class="domain-row">
+                        <div class="dr-icon"><i class="fas fa-user-shield"></i></div>
+                        <div class="dr-info">
+                            <div class="dr-name">حماية البيانات الشخصية (PDPL)</div>
+                            <div class="dr-bar-bg"><div class="dr-bar-fill" style="width:88%;background:#00B388"></div></div>
+                        </div>
+                        <div class="dr-val">88%</div>
+                    </div>
+
+                    <div class="domain-row">
+                        <div class="dr-icon"><i class="fas fa-database"></i></div>
+                        <div class="dr-info">
+                            <div class="dr-name">إدارة البيانات الوطنية (NDMO)</div>
+                            <div class="dr-bar-bg"><div class="dr-bar-fill" style="width:76%;background:#E8A838"></div></div>
+                        </div>
+                        <div class="dr-val">76%</div>
+                    </div>
+
+                    <div class="domain-row">
+                        <div class="dr-icon"><i class="fas fa-network-wired"></i></div>
+                        <div class="dr-info">
+                            <div class="dr-name">قابلية التشغيل البيني</div>
+                            <div class="dr-bar-bg"><div class="dr-bar-fill" style="width:65%;background:#E8A838"></div></div>
+                        </div>
+                        <div class="dr-val">65%</div>
+                    </div>
+
+                    <div class="domain-row">
+                        <div class="dr-icon"><i class="fas fa-folder-open"></i></div>
+                        <div class="dr-info">
+                            <div class="dr-name">البيانات المفتوحة</div>
+                            <div class="dr-bar-bg"><div class="dr-bar-fill" style="width:90%;background:#00B388"></div></div>
+                        </div>
+                        <div class="dr-val">90%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-col">
+                <div class="kpi-grid">
+                    <div class="kpi-box"><div class="kb-val">12</div><div class="kb-label">تدقيق داخلي منجز</div></div>
+                    <div class="kpi-box"><div class="kb-val">3</div><div class="kb-label">مخالفات حرجة مفتوحة</div></div>
+                </div>
+
+                <div class="audit-card">
+                    <div class="ac-title"><i class="fas fa-clipboard-list" style="color:#E85B7A"></i> أبرز ملاحظات التدقيق</div>
+                    
+                    <div class="finding-item">
+                        <div class="fi-icon fi-high"><i class="fas fa-exclamation-circle"></i></div>
+                        <div class="fi-content">
+                            <div class="fi-text">عدم اكتمال تصنيف البيانات لبعض الأنظمة القديمة (Legacy Systems).</div>
+                            <div class="fi-meta"><span>الأولوية: عالية</span><span>تاريخ الاستحقاق: 2026/04</span></div>
+                        </div>
+                    </div>
+
+                    <div class="finding-item">
+                        <div class="fi-icon fi-med"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div class="fi-content">
+                            <div class="fi-text">تأخر في تحديث سجلات البيانات الوصفية في الفهرس الوطني.</div>
+                            <div class="fi-meta"><span>الأولوية: متوسطة</span><span>تاريخ الاستحقاق: 2026/05</span></div>
+                        </div>
+                    </div>
+
+                    <div class="finding-item">
+                        <div class="fi-icon fi-low"><i class="fas fa-info-circle"></i></div>
+                        <div class="fi-content">
+                            <div class="fi-text">الحاجة لتحديث وثائق سياسة الأرشفة لتتوافق مع المعيار الجديد.</div>
+                            <div class="fi-meta"><span>الأولوية: منخفضة</span><span>تاريخ الاستحقاق: 2026/06</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">29</div>
+    </div>
+</body>
+</html>

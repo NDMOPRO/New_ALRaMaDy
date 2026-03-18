@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        /* Reduced paddings and tighter grid to avoid overflow */
+        .content-area { padding: 20px 40px 8px 40px; flex: 1; display: flex; align-items: center; justify-content: center; }
+
+        /* Bento Grid Layout - rows reduced and gaps tightened */
+        .bento-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 200px); gap: 12px; width: 100%; }
+        
+        .bento-box { background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        
+        .bb-large { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, #1B2A4A, #243656); color: white; }
+        .bb-med { grid-column: span 1; grid-row: span 1; }
+        .bb-wide { grid-column: span 2; grid-row: span 1; }
+
+        .bb-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; opacity: 0.8; display: flex; justify-content: space-between; align-items: center; }
+        .bb-title i { font-size: 16px; }
+        
+        /* Large Box Content (Overall Score) - circle and meta reduced */
+        .score-circle-wrap { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
+        .score-circle { width: 150px; height: 150px; border-radius: 50%; border: 12px solid rgba(255,255,255,0.1); border-top-color: #00B388; border-right-color: #00B388; transform: rotate(45deg); position: absolute; }
+        .score-val { font-size: 64px; font-weight: 800; color: white; z-index: 2; }
+        .score-lbl { font-size: 16px; margin-top: 10px; opacity: 0.7; }
+        .score-meta { position: absolute; bottom: 12px; left: 12px; right: 12px; display: flex; justify-content: space-between; font-size: 12px; opacity: 0.8; }
+
+        /* Med Box Content */
+        .kpi-val { font-size: 42px; font-weight: 800; color: #1B2A4A; margin-top: auto; margin-bottom: 8px; }
+        .kpi-trend { font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+        .tr-up { color: #00B388; }
+        .tr-down { color: #E85B7A; }
+        
+        /* Chart Simulation (CSS Bars) - reduced height */
+        .chart-bars { display: flex; align-items: flex-end; gap: 8px; height: 80px; margin-top: auto; }
+        .cb-bar { flex: 1; background: #eee; border-radius: 4px 4px 0 0; position: relative; }
+        .cb-fill { position: absolute; bottom: 0; left: 0; right: 0; background: #2B5EA7; border-radius: 4px 4px 0 0; }
+        .cb-lbl { position: absolute; bottom: -18px; left: 0; right: 0; text-align: center; font-size: 10px; color: #888; }
+
+        .footer { position: absolute; bottom: 12px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 12px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">لوحة الأداء - نظرة عامة على المؤشرات الرئيسية</div>
+            <div class="header-badge">43</div>
+        </div>
+
+        <div class="content-area">
+            <div class="bento-grid">
+                <!-- Box 1: Overall Score (Large) -->
+                <div class="bento-box bb-large">
+                    <div class="bb-title">مؤشر النضج العام <i class="fas fa-chart-line"></i></div>
+                    <div class="score-circle-wrap">
+                        <div class="score-circle"></div>
+                        <div style="text-align:center">
+                            <div class="score-val">82%</div>
+                            <div class="score-lbl">مستوى متقدم</div>
+                        </div>
+                    </div>
+                    <div class="score-meta">
+                        <div>الهدف: 85%</div>
+                        <div>السنة السابقة: 74%</div>
+                    </div>
+                </div>
+
+                <!-- Box 2: Compliance -->
+                <div class="bento-box bb-med">
+                    <div class="bb-title">نسبة الامتثال <i class="fas fa-check-circle" style="color:#00B388"></i></div>
+                    <div class="kpi-val" style="color:#00B388">94%</div>
+                    <div class="kpi-trend tr-up"><i class="fas fa-arrow-up"></i> +5% عن الربع السابق</div>
+                </div>
+
+                <!-- Box 3: Data Quality -->
+                <div class="bento-box bb-med">
+                    <div class="bb-title">جودة البيانات <i class="fas fa-database" style="color:#2B5EA7"></i></div>
+                    <div class="kpi-val" style="color:#2B5EA7">88%</div>
+                    <div class="kpi-trend tr-up"><i class="fas fa-arrow-up"></i> +2% تحسن مستمر</div>
+                </div>
+
+                <!-- Box 4: Risks (Wide) -->
+                <div class="bento-box bb-wide">
+                    <div class="bb-title">المخاطر المفتوحة <i class="fas fa-exclamation-triangle" style="color:#E8A838"></i></div>
+                    <div style="display:flex; gap:12px; align-items:center; height:100%">
+                        <div style="text-align:center">
+                            <div style="font-size:28px; font-weight:800; color:#E85B7A">3</div>
+                            <div style="font-size:12px; color:#666">عالية</div>
+                        </div>
+                        <div style="text-align:center">
+                            <div style="font-size:28px; font-weight:800; color:#E8A838">12</div>
+                            <div style="font-size:12px; color:#666">متوسطة</div>
+                        </div>
+                        <div style="flex:1; height:8px; background:#eee; border-radius:4px; overflow:hidden">
+                            <div style="width:70%; height:100%; background:linear-gradient(90deg, #E85B7A, #E8A838)"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Box 5: Initiatives Progress -->
+                <div class="bento-box bb-med">
+                    <div class="bb-title">إنجاز المبادرات <i class="fas fa-tasks"></i></div>
+                    <div class="chart-bars">
+                        <div class="cb-bar"><div class="cb-fill" style="height:60%"></div><div class="cb-lbl">Q1</div></div>
+                        <div class="cb-bar"><div class="cb-fill" style="height:80%"></div><div class="cb-lbl">Q2</div></div>
+                        <div class="cb-bar"><div class="cb-fill" style="height:45%"></div><div class="cb-lbl">Q3</div></div>
+                        <div class="cb-bar"><div class="cb-fill" style="height:20%"></div><div class="cb-lbl">Q4</div></div>
+                    </div>
+                </div>
+
+                <!-- Box 6: User Adoption -->
+                <div class="bento-box bb-med">
+                    <div class="bb-title">تبني المستخدمين <i class="fas fa-users"></i></div>
+                    <div class="kpi-val">1.2k</div>
+                    <div class="kpi-trend tr-up"><i class="fas fa-arrow-up"></i> مستخدم نشط</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">43</div>
+    </div>
+</body>
+</html>

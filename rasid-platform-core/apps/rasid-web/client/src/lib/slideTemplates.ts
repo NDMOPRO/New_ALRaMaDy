@@ -1,7 +1,8 @@
 // ═══════════════════════════════════════════════════════════════
-// Rasid — Ultra Premium HTML Slide Templates
-// Like Gamma.app — each slide is a standalone HTML page (960×540)
-// 10 slide types × 5 themes = 50 unique combinations
+// Rasid — Ultra Premium NDMO Slide Engine
+// McKinsey × Gamma.app quality — each slide is a masterpiece
+// Mandatory backgrounds: Picture1.jpg (cover/closing), NDMO_2024.png (toc/section)
+// Brand: NDMO Official Identity — DIN Next / Tajawal
 // ═══════════════════════════════════════════════════════════════
 
 export interface SlideTheme {
@@ -30,58 +31,25 @@ export interface SlideTheme {
 export const THEMES: Record<string, SlideTheme> = {
   ndmo: {
     id: 'ndmo', name: 'مكتب إدارة البيانات الوطنية', nameEn: 'NDMO',
-    primary: '#0f2744', secondary: '#d4af37', accent: '#1a73e8',
-    background: '#ffffff', cardBg: '#f8fafc',
-    textPrimary: '#0f172a', textSecondary: '#475569', textLight: '#ffffff',
+    primary: '#1B2A4A', secondary: '#00B388', accent: '#2B5EA7',
+    background: '#FFFFFF', cardBg: '#FFFFFF',
+    textPrimary: '#1B2A4A', textSecondary: '#5A6B7F', textLight: '#FFFFFF',
     fontHeading: "'Tajawal', sans-serif",
     fontBody: "'Tajawal', sans-serif",
-    gradientStart: '#0f2744', gradientEnd: '#1a3a6b',
-    borderColor: '#e2e8f0', successColor: '#059669', warningColor: '#d97706', dangerColor: '#dc2626',
-    surfaceGlow: 'rgba(212,175,55,0.08)',
+    gradientStart: '#1B2A4A', gradientEnd: '#243656',
+    borderColor: '#E2E8F0', successColor: '#00B388', warningColor: '#E8A838', dangerColor: '#E0301E',
+    surfaceGlow: 'rgba(27,42,74,0.06)',
   },
   sdaia: {
     id: 'sdaia', name: 'سدايا', nameEn: 'SDAIA',
-    primary: '#1a73e8', secondary: '#0f766e', accent: '#6366f1',
-    background: '#ffffff', cardBg: '#f0f9ff',
-    textPrimary: '#0f172a', textSecondary: '#475569', textLight: '#ffffff',
+    primary: '#273470', secondary: '#23AC7C', accent: '#2B5EA7',
+    background: '#FFFFFF', cardBg: '#FFFFFF',
+    textPrimary: '#273470', textSecondary: '#5A6B7F', textLight: '#FFFFFF',
     fontHeading: "'Tajawal', sans-serif",
     fontBody: "'Tajawal', sans-serif",
-    gradientStart: '#1a73e8', gradientEnd: '#0f766e',
-    borderColor: '#dbeafe', successColor: '#059669', warningColor: '#d97706', dangerColor: '#dc2626',
-    surfaceGlow: 'rgba(26,115,232,0.08)',
-  },
-  modern: {
-    id: 'modern', name: 'عصري احترافي', nameEn: 'Modern',
-    primary: '#6366f1', secondary: '#8b5cf6', accent: '#ec4899',
-    background: '#ffffff', cardBg: '#faf5ff',
-    textPrimary: '#1e1b4b', textSecondary: '#6b7280', textLight: '#ffffff',
-    fontHeading: "'Tajawal', sans-serif",
-    fontBody: "'Tajawal', sans-serif",
-    gradientStart: '#6366f1', gradientEnd: '#a855f7',
-    borderColor: '#e9d5ff', successColor: '#059669', warningColor: '#d97706', dangerColor: '#dc2626',
-    surfaceGlow: 'rgba(99,102,241,0.08)',
-  },
-  minimal: {
-    id: 'minimal', name: 'بسيط ونظيف', nameEn: 'Minimal',
-    primary: '#1f2937', secondary: '#6b7280', accent: '#3b82f6',
-    background: '#ffffff', cardBg: '#f9fafb',
-    textPrimary: '#111827', textSecondary: '#6b7280', textLight: '#ffffff',
-    fontHeading: "'Tajawal', sans-serif",
-    fontBody: "'Tajawal', sans-serif",
-    gradientStart: '#1f2937', gradientEnd: '#374151',
-    borderColor: '#e5e7eb', successColor: '#059669', warningColor: '#d97706', dangerColor: '#dc2626',
-    surfaceGlow: 'rgba(31,41,55,0.06)',
-  },
-  creative: {
-    id: 'creative', name: 'إبداعي', nameEn: 'Creative',
-    primary: '#dc2626', secondary: '#f59e0b', accent: '#10b981',
-    background: '#fffbeb', cardBg: '#fef3c7',
-    textPrimary: '#1c1917', textSecondary: '#78716c', textLight: '#ffffff',
-    fontHeading: "'Tajawal', sans-serif",
-    fontBody: "'Tajawal', sans-serif",
-    gradientStart: '#dc2626', gradientEnd: '#f59e0b',
-    borderColor: '#fde68a', successColor: '#059669', warningColor: '#d97706', dangerColor: '#dc2626',
-    surfaceGlow: 'rgba(220,38,38,0.06)',
+    gradientStart: '#273470', gradientEnd: '#394375',
+    borderColor: '#DDE3F0', successColor: '#23AC7C', warningColor: '#E8A838', dangerColor: '#E0301E',
+    surfaceGlow: 'rgba(39,52,112,0.06)',
   },
 };
 
@@ -91,8 +59,8 @@ export interface SlideData {
   content?: string;
   bulletPoints?: string[];
   notes?: string;
-  layout: 'title' | 'toc' | 'executive-summary' | 'pillars' | 'chart' | 'table' | 'infographic' | 'kpi' | 'timeline' | 'closing' | 'content' | 'two-column' | 'quote';
-  chartType?: 'bar' | 'line' | 'pie' | 'donut';
+  layout: 'title' | 'toc' | 'executive-summary' | 'pillars' | 'chart' | 'table' | 'infographic' | 'kpi' | 'timeline' | 'closing' | 'content' | 'two-column' | 'quote' | 'section-title';
+  chartType?: 'bar' | 'line' | 'pie' | 'donut' | 'area' | 'radar';
   chartData?: number[];
   chartLabels?: string[];
   chartColors?: string[];
@@ -105,283 +73,563 @@ export interface SlideData {
   style?: { backgroundColor?: string; titleColor?: string; textColor?: string };
 }
 
-// ─── Base CSS for all slides ───
+// ─── NDMO Asset Paths (public folder) ───
+const ASSETS = {
+  coverBg: '/ndmo-assets/Picture1.jpg',
+  tocBg: '/ndmo-assets/NDMO_2024.png',
+  ndmoLogo: '/ndmo-assets/ndmo_logo.png',
+  sdaiaLogo: '/ndmo-assets/sdaia_logo.png',
+};
+
+// ─── Shared CSS Foundation ───
 function baseCSS(theme: SlideTheme): string {
   return `
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body, html { width: 960px; height: 540px; overflow: hidden; direction: rtl; }
+    body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; font-family: ${theme.fontBody}; }
     .slide {
-      width: 960px; height: 540px; position: relative; overflow: hidden;
+      width: 1280px; height: 720px; position: relative; overflow: hidden;
       font-family: ${theme.fontBody}; color: ${theme.textPrimary};
       background: ${theme.background}; display: flex; flex-direction: column;
     }
     h1, h2, h3, h4 { font-family: ${theme.fontHeading}; line-height: 1.3; }
     .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-size: 24px; direction: ltr; }
 
-    /* Header */
-    .slide-header {
-      background: linear-gradient(135deg, ${theme.gradientStart}, ${theme.gradientEnd});
-      color: ${theme.textLight}; padding: 20px 40px; display: flex; align-items: center; gap: 16px;
-      position: relative; overflow: hidden;
+    /* ─── Top Accent Bar (NDMO signature) ─── */
+    .top-accent {
+      position: absolute; top: 0; left: 0; right: 0; height: 5px;
+      background: linear-gradient(to left, ${theme.secondary}, ${theme.accent}, ${theme.warningColor});
+      z-index: 100;
     }
-    .slide-header::after {
-      content: ''; position: absolute; top: -50%; left: -20%; width: 200px; height: 200px;
-      background: radial-gradient(circle, ${theme.secondary}15, transparent 70%);
-      border-radius: 50%;
+
+    /* ─── Header Bar (NDMO dark) ─── */
+    .header-bar {
+      width: 100%; height: 64px; flex-shrink: 0;
+      background: linear-gradient(90deg, ${theme.gradientStart} 0%, ${theme.gradientEnd} 100%);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; color: white; position: relative;
     }
-    .slide-header h2 { font-size: 24px; font-weight: 800; position: relative; z-index: 1; }
-    .slide-header .subtitle { font-size: 13px; opacity: 0.85; position: relative; z-index: 1; }
-    .slide-header .accent-bar { width: 4px; height: 32px; background: ${theme.secondary}; border-radius: 2px; flex-shrink: 0; }
+    .header-bar::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(to left, ${theme.secondary}40, transparent, ${theme.warningColor}40);
+    }
+    .header-title { font-size: 24px; font-weight: 800; letter-spacing: -0.3px; }
+    .header-subtitle { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+    .header-badge {
+      min-width: 40px; height: 40px; padding: 0 12px;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 15px; color: ${theme.warningColor};
+    }
 
-    /* Body */
-    .slide-body { flex: 1; padding: 28px 40px; display: flex; flex-direction: column; gap: 16px; overflow: hidden; }
+    /* ─── Body ─── */
+    .slide-body { flex: 1; padding: 32px 48px; display: flex; flex-direction: column; gap: 20px; overflow: hidden; }
 
-    /* Footer */
+    /* ─── Footer (NDMO official) ─── */
     .slide-footer {
-      height: 36px; padding: 0 40px; display: flex; align-items: center; justify-content: space-between;
-      font-size: 10px; color: ${theme.textSecondary}; border-top: 1px solid ${theme.borderColor};
-      background: ${theme.cardBg};
+      height: 44px; padding: 0 48px; display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid ${theme.borderColor}; background: white; flex-shrink: 0;
     }
-    .slide-footer .brand { display: flex; align-items: center; gap: 6px; font-weight: 600; }
-    .slide-footer .brand::before {
-      content: ''; width: 8px; height: 8px; border-radius: 2px; background: ${theme.secondary};
-    }
+    .footer-logos { display: flex; align-items: center; gap: 14px; }
+    .footer-logos img { height: 28px; object-fit: contain; }
+    .footer-sep { width: 1px; height: 22px; background: #ccc; }
+    .footer-page { font-size: 13px; font-weight: 700; color: ${theme.primary}; opacity: 0.4; }
 
-    /* Cards */
+    /* ─── Cards (Premium) ─── */
     .card {
-      background: ${theme.cardBg}; border: 1px solid ${theme.borderColor};
-      border-radius: 14px; padding: 18px; transition: all 0.2s;
+      background: white; border: 1px solid #E2E8F0;
+      border-radius: 16px; padding: 24px; position: relative; overflow: hidden;
+      box-shadow: 0 2px 8px rgba(27,42,74,0.06);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .card:hover { box-shadow: 0 4px 20px ${theme.surfaceGlow}; }
-
-    /* KPI Cards */
-    .kpi-card {
-      background: ${theme.cardBg}; border: 1px solid ${theme.borderColor};
-      border-radius: 14px; padding: 20px; text-align: center;
-      border-top: 4px solid ${theme.primary}; position: relative; overflow: hidden;
-    }
-    .kpi-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 60px;
-      background: linear-gradient(180deg, ${theme.surfaceGlow}, transparent);
-    }
-    .kpi-value { font-size: 32px; font-weight: 900; color: ${theme.primary}; position: relative; }
-    .kpi-label { font-size: 12px; color: ${theme.textSecondary}; margin-top: 6px; font-weight: 500; position: relative; }
-    .kpi-trend { font-size: 11px; font-weight: 700; margin-top: 4px; position: relative; }
-    .kpi-trend.up { color: ${theme.successColor}; }
-    .kpi-trend.down { color: ${theme.dangerColor}; }
-
-    /* Bullet List */
-    .bullet-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-    .bullet-list li {
-      padding: 10px 18px; padding-right: 32px; position: relative; font-size: 13px; line-height: 1.7;
-      background: ${theme.cardBg}; border-radius: 10px; border: 1px solid ${theme.borderColor};
-      transition: all 0.2s;
-    }
-    .bullet-list li::before {
-      content: ''; position: absolute; right: 14px; top: 16px;
-      width: 8px; height: 8px; border-radius: 50%; background: linear-gradient(135deg, ${theme.primary}, ${theme.secondary});
-    }
-
-    /* Table */
-    table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12px; border-radius: 10px; overflow: hidden; border: 1px solid ${theme.borderColor}; }
-    th {
-      background: linear-gradient(135deg, ${theme.primary}, ${theme.gradientEnd});
-      color: ${theme.textLight}; padding: 12px 14px; text-align: right; font-weight: 700; font-size: 11px;
-      letter-spacing: 0.3px;
-    }
-    td { padding: 10px 14px; border-bottom: 1px solid ${theme.borderColor}; text-align: right; font-size: 11px; }
-    tr:nth-child(even) td { background: ${theme.cardBg}; }
-    tr:last-child td { border-bottom: none; }
-
-    /* Chart */
-    .chart-container { flex: 1; display: flex; align-items: flex-end; gap: 16px; padding: 16px 0; }
-    .chart-bar {
-      flex: 1; border-radius: 8px 8px 0 0; position: relative; display: flex;
-      flex-direction: column; align-items: center; justify-content: flex-end; min-width: 48px;
-      transition: all 0.3s;
-    }
-    .chart-bar:hover { filter: brightness(1.1); transform: translateY(-2px); }
-    .chart-bar-value { font-size: 12px; font-weight: 800; color: ${theme.textLight}; padding: 6px 0; }
-    .chart-bar-label { font-size: 10px; color: ${theme.textSecondary}; margin-top: 8px; text-align: center; font-weight: 500; }
-
-    /* Infographic */
-    .infographic-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
-    .infographic-item {
-      background: ${theme.cardBg}; border: 1px solid ${theme.borderColor};
-      border-radius: 14px; padding: 18px; text-align: center;
-      border-top: 4px solid ${theme.accent}; transition: all 0.2s;
-    }
-    .infographic-item:hover { transform: translateY(-2px); box-shadow: 0 8px 24px ${theme.surfaceGlow}; }
-    .infographic-icon {
-      width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center;
-      justify-content: center; margin: 0 auto 10px; font-size: 24px;
-      background: linear-gradient(135deg, ${theme.primary}12, ${theme.accent}12);
-      color: ${theme.primary};
-    }
-    .infographic-value { font-size: 24px; font-weight: 900; color: ${theme.primary}; }
-    .infographic-label { font-size: 11px; color: ${theme.textSecondary}; margin-top: 4px; font-weight: 500; }
-    .infographic-desc { font-size: 10px; color: ${theme.textSecondary}; margin-top: 4px; opacity: 0.8; line-height: 1.5; }
-
-    /* Timeline */
-    .timeline { display: flex; flex-direction: column; gap: 0; position: relative; padding-right: 28px; }
-    .timeline::before {
-      content: ''; position: absolute; right: 9px; top: 0; bottom: 0;
-      width: 3px; background: linear-gradient(180deg, ${theme.primary}, ${theme.secondary});
-      border-radius: 2px;
-    }
-    .timeline-item { display: flex; gap: 16px; position: relative; padding-bottom: 18px; }
-    .timeline-dot {
-      width: 18px; height: 18px; border-radius: 50%; background: ${theme.primary};
-      border: 3px solid ${theme.background}; position: absolute; right: -28px; top: 2px;
-      box-shadow: 0 0 0 4px ${theme.primary}25; z-index: 1;
-    }
-    .timeline-content { flex: 1; background: ${theme.cardBg}; border: 1px solid ${theme.borderColor}; border-radius: 10px; padding: 12px 16px; }
-    .timeline-year { font-size: 12px; font-weight: 800; color: ${theme.primary}; }
-    .timeline-title { font-size: 13px; font-weight: 700; color: ${theme.textPrimary}; margin-top: 2px; }
-    .timeline-desc { font-size: 11px; color: ${theme.textSecondary}; margin-top: 4px; line-height: 1.6; }
-
-    /* Pillar Cards */
-    .pillar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
-    .pillar-card {
-      background: ${theme.cardBg}; border: 1px solid ${theme.borderColor};
-      border-radius: 14px; padding: 20px; text-align: center;
-      position: relative; overflow: hidden;
-    }
-    .pillar-card::before {
+    .card:hover { box-shadow: 0 8px 32px ${theme.surfaceGlow}; transform: translateY(-2px); }
+    .card::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
       background: linear-gradient(90deg, ${theme.primary}, ${theme.secondary});
     }
+
+    /* ─── KPI Cards (Ultra Premium) ─── */
+    .kpi-grid { display: grid; gap: 20px; flex: 1; align-content: center; }
+    .kpi-card {
+      background: white; border: 1px solid #E2E8F0;
+      border-radius: 16px; padding: 28px 24px; text-align: center;
+      position: relative; overflow: hidden;
+      box-shadow: 0 2px 10px rgba(27,42,74,0.06);
+    }
+    .kpi-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, ${theme.primary}, ${theme.secondary});
+    }
+    .kpi-card::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 80px;
+      background: linear-gradient(180deg, rgba(27,42,74,0.03), transparent);
+    }
+    .kpi-icon {
+      width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 12px; font-size: 22px;
+      background: linear-gradient(135deg, ${theme.primary}10, ${theme.secondary}10);
+      color: ${theme.primary}; position: relative; z-index: 1;
+    }
+    .kpi-value {
+      font-size: 36px; font-weight: 900; color: ${theme.primary};
+      position: relative; z-index: 1; letter-spacing: -1px;
+      background: linear-gradient(135deg, ${theme.primary}, ${theme.accent});
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .kpi-label { font-size: 13px; color: ${theme.textSecondary}; margin-top: 8px; font-weight: 600; position: relative; z-index: 1; }
+    .kpi-trend {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; font-weight: 700; margin-top: 8px;
+      padding: 3px 10px; border-radius: 20px; position: relative; z-index: 1;
+    }
+    .kpi-trend.up { color: ${theme.successColor}; background: ${theme.successColor}12; }
+    .kpi-trend.down { color: ${theme.dangerColor}; background: ${theme.dangerColor}12; }
+    .kpi-trend.flat { color: ${theme.textSecondary}; background: ${theme.textSecondary}12; }
+
+    /* ─── Bullet List (Premium) ─── */
+    .bullet-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .bullet-list li {
+      padding: 14px 22px; padding-right: 40px; position: relative; font-size: 14px; line-height: 1.8;
+      background: #FAFBFC; border-radius: 12px; border: 1px solid #E2E8F0;
+      box-shadow: 0 1px 4px rgba(27,42,74,0.04);
+    }
+    .bullet-list li::before {
+      content: ''; position: absolute; right: 18px; top: 20px;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: linear-gradient(135deg, ${theme.secondary}, ${theme.accent});
+      box-shadow: 0 2px 6px ${theme.secondary}40;
+    }
+
+    /* ─── Table (Premium) ─── */
+    .table-wrap {
+      flex: 1; overflow: hidden; border-radius: 14px;
+      border: 1px solid #E2E8F0; box-shadow: 0 2px 10px rgba(27,42,74,0.06);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead { background: linear-gradient(135deg, ${theme.primary}, ${theme.gradientEnd}); }
+    th {
+      color: white; padding: 14px 18px; text-align: right; font-weight: 700; font-size: 12px;
+      letter-spacing: 0.3px; border-bottom: 2px solid ${theme.secondary};
+    }
+    td {
+      padding: 12px 18px; border-bottom: 1px solid ${theme.borderColor};
+      text-align: right; font-size: 12px; color: ${theme.textPrimary};
+    }
+    tr:nth-child(even) td { background: #F8FAFC; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: ${theme.secondary}08; }
+
+    /* ─── Chart (CSS bars — Ultra Premium) ─── */
+    .chart-area { flex: 1; display: flex; align-items: flex-end; gap: 12px; padding: 20px 0 0; position: relative; }
+    .chart-area::before {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: ${theme.borderColor};
+    }
+    .chart-bar-col {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0;
+      position: relative; z-index: 1;
+    }
+    .chart-bar {
+      width: 100%; max-width: 64px; border-radius: 10px 10px 0 0; position: relative;
+      display: flex; align-items: flex-start; justify-content: center; padding-top: 10px;
+      transition: all 0.3s; cursor: default;
+    }
+    .chart-bar:hover { filter: brightness(1.08); transform: scaleY(1.02); transform-origin: bottom; }
+    .chart-bar-val {
+      font-size: 12px; font-weight: 800; color: white;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    .chart-bar-lbl {
+      font-size: 11px; color: ${theme.textSecondary}; margin-top: 10px;
+      text-align: center; font-weight: 600; max-width: 80px;
+    }
+
+    /* ─── Infographic Grid ─── */
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+    .info-card {
+      background: white; border: 1px solid #E2E8F0;
+      border-radius: 16px; padding: 24px; text-align: center;
+      position: relative; overflow: hidden;
+      box-shadow: 0 2px 10px rgba(27,42,74,0.06);
+    }
+    .info-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, ${theme.accent}, ${theme.secondary});
+    }
+    .info-icon {
+      width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center;
+      justify-content: center; margin: 0 auto 14px; font-size: 26px;
+      background: linear-gradient(135deg, ${theme.primary}0D, ${theme.secondary}0D);
+      color: ${theme.primary};
+    }
+    .info-value { font-size: 28px; font-weight: 900; color: ${theme.primary}; letter-spacing: -0.5px; }
+    .info-label { font-size: 12px; color: ${theme.textSecondary}; margin-top: 6px; font-weight: 600; }
+    .info-desc { font-size: 11px; color: ${theme.textSecondary}; margin-top: 6px; opacity: 0.8; line-height: 1.6; }
+
+    /* ─── Timeline (Premium) ─── */
+    .timeline { display: flex; flex-direction: column; gap: 0; position: relative; padding-right: 36px; }
+    .timeline::before {
+      content: ''; position: absolute; right: 12px; top: 0; bottom: 0;
+      width: 3px; background: linear-gradient(180deg, ${theme.primary}, ${theme.secondary}, ${theme.warningColor});
+      border-radius: 2px;
+    }
+    .tl-item { display: flex; gap: 20px; position: relative; padding-bottom: 20px; }
+    .tl-dot {
+      width: 22px; height: 22px; border-radius: 50%; background: ${theme.primary};
+      border: 4px solid #F0F4F8; position: absolute; right: -36px; top: 4px;
+      box-shadow: 0 0 0 4px ${theme.primary}20; z-index: 1;
+    }
+    .tl-content {
+      flex: 1; background: white; border: 1px solid #E2E8F0;
+      border-radius: 14px; padding: 16px 20px;
+      box-shadow: 0 2px 8px rgba(27,42,74,0.05);
+    }
+    .tl-year { font-size: 13px; font-weight: 800; color: ${theme.secondary}; }
+    .tl-title { font-size: 14px; font-weight: 700; color: ${theme.textPrimary}; margin-top: 4px; }
+    .tl-desc { font-size: 12px; color: ${theme.textSecondary}; margin-top: 6px; line-height: 1.7; }
+
+    /* ─── Pillar Cards (Premium) ─── */
+    .pillar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+    .pillar-card {
+      background: white; border: 1px solid #E2E8F0;
+      border-radius: 16px; padding: 24px; text-align: center;
+      position: relative; overflow: hidden;
+      box-shadow: 0 2px 10px rgba(27,42,74,0.06);
+    }
+    .pillar-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+      background: linear-gradient(90deg, ${theme.primary}, ${theme.secondary});
+    }
     .pillar-icon {
-      width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center;
-      justify-content: center; margin: 0 auto 12px; font-size: 26px;
+      width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center;
+      justify-content: center; margin: 0 auto 14px; font-size: 28px;
       background: linear-gradient(135deg, ${theme.gradientStart}, ${theme.gradientEnd});
-      color: ${theme.textLight}; box-shadow: 0 4px 12px ${theme.primary}30;
+      color: white; box-shadow: 0 6px 20px ${theme.primary}30;
     }
-    .pillar-title { font-size: 14px; font-weight: 800; color: ${theme.textPrimary}; }
-    .pillar-desc { font-size: 11px; color: ${theme.textSecondary}; margin-top: 6px; line-height: 1.6; }
+    .pillar-title { font-size: 15px; font-weight: 800; color: ${theme.textPrimary}; }
+    .pillar-desc { font-size: 12px; color: ${theme.textSecondary}; margin-top: 8px; line-height: 1.7; }
 
-    /* Two Column */
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-
-    /* Accent Elements */
-    .accent-line { width: 56px; height: 4px; background: linear-gradient(90deg, ${theme.secondary}, ${theme.primary}); border-radius: 2px; }
-    .section-number {
-      width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
-      background: ${theme.primary}; color: ${theme.textLight}; font-size: 14px; font-weight: 800; flex-shrink: 0;
+    /* ─── Content paragraph ─── */
+    .content-text {
+      font-size: 14px; line-height: 2; color: ${theme.textSecondary};
+      max-width: 95%; text-align: justify;
     }
 
-    /* Donut Chart */
-    .donut-wrapper { display: flex; align-items: center; justify-content: center; gap: 24px; }
-    .donut-legend { display: flex; flex-direction: column; gap: 8px; }
-    .donut-legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; }
-    .donut-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+    /* ─── Two Column ─── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+
+    /* ─── Accent Elements ─── */
+    .accent-line {
+      width: 64px; height: 5px; border-radius: 3px;
+      background: linear-gradient(90deg, ${theme.secondary}, ${theme.warningColor});
+    }
   `;
 }
 
-// ─── Slide wrapper ───
-function slideWrap(theme: SlideTheme, slideNum: number, totalSlides: number, inner: string): string {
-  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>${baseCSS(theme)}</style></head><body><div class="slide">${inner}<div class="slide-footer"><span class="brand">منصة راصد — ${theme.name}</span><span>${slideNum} / ${totalSlides}</span></div></div></body></html>`;
-}
-
-// ═══ 10 Slide Templates ═══
-
-function coverSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
-  return slideWrap(theme, num, total, `
-    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:linear-gradient(135deg,${theme.gradientStart},${theme.gradientEnd});color:${theme.textLight};padding:48px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:-100px;left:-100px;width:400px;height:400px;background:radial-gradient(circle,${theme.secondary}15,transparent 70%);border-radius:50%;"></div>
-      <div style="position:absolute;bottom:-80px;right:-80px;width:300px;height:300px;background:radial-gradient(circle,${theme.accent}10,transparent 70%);border-radius:50%;"></div>
-      <div class="accent-line" style="margin-bottom:28px;width:72px;background:${theme.secondary};"></div>
-      <h1 style="font-size:40px;font-weight:900;line-height:1.25;max-width:720px;position:relative;z-index:1;">${data.title}</h1>
-      ${data.subtitle ? `<p style="font-size:17px;opacity:0.88;margin-top:16px;max-width:600px;line-height:1.6;position:relative;z-index:1;">${data.subtitle}</p>` : ''}
-      <div class="accent-line" style="margin-top:28px;width:72px;background:${theme.secondary};"></div>
-      <p style="font-size:11px;opacity:0.5;margin-top:36px;position:relative;z-index:1;">منصة راصد البيانات — ${new Date().getFullYear()}</p>
+// ─── Footer HTML ───
+function footerHTML(num: number, total: number): string {
+  return `
+    <div class="slide-footer">
+      <div class="footer-logos">
+        <img src="${ASSETS.ndmoLogo}" alt="NDMO" onerror="this.style.display='none'">
+        <div class="footer-sep"></div>
+        <img src="${ASSETS.sdaiaLogo}" alt="SDAIA" onerror="this.style.display='none'">
+      </div>
+      <div class="footer-page">${num} / ${total}</div>
     </div>
-  `);
+  `;
 }
 
+// ─── Slide HTML wrapper ───
+function slideWrap(theme: SlideTheme, num: number, total: number, inner: string, noFooter = false): string {
+  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>${baseCSS(theme)}</style></head><body><div class="slide"><div class="top-accent"></div>${inner}${noFooter ? '' : footerHTML(num, total)}</div></body></html>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SLIDE TEMPLATES — Ultra Premium
+// ═══════════════════════════════════════════════════════════════
+
+// ─── 1. COVER (Mandatory: Picture1.jpg background) ───
+function coverSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
+  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; font-family: ${theme.fontBody}; }
+    .cover {
+      width: 1280px; height: 720px; position: relative; overflow: hidden;
+      background: url('${ASSETS.coverBg}') center/cover no-repeat;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center; color: white;
+    }
+    .cover::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(11,17,35,0.55) 0%, rgba(11,17,35,0.75) 100%);
+    }
+    .cover-content { position: relative; z-index: 2; max-width: 900px; padding: 0 60px; }
+    .cover-accent {
+      width: 80px; height: 5px; border-radius: 3px; margin: 0 auto 36px;
+      background: linear-gradient(90deg, ${theme.secondary}, ${theme.warningColor});
+    }
+    .cover-title {
+      font-size: 44px; font-weight: 900; line-height: 1.35; letter-spacing: -0.5px;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+    .cover-subtitle {
+      font-size: 18px; font-weight: 400; opacity: 0.88; margin-top: 20px;
+      line-height: 1.7; text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    .cover-accent-bottom {
+      width: 80px; height: 5px; border-radius: 3px; margin: 36px auto 0;
+      background: linear-gradient(90deg, ${theme.warningColor}, ${theme.secondary});
+    }
+    .cover-meta {
+      font-size: 13px; opacity: 0.6; margin-top: 40px;
+      display: flex; align-items: center; justify-content: center; gap: 20px;
+    }
+    .cover-meta-sep { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.4); }
+    .cover-logos {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 16px; z-index: 2;
+    }
+    .cover-logos img { height: 36px; object-fit: contain; filter: brightness(10); }
+    .cover-logo-sep { width: 1px; height: 28px; background: rgba(255,255,255,0.3); }
+    .top-accent-cover {
+      position: absolute; top: 0; left: 0; right: 0; height: 5px;
+      background: linear-gradient(to left, ${theme.secondary}, ${theme.accent}, ${theme.warningColor});
+      z-index: 100;
+    }
+  </style></head><body>
+    <div class="cover">
+      <div class="top-accent-cover"></div>
+      <div class="cover-content">
+        <div class="cover-accent"></div>
+        <h1 class="cover-title">${data.title}</h1>
+        ${data.subtitle ? `<p class="cover-subtitle">${data.subtitle}</p>` : ''}
+        <div class="cover-accent-bottom"></div>
+        <div class="cover-meta">
+          <span>مكتب إدارة البيانات الوطنية</span>
+          <span class="cover-meta-sep"></span>
+          <span>${new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'long' })}</span>
+          ${data.content ? `<span class="cover-meta-sep"></span><span>${data.content}</span>` : ''}
+        </div>
+      </div>
+      <div class="cover-logos">
+        <img src="${ASSETS.ndmoLogo}" alt="NDMO" onerror="this.style.display='none'">
+        <div class="cover-logo-sep"></div>
+        <img src="${ASSETS.sdaiaLogo}" alt="SDAIA" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </body></html>`;
+}
+
+// ─── 2. TOC (Mandatory: NDMO_2024.png background) ───
 function tocSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
   const items = (data.bulletPoints || []).map((bp, i) => `
-    <div style="display:flex;align-items:center;gap:14px;padding:12px 18px;background:${theme.cardBg};border:1px solid ${theme.borderColor};border-radius:12px;border-right:4px solid ${i % 2 === 0 ? theme.primary : theme.secondary};transition:all 0.2s;">
-      <div class="section-number">${String(i + 1).padStart(2, '0')}</div>
-      <div>
-        <span style="font-size:14px;font-weight:700;color:${theme.textPrimary};">${bp}</span>
+    <div style="display:flex;align-items:stretch;background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);border:1px solid ${theme.borderColor};">
+      <div style="width:56px;background:${i === 0 ? theme.secondary : theme.primary};display:flex;align-items:center;justify-content:center;color:white;font-size:20px;font-weight:900;flex-shrink:0;">
+        ${String(i + 1).padStart(2, '0')}
+      </div>
+      <div style="flex:1;padding:14px 20px;display:flex;align-items:center;">
+        <span style="font-size:14px;font-weight:700;color:${theme.textPrimary};line-height:1.5;">${bp}</span>
       </div>
     </div>
   `).join('');
-  return slideWrap(theme, num, total, `
-    <div class="slide-header">
-      <div class="accent-bar"></div>
-      <div><h2>${data.title || 'فهرس المحتويات'}</h2>${data.subtitle ? `<span class="subtitle">${data.subtitle}</span>` : ''}</div>
+
+  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; font-family: ${theme.fontBody}; }
+    .toc-slide {
+      width: 1280px; height: 720px; position: relative; overflow: hidden;
+      background: url('${ASSETS.tocBg}') center/cover no-repeat;
+      display: flex; flex-direction: column;
+    }
+    .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(to left, ${theme.secondary}, ${theme.accent}, ${theme.warningColor}); z-index: 100; }
+    .toc-header {
+      padding: 28px 48px 20px; position: relative; z-index: 2;
+    }
+    .toc-title { font-size: 32px; font-weight: 900; color: ${theme.primary}; }
+    .toc-subtitle { font-size: 14px; color: ${theme.textSecondary}; margin-top: 6px; }
+    .toc-accent { width: 64px; height: 5px; border-radius: 3px; background: linear-gradient(90deg, ${theme.secondary}, ${theme.warningColor}); margin-top: 12px; }
+    .toc-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+      padding: 0 48px 20px; flex: 1; align-content: start; position: relative; z-index: 2;
+    }
+    .toc-footer {
+      height: 44px; padding: 0 48px; display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid ${theme.borderColor}; background: rgba(255,255,255,0.95);
+      position: relative; z-index: 2;
+    }
+    .footer-logos { display: flex; align-items: center; gap: 14px; }
+    .footer-logos img { height: 28px; object-fit: contain; }
+    .footer-sep { width: 1px; height: 22px; background: #ccc; }
+    .footer-page { font-size: 13px; font-weight: 700; color: ${theme.primary}; opacity: 0.4; }
+  </style></head><body>
+    <div class="toc-slide">
+      <div class="top-accent"></div>
+      <div class="toc-header">
+        <div class="toc-title">${data.title || 'فهرس المحتويات'}</div>
+        ${data.subtitle ? `<div class="toc-subtitle">${data.subtitle}</div>` : ''}
+        <div class="toc-accent"></div>
+      </div>
+      <div class="toc-grid">${items}</div>
+      <div class="toc-footer">
+        <div class="footer-logos">
+          <img src="${ASSETS.ndmoLogo}" alt="NDMO" onerror="this.style.display='none'">
+          <div class="footer-sep"></div>
+          <img src="${ASSETS.sdaiaLogo}" alt="SDAIA" onerror="this.style.display='none'">
+        </div>
+        <div class="footer-page">${num} / ${total}</div>
+      </div>
     </div>
-    <div class="slide-body" style="gap:10px;">${items}</div>
-  `);
+  </body></html>`;
 }
 
+// ─── 3. SECTION TITLE (Mandatory: NDMO_2024.png background) ───
+function sectionTitleSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
+  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; font-family: ${theme.fontBody}; }
+    .section-slide {
+      width: 1280px; height: 720px; position: relative; overflow: hidden;
+      background: url('${ASSETS.tocBg}') center/cover no-repeat;
+      display: flex;
+    }
+    .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(to left, ${theme.secondary}, ${theme.accent}, ${theme.warningColor}); z-index: 100; }
+    .section-right {
+      width: 480px; background: linear-gradient(180deg, ${theme.gradientStart} 0%, ${theme.gradientEnd} 100%);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .section-watermark {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-size: 280px; font-weight: 900; color: rgba(255,255,255,0.03); line-height: 1;
+    }
+    .section-num-box {
+      width: 100px; height: 100px; border: 3px solid ${theme.warningColor};
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 28px; position: relative; z-index: 2;
+    }
+    .section-num { font-size: 48px; font-weight: 900; color: ${theme.warningColor}; }
+    .section-label { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.5); position: relative; z-index: 2; }
+    .section-left {
+      flex: 1; display: flex; flex-direction: column; justify-content: center;
+      padding: 60px; position: relative; z-index: 2;
+    }
+    .section-title { font-size: 36px; font-weight: 900; color: ${theme.primary}; line-height: 1.4; }
+    .section-desc { font-size: 15px; color: ${theme.textSecondary}; margin-top: 16px; line-height: 1.8; }
+    .section-accent { width: 64px; height: 5px; border-radius: 3px; background: linear-gradient(90deg, ${theme.secondary}, ${theme.warningColor}); margin-top: 20px; }
+    .section-footer {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 44px; padding: 0 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid ${theme.borderColor}; background: rgba(255,255,255,0.95); z-index: 2;
+    }
+    .footer-logos { display: flex; align-items: center; gap: 14px; }
+    .footer-logos img { height: 28px; object-fit: contain; }
+    .footer-sep { width: 1px; height: 22px; background: #ccc; }
+    .footer-page { font-size: 13px; font-weight: 700; color: ${theme.primary}; opacity: 0.4; }
+  </style></head><body>
+    <div class="section-slide">
+      <div class="top-accent"></div>
+      <div class="section-right">
+        <div class="section-watermark">${num}</div>
+        <div class="section-num-box"><span class="section-num">${String(num).padStart(2, '0')}</span></div>
+        <div class="section-label">القسم</div>
+      </div>
+      <div class="section-left">
+        <div class="section-title">${data.title}</div>
+        ${data.subtitle ? `<div class="section-desc">${data.subtitle}</div>` : ''}
+        ${data.content ? `<div class="section-desc">${data.content}</div>` : ''}
+        <div class="section-accent"></div>
+      </div>
+      <div class="section-footer">
+        <div class="footer-logos">
+          <img src="${ASSETS.ndmoLogo}" alt="NDMO" onerror="this.style.display='none'">
+          <div class="footer-sep"></div>
+          <img src="${ASSETS.sdaiaLogo}" alt="SDAIA" onerror="this.style.display='none'">
+        </div>
+        <div class="footer-page">${num} / ${total}</div>
+      </div>
+    </div>
+  </body></html>`;
+}
+
+// ─── 4. EXECUTIVE SUMMARY ───
 function executiveSummarySlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
-  const kpis = (data.kpiItems || data.infographicItems || []).slice(0, 4).map(item => `
+  const kpis = (data.kpiItems || []).slice(0, 4).map(item => `
     <div class="kpi-card" style="flex:1;">
-      <div class="kpi-value">${'value' in item ? item.value : ''}</div>
+      <div class="kpi-value">${item.value}</div>
       <div class="kpi-label">${item.label}</div>
-      ${'trend' in item && item.trend ? `<div class="kpi-trend ${item.trend}">${item.trend === 'up' ? '▲' : item.trend === 'down' ? '▼' : '—'} ${'change' in item ? item.change : ''}</div>` : ''}
+      ${item.trend ? `<div class="kpi-trend ${item.trend}">${item.trend === 'up' ? '▲' : item.trend === 'down' ? '▼' : '—'} ${item.change || ''}</div>` : ''}
     </div>
   `).join('');
   const bullets = (data.bulletPoints || []).map(bp => `<li>${bp}</li>`).join('');
   return slideWrap(theme, num, total, `
-    <div class="slide-header">
-      <div class="accent-bar"></div>
-      <div><h2>${data.title}</h2>${data.subtitle ? `<span class="subtitle">${data.subtitle}</span>` : ''}</div>
+    <div class="header-bar">
+      <div><div class="header-title">${data.title}</div>${data.subtitle ? `<div class="header-subtitle">${data.subtitle}</div>` : ''}</div>
+      <div class="header-badge">${String(num).padStart(2, '0')}</div>
     </div>
     <div class="slide-body">
-      ${kpis ? `<div style="display:flex;gap:14px;">${kpis}</div>` : ''}
-      ${data.content ? `<p style="font-size:13px;line-height:1.7;color:${theme.textSecondary};">${data.content}</p>` : ''}
+      ${kpis ? `<div style="display:flex;gap:18px;">${kpis}</div>` : ''}
+      ${data.content ? `<p class="content-text">${data.content}</p>` : ''}
       ${bullets ? `<ul class="bullet-list">${bullets}</ul>` : ''}
     </div>
   `);
 }
 
-function pillarsSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
-  const items = (data.pillarItems || data.infographicItems || []).map(item => `
-    <div class="pillar-card">
-      <div class="pillar-icon"><span class="material-symbols-outlined">${item.icon || 'star'}</span></div>
-      <div class="pillar-title">${'title' in item ? item.title : item.label}</div>
-      <div class="pillar-desc">${item.description || ''}</div>
+// ─── 5. KPI ───
+function kpiSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
+  const items = (data.kpiItems || []).slice(0, 6);
+  const cols = items.length <= 3 ? items.length : items.length <= 4 ? 2 : 3;
+  const kpis = items.map(item => `
+    <div class="kpi-card">
+      <div class="kpi-value">${item.value}</div>
+      <div class="kpi-label">${item.label}</div>
+      ${item.trend ? `<div class="kpi-trend ${item.trend}">${item.trend === 'up' ? '▲ +' : item.trend === 'down' ? '▼ -' : '— '}${item.change || ''}</div>` : ''}
     </div>
   `).join('');
   return slideWrap(theme, num, total, `
-    <div class="slide-header">
-      <div class="accent-bar"></div>
-      <div><h2>${data.title}</h2>${data.subtitle ? `<span class="subtitle">${data.subtitle}</span>` : ''}</div>
+    <div class="header-bar">
+      <div><div class="header-title">${data.title}</div>${data.subtitle ? `<div class="header-subtitle">${data.subtitle}</div>` : ''}</div>
+      <div class="header-badge">${String(num).padStart(2, '0')}</div>
     </div>
     <div class="slide-body">
-      ${data.content ? `<p style="font-size:13px;line-height:1.6;color:${theme.textSecondary};">${data.content}</p>` : ''}
-      <div class="pillar-grid" style="flex:1;align-content:center;">${items}</div>
+      ${data.content ? `<p class="content-text">${data.content}</p>` : ''}
+      <div class="kpi-grid" style="grid-template-columns:repeat(${cols},1fr);">${kpis}</div>
     </div>
   `);
 }
 
+// ─── 6. CHART ───
 function chartSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
   const maxVal = Math.max(...(data.chartData || [1]));
-  const defaultColors = [theme.primary, theme.secondary, theme.accent, theme.successColor, theme.warningColor, theme.dangerColor, '#8b5cf6', '#06b6d4'];
+  const defaultColors = [theme.primary, theme.secondary, theme.accent, theme.warningColor, theme.successColor, '#8b5cf6', '#06b6d4', theme.dangerColor];
   const bars = (data.chartData || []).map((v, i) => {
-    const h = Math.max(24, (v / maxVal) * 220);
+    const h = Math.max(32, (v / maxVal) * 300);
     const color = (data.chartColors || [])[i] || defaultColors[i % defaultColors.length];
     const label = (data.chartLabels || [])[i] || '';
-    return `<div class="chart-bar"><div style="width:100%;height:${h}px;background:linear-gradient(180deg,${color},${color}cc);border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;box-shadow:0 -4px 12px ${color}30;"><span class="chart-bar-value">${v}</span></div><span class="chart-bar-label">${label}</span></div>`;
+    return `<div class="chart-bar-col">
+      <div class="chart-bar" style="height:${h}px;background:linear-gradient(180deg,${color},${color}bb);box-shadow:0 -6px 20px ${color}30;">
+        <span class="chart-bar-val">${v.toLocaleString()}</span>
+      </div>
+      <span class="chart-bar-lbl">${label}</span>
+    </div>`;
   }).join('');
   return slideWrap(theme, num, total, `
-    <div class="slide-header">
-      <div class="accent-bar"></div>
-      <div><h2>${data.title}</h2>${data.subtitle ? `<span class="subtitle">${data.subtitle}</span>` : ''}</div>
+    <div class="header-bar">
+      <div><div class="header-title">${data.title}</div>${data.subtitle ? `<div class="header-subtitle">${data.subtitle}</div>` : ''}</div>
+      <div class="header-badge">${String(num).padStart(2, '0')}</div>
     </div>
     <div class="slide-body">
-      ${data.content ? `<p style="font-size:13px;line-height:1.6;color:${theme.textSecondary};">${data.content}</p>` : ''}
-      <div class="chart-container">${bars}</div>
+      ${data.content ? `<p class="content-text">${data.content}</p>` : ''}
+      <div class="chart-area">${bars}</div>
     </div>
   `);
 }
 
+// ─── 7. TABLE ───
 function tableSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
   const headers = (data.tableHeaders || []).map(h => `<th>${h}</th>`).join('');
   const rows = (data.tableRows || []).map(row => {
@@ -389,123 +637,205 @@ function tableSlide(theme: SlideTheme, data: SlideData, num: number, total: numb
     return `<tr>${cells.map(cell => `<td>${String(cell ?? '')}</td>`).join('')}</tr>`;
   }).join('');
   return slideWrap(theme, num, total, `
-    <div class="slide-header">
-      <div class="accent-bar"></div>
-      <div><h2>${data.title}</h2>${data.subtitle ? `<span class="subtitle">${data.subtitle}</span>` : ''}</div>
+    <div class="header-bar">
+      <div><div class="header-title">${data.title}</div>${data.subtitle ? `<div class="header-subtitle">${data.subtitle}</div>` : ''}</div>
+      <div class="header-badge">${String(num).padStart(2, '0')}</div>
     </div>
     <div class="slide-body">
-      ${data.content ? `<p style="font-size:13px;line-height:1.6;color:${theme.textSecondary};margin-bottom:4px;">${data.content}</p>` : ''}
-      <div style="flex:1;overflow:hidden;border-radius:12px;border:1px solid ${theme.borderColor};">
-        <table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table>
-      </div>
+      ${data.content ? `<p class="content-text" style="margin-bottom:4px;">${data.content}</p>` : ''}
+      <div class="table-wrap"><table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table></div>
     </div>
   `);
 }
 
+// ─── 8. INFOGRAPHIC ───
 function infographicSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
   const items = (data.infographicItems || []).map(item => `
-    <div class="infographic-item">
-      <div class="infographic-icon"><span class="material-symbols-outlined">${item.icon || 'analytics'}</span></div>
-      <div class="infographic-value">${item.value}</div>
-      <div class="infographic-label">${item.label}</div>
-      ${item.description ? `<div class="infographic-desc">${item.description}</div>` : ''}
+    <div class="info-card">
+      <div class="info-icon"><span class="material-symbols-outlined">${item.icon || 'analytics'}</span></div>
+      <div class="info-value">${item.value}</div>
+      <div class="info-label">${item.label}</div>
+      ${item.description ? `<div class="info-desc">${item.description}</div>` : ''}
     </div>
   `).join('');
   return slideWrap(theme, num, total, `
-    <div class="slide-header">
-      <div class="accent-bar"></div>
-      <div><h2>${data.title}</h2>${data.subtitle ? `<span class="subtitle">${data.subtitle}</span>` : ''}</div>
+    <div class="header-bar">
+      <div><div class="header-title">${data.title}</div>${data.subtitle ? `<div class="header-subtitle">${data.subtitle}</div>` : ''}</div>
+      <div class="header-badge">${String(num).padStart(2, '0')}</div>
     </div>
     <div class="slide-body">
-      ${data.content ? `<p style="font-size:13px;line-height:1.6;color:${theme.textSecondary};">${data.content}</p>` : ''}
-      <div class="infographic-grid" style="flex:1;align-content:center;">${items}</div>
+      ${data.content ? `<p class="content-text">${data.content}</p>` : ''}
+      <div class="info-grid" style="flex:1;align-content:center;">${items}</div>
     </div>
   `);
 }
 
-function kpiSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
-  const items = (data.kpiItems || data.infographicItems || []).slice(0, 4).map(item => `
-    <div class="kpi-card" style="flex:1;">
-      <div class="kpi-value">${'value' in item ? item.value : ''}</div>
-      <div class="kpi-label">${item.label}</div>
-      ${'trend' in item && item.trend ? `<div class="kpi-trend ${item.trend}">${item.trend === 'up' ? '▲ +' : item.trend === 'down' ? '▼ -' : '— '}${'change' in item ? item.change : ''}</div>` : ''}
-    </div>
-  `).join('');
-  return slideWrap(theme, num, total, `
-    <div class="slide-header">
-      <div class="accent-bar"></div>
-      <div><h2>${data.title}</h2>${data.subtitle ? `<span class="subtitle">${data.subtitle}</span>` : ''}</div>
-    </div>
-    <div class="slide-body">
-      ${data.content ? `<p style="font-size:13px;line-height:1.7;color:${theme.textSecondary};">${data.content}</p>` : ''}
-      <div style="display:flex;gap:16px;flex:1;align-items:center;">${items}</div>
-    </div>
-  `);
-}
-
+// ─── 9. TIMELINE ───
 function timelineSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
   const items = (data.timelineItems || []).map((item, i) => `
-    <div class="timeline-item">
-      <div class="timeline-dot" style="background:${i % 2 === 0 ? theme.primary : theme.secondary};box-shadow:0 0 0 4px ${i % 2 === 0 ? theme.primary : theme.secondary}25;"></div>
-      <div class="timeline-content">
-        <div class="timeline-year">${item.year}</div>
-        <div class="timeline-title">${item.title}</div>
-        <div class="timeline-desc">${item.description}</div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:${i % 3 === 0 ? theme.primary : i % 3 === 1 ? theme.secondary : theme.warningColor};box-shadow:0 0 0 4px ${i % 3 === 0 ? theme.primary : i % 3 === 1 ? theme.secondary : theme.warningColor}20;"></div>
+      <div class="tl-content">
+        <div class="tl-year">${item.year}</div>
+        <div class="tl-title">${item.title}</div>
+        <div class="tl-desc">${item.description}</div>
       </div>
     </div>
   `).join('');
   return slideWrap(theme, num, total, `
-    <div class="slide-header">
-      <div class="accent-bar"></div>
-      <div><h2>${data.title}</h2>${data.subtitle ? `<span class="subtitle">${data.subtitle}</span>` : ''}</div>
+    <div class="header-bar">
+      <div><div class="header-title">${data.title}</div>${data.subtitle ? `<div class="header-subtitle">${data.subtitle}</div>` : ''}</div>
+      <div class="header-badge">${String(num).padStart(2, '0')}</div>
     </div>
     <div class="slide-body"><div class="timeline">${items}</div></div>
   `);
 }
 
+// ─── 10. PILLARS ───
+function pillarsSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
+  const items = (data.pillarItems || []).map(item => `
+    <div class="pillar-card">
+      <div class="pillar-icon"><span class="material-symbols-outlined">${item.icon || 'star'}</span></div>
+      <div class="pillar-title">${item.title}</div>
+      <div class="pillar-desc">${item.description || ''}</div>
+    </div>
+  `).join('');
+  return slideWrap(theme, num, total, `
+    <div class="header-bar">
+      <div><div class="header-title">${data.title}</div>${data.subtitle ? `<div class="header-subtitle">${data.subtitle}</div>` : ''}</div>
+      <div class="header-badge">${String(num).padStart(2, '0')}</div>
+    </div>
+    <div class="slide-body">
+      ${data.content ? `<p class="content-text">${data.content}</p>` : ''}
+      <div class="pillar-grid" style="flex:1;align-content:center;">${items}</div>
+    </div>
+  `);
+}
+
+// ─── 11. CONTENT ───
 function contentSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
   const bullets = (data.bulletPoints || []).map(bp => `<li>${bp}</li>`).join('');
   return slideWrap(theme, num, total, `
-    <div class="slide-header">
-      <div class="accent-bar"></div>
-      <div><h2>${data.title}</h2>${data.subtitle ? `<span class="subtitle">${data.subtitle}</span>` : ''}</div>
+    <div class="header-bar">
+      <div><div class="header-title">${data.title}</div>${data.subtitle ? `<div class="header-subtitle">${data.subtitle}</div>` : ''}</div>
+      <div class="header-badge">${String(num).padStart(2, '0')}</div>
     </div>
     <div class="slide-body">
-      ${data.content ? `<p style="font-size:13px;line-height:1.8;color:${theme.textSecondary};">${data.content}</p>` : ''}
+      ${data.content ? `<p class="content-text">${data.content}</p>` : ''}
       ${bullets ? `<ul class="bullet-list">${bullets}</ul>` : ''}
     </div>
   `);
 }
 
-function closingSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
+// ─── 12. TWO COLUMN ───
+function twoColumnSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
+  const bullets = (data.bulletPoints || []);
+  const half = Math.ceil(bullets.length / 2);
+  const col1 = bullets.slice(0, half).map(bp => `<li>${bp}</li>`).join('');
+  const col2 = bullets.slice(half).map(bp => `<li>${bp}</li>`).join('');
   return slideWrap(theme, num, total, `
-    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:linear-gradient(135deg,${theme.gradientStart},${theme.gradientEnd});color:${theme.textLight};padding:48px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:-60px;right:-60px;width:300px;height:300px;background:radial-gradient(circle,${theme.secondary}12,transparent 70%);border-radius:50%;"></div>
-      <div class="accent-line" style="margin-bottom:24px;background:${theme.secondary};"></div>
-      <h1 style="font-size:44px;font-weight:900;position:relative;z-index:1;">${data.title || 'شكراً لكم'}</h1>
-      ${data.content ? `<p style="font-size:17px;opacity:0.85;margin-top:18px;max-width:520px;line-height:1.7;position:relative;z-index:1;">${data.content}</p>` : ''}
-      <div class="accent-line" style="margin-top:24px;background:${theme.secondary};"></div>
-      ${data.subtitle ? `<p style="font-size:12px;opacity:0.6;margin-top:28px;position:relative;z-index:1;">${data.subtitle}</p>` : ''}
+    <div class="header-bar">
+      <div><div class="header-title">${data.title}</div>${data.subtitle ? `<div class="header-subtitle">${data.subtitle}</div>` : ''}</div>
+      <div class="header-badge">${String(num).padStart(2, '0')}</div>
+    </div>
+    <div class="slide-body">
+      ${data.content ? `<p class="content-text">${data.content}</p>` : ''}
+      <div class="two-col" style="flex:1;">
+        <ul class="bullet-list">${col1}</ul>
+        <ul class="bullet-list">${col2}</ul>
+      </div>
     </div>
   `);
 }
 
-// ─── Layout router ───
+// ─── 13. CLOSING (Mandatory: Picture1.jpg background) ───
+function closingSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
+  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; font-family: ${theme.fontBody}; }
+    .closing {
+      width: 1280px; height: 720px; position: relative; overflow: hidden;
+      background: url('${ASSETS.coverBg}') center/cover no-repeat;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center; color: white;
+    }
+    .closing::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(11,17,35,0.6) 0%, rgba(11,17,35,0.8) 100%);
+    }
+    .closing-content { position: relative; z-index: 2; }
+    .closing-icon {
+      width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 28px; font-size: 48px;
+      background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+    }
+    .closing-title {
+      font-size: 52px; font-weight: 900; letter-spacing: -0.5px;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+    .closing-accent {
+      width: 80px; height: 5px; border-radius: 3px; margin: 28px auto;
+      background: linear-gradient(90deg, ${theme.secondary}, ${theme.warningColor});
+    }
+    .closing-subtitle {
+      font-size: 18px; opacity: 0.85; max-width: 600px; margin: 0 auto;
+      line-height: 1.8; text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    .closing-meta {
+      font-size: 13px; opacity: 0.5; margin-top: 36px;
+    }
+    .closing-logos {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 16px; z-index: 2;
+    }
+    .closing-logos img { height: 36px; object-fit: contain; filter: brightness(10); }
+    .closing-logo-sep { width: 1px; height: 28px; background: rgba(255,255,255,0.3); }
+    .top-accent-closing {
+      position: absolute; top: 0; left: 0; right: 0; height: 5px;
+      background: linear-gradient(to left, ${theme.secondary}, ${theme.accent}, ${theme.warningColor});
+      z-index: 100;
+    }
+  </style></head><body>
+    <div class="closing">
+      <div class="top-accent-closing"></div>
+      <div class="closing-content">
+        <div class="closing-icon"><span class="material-symbols-outlined" style="font-size:48px;color:white;">forum</span></div>
+        <h1 class="closing-title">${data.title || 'شكراً لكم'}</h1>
+        <div class="closing-accent"></div>
+        ${data.content ? `<p class="closing-subtitle">${data.content}</p>` : `<p class="closing-subtitle">نتطلع لشراكتكم في بناء مستقبل البيانات في المملكة العربية السعودية</p>`}
+        ${data.subtitle ? `<div class="closing-meta">${data.subtitle}</div>` : ''}
+      </div>
+      <div class="closing-logos">
+        <img src="${ASSETS.ndmoLogo}" alt="NDMO" onerror="this.style.display='none'">
+        <div class="closing-logo-sep"></div>
+        <img src="${ASSETS.sdaiaLogo}" alt="SDAIA" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </body></html>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Layout Router
+// ═══════════════════════════════════════════════════════════════
 function renderSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
   switch (data.layout) {
     case 'title': return coverSlide(theme, data, num, total);
     case 'toc': return tocSlide(theme, data, num, total);
+    case 'section-title': return sectionTitleSlide(theme, data, num, total);
     case 'executive-summary': return executiveSummarySlide(theme, data, num, total);
-    case 'pillars': return pillarsSlide(theme, data, num, total);
+    case 'kpi': return kpiSlide(theme, data, num, total);
     case 'chart': return chartSlide(theme, data, num, total);
     case 'table': return tableSlide(theme, data, num, total);
     case 'infographic': return infographicSlide(theme, data, num, total);
-    case 'kpi': return kpiSlide(theme, data, num, total);
     case 'timeline': return timelineSlide(theme, data, num, total);
-    case 'closing': return closingSlide(theme, data, num, total);
+    case 'pillars': return pillarsSlide(theme, data, num, total);
     case 'content': return contentSlide(theme, data, num, total);
-    case 'two-column': return contentSlide(theme, data, num, total);
+    case 'two-column': return twoColumnSlide(theme, data, num, total);
     case 'quote': return contentSlide(theme, data, num, total);
+    case 'closing': return closingSlide(theme, data, num, total);
     default: return contentSlide(theme, data, num, total);
   }
 }
@@ -520,34 +850,39 @@ export function getTheme(themeId: string): SlideTheme {
   return THEMES[themeId] || THEMES.ndmo;
 }
 
-// ═══ Demo Presentation (10 slides — all types) ═══
+// ═══ Demo Presentation (Ultra Premium — all types) ═══
 export const DEMO_SLIDES: SlideData[] = [
   {
     layout: 'title',
-    title: 'استراتيجية البيانات الوطنية 2030',
-    subtitle: 'خارطة طريق شاملة لتحويل المملكة العربية السعودية إلى مركز عالمي للبيانات والذكاء الاصطناعي',
-    notes: 'هذا العرض يقدم الاستراتيجية الوطنية للبيانات ضمن رؤية 2030',
+    title: 'التقرير السنوي لالتزام الجهات الحكومية بتنفيذ خطط نشر البيانات المفتوحة',
+    subtitle: 'مكتب إدارة البيانات الوطنية — الهيئة السعودية للبيانات والذكاء الاصطناعي (سدايا)',
+    content: 'مقيد',
   },
   {
     layout: 'toc',
     title: 'فهرس المحتويات',
-    subtitle: 'محاور العرض الرئيسية',
+    subtitle: 'محاور التقرير الرئيسية',
     bulletPoints: [
-      'الملخص التنفيذي والمؤشرات الرئيسية',
-      'الركائز الاستراتيجية الأربع',
-      'تحليل الأداء والنمو',
-      'مقارنة الأداء حسب القطاعات',
-      'البنية التحتية للبيانات',
-      'المؤشرات الرقمية الرئيسية',
-      'خارطة الطريق والمراحل الزمنية',
-      'الختام والتوصيات',
+      'المقدمة والمبادئ الأساسية للبيانات المفتوحة',
+      'جهود الهيئة (سدايا) لتمكين إتاحة البيانات المفتوحة',
+      'المسار التنظيمي: إصدار السياسات والتنسيق',
+      'المسار التنظيمي: بناء القدرات والرقابة',
+      'المسار التقني: البنية التحتية والأدوات الداعمة',
+      'نتائج التقييم ومؤشرات الأداء',
+      'المواءمة مع المنظمات العالمية',
+      'التوصيات وخطة العمل المستقبلية',
     ],
+  },
+  {
+    layout: 'section-title',
+    title: 'المقدمة والمبادئ الأساسية',
+    subtitle: 'الإطار العام للبيانات المفتوحة في المملكة العربية السعودية وأهميتها في التحول الرقمي',
   },
   {
     layout: 'executive-summary',
     title: 'الملخص التنفيذي',
     subtitle: 'أبرز المؤشرات والإنجازات',
-    content: 'حققت المملكة تقدماً ملحوظاً في مجال البيانات والتحول الرقمي خلال العام الماضي، حيث ارتفعت نسبة الامتثال لمعايير البيانات المفتوحة بنسبة 23% وتم إطلاق 15 مبادرة جديدة.',
+    content: 'حققت المملكة تقدماً ملحوظاً في مجال البيانات المفتوحة خلال العام الماضي، حيث ارتفعت نسبة الامتثال لمعايير البيانات المفتوحة بنسبة 23% وتم إطلاق 15 مبادرة جديدة في مجال الذكاء الاصطناعي. كما تم ربط 156 جهة حكومية بمنصة البيانات الوطنية وتحسين جودة البيانات بنسبة 40% عبر أدوات التنظيف الآلي.',
     kpiItems: [
       { label: 'نسبة الامتثال', value: '87%', trend: 'up', change: '23%' },
       { label: 'الجهات المتصلة', value: '156', trend: 'up', change: '34' },
@@ -555,36 +890,36 @@ export const DEMO_SLIDES: SlideData[] = [
       { label: 'المبادرات النشطة', value: '45', trend: 'flat', change: '' },
     ],
     bulletPoints: [
-      'تم ربط 156 جهة حكومية بمنصة البيانات الوطنية',
-      'إطلاق 15 مبادرة جديدة في مجال الذكاء الاصطناعي',
-      'تحسين جودة البيانات بنسبة 40% عبر أدوات التنظيف الآلي',
+      'تم ربط 156 جهة حكومية بمنصة البيانات الوطنية بنجاح',
+      'إطلاق 15 مبادرة جديدة في مجال الذكاء الاصطناعي والبيانات',
+      'تحسين جودة البيانات بنسبة 40% عبر أدوات التنظيف الآلي المتقدمة',
     ],
   },
   {
     layout: 'pillars',
     title: 'الركائز الاستراتيجية',
-    subtitle: 'أربع ركائز أساسية لتحقيق الرؤية',
-    content: 'تقوم الاستراتيجية على أربع ركائز متكاملة تضمن تحقيق الأهداف المرجوة بكفاءة عالية.',
+    subtitle: 'أربع ركائز أساسية لتحقيق رؤية البيانات المفتوحة',
+    content: 'تقوم استراتيجية البيانات المفتوحة على أربع ركائز متكاملة تضمن تحقيق الأهداف المرجوة بكفاءة عالية وفق أفضل الممارسات الدولية.',
     pillarItems: [
-      { icon: 'security', title: 'حوكمة البيانات', description: 'إطار تنظيمي شامل يضمن جودة وأمن البيانات عبر جميع الجهات الحكومية' },
-      { icon: 'hub', title: 'البنية التحتية', description: 'منصات سحابية متطورة وشبكات ربط عالية السرعة لتبادل البيانات' },
-      { icon: 'psychology', title: 'الذكاء الاصطناعي', description: 'تطبيقات ذكية لتحليل البيانات واستخراج الرؤى واتخاذ القرارات' },
-      { icon: 'school', title: 'بناء القدرات', description: 'برامج تدريبية متخصصة لتأهيل الكوادر الوطنية في علوم البيانات' },
+      { icon: 'security', title: 'حوكمة البيانات', description: 'إطار تنظيمي شامل يضمن جودة وأمن البيانات عبر جميع الجهات الحكومية مع آليات رقابة فعالة' },
+      { icon: 'hub', title: 'البنية التحتية', description: 'منصات سحابية متطورة وشبكات ربط عالية السرعة لتبادل البيانات بين الجهات الحكومية' },
+      { icon: 'psychology', title: 'الذكاء الاصطناعي', description: 'تطبيقات ذكية لتحليل البيانات واستخراج الرؤى واتخاذ القرارات المبنية على البيانات' },
+      { icon: 'school', title: 'بناء القدرات', description: 'برامج تدريبية متخصصة لتأهيل الكوادر الوطنية في علوم البيانات والذكاء الاصطناعي' },
     ],
   },
   {
     layout: 'chart',
     title: 'تحليل النمو السنوي',
     subtitle: 'معدل نمو مجموعات البيانات المفتوحة (2020-2026)',
-    content: 'شهدت مجموعات البيانات المفتوحة نمواً متسارعاً خلال السنوات الست الماضية، مع تسارع ملحوظ بعد 2023.',
+    content: 'شهدت مجموعات البيانات المفتوحة نمواً متسارعاً خلال السنوات الست الماضية، مع تسارع ملحوظ بعد إطلاق الاستراتيجية الوطنية للبيانات في 2023.',
     chartData: [2400, 3800, 5200, 7100, 9300, 11200, 12450],
     chartLabels: ['2020', '2021', '2022', '2023', '2024', '2025', '2026'],
   },
   {
     layout: 'table',
     title: 'مقارنة الأداء حسب القطاعات',
-    subtitle: 'تقييم شامل لمستوى نضج البيانات',
-    content: 'يوضح الجدول التالي مستوى نضج البيانات في القطاعات الرئيسية مع مؤشرات الأداء.',
+    subtitle: 'تقييم شامل لمستوى نضج البيانات المفتوحة',
+    content: 'يوضح الجدول التالي مستوى نضج البيانات المفتوحة في القطاعات الرئيسية مع مؤشرات الأداء والاتجاهات.',
     tableHeaders: ['القطاع', 'نسبة الامتثال', 'جودة البيانات', 'مجموعات البيانات', 'التقييم', 'الاتجاه'],
     tableRows: [
       ['الصحة', '92%', 'ممتازة', '2,340', 'A+', '▲'],
@@ -596,22 +931,10 @@ export const DEMO_SLIDES: SlideData[] = [
     ],
   },
   {
-    layout: 'infographic',
-    title: 'البنية التحتية للبيانات',
-    subtitle: 'إحصائيات المنصة الوطنية',
-    content: 'تمتلك المنصة الوطنية للبيانات بنية تحتية متطورة تخدم جميع الجهات الحكومية.',
-    infographicItems: [
-      { icon: 'cloud', label: 'سعة التخزين السحابي', value: '50 PB', description: 'موزعة على 3 مراكز بيانات' },
-      { icon: 'api', label: 'واجهات برمجية نشطة', value: '1,240', description: 'متاحة للمطورين والجهات' },
-      { icon: 'speed', label: 'معالجة يومية', value: '8.5M', description: 'طلب معالجة بيانات يومياً' },
-      { icon: 'verified_user', label: 'نسبة الأمان', value: '99.97%', description: 'وقت التشغيل السنوي' },
-    ],
-  },
-  {
     layout: 'kpi',
     title: 'المؤشرات الرقمية الرئيسية',
     subtitle: 'أداء الربع الأول 2026',
-    content: 'تظهر المؤشرات تحسناً ملحوظاً في جميع المجالات مقارنة بالربع السابق.',
+    content: 'تظهر المؤشرات تحسناً ملحوظاً في جميع المجالات مقارنة بالربع السابق مع استمرار النمو المتسارع.',
     kpiItems: [
       { label: 'رضا المستخدمين', value: '94%', trend: 'up', change: '8%' },
       { label: 'سرعة الاستجابة', value: '120ms', trend: 'up', change: '35ms' },
@@ -623,17 +946,16 @@ export const DEMO_SLIDES: SlideData[] = [
     title: 'خارطة الطريق',
     subtitle: 'المراحل الزمنية للتنفيذ',
     timelineItems: [
-      { year: 'Q1 2026', title: 'إطلاق المنصة المحدثة', description: 'نشر الإصدار 3.0 مع واجهة مستخدم جديدة ومحركات ذكاء اصطناعي متطورة' },
-      { year: 'Q2 2026', title: 'التكامل مع الجهات', description: 'ربط 50 جهة حكومية إضافية وتفعيل تبادل البيانات الآلي' },
-      { year: 'Q3 2026', title: 'إطلاق سوق البيانات', description: 'منصة لتبادل مجموعات البيانات بين القطاعين العام والخاص' },
-      { year: 'Q4 2026', title: 'الذكاء الاصطناعي التوليدي', description: 'دمج نماذج AI متقدمة لتحليل البيانات وتوليد التقارير تلقائياً' },
-      { year: 'Q1 2027', title: 'التوسع الإقليمي', description: 'شراكات مع دول الخليج لتبادل البيانات والخبرات' },
+      { year: 'Q1 2026', title: 'إطلاق المنصة المحدثة', description: 'نشر الإصدار 3.0 مع واجهة مستخدم جديدة ومحركات ذكاء اصطناعي متطورة لتحليل البيانات' },
+      { year: 'Q2 2026', title: 'التكامل مع الجهات', description: 'ربط 50 جهة حكومية إضافية وتفعيل تبادل البيانات الآلي عبر واجهات برمجية موحدة' },
+      { year: 'Q3 2026', title: 'إطلاق سوق البيانات', description: 'منصة لتبادل مجموعات البيانات بين القطاعين العام والخاص وفق معايير الحوكمة' },
+      { year: 'Q4 2026', title: 'الذكاء الاصطناعي التوليدي', description: 'دمج نماذج AI متقدمة لتحليل البيانات وتوليد التقارير والرؤى تلقائياً' },
     ],
   },
   {
     layout: 'closing',
     title: 'شكراً لكم',
-    content: 'نتطلع لشراكتكم في بناء مستقبل البيانات في المملكة العربية السعودية',
-    subtitle: 'منصة راصد — مكتب إدارة البيانات الوطنية',
+    content: 'نتطلع لشراكتكم في بناء مستقبل البيانات المفتوحة في المملكة العربية السعودية',
+    subtitle: 'مكتب إدارة البيانات الوطنية — سدايا',
   },
 ];

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>سجل المخاطر</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; background-color: #f0f0f0; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background-color: white;
+            font-family: 'Tajawal', sans-serif;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            height: 80px;
+            background: linear-gradient(to left, #1B2A4A, #2B5EA7);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            color: white;
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, #E8A838, #00B388);
+        }
+        .header-title { font-size: 28px; font-weight: 800; }
+        .header-subtitle { font-size: 16px; font-weight: 400; opacity: 0.9; }
+        .logo-container { background-color: rgba(255,255,255,0.95); padding: 5px 15px; border-radius: 4px; height: 50px; display: flex; align-items: center; }
+        .logo-img { height: 40px; width: auto; object-fit: contain; }
+
+        /* Content Layout */
+        .content-wrapper {
+            flex-grow: 1;
+            padding: 20px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            height: 80px;
+        }
+        .kpi-card {
+            background-color: #F8F9FA;
+            border: 1px solid #E0E0E0;
+            border-right: 4px solid #1B2A4A;
+            padding: 10px 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .kpi-card.critical { border-right-color: #D32F2F; background-color: #FFEBEE; }
+        .kpi-card.high { border-right-color: #F57C00; background-color: #FFF3E0; }
+        .kpi-card.medium { border-right-color: #FBC02D; background-color: #FFFDE7; }
+        .kpi-card.low { border-right-color: #388E3C; background-color: #E8F5E9; }
+        
+        .kpi-label { font-size: 12px; color: #555; font-weight: 700; margin-bottom: 5px; }
+        .kpi-value { font-size: 28px; font-weight: 800; color: #1B2A4A; line-height: 1; }
+        .kpi-sub { font-size: 10px; color: #777; margin-top: 3px; }
+
+        /* Main Split */
+        .main-split {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 15px;
+            flex-grow: 1;
+        }
+
+        /* Table Styles */
+        .table-container {
+            border: 1px solid #E0E0E0;
+            background-color: white;
+            overflow: hidden;
+        }
+        .risk-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        .risk-table th {
+            background-color: #1B2A4A;
+            color: white;
+            padding: 8px 10px;
+            text-align: right;
+            font-weight: 700;
+            border-bottom: 2px solid #E8A838;
+        }
+        .risk-table td {
+            padding: 6px 10px;
+            border-bottom: 1px solid #EEE;
+            color: #333;
+            vertical-align: middle;
+        }
+        .risk-table tr:nth-child(even) { background-color: #F9FAFB; }
+        .risk-table tr:hover { background-color: #F0F4F8; }
+        
+        .badge {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: 700;
+            display: inline-block;
+            min-width: 60px;
+            text-align: center;
+        }
+        .badge-critical { background-color: #FFEBEE; color: #D32F2F; border: 1px solid #FFCDD2; }
+        .badge-high { background-color: #FFF3E0; color: #EF6C00; border: 1px solid #FFE0B2; }
+        .badge-medium { background-color: #FFFDE7; color: #F9A825; border: 1px solid #FFF59D; }
+        .badge-low { background-color: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9; }
+        .badge-open { background-color: #E3F2FD; color: #1565C0; border: 1px solid #BBDEFB; }
+        .badge-closed { background-color: #EEEEEE; color: #616161; border: 1px solid #E0E0E0; }
+
+        /* Sidebar Styles */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .sidebar-panel {
+            background-color: #F8F9FA;
+            border: 1px solid #E0E0E0;
+            padding: 15px;
+            flex-grow: 1;
+        }
+        .panel-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1B2A4A;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #00B388;
+            padding-bottom: 5px;
+            display: block;
+        }
+
+        /* Heatmap Grid */
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 2px;
+            aspect-ratio: 1/1;
+            margin-top: 10px;
+        }
+        .heatmap-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: rgba(0,0,0,0.6);
+            border-radius: 2px;
+        }
+        /* Heatmap Colors */
+        .hm-green { background-color: #C8E6C9; }
+        .hm-yellow { background-color: #FFF59D; }
+        .hm-orange { background-color: #FFE0B2; }
+        .hm-red { background-color: #FFCDD2; }
+        .hm-darkred { background-color: #EF9A9A; }
+
+        /* Axis Labels */
+        .axis-label {
+            font-size: 10px;
+            color: #666;
+            text-align: center;
+            margin-top: 5px;
+        }
+        .axis-label-v {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            height: 100%;
+            float: right;
+            margin-left: 5px;
+        }
+
+        /* Category Bars */
+        .cat-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 10px;
+        }
+        .cat-name { width: 80px; color: #444; }
+        .cat-bar-bg { flex-grow: 1; height: 8px; background-color: #E0E0E0; border-radius: 4px; overflow: hidden; }
+        .cat-bar-fill { height: 100%; background-color: #2B5EA7; }
+        .cat-val { width: 25px; text-align: left; padding-left: 5px; font-weight: 700; color: #1B2A4A; }
+
+        /* Footer */
+        .footer {
+            height: 40px;
+            background-color: #F5F5F5;
+            border-top: 1px solid #DDD;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            font-size: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <div class="header-title">سجل المخاطر الاستراتيجي</div>
+                <div class="header-subtitle">تحليل شامل للمخاطر وتصنيفها حسب الأثر والاحتمالية</div>
+            </div>
+            <div class="logo-container">
+                <img src="../assets/logo_ndmo.png" class="logo-img" alt="NDMO">
+                <div style="width: 1px; height: 25px; background-color: #ccc; margin: 0 10px;"></div>
+                <img src="../assets/logo_sdaia.png" class="logo-img" alt="SDAIA">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content-wrapper">
+            <!-- Top KPIs -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">إجمالي المخاطر</div>
+                    <div class="kpi-value">42</div>
+                    <div class="kpi-sub">▲ 3 مخاطر جديدة هذا الشهر</div>
+                </div>
+                <div class="kpi-card critical">
+                    <div class="kpi-label">مخاطر حرجة (Critical)</div>
+                    <div class="kpi-value" style="color: #D32F2F;">5</div>
+                    <div class="kpi-sub">تتطلب إجراء فوري</div>
+                </div>
+                <div class="kpi-card high">
+                    <div class="kpi-label">مخاطر عالية (High)</div>
+                    <div class="kpi-value" style="color: #EF6C00;">12</div>
+                    <div class="kpi-sub">تتطلب خطة معالجة</div>
+                </div>
+                <div class="kpi-card medium">
+                    <div class="kpi-label">مخاطر متوسطة (Medium)</div>
+                    <div class="kpi-value" style="color: #F9A825;">18</div>
+                    <div class="kpi-sub">مراقبة دورية</div>
+                </div>
+                <div class="kpi-card low">
+                    <div class="kpi-label">مخاطر منخفضة (Low)</div>
+                    <div class="kpi-value" style="color: #2E7D32;">7</div>
+                    <div class="kpi-sub">مقبولة</div>
+                </div>
+            </div>
+
+            <!-- Main Split -->
+            <div class="main-split">
+                <!-- Left: Table -->
+                <div class="table-container">
+                    <table class="risk-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">#</th>
+                                <th style="width: 12%;">التصنيف</th>
+                                <th style="width: 25%;">وصف الخطر</th>
+                                <th style="width: 8%;">الاحتمالية</th>
+                                <th style="width: 8%;">الأثر</th>
+                                <th style="width: 8%;">الدرجة</th>
+                                <th style="width: 15%;">استراتيجية المعالجة</th>
+                                <th style="width: 10%;">المالك</th>
+                                <th style="width: 9%;">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>R-001</td>
+                                <td>أمن سيبراني</td>
+                                <td>تسرب بيانات حساسة نتيجة ثغرة في النظام القديم</td>
+                                <td>5</td>
+                                <td>5</td>
+                                <td><span class="badge badge-critical">25 - حرج</span></td>
+                                <td>تشفير فوري + ترقية النظام</td>
+                                <td>IT Dept</td>
+                                <td><span class="badge badge-open">جاري العمل</span></td>
+                            </tr>
+                            <tr>
+                                <td>R-002</td>
+                                <td>امتثال قانوني</td>
+                                <td>عدم التوافق مع ضوابط حماية البيانات الشخصية الجديدة</td>
+                                <td>4</td>
+                                <td>5</td>
+                                <td><span class="badge badge-critical">20 - حرج</span></td>
+                                <td>مراجعة السياسات وتحديثها</td>
+                                <td>Legal</td>
+                                <td><span class="badge badge-open">مفتوح</span></td>
+                            </tr>
+                            <tr>
+                                <td>R-003</td>
+                                <td>تشغيلي</td>
+                                <td>نقص الكوادر المؤهلة في إدارة البيانات</td>
+                                <td>4</td>
+                                <td>4</td>
+                                <td><span class="badge badge-high">16 - عالي</span></td>
+                                <td>خطة توظيف وتدريب عاجلة</td>
+                                <td>HR</td>
+                                <td><span class="badge badge-open">جاري العمل</span></td>
+                            </tr>
+                            <tr>
+                                <td>R-004</td>
+                                <td>تقني</td>
+                                <td>تأخر في توريد الخوادم الجديدة للمركز الوطني</td>
+                                <td>3</td>
+                                <td>4</td>
+                                <td><span class="badge badge-high">12 - عالي</span></td>
+                                <td>تفعيل خطة التعافي المؤقتة</td>
+                                <td>Procurement</td>
+                                <td><span class="badge badge-open">متأخر</span></td>
+                            </tr>
+                            <tr>
+                                <td>R-005</td>
+                                <td>استراتيجي</td>
+                                <td>تغيير في الأولويات الوطنية يؤثر على الجدول الزمني</td>
+                                <td>2</td>
+                                <td>5</td>
+                                <td><span class="badge badge-medium">10 - متوسط</span></td>
+                                <td>إعادة جدولة المشاريع</td>
+                                <td>PMO</td>
+                                <td><span class="badge badge-closed">مغلق</span></td>
+                            </tr>
+                            <tr>
+                                <td>R-006</td>
+                                <td>مالي</td>
+                                <td>تجاوز الميزانية المخصصة لمشروع جودة البيانات</td>
+                                <td>3</td>
+                                <td>3</td>
+                                <td><span class="badge badge-medium">9 - متوسط</span></td>
+                                <td>مراجعة النطاق وتقليص التكاليف</td>
+                                <td>Finance</td>
+                                <td><span class="badge badge-open">مفتوح</span></td>
+                            </tr>
+                            <tr>
+                                <td>R-007</td>
+                                <td>تشغيلي</td>
+                                <td>ضعف التواصل بين أصحاب المصلحة الرئيسيين</td>
+                                <td>2</td>
+                                <td>4</td>
+                                <td><span class="badge badge-medium">8 - متوسط</span></td>
+                                <td>تفعيل لجنة توجيهية دورية</td>
+                                <td>Comms</td>
+                                <td><span class="badge badge-closed">تم الحل</span></td>
+                            </tr>
+                            <tr>
+                                <td>R-008</td>
+                                <td>تقني</td>
+                                <td>عدم تكامل الأنظمة الفرعية مع المنصة المركزية</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td><span class="badge badge-low">6 - منخفض</span></td>
+                                <td>تطوير واجهات برمجة (APIs)</td>
+                                <td>IT Dev</td>
+                                <td><span class="badge badge-open">جاري العمل</span></td>
+                            </tr>
+                            <tr>
+                                <td>R-009</td>
+                                <td>بيئة عمل</td>
+                                <td>تأخر جاهزية المقر الجديد لفريق البيانات</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td><span class="badge badge-low">2 - منخفض</span></td>
+                                <td>تمديد عقد المقر الحالي</td>
+                                <td>Admin</td>
+                                <td><span class="badge badge-closed">مغلق</span></td>
+                            </tr>
+                            <tr>
+                                <td>R-010</td>
+                                <td>سمعة</td>
+                                <td>شكاوى المستفيدين من بطء الخدمات الإلكترونية</td>
+                                <td>3</td>
+                                <td>2</td>
+                                <td><span class="badge badge-low">6 - منخفض</span></td>
+                                <td>تحسين الأداء (Optimization)</td>
+                                <td>CS</td>
+                                <td><span class="badge badge-open">مفتوح</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Right: Sidebar -->
+                <div class="sidebar">
+                    <!-- Heatmap Panel -->
+                    <div class="sidebar-panel">
+                        <span class="panel-title">مصفوفة المخاطر (Heatmap)</span>
+                        <div style="display: flex; height: 180px;">
+                            <div class="axis-label-v">الأثر (Impact)</div>
+                            <div style="flex-grow: 1;">
+                                <div class="heatmap-grid">
+                                    <!-- Row 5 (High Impact) -->
+                                    <div class="heatmap-cell hm-orange">2</div>
+                                    <div class="heatmap-cell hm-orange">1</div>
+                                    <div class="heatmap-cell hm-red">3</div>
+                                    <div class="heatmap-cell hm-darkred">1</div>
+                                    <div class="heatmap-cell hm-darkred">1</div>
+                                    <!-- Row 4 -->
+                                    <div class="heatmap-cell hm-yellow">0</div>
+                                    <div class="heatmap-cell hm-orange">1</div>
+                                    <div class="heatmap-cell hm-orange">2</div>
+                                    <div class="heatmap-cell hm-red">1</div>
+                                    <div class="heatmap-cell hm-darkred">0</div>
+                                    <!-- Row 3 -->
+                                    <div class="heatmap-cell hm-yellow">1</div>
+                                    <div class="heatmap-cell hm-yellow">2</div>
+                                    <div class="heatmap-cell hm-orange">1</div>
+                                    <div class="heatmap-cell hm-orange">0</div>
+                                    <div class="heatmap-cell hm-red">0</div>
+                                    <!-- Row 2 -->
+                                    <div class="heatmap-cell hm-green">3</div>
+                                    <div class="heatmap-cell hm-yellow">1</div>
+                                    <div class="heatmap-cell hm-yellow">0</div>
+                                    <div class="heatmap-cell hm-orange">0</div>
+                                    <div class="heatmap-cell hm-orange">0</div>
+                                    <!-- Row 1 (Low Impact) -->
+                                    <div class="heatmap-cell hm-green">5</div>
+                                    <div class="heatmap-cell hm-green">2</div>
+                                    <div class="heatmap-cell hm-yellow">0</div>
+                                    <div class="heatmap-cell hm-yellow">0</div>
+                                    <div class="heatmap-cell hm-orange">0</div>
+                                </div>
+                                <div class="axis-label">الاحتمالية (Probability)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Categories Panel -->
+                    <div class="sidebar-panel">
+                        <span class="panel-title">المخاطر حسب التصنيف</span>
+                        <div style="margin-top: 10px;">
+                            <div class="cat-row">
+                                <div class="cat-name">تقني</div>
+                                <div class="cat-bar-bg"><div class="cat-bar-fill" style="width: 80%;"></div></div>
+                                <div class="cat-val">12</div>
+                            </div>
+                            <div class="cat-row">
+                                <div class="cat-name">تشغيلي</div>
+                                <div class="cat-bar-bg"><div class="cat-bar-fill" style="width: 60%;"></div></div>
+                                <div class="cat-val">9</div>
+                            </div>
+                            <div class="cat-row">
+                                <div class="cat-name">أمن سيبراني</div>
+                                <div class="cat-bar-bg"><div class="cat-bar-fill" style="width: 45%;"></div></div>
+                                <div class="cat-val">7</div>
+                            </div>
+                            <div class="cat-row">
+                                <div class="cat-name">امتثال</div>
+                                <div class="cat-bar-bg"><div class="cat-bar-fill" style="width: 35%;"></div></div>
+                                <div class="cat-val">5</div>
+                            </div>
+                            <div class="cat-row">
+                                <div class="cat-name">مالي</div>
+                                <div class="cat-bar-bg"><div class="cat-bar-fill" style="width: 30%;"></div></div>
+                                <div class="cat-val">4</div>
+                            </div>
+                            <div class="cat-row">
+                                <div class="cat-name">أخرى</div>
+                                <div class="cat-bar-bg"><div class="cat-bar-fill" style="width: 35%;"></div></div>
+                                <div class="cat-val">5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>مكتب إدارة البيانات الوطنية | NDMO</div>
+            <div>سري للغاية - للاستخدام الداخلي فقط</div>
+            <div>Page 28</div>
+        </div>
+    </div>
+</body>
+</html>

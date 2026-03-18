@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل أصحاب المصلحة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1B2A4A; /* Royal Dark Blue */
+            --accent-color: #00B388; /* Teal */
+            --highlight-color: #E8A838; /* Gold */
+            --white: #FFFFFF;
+            --light-bg: #F8F9FA;
+            --border-color: #E0E0E0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: var(--white);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Royal Blue Header */
+        .header {
+            background-color: var(--primary-color);
+            height: 85px;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            position: relative;
+            z-index: 10;
+            border-bottom: 4px solid var(--highlight-color);
+        }
+
+        .header-title {
+            color: var(--white);
+            font-size: 28px;
+            font-weight: 800;
+            margin-left: 20px;
+        }
+
+        .header-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            font-weight: 500;
+            margin-right: auto;
+        }
+
+        .logo-container {
+            background-color: rgba(255,255,255,0.1);
+            padding: 5px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            height: 40px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        /* Content Area: Radar Chart & Table */
+        .content {
+            flex: 1;
+            padding: 30px 40px;
+            display: grid;
+            grid-template-columns: 450px 1fr;
+            gap: 30px;
+            background-color: var(--light-bg);
+        }
+
+        /* Radar Chart Simulation (Power/Interest Grid) */
+        .chart-container {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .power-interest-grid {
+            width: 350px;
+            height: 350px;
+            border: 2px solid #ddd;
+            position: relative;
+            background: linear-gradient(to top right, #f9f9f9 0%, #fff 100%);
+        }
+
+        /* Grid Lines */
+        .grid-line-v {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #ddd;
+            border-left: 1px dashed #aaa;
+        }
+
+        .grid-line-h {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #ddd;
+            border-top: 1px dashed #aaa;
+        }
+
+        /* Quadrant Labels */
+        .quad-label {
+            position: absolute;
+            font-size: 12px;
+            font-weight: bold;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .ql-tl { top: 10px; left: 10px; } /* High Power, Low Interest */
+        .ql-tr { top: 10px; right: 10px; } /* High Power, High Interest */
+        .ql-bl { bottom: 10px; left: 10px; } /* Low Power, Low Interest */
+        .ql-br { bottom: 10px; right: 10px; } /* Low Power, High Interest */
+
+        /* Stakeholder Dots */
+        .sh-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            position: absolute;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 2;
+            border: 2px solid white;
+        }
+
+        /* Table */
+        .table-container {
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .table-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        th {
+            background-color: #f1f2f6;
+            color: var(--primary-color);
+            padding: 10px;
+            text-align: right;
+            font-weight: 700;
+            border-bottom: 2px solid #ddd;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            color: #444;
+        }
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .status-high { background-color: rgba(231, 76, 60, 0.1); color: #E74C3C; }
+        .status-med { background-color: rgba(241, 196, 15, 0.1); color: #F39C12; }
+        .status-low { background-color: rgba(46, 204, 113, 0.1); color: #2ECC71; }
+
+        /* Footer */
+        .footer {
+            height: 40px;
+            background-color: var(--white);
+            border-top: 1px solid #E0E0E0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 10px;
+            color: #888;
+        }
+
+        .page-number {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">مصفوفة أصحاب المصلحة (Stakeholder Analysis)</div>
+            <div class="header-subtitle">تحليل التأثير والاهتمام لضمان نجاح المبادرات</div>
+            <div class="logo-container">
+                <img src="assets/logo_ndmo.png" class="logo-img" alt="NDMO">
+                <img src="assets/logo_sdaia.png" class="logo-img" alt="SDAIA">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Chart Area -->
+            <div class="chart-container">
+                <div class="chart-title">شبكة القوة / الاهتمام (Power/Interest Grid)</div>
+                <div class="power-interest-grid">
+                    <div class="grid-line-v"></div>
+                    <div class="grid-line-h"></div>
+                    
+                    <!-- Labels -->
+                    <div class="quad-label ql-tr">Manage Closely (High/High)</div>
+                    <div class="quad-label ql-tl">Keep Satisfied (High/Low)</div>
+                    <div class="quad-label ql-br">Keep Informed (Low/High)</div>
+                    <div class="quad-label ql-bl">Monitor (Low/Low)</div>
+
+                    <!-- Stakeholders -->
+                    <div class="sh-dot" style="top: 15%; right: 15%; background-color: #E74C3C;">S1</div> <!-- NDMO -->
+                    <div class="sh-dot" style="top: 25%; right: 25%; background-color: #E74C3C;">S2</div> <!-- SDAIA -->
+                    <div class="sh-dot" style="top: 20%; left: 20%; background-color: #F39C12;">S3</div> <!-- NCA -->
+                    <div class="sh-dot" style="bottom: 20%; right: 20%; background-color: #3498DB;">S4</div> <!-- Users -->
+                    <div class="sh-dot" style="bottom: 15%; left: 15%; background-color: #95A5A6;">S5</div> <!-- Vendors -->
+                </div>
+                <div style="margin-top: 15px; font-size: 12px; color: #666;">X: مستوى الاهتمام | Y: مستوى التأثير/القوة</div>
+            </div>
+
+            <!-- Table Area -->
+            <div class="table-container">
+                <div class="table-header">سجل تحليل أصحاب المصلحة</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 25%;">صاحب المصلحة</th>
+                            <th style="width: 15%;">الدور</th>
+                            <th style="width: 15%;">التأثير</th>
+                            <th style="width: 15%;">الاهتمام</th>
+                            <th style="width: 25%;">استراتيجية المشاركة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>S1</td>
+                            <td>مكتب إدارة البيانات الوطنية (NDMO)</td>
+                            <td>منظم / مشرع</td>
+                            <td><span class="status-pill status-high">عالي جداً</span></td>
+                            <td><span class="status-pill status-high">عالي</span></td>
+                            <td>إدارة وثيقة، تقارير دورية، اجتماعات شهرية</td>
+                        </tr>
+                        <tr>
+                            <td>S2</td>
+                            <td>الهيئة السعودية للبيانات (SDAIA)</td>
+                            <td>ممكن استراتيجي</td>
+                            <td><span class="status-pill status-high">عالي</span></td>
+                            <td><span class="status-pill status-high">عالي</span></td>
+                            <td>مواءمة استراتيجية، شراكة في المبادرات</td>
+                        </tr>
+                        <tr>
+                            <td>S3</td>
+                            <td>الهيئة الوطنية للأمن السيبراني (NCA)</td>
+                            <td>رقابي / أمني</td>
+                            <td><span class="status-pill status-high">عالي</span></td>
+                            <td><span class="status-pill status-med">متوسط</span></td>
+                            <td>إبقاء على رضا تام، امتثال كامل للضوابط</td>
+                        </tr>
+                        <tr>
+                            <td>S4</td>
+                            <td>المستفيدون النهائيون (الجمهور)</td>
+                            <td>مستخدم للبيانات</td>
+                            <td><span class="status-pill status-low">منخفض</span></td>
+                            <td><span class="status-pill status-high">عالي</span></td>
+                            <td>إبقاء على اطلاع، استطلاعات رأي، شفافية</td>
+                        </tr>
+                        <tr>
+                            <td>S5</td>
+                            <td>موردو التقنية والحلول</td>
+                            <td>شريك تنفيذ</td>
+                            <td><span class="status-pill status-low">منخفض</span></td>
+                            <td><span class="status-pill status-low">منخفض</span></td>
+                            <td>مراقبة الأداء، عقود مستوى الخدمة (SLA)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>سري للغاية - للاستخدام الداخلي فقط</div>
+            <div class="page-number">34</div>
+        </div>
+    </div>
+</body>
+</html>

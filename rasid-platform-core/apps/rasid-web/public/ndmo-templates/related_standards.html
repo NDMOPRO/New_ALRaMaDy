@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        /* Reduced inner paddings and tighter layout to avoid overflow */
+        .content-area { padding: 20px 30px 10px 30px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+
+        .standards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; flex: 1; }
+        
+        .std-card { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; flex-direction: column; border-top: 4px solid #ccc; position: relative; }
+        .std-card.blue { border-color: #2B5EA7; }
+        .std-card.teal { border-color: #00B388; }
+        .std-card.gold { border-color: #E8A838; }
+        
+        .sc-header { padding: 10px 12px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .sc-icon { width: 40px; height: 40px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #1B2A4A; }
+        .sc-code { font-size: 11px; font-weight: 800; color: #888; background: #f0f0f0; padding: 4px 8px; }
+        
+        .sc-body { padding: 0 12px 8px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        .sc-title { font-size: 16px; font-weight: 800; color: #1B2A4A; line-height: 1.3; }
+        .sc-desc { font-size: 12px; color: #555; line-height: 1.5; }
+        
+        /* Collapsed requirements into a single line to save vertical space */
+        .sc-reqs { background: #fafafa; padding: 6px; margin-top: 6px; }
+        .req-title { font-size: 11px; font-weight: 800; color: #1B2A4A; margin-bottom: 4px; }
+        .req-line { font-size: 11px; color: #444; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .sc-footer { padding: 8px 12px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; }
+        .status-active { color: #00B388; }
+        .status-draft { color: #E8A838; }
+
+        .footer { position: absolute; bottom: 18px; left: 30px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 30px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">المعايير والمواصفات - الأطر الفنية لتبادل وحفظ البيانات</div>
+            <div class="header-badge">28</div>
+        </div>
+
+        <div class="content-area">
+            <div class="standards-grid">
+                <!-- Card 1 -->
+                <div class="std-card blue">
+                    <div class="sc-header"><div class="sc-icon"><i class="fas fa-tags"></i></div><div class="sc-code">STD-MD-01</div></div>
+                    <div class="sc-body">
+                        <div class="sc-title">معيار البيانات الوصفية (Metadata Standard)</div>
+                        <div class="sc-desc">يحدد الحقول الإلزامية والاختيارية لوصف مجموعات البيانات لضمان قابليتها للاكتشاف والفهم.</div>
+                        <div class="sc-reqs">
+                            <div class="req-title">المتطلبات الرئيسية:</div>
+                            <div class="req-line">استخدام قاموس دبلن كور (Dublin Core) · تحديد المالك وتاريخ التحديث · تصنيف البيانات حسب القائمة الوطنية</div>
+                        </div>
+                    </div>
+                    <div class="sc-footer"><span>تاريخ الإصدار: 2023/05</span><span class="status-active"><i class="fas fa-check-circle"></i> معتمد</span></div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="std-card teal">
+                    <div class="sc-header"><div class="sc-icon"><i class="fas fa-project-diagram"></i></div><div class="sc-code">STD-INT-02</div></div>
+                    <div class="sc-body">
+                        <div class="sc-title">معيار قابلية التشغيل البيني (Interoperability)</div>
+                        <div class="sc-desc">يوحد بروتوكولات وصيغ تبادل البيانات بين الجهات الحكومية لضمان التكامل السلس.</div>
+                        <div class="sc-reqs">
+                            <div class="req-title">المتطلبات الرئيسية:</div>
+                            <div class="req-line">اعتماد صيغ JSON / XML للتبادل · استخدام واجهات API موثقة (RESTful) · الالتزام بمعايير الترميز الموحدة (UTF-8)</div>
+                        </div>
+                    </div>
+                    <div class="sc-footer"><span>تاريخ الإصدار: 2023/08</span><span class="status-active"><i class="fas fa-check-circle"></i> معتمد</span></div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="std-card gold">
+                    <div class="sc-header"><div class="sc-icon"><i class="fas fa-map-marked-alt"></i></div><div class="sc-code">STD-GEO-03</div></div>
+                    <div class="sc-body">
+                        <div class="sc-title">معيار البيانات الجيومكانية (Geospatial Data)</div>
+                        <div class="sc-desc">يضبط مواصفات البيانات المكانية والخرائط لضمان دقة الموقع والتوافق مع المرجع الوطني.</div>
+                        <div class="sc-reqs">
+                            <div class="req-title">المتطلبات الرئيسية:</div>
+                            <div class="req-line">المرجع الجيوديسي الوطني (KSA-GRF) · صيغ الملفات المكانية (Shapefile, GeoJSON) · دقة الإحداثيات والبيانات الوصفية المكانية</div>
+                        </div>
+                    </div>
+                    <div class="sc-footer"><span>تاريخ الإصدار: 2024/01</span><span class="status-active"><i class="fas fa-check-circle"></i> معتمد</span></div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="std-card blue">
+                    <div class="sc-header"><div class="sc-icon"><i class="fas fa-database"></i></div><div class="sc-code">STD-REF-04</div></div>
+                    <div class="sc-body">
+                        <div class="sc-title">معيار البيانات المرجعية (Reference Data)</div>
+                        <div class="sc-desc">يوحد قوائم الرموز والتصنيفات الوطنية (مثل رموز المناطق، الجنسيات، الأنشطة الاقتصادية).</div>
+                        <div class="sc-reqs">
+                            <div class="req-title">المتطلبات الرئيسية:</div>
+                            <div class="req-line">استخدام القوائم الوطنية المعتمدة حصراً · آلية تحديث ومزامنة القوائم المرجعية · منع إنشاء قوائم محلية بديلة</div>
+                        </div>
+                    </div>
+                    <div class="sc-footer"><span>تاريخ الإصدار: 2024/03</span><span class="status-draft"><i class="fas fa-clock"></i> مسودة نهائية</span></div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="std-card teal">
+                    <div class="sc-header"><div class="sc-icon"><i class="fas fa-file-csv"></i></div><div class="sc-code">STD-OD-05</div></div>
+                    <div class="sc-body">
+                        <div class="sc-title">مواصفات نشر البيانات المفتوحة</div>
+                        <div class="sc-desc">يحدد الشروط الفنية لنشر البيانات للعموم لضمان سهولة الاستخدام وإعادة الاستخدام.</div>
+                        <div class="sc-reqs">
+                            <div class="req-title">المتطلبات الرئيسية:</div>
+                            <div class="req-line">نشر بصيغ مفتوحة غير مملوكة (CSV, ODS) · توفير رخصة استخدام واضحة · خلو البيانات من أي معلومات شخصية</div>
+                        </div>
+                    </div>
+                    <div class="sc-footer"><span>تاريخ الإصدار: 2023/02</span><span class="status-active"><i class="fas fa-check-circle"></i> معتمد</span></div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="std-card gold">
+                    <div class="sc-header"><div class="sc-icon"><i class="fas fa-server"></i></div><div class="sc-code">STD-STR-06</div></div>
+                    <div class="sc-body">
+                        <div class="sc-title">معيار تخزين وأرشفة البيانات</div>
+                        <div class="sc-desc">يحدد المتطلبات الفنية لحفظ البيانات التاريخية وفترات الاستبقاء وآليات الاسترجاع.</div>
+                        <div class="sc-reqs">
+                            <div class="req-title">المتطلبات الرئيسية:</div>
+                            <div class="req-line">تحديد وسائط التخزين المناسبة لكل تصنيف · فترات الاحتفاظ حسب المتطلبات النظامية · ضمان سلامة البيانات أثناء الحفظ الطويل</div>
+                        </div>
+                    </div>
+                    <div class="sc-footer"><span>تاريخ الإصدار: 2024/06</span><span class="status-draft"><i class="fas fa-clock"></i> قيد المراجعة</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">28</div>
+    </div>
+</body>
+</html>

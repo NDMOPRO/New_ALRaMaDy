@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل الأولويات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1B2A4A; /* Royal Dark Blue */
+            --accent-color: #00B388; /* Teal */
+            --highlight-color: #E8A838; /* Gold */
+            --white: #FFFFFF;
+            --light-bg: #F8F9FA;
+            --border-color: #E0E0E0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: var(--white);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Royal Blue Header */
+        .header {
+            background-color: var(--primary-color);
+            height: 85px;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            position: relative;
+            z-index: 10;
+            border-bottom: 4px solid var(--highlight-color);
+        }
+
+        .header-title {
+            color: var(--white);
+            font-size: 28px;
+            font-weight: 800;
+            margin-left: 20px;
+        }
+
+        .header-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            font-weight: 500;
+            margin-right: auto;
+        }
+
+        .logo-container {
+            background-color: rgba(255,255,255,0.1);
+            padding: 5px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            height: 40px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        /* Content Area: Eisenhower Matrix Style */
+        .content {
+            flex: 1;
+            padding: 30px 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px;
+            background-color: var(--light-bg);
+            position: relative;
+        }
+
+        /* Center Axis Lines */
+        .axis-v {
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            bottom: 20px;
+            width: 4px;
+            background-color: var(--primary-color);
+            z-index: 5;
+            transform: translateX(-50%);
+        }
+
+        .axis-h {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            right: 20px;
+            height: 4px;
+            background-color: var(--primary-color);
+            z-index: 5;
+            transform: translateY(-50%);
+        }
+
+        /* Quadrants */
+        .quadrant {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quad-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .quad-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .quad-badge {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Q1: Quick Wins */
+        .q1 { border-left: 6px solid var(--accent-color); }
+        .q1 .quad-title { color: var(--accent-color); }
+        .q1 .quad-badge { background-color: var(--accent-color); }
+
+        /* Q2: Strategic Projects */
+        .q2 { border-left: 6px solid var(--highlight-color); }
+        .q2 .quad-title { color: var(--highlight-color); }
+        .q2 .quad-badge { background-color: var(--highlight-color); }
+
+        /* Q3: Fill-ins */
+        .q3 { border-left: 6px solid #95A5A6; }
+        .q3 .quad-title { color: #7F8C8D; }
+        .q3 .quad-badge { background-color: #95A5A6; }
+
+        /* Q4: Thankless Tasks */
+        .q4 { border-left: 6px solid #E74C3C; }
+        .q4 .quad-title { color: #E74C3C; }
+        .q4 .quad-badge { background-color: #E74C3C; }
+
+        .initiative-list {
+            list-style: none;
+            padding: 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .initiative-item {
+            background-color: #f9f9f9;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-right: 3px solid transparent;
+        }
+
+        .q1 .initiative-item { border-right-color: var(--accent-color); }
+        .q2 .initiative-item { border-right-color: var(--highlight-color); }
+        .q3 .initiative-item { border-right-color: #95A5A6; }
+        .q4 .initiative-item { border-right-color: #E74C3C; }
+
+        .impact-score {
+            font-weight: bold;
+            color: #555;
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+
+        /* Axis Labels */
+        .axis-label {
+            position: absolute;
+            font-weight: 800;
+            color: var(--primary-color);
+            background-color: var(--white);
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--primary-color);
+            z-index: 10;
+            font-size: 12px;
+        }
+
+        .lbl-top { top: 10px; left: 50%; transform: translateX(-50%); }
+        .lbl-bottom { bottom: 10px; left: 50%; transform: translateX(-50%); }
+        .lbl-left { left: 10px; top: 50%; transform: translateY(-50%); }
+        .lbl-right { right: 10px; top: 50%; transform: translateY(-50%); }
+
+        /* Footer */
+        .footer {
+            height: 40px;
+            background-color: var(--white);
+            border-top: 1px solid #E0E0E0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 10px;
+            color: #888;
+        }
+
+        .page-number {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">مصفوفة أولويات التنفيذ (Prioritization Matrix)</div>
+            <div class="header-subtitle">تصنيف المبادرات بناءً على الأثر الاستراتيجي وسهولة التنفيذ</div>
+            <div class="logo-container">
+                <img src="assets/logo_ndmo.png" class="logo-img" alt="NDMO">
+                <img src="assets/logo_sdaia.png" class="logo-img" alt="SDAIA">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Axis Labels -->
+            <div class="axis-label lbl-top">أثر عالي (High Impact)</div>
+            <div class="axis-label lbl-bottom">أثر منخفض (Low Impact)</div>
+            <div class="axis-label lbl-right">تنفيذ سهل (Low Effort)</div>
+            <div class="axis-label lbl-left">تنفيذ صعب (High Effort)</div>
+
+            <!-- Q1: Quick Wins (High Impact, Low Effort) -->
+            <div class="quadrant q1">
+                <div class="quad-header">
+                    <div class="quad-title">مكاسب سريعة (Quick Wins)</div>
+                    <div class="quad-badge">أولوية قصوى</div>
+                </div>
+                <ul class="initiative-list">
+                    <li class="initiative-item">
+                        <span>إطلاق حملة التوعية بالبيانات</span>
+                        <span class="impact-score">9.5</span>
+                    </li>
+                    <li class="initiative-item">
+                        <span>تفعيل ضوابط الوصول الأساسية</span>
+                        <span class="impact-score">9.2</span>
+                    </li>
+                    <li class="initiative-item">
+                        <span>حصر أصول البيانات الحرجة</span>
+                        <span class="impact-score">8.8</span>
+                    </li>
+                    <li class="initiative-item">
+                        <span>تشكيل لجنة حوكمة البيانات</span>
+                        <span class="impact-score">8.5</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Q2: Strategic Projects (High Impact, High Effort) -->
+            <div class="quadrant q2">
+                <div class="quad-header">
+                    <div class="quad-title">مشاريع استراتيجية (Major Projects)</div>
+                    <div class="quad-badge">تخطيط طويل الأمد</div>
+                </div>
+                <ul class="initiative-list">
+                    <li class="initiative-item">
+                        <span>بناء منصة البيانات الوطنية الموحدة</span>
+                        <span class="impact-score">9.8</span>
+                    </li>
+                    <li class="initiative-item">
+                        <span>تنفيذ برنامج جودة البيانات الشامل</span>
+                        <span class="impact-score">9.0</span>
+                    </li>
+                    <li class="initiative-item">
+                        <span>تطوير نماذج الذكاء الاصطناعي التنبؤية</span>
+                        <span class="impact-score">8.9</span>
+                    </li>
+                    <li class="initiative-item">
+                        <span>أتمتة عمليات تصنيف البيانات</span>
+                        <span class="impact-score">8.7</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Q3: Thankless Tasks (Low Impact, High Effort) -->
+            <div class="quadrant q4">
+                <div class="quad-header">
+                    <div class="quad-title">مهام شاقة (Thankless Tasks)</div>
+                    <div class="quad-badge">تجنب / تأجيل</div>
+                </div>
+                <ul class="initiative-list">
+                    <li class="initiative-item">
+                        <span>أرشفة البيانات التاريخية غير الهامة</span>
+                        <span class="impact-score">3.5</span>
+                    </li>
+                    <li class="initiative-item">
+                        <span>تحديث الأنظمة القديمة (Legacy) يدوياً</span>
+                        <span class="impact-score">4.2</span>
+                    </li>
+                    <li class="initiative-item">
+                        <span>إعادة هيكلة قواعد البيانات الفرعية</span>
+                        <span class="impact-score">3.8</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Q4: Fill-ins (Low Impact, Low Effort) -->
+            <div class="quadrant q3">
+                <div class="quad-header">
+                    <div class="quad-title">مهام ثانوية (Fill-ins)</div>
+                    <div class="quad-badge">عند التفرغ</div>
+                </div>
+                <ul class="initiative-list">
+                    <li class="initiative-item">
+                        <span>تحديث واجهات المستخدم الداخلية</span>
+                        <span class="impact-score">5.5</span>
+                    </li>
+                    <li class="initiative-item">
+                        <span>إعداد تقارير الأداء الروتينية</span>
+                        <span class="impact-score">5.2</span>
+                    </li>
+                    <li class="initiative-item">
+                        <span>تنظيم الملفات المشتركة</span>
+                        <span class="impact-score">4.8</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>سري للغاية - للاستخدام الداخلي فقط</div>
+            <div class="page-number">35</div>
+        </div>
+    </div>
+</body>
+</html>

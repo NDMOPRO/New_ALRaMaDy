@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+            flex-shrink: 0;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 20px 40px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Hierarchy Levels */
+        .level-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Connector Lines */
+        .v-line {
+            width: 2px; height: 20px; background: #ccc; margin: 0 auto;
+        }
+        .h-line-container {
+            width: 60%; height: 20px;
+            border-top: 2px solid #ccc;
+            border-left: 2px solid #ccc;
+            border-right: 2px solid #ccc;
+            margin: 0 auto;
+            border-radius: 10px 10px 0 0;
+        }
+
+        /* Role Cards */
+        .gov-card {
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            border-top: 4px solid #ccc;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+        }
+        
+        /* Strategic Level */
+        .card-strategic {
+            width: 600px;
+            border-color: #E8A838;
+            background: linear-gradient(to bottom, #fff, #fffcf5);
+        }
+        
+        /* Tactical Level */
+        .card-tactical {
+            width: 500px;
+            border-color: #2B5EA7;
+            background: linear-gradient(to bottom, #fff, #f5f8fc);
+        }
+
+        /* Operational Level */
+        .ops-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 90%;
+        }
+        .card-ops {
+            border-color: #00B388;
+            background: linear-gradient(to bottom, #fff, #f2fcf9);
+        }
+
+        /* Card Content */
+        .gc-header {
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 8px;
+        }
+        .gc-title { font-size: 14px; font-weight: 800; color: #1B2A4A; display: flex; align-items: center; gap: 8px; }
+        .gc-icon { color: inherit; opacity: 0.8; }
+        .gc-badge { 
+            font-size: 10px; font-weight: 700; color: white; padding: 2px 8px; border-radius: 10px;
+        }
+        
+        .gc-body { display: flex; gap: 15px; }
+        .gc-col { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+        .gc-label { font-size: 10px; font-weight: 700; color: #888; text-transform: uppercase; }
+        
+        .gc-list { list-style: none; }
+        .gc-item {
+            font-size: 11px; color: #555; margin-bottom: 4px;
+            padding-right: 10px; position: relative; line-height: 1.3;
+        }
+        .gc-item::before {
+            content: '•'; position: absolute; right: 0; color: #ccc;
+        }
+        .card-strategic .gc-item::before { color: #E8A838; }
+        .card-tactical .gc-item::before { color: #2B5EA7; }
+        .card-ops .gc-item::before { color: #00B388; }
+
+        .members-box {
+            background: rgba(0,0,0,0.03);
+            padding: 8px; border-radius: 4px;
+            font-size: 10px; color: #444; line-height: 1.4;
+        }
+
+        /* Footer */
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">نموذج الحوكمة - الهيكل التنظيمي لإدارة البيانات</div>
+            <div class="header-badge">22</div>
+        </div>
+
+        <div class="content-area">
+            
+            <!-- Level 1: Strategic -->
+            <div class="level-container">
+                <div class="gov-card card-strategic">
+                    <div class="gc-header">
+                        <div class="gc-title" style="color:#B38600">
+                            <i class="fas fa-chess-king gc-icon"></i>
+                            اللجنة التوجيهية للبيانات (Steering Committee)
+                        </div>
+                        <div class="gc-badge" style="background:#E8A838">المستوى الاستراتيجي</div>
+                    </div>
+                    <div class="gc-body">
+                        <div class="gc-col" style="flex: 1.5;">
+                            <div class="gc-label">المسؤوليات الرئيسية</div>
+                            <ul class="gc-list">
+                                <li class="gc-item">اعتماد استراتيجية البيانات والسياسات الوطنية.</li>
+                                <li class="gc-item">الإشراف العام على برامج التحول الرقمي وإدارة البيانات.</li>
+                                <li class="gc-item">حل النزاعات المتعلقة بملكية البيانات بين القطاعات.</li>
+                            </ul>
+                        </div>
+                        <div class="gc-col">
+                            <div class="gc-label">الأعضاء</div>
+                            <div class="members-box">
+                                <strong>الرئيس:</strong> معالي رئيس الهيئة<br>
+                                <strong>الأعضاء:</strong> نواب الرئيس، الرئيس التنفيذي للبيانات (CDO)، ممثلي الوزارات الرئيسية.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="v-line"></div>
+
+            <!-- Level 2: Tactical -->
+            <div class="level-container">
+                <div class="gov-card card-tactical">
+                    <div class="gc-header">
+                        <div class="gc-title" style="color:#1B2A4A">
+                            <i class="fas fa-building gc-icon"></i>
+                            مكتب إدارة البيانات (DMO)
+                        </div>
+                        <div class="gc-badge" style="background:#2B5EA7">المستوى التكتيكي</div>
+                    </div>
+                    <div class="gc-body">
+                        <div class="gc-col" style="flex: 1.5;">
+                            <div class="gc-label">المسؤوليات الرئيسية</div>
+                            <ul class="gc-list">
+                                <li class="gc-item">تطوير المعايير والضوابط والإجراءات التنفيذية.</li>
+                                <li class="gc-item">مراقبة الامتثال وقياس مؤشرات أداء البيانات.</li>
+                                <li class="gc-item">إدارة مبادرات جودة البيانات والبيانات المفتوحة.</li>
+                            </ul>
+                        </div>
+                        <div class="gc-col">
+                            <div class="gc-label">الأعضاء</div>
+                            <div class="members-box">
+                                <strong>الرئيس:</strong> مدير مكتب إدارة البيانات<br>
+                                <strong>الفريق:</strong> أخصائي حوكمة، أخصائي جودة، مهندس بيانات، محلل أعمال.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="h-line-container"></div>
+
+            <!-- Level 3: Operational -->
+            <div class="level-container">
+                <div class="ops-grid">
+                    <!-- Stewards -->
+                    <div class="gov-card card-ops">
+                        <div class="gc-header">
+                            <div class="gc-title" style="color:#00664d">
+                                <i class="fas fa-user-tie gc-icon"></i>
+                                مشرفو البيانات (Data Stewards)
+                            </div>
+                            <div class="gc-badge" style="background:#00B388">المستوى التشغيلي (أعمال)</div>
+                        </div>
+                        <div class="gc-body">
+                            <div class="gc-col">
+                                <ul class="gc-list">
+                                    <li class="gc-item">تعريف مصطلحات البيانات وقواعد العمل.</li>
+                                    <li class="gc-item">تصنيف البيانات وتحديد مستويات السرية.</li>
+                                    <li class="gc-item">معالجة مشاكل جودة البيانات في مجالاتهم.</li>
+                                </ul>
+                                <div class="members-box" style="margin-top:5px;">
+                                    <strong>النطاق:</strong> ممثلين من إدارات الأعمال (HR, Finance, Ops).
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Custodians -->
+                    <div class="gov-card card-ops">
+                        <div class="gc-header">
+                            <div class="gc-title" style="color:#00664d">
+                                <i class="fas fa-server gc-icon"></i>
+                                أمناء البيانات (Data Custodians)
+                            </div>
+                            <div class="gc-badge" style="background:#00B388">المستوى التشغيلي (تقني)</div>
+                        </div>
+                        <div class="gc-body">
+                            <div class="gc-col">
+                                <ul class="gc-list">
+                                    <li class="gc-item">تنفيذ ضوابط الأمن والحماية التقنية.</li>
+                                    <li class="gc-item">إدارة النسخ الاحتياطي وقواعد البيانات.</li>
+                                    <li class="gc-item">توفير الوصول للبيانات حسب الصلاحيات.</li>
+                                </ul>
+                                <div class="members-box" style="margin-top:5px;">
+                                    <strong>النطاق:</strong> فريق تقنية المعلومات (IT Security, DB Admins).
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">22</div>
+    </div>
+</body>
+</html>

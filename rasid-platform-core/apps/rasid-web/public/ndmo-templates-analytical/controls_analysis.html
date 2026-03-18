@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل الضوابط - Controls Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+        }
+        
+        /* Header */
+        .header-strip {
+            height: 8px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #00B388 50%, #E8A838 100%);
+        }
+        .header {
+            padding: 20px 40px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .title-block h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1B2A4A;
+            margin: 0 0 5px 0;
+        }
+        .title-block p {
+            font-size: 14px;
+            color: #64748b;
+            margin: 0;
+        }
+        .logo-box {
+            display: flex;
+            gap: 15px;
+            background: #f8fafc;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        .logo-box img {
+            height: 40px;
+            object-fit: contain;
+        }
+
+        /* Content */
+        .content {
+            padding: 10px 40px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* KPI Row */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        .kpi-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .kpi-text h3 { margin: 0; font-size: 11px; color: #64748b; font-weight: 700; }
+        .kpi-text .val { font-size: 24px; font-weight: 800; color: #1B2A4A; margin-top: 2px; }
+        .kpi-chart {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 4px solid #e2e8f0;
+            border-top-color: #00B388;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: #00B388;
+        }
+
+        /* Matrix Container */
+        .matrix-container {
+            flex-grow: 1;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .matrix-header {
+            background: #1B2A4A;
+            color: white;
+            padding: 10px 15px;
+            font-weight: 700;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        th {
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 700;
+            text-align: right;
+            padding: 10px 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        td {
+            padding: 8px 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
+        }
+        tr:nth-child(even) { background: #f8fafc; }
+
+        /* Status Pills */
+        .pill {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            display: inline-block;
+            text-align: center;
+            min-width: 60px;
+        }
+        .pill-green { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .pill-amber { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .pill-red { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        
+        /* Effectiveness Dots */
+        .eff-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 5px;
+        }
+        .eff-high { background: #00B388; box-shadow: 0 0 0 2px #dcfce7; }
+        .eff-med { background: #E8A838; box-shadow: 0 0 0 2px #fef3c7; }
+        .eff-low { background: #ef4444; box-shadow: 0 0 0 2px #fee2e2; }
+
+        /* Bottom Chart */
+        .bottom-section {
+            height: 100px;
+            display: flex;
+            gap: 20px;
+        }
+        .chart-box {
+            flex: 1;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chart-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #1B2A4A;
+            margin-bottom: 8px;
+        }
+        .bar-container {
+            display: flex;
+            height: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+        .bar-seg {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+        }
+        .legend {
+            display: flex;
+            gap: 15px;
+            font-size: 9px;
+            color: #64748b;
+        }
+        .legend-item { display: flex; align-items: center; gap: 4px; }
+        .l-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+        /* Footer */
+        .footer {
+            padding: 10px 40px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: auto;
+        }
+        .page-num {
+            color: #1B2A4A;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header-strip"></div>
+        
+        <div class="header">
+            <div class="title-block">
+                <h1>تحليل الضوابط (Controls Analysis)</h1>
+                <p>مصفوفة فعالية الضوابط الرقابية وحالة الامتثال التشغيلي</p>
+            </div>
+            <div class="logo-box">
+                <img src="assets/logo_ndmo.png" alt="NDMO">
+                <div style="width:1px; height:30px; background:#cbd5e1; margin:0 5px;"></div>
+                <img src="assets/logo_sdaia.png" alt="SDAIA">
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- KPIs -->
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-text">
+                        <h3>إجمالي الضوابط</h3>
+                        <div class="val">142</div>
+                    </div>
+                    <div class="kpi-chart" style="border-color:#e2e8f0; color:#1B2A4A;">100%</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-text">
+                        <h3>فعالة تصميمياً (DE)</h3>
+                        <div class="val">118</div>
+                    </div>
+                    <div class="kpi-chart" style="border-top-color:#00B388; border-right-color:#00B388; border-bottom-color:#00B388;">83%</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-text">
+                        <h3>فعالة تشغيلياً (OE)</h3>
+                        <div class="val">96</div>
+                    </div>
+                    <div class="kpi-chart" style="border-top-color:#E8A838; border-right-color:#E8A838;">67%</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-text">
+                        <h3>فجوات حرجة</h3>
+                        <div class="val" style="color:#ef4444;">12</div>
+                    </div>
+                    <div class="kpi-chart" style="border-color:#fee2e2; border-top-color:#ef4444; color:#ef4444;">8%</div>
+                </div>
+            </div>
+
+            <!-- Matrix -->
+            <div class="matrix-container">
+                <div class="matrix-header">
+                    <span>سجل فعالية الضوابط (Controls Effectiveness Register)</span>
+                    <span style="background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:4px; font-size:10px;">نطاق التدقيق: Q1-2026</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="8%">ID</th>
+                            <th width="15%">المجال (Domain)</th>
+                            <th width="25%">اسم الضابط (Control Name)</th>
+                            <th width="12%">التصميم (DE)</th>
+                            <th width="12%">التشغيل (OE)</th>
+                            <th width="10%">النضج</th>
+                            <th width="18%">الحالة (Status)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight:700; color:#1B2A4A;">SEC-01</td>
+                            <td>أمن البيانات</td>
+                            <td>سياسة تصنيف البيانات (Classification Policy)</td>
+                            <td><span class="eff-dot eff-high"></span> فعال</td>
+                            <td><span class="eff-dot eff-high"></span> فعال</td>
+                            <td style="text-align:center;">4/5</td>
+                            <td><span class="pill pill-green">ممتثل كلياً</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1B2A4A;">SEC-04</td>
+                            <td>أمن البيانات</td>
+                            <td>مراجعة صلاحيات الوصول (Access Review)</td>
+                            <td><span class="eff-dot eff-high"></span> فعال</td>
+                            <td><span class="eff-dot eff-low"></span> غير فعال</td>
+                            <td style="text-align:center;">2/5</td>
+                            <td><span class="pill pill-red">فجوة تشغيلية</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1B2A4A;">GOV-02</td>
+                            <td>الحوكمة</td>
+                            <td>تعيين ملاك البيانات (Data Owners)</td>
+                            <td><span class="eff-dot eff-med"></span> جزئي</td>
+                            <td><span class="eff-dot eff-med"></span> جزئي</td>
+                            <td style="text-align:center;">3/5</td>
+                            <td><span class="pill pill-amber">ممتثل جزئياً</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1B2A4A;">QUAL-01</td>
+                            <td>جودة البيانات</td>
+                            <td>قواعد التحقق الآلي (Validation Rules)</td>
+                            <td><span class="eff-dot eff-high"></span> فعال</td>
+                            <td><span class="eff-dot eff-med"></span> جزئي</td>
+                            <td style="text-align:center;">3/5</td>
+                            <td><span class="pill pill-amber">يحتاج تحسين</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1B2A4A;">ARCH-03</td>
+                            <td>البنية</td>
+                            <td>توثيق قاموس البيانات (Data Dictionary)</td>
+                            <td><span class="eff-dot eff-low"></span> غير فعال</td>
+                            <td><span class="eff-dot eff-low"></span> غير فعال</td>
+                            <td style="text-align:center;">1/5</td>
+                            <td><span class="pill pill-red">غير ممتثل</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1B2A4A;">PRIV-02</td>
+                            <td>الخصوصية</td>
+                            <td>إدارة الموافقات (Consent Management)</td>
+                            <td><span class="eff-dot eff-high"></span> فعال</td>
+                            <td><span class="eff-dot eff-high"></span> فعال</td>
+                            <td style="text-align:center;">5/5</td>
+                            <td><span class="pill pill-green">ممتثل كلياً</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Bottom Analysis -->
+            <div class="bottom-section">
+                <div class="chart-box">
+                    <div class="chart-title">توزيع فعالية الضوابط حسب المجال</div>
+                    <div class="bar-container">
+                        <div class="bar-seg" style="width:65%; background:#00B388;">65%</div>
+                        <div class="bar-seg" style="width:25%; background:#E8A838;">25%</div>
+                        <div class="bar-seg" style="width:10%; background:#ef4444;">10%</div>
+                    </div>
+                    <div class="legend">
+                        <div class="legend-item"><div class="l-dot" style="background:#00B388;"></div> فعال</div>
+                        <div class="legend-item"><div class="l-dot" style="background:#E8A838;"></div> جزئي</div>
+                        <div class="legend-item"><div class="l-dot" style="background:#ef4444;"></div> غير فعال</div>
+                    </div>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-title">أسباب الفجوات (Root Causes)</div>
+                    <div class="legend" style="flex-direction:column; gap:5px;">
+                        <div class="legend-item" style="justify-content:space-between;">
+                            <span>نقص الموارد البشرية</span>
+                            <span style="font-weight:700; color:#1B2A4A;">45%</span>
+                        </div>
+                        <div class="legend-item" style="justify-content:space-between;">
+                            <span>غياب الأدوات التقنية</span>
+                            <span style="font-weight:700; color:#1B2A4A;">30%</span>
+                        </div>
+                        <div class="legend-item" style="justify-content:space-between;">
+                            <span>عدم وضوح الإجراءات</span>
+                            <span style="font-weight:700; color:#1B2A4A;">25%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>المملكة العربية السعودية - مكتب إدارة البيانات الوطنية</div>
+            <div class="page-num">2.05</div>
+            <div>سري للغاية - للاستخدام الداخلي فقط</div>
+        </div>
+    </div>
+</body>
+</html>

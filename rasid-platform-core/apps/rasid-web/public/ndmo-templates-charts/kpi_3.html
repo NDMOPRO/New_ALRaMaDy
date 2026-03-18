@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 16px 4px 16px; display: flex; flex-direction: column; gap: 8px; }
+        .summary-bar { background: #1B2A4A; padding: 8px 16px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; flex-shrink: 0; }
+        .sb-item { text-align: center; }
+        .sb-label { font-size: 10px; color: rgba(255,255,255,0.6); }
+        .sb-val { font-size: 18px; font-weight: 800; color: white; }
+        .gauges-grid { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 1fr 1fr; gap: 8px; min-height: 0; }
+        .gauge-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-top: 3px solid #2B5EA7; padding: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .gauge-card:nth-child(1) { border-top-color: #1B2A4A; }
+        .gauge-card:nth-child(2) { border-top-color: #2B5EA7; }
+        .gauge-card:nth-child(3) { border-top-color: #00B388; }
+        .gauge-card:nth-child(4) { border-top-color: #E8A838; }
+        .gauge-card:nth-child(5) { border-top-color: #8E44AD; }
+        .gauge-card:nth-child(6) { border-top-color: #C0392B; }
+        .gauge-card:nth-child(7) { border-top-color: #2B5EA7; }
+        .gauge-card:nth-child(8) { border-top-color: #1B2A4A; }
+        .gc-label { font-size: 11px; color: #1B2A4A; font-weight: 700; margin-bottom: 6px; text-align: center; }
+        .circle-wrap { position: relative; width: 100px; height: 100px; }
+        .circle-bg { width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .circle-inner { width: 76px; height: 76px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+        .ci-val { font-size: 22px; font-weight: 800; color: #1B2A4A; line-height: 1; }
+        .ci-unit { font-size: 8px; color: #94A3B8; }
+        .gc-target { font-size: 9px; color: #64748B; margin-top: 4px; }
+        .gc-status { display: flex; align-items: center; gap: 3px; margin-top: 2px; }
+        .gc-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .gc-st { font-size: 9px; font-weight: 700; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-tachometer-alt" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> عنوان لوحة مؤشرات الأداء - عدادات دائرية يكتب هنا</div>
+            <div class="header-num">3.41</div>
+        </div>
+        <div class="content">
+            <div class="summary-bar">
+                <div class="sb-item"><div class="sb-label">متوسط الإنجاز يكتب هنا</div><div class="sb-val">78.5%</div></div>
+                <div class="sb-item"><div class="sb-label">المؤشرات المحققة يكتب هنا</div><div class="sb-val">5 / 8</div></div>
+                <div class="sb-item"><div class="sb-label">المؤشرات المتأخرة يكتب هنا</div><div class="sb-val" style="color:#E8A838;">2</div></div>
+                <div class="sb-item"><div class="sb-label">المؤشرات الحرجة يكتب هنا</div><div class="sb-val" style="color:#C0392B;">1</div></div>
+            </div>
+            <div class="gauges-grid">
+                <div class="gauge-card">
+                    <div class="gc-label">اسم المؤشر الأول يكتب هنا</div>
+                    <div class="circle-wrap"><div class="circle-bg" style="background:conic-gradient(#1B2A4A 0% 92%,#E2E8F0 92% 100%);"><div class="circle-inner"><div class="ci-val">92%</div><div class="ci-unit">من المستهدف</div></div></div></div>
+                    <div class="gc-target">المستهدف: 95% يكتب هنا</div>
+                    <div class="gc-status"><div class="gc-dot" style="background:#00B388;"></div><div class="gc-st" style="color:#00B388;">على المسار</div></div>
+                </div>
+                <div class="gauge-card">
+                    <div class="gc-label">اسم المؤشر الثاني يكتب هنا</div>
+                    <div class="circle-wrap"><div class="circle-bg" style="background:conic-gradient(#2B5EA7 0% 85%,#E2E8F0 85% 100%);"><div class="circle-inner"><div class="ci-val">85%</div><div class="ci-unit">من المستهدف</div></div></div></div>
+                    <div class="gc-target">المستهدف: 90% يكتب هنا</div>
+                    <div class="gc-status"><div class="gc-dot" style="background:#00B388;"></div><div class="gc-st" style="color:#00B388;">على المسار</div></div>
+                </div>
+                <div class="gauge-card">
+                    <div class="gc-label">اسم المؤشر الثالث يكتب هنا</div>
+                    <div class="circle-wrap"><div class="circle-bg" style="background:conic-gradient(#00B388 0% 78%,#E2E8F0 78% 100%);"><div class="circle-inner"><div class="ci-val">78%</div><div class="ci-unit">من المستهدف</div></div></div></div>
+                    <div class="gc-target">المستهدف: 85% يكتب هنا</div>
+                    <div class="gc-status"><div class="gc-dot" style="background:#00B388;"></div><div class="gc-st" style="color:#00B388;">على المسار</div></div>
+                </div>
+                <div class="gauge-card">
+                    <div class="gc-label">اسم المؤشر الرابع يكتب هنا</div>
+                    <div class="circle-wrap"><div class="circle-bg" style="background:conic-gradient(#E8A838 0% 65%,#E2E8F0 65% 100%);"><div class="circle-inner"><div class="ci-val">65%</div><div class="ci-unit">من المستهدف</div></div></div></div>
+                    <div class="gc-target">المستهدف: 80% يكتب هنا</div>
+                    <div class="gc-status"><div class="gc-dot" style="background:#E8A838;"></div><div class="gc-st" style="color:#E8A838;">يحتاج متابعة</div></div>
+                </div>
+                <div class="gauge-card">
+                    <div class="gc-label">اسم المؤشر الخامس يكتب هنا</div>
+                    <div class="circle-wrap"><div class="circle-bg" style="background:conic-gradient(#8E44AD 0% 88%,#E2E8F0 88% 100%);"><div class="circle-inner"><div class="ci-val">88%</div><div class="ci-unit">من المستهدف</div></div></div></div>
+                    <div class="gc-target">المستهدف: 90% يكتب هنا</div>
+                    <div class="gc-status"><div class="gc-dot" style="background:#00B388;"></div><div class="gc-st" style="color:#00B388;">على المسار</div></div>
+                </div>
+                <div class="gauge-card">
+                    <div class="gc-label">اسم المؤشر السادس يكتب هنا</div>
+                    <div class="circle-wrap"><div class="circle-bg" style="background:conic-gradient(#C0392B 0% 42%,#E2E8F0 42% 100%);"><div class="circle-inner"><div class="ci-val">42%</div><div class="ci-unit">من المستهدف</div></div></div></div>
+                    <div class="gc-target">المستهدف: 75% يكتب هنا</div>
+                    <div class="gc-status"><div class="gc-dot" style="background:#C0392B;"></div><div class="gc-st" style="color:#C0392B;">متأخر</div></div>
+                </div>
+                <div class="gauge-card">
+                    <div class="gc-label">اسم المؤشر السابع يكتب هنا</div>
+                    <div class="circle-wrap"><div class="circle-bg" style="background:conic-gradient(#2B5EA7 0% 71%,#E2E8F0 71% 100%);"><div class="circle-inner"><div class="ci-val">71%</div><div class="ci-unit">من المستهدف</div></div></div></div>
+                    <div class="gc-target">المستهدف: 80% يكتب هنا</div>
+                    <div class="gc-status"><div class="gc-dot" style="background:#E8A838;"></div><div class="gc-st" style="color:#E8A838;">يحتاج متابعة</div></div>
+                </div>
+                <div class="gauge-card">
+                    <div class="gc-label">اسم المؤشر الثامن يكتب هنا</div>
+                    <div class="circle-wrap"><div class="circle-bg" style="background:conic-gradient(#1B2A4A 0% 95%,#E2E8F0 95% 100%);"><div class="circle-inner"><div class="ci-val">95%</div><div class="ci-unit">من المستهدف</div></div></div></div>
+                    <div class="gc-target">المستهدف: 95% يكتب هنا</div>
+                    <div class="gc-status"><div class="gc-dot" style="background:#00B388;"></div><div class="gc-st" style="color:#00B388;">محقق</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

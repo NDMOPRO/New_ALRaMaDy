@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+            flex-shrink: 0;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 20px 40px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Top Cards: Regulations */
+        .reg-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            height: 140px;
+        }
+        .reg-card {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-top: 4px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+        .rc-teal { border-color: #00B388; }
+        .rc-blue { border-color: #2B5EA7; }
+        .rc-gold { border-color: #E8A838; }
+        .rc-purple { border-color: #8B7EC8; }
+
+        .reg-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .reg-icon {
+            width: 36px; height: 36px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            color: #1B2A4A; font-size: 16px;
+        }
+        .reg-name { font-size: 12px; font-weight: 800; color: #1B2A4A; line-height: 1.2; }
+        
+        .reg-status {
+            display: flex; align-items: center; justify-content: space-between;
+            background: #f9f9f9; padding: 8px; border-radius: 4px;
+        }
+        .rs-label { font-size: 10px; color: #666; font-weight: 700; }
+        .rs-val { font-size: 12px; font-weight: 800; }
+        .text-teal { color: #00B388; }
+        .text-blue { color: #2B5EA7; }
+        .text-gold { color: #E8A838; }
+
+        .compliance-badge {
+            position: absolute; top: 10px; left: 10px;
+            font-size: 16px; color: #ccc; opacity: 0.3;
+        }
+        .rc-teal .compliance-badge { color: #00B388; opacity: 1; }
+
+        /* Bottom Section: Matrix */
+        .matrix-container {
+            flex: 1;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .section-title {
+            font-size: 14px; font-weight: 800; color: #1B2A4A;
+            margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px solid #eee;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .comp-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        .comp-table th {
+            background: #1B2A4A;
+            color: white;
+            padding: 10px;
+            text-align: right;
+            font-weight: 700;
+        }
+        .comp-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+            vertical-align: middle;
+        }
+        .comp-table tr:nth-child(even) { background: #f9f9f9; }
+        
+        .status-pill {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 10px; font-weight: 700;
+            text-align: center; min-width: 80px;
+        }
+        .sp-full { background: rgba(0,179,136,0.15); color: #00B388; }
+        .sp-part { background: rgba(232,168,56,0.15); color: #E8A838; }
+        
+        .artifact-link {
+            color: #2B5EA7; text-decoration: none; font-weight: 700;
+            display: flex; align-items: center; gap: 5px;
+        }
+
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الارتباط بالامتثال - مصفوفة الالتزام التنظيمي</div>
+            <div class="header-badge">10</div>
+        </div>
+
+        <div class="content-area">
+            <!-- Top Cards -->
+            <div class="reg-cards">
+                <div class="reg-card rc-teal">
+                    <div class="compliance-badge"><i class="fas fa-check-circle"></i></div>
+                    <div class="reg-header">
+                        <div class="reg-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div class="reg-name">نظام حماية<br>البيانات الشخصية</div>
+                    </div>
+                    <div class="reg-status">
+                        <div class="rs-label">حالة الامتثال</div>
+                        <div class="rs-val text-teal">ممتثل 100%</div>
+                    </div>
+                </div>
+                <div class="reg-card rc-blue">
+                    <div class="compliance-badge"><i class="fas fa-check-circle"></i></div>
+                    <div class="reg-header">
+                        <div class="reg-icon"><i class="fas fa-database"></i></div>
+                        <div class="reg-name">ضوابط إدارة<br>البيانات الوطنية</div>
+                    </div>
+                    <div class="reg-status">
+                        <div class="rs-label">مستوى النضج</div>
+                        <div class="rs-val text-blue">المستوى 4 (مُدار)</div>
+                    </div>
+                </div>
+                <div class="reg-card rc-gold">
+                    <div class="compliance-badge" style="color:#E8A838; opacity:1;"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="reg-header">
+                        <div class="reg-icon"><i class="fas fa-lock"></i></div>
+                        <div class="reg-name">ضوابط الأمن<br>السيبراني (ECC)</div>
+                    </div>
+                    <div class="reg-status">
+                        <div class="rs-label">حالة الامتثال</div>
+                        <div class="rs-val text-gold">قيد المراجعة 85%</div>
+                    </div>
+                </div>
+                <div class="reg-card rc-purple">
+                    <div class="compliance-badge"><i class="fas fa-check-circle"></i></div>
+                    <div class="reg-header">
+                        <div class="reg-icon"><i class="fas fa-folder-open"></i></div>
+                        <div class="reg-name">سياسة البيانات<br>المفتوحة</div>
+                    </div>
+                    <div class="reg-status">
+                        <div class="rs-label">التصنيف</div>
+                        <div class="rs-val" style="color:#8B7EC8">الفئة الذهبية</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Matrix -->
+            <div class="matrix-container">
+                <div class="section-title">
+                    <span>تفاصيل ضوابط الامتثال وتغطية المبادرة</span>
+                    <span style="font-size:11px; color:#666; font-weight:500;">آخر تحديث: مارس 2026</span>
+                </div>
+                <table class="comp-table">
+                    <thead>
+                        <tr>
+                            <th width="15%">المرجع التنظيمي</th>
+                            <th width="10%">رقم الضابط</th>
+                            <th width="30%">اسم الضابط / المتطلب</th>
+                            <th width="15%">تغطية المبادرة</th>
+                            <th width="30%">الأدلة والشواهد (Artifacts)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>NDMO - DMSG</strong></td>
+                            <td>DG-01-02</td>
+                            <td>تأسيس مكتب إدارة البيانات وتحديد الأدوار</td>
+                            <td><span class="status-pill sp-full">تغطية كاملة</span></td>
+                            <td>
+                                <div class="artifact-link"><i class="fas fa-file-pdf"></i> قرار تشكيل المكتب.pdf</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>NDMO - DMSG</strong></td>
+                            <td>DQ-03-01</td>
+                            <td>تطوير معايير ومقاييس جودة البيانات</td>
+                            <td><span class="status-pill sp-full">تغطية كاملة</span></td>
+                            <td>
+                                <div class="artifact-link"><i class="fas fa-file-excel"></i> سجل معايير الجودة.xlsx</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>PDPL - Art 4</strong></td>
+                            <td>PRIV-02</td>
+                            <td>سياسة الخصوصية وإشعار المستفيدين</td>
+                            <td><span class="status-pill sp-full">تغطية كاملة</span></td>
+                            <td>
+                                <div class="artifact-link"><i class="fas fa-link"></i> رابط سياسة الخصوصية</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>PDPL - Art 18</strong></td>
+                            <td>PRIV-05</td>
+                            <td>سجل أنشطة المعالجة (ROP)</td>
+                            <td><span class="status-pill sp-part">تغطية جزئية</span></td>
+                            <td>
+                                <div class="artifact-link"><i class="fas fa-file-word"></i> مسودة سجل المعالجة.docx</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>NCA - ECC</strong></td>
+                            <td>2-3-1</td>
+                            <td>حماية البيانات أثناء النقل والتخزين</td>
+                            <td><span class="status-pill sp-full">تغطية كاملة</span></td>
+                            <td>
+                                <div class="artifact-link"><i class="fas fa-file-pdf"></i> شهادة التشفير.pdf</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>NDMO - ODP</strong></td>
+                            <td>OD-01-04</td>
+                            <td>نشر البيانات بصيغة مقروءة آلياً</td>
+                            <td><span class="status-pill sp-full">تغطية كاملة</span></td>
+                            <td>
+                                <div class="artifact-link"><i class="fas fa-code"></i> API Documentation</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">10</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+            flex-shrink: 0;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 30px 40px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Main Purpose Banner */
+        .purpose-banner {
+            background: #1B2A4A;
+            color: white;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            border-right: 6px solid #E8A838;
+        }
+        .pb-icon-box {
+            width: 70px; height: 70px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px; color: #E8A838;
+            flex-shrink: 0;
+            border: 2px solid rgba(232,168,56,0.3);
+        }
+        .pb-content { flex: 1; z-index: 2; }
+        .pb-label { font-size: 12px; color: #E8A838; font-weight: 700; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; }
+        .pb-title { font-size: 24px; font-weight: 800; line-height: 1.3; margin-bottom: 8px; }
+        .pb-desc { font-size: 14px; opacity: 0.8; line-height: 1.5; max-width: 90%; }
+        
+        .pb-bg-pattern {
+            position: absolute; right: -20px; top: -20px;
+            font-size: 200px; opacity: 0.03; color: white;
+            transform: rotate(-15deg);
+        }
+
+        /* Objectives Grid */
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            flex: 1;
+        }
+        .obj-card {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            border-top: 4px solid #ccc;
+            position: relative;
+        }
+        .oc-teal { border-color: #00B388; }
+        .oc-blue { border-color: #2B5EA7; }
+        .oc-purple { border-color: #8B7EC8; }
+
+        .oc-header {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 15px;
+            padding-bottom: 12px; border-bottom: 1px solid #eee;
+        }
+        .oc-num {
+            font-size: 32px; font-weight: 800; color: #eee; line-height: 1;
+        }
+        .oc-title { font-size: 16px; font-weight: 700; color: #1B2A4A; }
+        
+        .oc-list { list-style: none; }
+        .oc-list li {
+            font-size: 12px; color: #555; margin-bottom: 10px;
+            padding-right: 15px; position: relative; line-height: 1.5;
+        }
+        .oc-list li::before {
+            content: '✓'; position: absolute; right: 0; color: #00B388; font-weight: bold;
+        }
+        .oc-blue .oc-list li::before { color: #2B5EA7; }
+        .oc-purple .oc-list li::before { color: #8B7EC8; }
+
+        /* Bottom Decisions Strip */
+        .decisions-strip {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .ds-label {
+            font-size: 13px; font-weight: 800; color: #1B2A4A;
+            white-space: nowrap; padding-left: 20px; border-left: 2px solid #ccc;
+        }
+        .ds-items {
+            display: flex; gap: 30px; flex: 1;
+        }
+        .ds-item {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .ds-check {
+            width: 20px; height: 20px; border: 2px solid #1B2A4A;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; color: #1B2A4A;
+        }
+        .ds-text { font-size: 12px; font-weight: 700; color: #333; }
+
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الغرض من العرض - الأهداف والمخرجات المتوقعة</div>
+            <div class="header-badge">11</div>
+        </div>
+
+        <div class="content-area">
+            <!-- Main Purpose Banner -->
+            <div class="purpose-banner">
+                <i class="fas fa-bullseye pb-bg-pattern"></i>
+                <div class="pb-icon-box"><i class="fas fa-crosshairs"></i></div>
+                <div class="pb-content">
+                    <div class="pb-label">الهدف الرئيسي</div>
+                    <div class="pb-title">الحصول على اعتماد اللجنة التوجيهية للخطة الاستراتيجية المحدثة (2026-2028)</div>
+                    <div class="pb-desc">يهدف هذا العرض إلى استعراض مخرجات المرحلة السابقة، وتقديم خارطة الطريق للمرحلة القادمة، والحصول على الموافقات اللازمة للميزانيات والموارد البشرية.</div>
+                </div>
+            </div>
+
+            <!-- Objectives Grid -->
+            <div class="objectives-grid">
+                <!-- Obj 1 -->
+                <div class="obj-card oc-teal">
+                    <div class="oc-header">
+                        <div class="oc-num">01</div>
+                        <div class="oc-title">استعراض الأداء<br>Review Performance</div>
+                    </div>
+                    <ul class="oc-list">
+                        <li>تسليط الضوء على الإنجازات الرئيسية خلال الربع السابق ونسب تحقيق المستهدفات.</li>
+                        <li>تحليل التحديات والمعوقات التي واجهت تنفيذ المبادرات واقتراح الحلول.</li>
+                        <li>عرض موقف مؤشرات الأداء الرئيسية (KPIs) ومستوى الامتثال.</li>
+                    </ul>
+                </div>
+
+                <!-- Obj 2 -->
+                <div class="obj-card oc-blue">
+                    <div class="oc-header">
+                        <div class="oc-num">02</div>
+                        <div class="oc-title">تقديم المقترحات<br>Propose Solutions</div>
+                    </div>
+                    <ul class="oc-list">
+                        <li>عرض نموذج التشغيل المستهدف (TOM) المحدث ليتوافق مع المتغيرات.</li>
+                        <li>تقديم خطة التحول الرقمي الجديدة لمنظومة إدارة البيانات.</li>
+                        <li>اقتراح تعديلات على سياسات تصنيف البيانات وحمايتها.</li>
+                    </ul>
+                </div>
+
+                <!-- Obj 3 -->
+                <div class="obj-card oc-purple">
+                    <div class="oc-header">
+                        <div class="oc-num">03</div>
+                        <div class="oc-title">طلب الموافقات<br>Request Approvals</div>
+                    </div>
+                    <ul class="oc-list">
+                        <li>اعتماد الميزانية التشغيلية للمرحلة الثالثة من المشروع.</li>
+                        <li>الموافقة على الهيكل التنظيمي الجديد لإدارة البيانات.</li>
+                        <li>تفويض الصلاحيات اللازمة للبدء في إجراءات التوظيف والتعاقد.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Decisions Strip -->
+            <div class="decisions-strip">
+                <div class="ds-label">القرارات المطلوبة بنهاية العرض:</div>
+                <div class="ds-items">
+                    <div class="ds-item">
+                        <div class="ds-check"></div>
+                        <div class="ds-text">اعتماد الخطة الزمنية</div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-check"></div>
+                        <div class="ds-text">الموافقة على الميزانية</div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-check"></div>
+                        <div class="ds-text">اعتماد الهيكل التنظيمي</div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-check"></div>
+                        <div class="ds-text">تفويض الصلاحيات</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">11</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المقارنة المعيارية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1B2A4A; /* Royal Dark Blue */
+            --accent-color: #00B388; /* Teal */
+            --highlight-color: #E8A838; /* Gold */
+            --white: #FFFFFF;
+            --light-bg: #F8F9FA;
+            --border-color: #E0E0E0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: var(--white);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Royal Blue Header */
+        .header {
+            background-color: var(--primary-color);
+            height: 85px;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            position: relative;
+            z-index: 10;
+            border-bottom: 4px solid var(--highlight-color);
+        }
+
+        .header-title {
+            color: var(--white);
+            font-size: 28px;
+            font-weight: 800;
+            margin-left: 20px;
+        }
+
+        .header-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            font-weight: 500;
+            margin-right: auto;
+        }
+
+        .logo-container {
+            background-color: rgba(255,255,255,0.1);
+            padding: 5px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            height: 40px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        /* Content Area: Benchmarking */
+        .content {
+            flex: 1;
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--light-bg);
+            justify-content: center;
+        }
+
+        .benchmark-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            width: 100%;
+        }
+
+        .benchmark-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-top: 4px solid #ccc;
+        }
+
+        .entity-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #f1f2f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        .entity-name {
+            font-weight: 800;
+            color: var(--primary-color);
+            font-size: 16px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .entity-type {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 15px;
+        }
+
+        .score-display {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .score-label {
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .comparison-bar {
+            width: 100%;
+            height: 6px;
+            background-color: #eee;
+            border-radius: 3px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .comparison-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        .rank-badge {
+            background-color: #f1f2f6;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #555;
+        }
+
+        /* Styles for Specific Cards */
+        .card-target {
+            border-top-color: var(--accent-color);
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+
+        .card-target .entity-icon {
+            background-color: rgba(0, 179, 136, 0.1);
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+        }
+
+        .card-target .score-display { color: var(--accent-color); }
+        .card-target .comparison-fill { background-color: var(--accent-color); }
+        .card-target .rank-badge { background-color: var(--accent-color); color: white; }
+
+        .card-avg { border-top-color: var(--highlight-color); }
+        .card-avg .comparison-fill { background-color: var(--highlight-color); }
+
+        .card-low { border-top-color: #E74C3C; }
+        .card-low .comparison-fill { background-color: #E74C3C; }
+
+        .card-high { border-top-color: var(--primary-color); }
+        .card-high .comparison-fill { background-color: var(--primary-color); }
+
+        /* Insight Box */
+        .insight-box {
+            margin-top: 30px;
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            border-right: 4px solid var(--primary-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            width: 100%;
+        }
+
+        .insight-title {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .insight-text {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            height: 40px;
+            background-color: var(--white);
+            border-top: 1px solid #E0E0E0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 10px;
+            color: #888;
+        }
+
+        .footer-text {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .page-number {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">عنوان الشريحة الرئيسي يكتب هنا</div>
+            <div class="header-subtitle">وصف مختصر لمحتوى الشريحة يكتب في هذا المكان</div>
+            <div class="logo-container">
+                <img src="assets/logo_ndmo.png" class="logo-img" alt="NDMO">
+                <img src="assets/logo_sdaia.png" class="logo-img" alt="SDAIA">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <div class="benchmark-grid">
+                <!-- Entity 1 (Target/Our Entity) -->
+                <div class="benchmark-card card-target">
+                    <div class="entity-icon">🏢</div>
+                    <div class="entity-name">جهتنا</div>
+                    <div class="entity-type">القطاع الحكومي</div>
+                    <div class="score-display">85%</div>
+                    <div class="score-label">مستوى النضج</div>
+                    <div class="comparison-bar"><div class="comparison-fill" style="width: 85%;"></div></div>
+                    <div class="rank-badge">المركز الثاني</div>
+                </div>
+
+                <!-- Entity 2 (Best Practice) -->
+                <div class="benchmark-card card-high">
+                    <div class="entity-icon">🏆</div>
+                    <div class="entity-name">أفضل ممارسة</div>
+                    <div class="entity-type">المعيار العالمي</div>
+                    <div class="score-display">92%</div>
+                    <div class="score-label">مستوى النضج</div>
+                    <div class="comparison-bar"><div class="comparison-fill" style="width: 92%;"></div></div>
+                    <div class="rank-badge">المركز الأول</div>
+                </div>
+
+                <!-- Entity 3 (Average) -->
+                <div class="benchmark-card card-avg">
+                    <div class="entity-icon">📊</div>
+                    <div class="entity-name">المتوسط الوطني</div>
+                    <div class="entity-type">جميع القطاعات</div>
+                    <div class="score-display">68%</div>
+                    <div class="score-label">مستوى النضج</div>
+                    <div class="comparison-bar"><div class="comparison-fill" style="width: 68%;"></div></div>
+                    <div class="rank-badge">المتوسط</div>
+                </div>
+
+                <!-- Entity 4 (Low) -->
+                <div class="benchmark-card card-low">
+                    <div class="entity-icon">📉</div>
+                    <div class="entity-name">الحد الأدنى</div>
+                    <div class="entity-type">نطاق القبول</div>
+                    <div class="score-display">45%</div>
+                    <div class="score-label">مستوى النضج</div>
+                    <div class="comparison-bar"><div class="comparison-fill" style="width: 45%;"></div></div>
+                    <div class="rank-badge">الأقل</div>
+                </div>
+            </div>
+
+            <!-- Insight Box -->
+            <div class="insight-box">
+                <div class="insight-title">تحليل الفجوة والمقارنة:</div>
+                <div class="insight-text">
+                    بناءً على نتائج المقارنة المعيارية، تظهر جهتنا تقدماً ملحوظاً مقارنة بالمتوسط الوطني، حيث نتفوق بنسبة 17%. ومع ذلك، لا تزال هناك فجوة بنسبة 7% للوصول إلى مستوى أفضل الممارسات العالمية، مما يستدعي التركيز على تحسين كفاءة العمليات التشغيلية وتطوير الكوادر البشرية لسد هذه الفجوة خلال الربع القادم.
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالادارة العامة لادارة البيانات</div>
+            <div class="page-number">48</div>
+        </div>
+    </div>
+</body>
+</html>

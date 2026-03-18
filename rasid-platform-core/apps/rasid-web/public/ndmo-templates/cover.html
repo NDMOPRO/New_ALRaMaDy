@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            position: relative;
+            background-image: url('/home/ubuntu/ndmo_ref_v5/assets/cover_bg.jpg');
+            background-size: cover;
+            background-position: center;
+            font-family: 'Tajawal', sans-serif;
+            overflow: hidden;
+        }
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(27,42,74,0.6) 0%, rgba(27,42,74,0.25) 50%, rgba(27,42,74,0.65) 100%);
+            z-index: 1;
+        }
+        .texture {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,0.012) 35px, rgba(255,255,255,0.012) 36px),
+                repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(255,255,255,0.012) 35px, rgba(255,255,255,0.012) 36px);
+            z-index: 2;
+        }
+        .top-accent {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 5px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .content-wrapper {
+            position: absolute;
+            top: 44%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            width: 900px;
+            z-index: 5;
+        }
+        .main-title {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            text-shadow: 0 3px 15px rgba(0,0,0,0.4);
+            letter-spacing: 1px;
+            line-height: 1.3;
+        }
+        .title-separator {
+            width: 100px;
+            height: 3px;
+            background: #E8A838;
+            margin: 0 auto 20px auto;
+        }
+        .subtitle {
+            font-size: 24px;
+            font-weight: 500;
+            opacity: 0.9;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .date-text {
+            font-size: 18px;
+            font-weight: 700;
+            opacity: 0.7;
+            letter-spacing: 2px;
+        }
+        .footer-area {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 85px;
+            background: rgba(27,42,74,0.55);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            z-index: 5;
+        }
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .logo-container {
+            background: rgba(255,255,255,0.92);
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo-container img {
+            height: 42px;
+            width: auto;
+        }
+        .logo-divider {
+            width: 1px;
+            height: 40px;
+            background: rgba(255,255,255,0.3);
+        }
+        .confidential-mark {
+            color: #E8A838;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            border: 1px solid rgba(232,168,56,0.4);
+            padding: 5px 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="overlay"></div>
+        <div class="texture"></div>
+        <div class="top-accent"></div>
+
+        <div class="content-wrapper">
+            <div class="main-title">نموذج العرض التقديمي المرجعي</div>
+            <div class="title-separator"></div>
+            <div class="subtitle">إدارة البيانات الوطنية - النماذج والقوالب</div>
+            <div class="date-text">2026 - الربع الأول</div>
+        </div>
+
+        <div class="footer-area">
+            <div class="logo-group">
+                <div class="logo-container">
+                    <img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO">
+                </div>
+                <div class="logo-divider"></div>
+                <div class="logo-container">
+                    <img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA">
+                </div>
+            </div>
+            <div class="confidential-mark">سري</div>
+        </div>
+    </div>
+</body>
+</html>

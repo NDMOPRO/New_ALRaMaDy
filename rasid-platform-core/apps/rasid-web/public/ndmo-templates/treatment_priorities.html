@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 20px 40px 10px 40px; flex: 1; display: flex; gap: 20px; }
+
+        .matrix-container { flex: 2; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 20px; position: relative; display: flex; flex-direction: column; }
+        .mc-title { font-size: 15px; font-weight: 800; color: #1B2A4A; margin-bottom: 10px; }
+        
+        .matrix-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 4px; background: #eee; position: relative; border: 1px solid #ddd; }
+        
+        .quadrant { background: #fff; padding: 12px; position: relative; display: flex; flex-direction: column; }
+        .q-label { position: absolute; font-size: 12px; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .q1 .q-label { top: 10px; left: 10px; color: #00B388; }
+        .q2 .q-label { top: 10px; right: 10px; color: #2B5EA7; }
+        .q3 .q-label { bottom: 10px; right: 10px; color: #E8A838; }
+        .q4 .q-label { bottom: 10px; left: 10px; color: #E85B7A; }
+
+        .bubble { position: absolute; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); text-align: center; line-height: 1.1; padding: 4px; z-index: 2; }
+        .b-green { background: linear-gradient(135deg, #00B388, #009670); }
+        .b-blue { background: linear-gradient(135deg, #2B5EA7, #1B3E75); }
+        .b-gold { background: linear-gradient(135deg, #E8A838, #C78D24); }
+        .b-red { background: linear-gradient(135deg, #E85B7A, #C03553); }
+
+        .axis-y { position: absolute; left: -30px; top: 50%; transform: rotate(-90deg) translateX(50%); font-weight: 800; font-size: 12px; color: #666; width: 200px; text-align: center; }
+        /* Adjusted axis-x position to eliminate overflow: bottom moved from -25px to -9px */
+        .axis-x { position: absolute; bottom: -9px; left: 50%; transform: translateX(-50%); font-weight: 800; font-size: 12px; color: #666; }
+
+        .legend-panel { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+        .legend-card { background: white; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border-right: 4px solid transparent; }
+        .lc-green { border-color: #00B388; }
+        .lc-blue { border-color: #2B5EA7; }
+        .lc-gold { border-color: #E8A838; }
+        .lc-red { border-color: #E85B7A; }
+
+        .lc-head { font-size: 13px; font-weight: 800; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; }
+        .lc-desc { font-size: 11px; color: #666; line-height: 1.4; }
+        .lc-meta { margin-top: 6px; font-size: 10px; color: #888; display: flex; gap: 8px; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">أولويات المعالجة - مصفوفة الأثر والجهد للمبادرات</div>
+            <div class="header-badge">31</div>
+        </div>
+
+        <div class="content-area">
+            <div class="matrix-container">
+                <div class="mc-title">خريطة توزيع المبادرات التصحيحية</div>
+                <div class="axis-y">الأثر المتوقع (Impact)</div>
+                <div class="axis-x">الجهد المطلوب (Effort)</div>
+                
+                <div class="matrix-grid">
+                    <!-- Q2: Strategic (High Impact, High Effort) -->
+                    <div class="quadrant q2">
+                        <div class="q-label">مشاريع استراتيجية</div>
+                        <div class="bubble b-blue" style="width:70px;height:70px;top:20%;right:20%">بناء بحيرة البيانات</div>
+                        <div class="bubble b-blue" style="width:60px;height:60px;top:50%;right:50%">تكامل GSB</div>
+                    </div>
+                    
+                    <!-- Q1: Quick Wins (High Impact, Low Effort) -->
+                    <div class="quadrant q1">
+                        <div class="q-label">مكاسب سريعة</div>
+                        <div class="bubble b-green" style="width:65px;height:65px;top:30%;left:30%">اعتماد السياسات</div>
+                        <div class="bubble b-green" style="width:55px;height:55px;top:60%;left:20%">حصر الأصول</div>
+                        <div class="bubble b-green" style="width:50px;height:50px;top:20%;left:60%">تعيين الضباط</div>
+                    </div>
+                    
+                    <!-- Q4: Deprioritized (Low Impact, High Effort) -->
+                    <div class="quadrant q4">
+                        <div class="q-label">مؤجلة / مستبعدة</div>
+                        <div class="bubble b-red" style="width:50px;height:50px;bottom:30%;right:30%">أرشفة الورقي</div>
+                    </div>
+                    
+                    <!-- Q3: Fill-ins (Low Impact, Low Effort) -->
+                    <div class="quadrant q3">
+                        <div class="q-label">مهام تشغيلية</div>
+                        <div class="bubble b-gold" style="width:45px;height:45px;bottom:40%;left:40%">تحديث الموقع</div>
+                        <div class="bubble b-gold" style="width:40px;height:40px;bottom:20%;left:20%">تقارير دورية</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="legend-panel">
+                <div class="legend-card lc-green">
+                    <div class="lc-head"><span>المكاسب السريعة (Quick Wins)</span><span style="color:#00B388">3 مبادرات</span></div>
+                    <div class="lc-desc">مبادرات ذات أثر عالٍ وجهد منخفض، يجب البدء بها فوراً لتحقيق نتائج ملموسة وبناء الزخم.</div>
+                    <div class="lc-meta"><span><i class="fas fa-clock"></i> 1-3 أشهر</span><span><i class="fas fa-coins"></i> تكلفة منخفضة</span></div>
+                </div>
+
+                <div class="legend-card lc-blue">
+                    <div class="lc-head"><span>المشاريع الاستراتيجية (Strategic)</span><span style="color:#2B5EA7">2 مبادرة</span></div>
+                    <div class="lc-desc">مبادرات تحولية تتطلب تخطيطاً وموارد كبيرة، وتشكل العمود الفقري للتحول الرقمي.</div>
+                    <div class="lc-meta"><span><i class="fas fa-clock"></i> 6-18 شهر</span><span><i class="fas fa-coins"></i> استثمار عالي</span></div>
+                </div>
+
+                <div class="legend-card lc-gold">
+                    <div class="lc-head"><span>المهام التشغيلية (Operational)</span><span style="color:#E8A838">2 مبادرة</span></div>
+                    <div class="lc-desc">مهام روتينية ضرورية لاستمرارية العمل ولكنها لا تحدث نقلة نوعية كبيرة.</div>
+                    <div class="lc-meta"><span><i class="fas fa-clock"></i> مستمر</span><span><i class="fas fa-coins"></i> تكلفة تشغيلية</span></div>
+                </div>
+
+                <div class="legend-card lc-red">
+                    <div class="lc-head"><span>المؤجلة (Deprioritized)</span><span style="color:#E85B7A">1 مبادرة</span></div>
+                    <div class="lc-desc">مبادرات تستهلك موارد كبيرة مقابل عائد محدود، يتم تأجيلها أو إعادة النظر في جدواها.</div>
+                    <div class="lc-meta"><span><i class="fas fa-clock"></i> غير محدد</span><span><i class="fas fa-ban"></i> تجميد مؤقت</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">31</div>
+    </div>
+</body>
+</html>

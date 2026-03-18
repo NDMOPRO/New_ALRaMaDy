@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 14px 30px 4px 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; align-content: start; }
+        .toc-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-bottom: 1px solid #E2E8F0; }
+        .toc-num { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: white; flex-shrink: 0; }
+        .toc-num-1 { background: #1B2A4A; }
+        .toc-num-2 { background: #2B5EA7; }
+        .toc-num-3 { background: #00B388; }
+        .toc-num-4 { background: #E8A838; }
+        .toc-num-5 { background: #8E44AD; }
+        .toc-num-6 { background: #C0392B; }
+        .toc-num-7 { background: #1B2A4A; }
+        .toc-num-8 { background: #2B5EA7; }
+        .toc-num-9 { background: #00B388; }
+        .toc-num-10 { background: #E8A838; }
+        .toc-info { flex: 1; }
+        .toc-title { font-size: 13px; font-weight: 700; color: #1B2A4A; }
+        .toc-desc { font-size: 10px; color: #64748B; margin-top: 1px; }
+        .toc-page { font-size: 14px; font-weight: 800; color: #2B5EA7; flex-shrink: 0; }
+        .toc-dots { flex: 1; border-bottom: 1px dotted #CBD5E1; margin: 0 6px; min-width: 20px; align-self: flex-end; margin-bottom: 4px; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-list-ol" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> فهرس المحتويات يكتب هنا</div>
+            <div class="header-num">3.53</div>
+        </div>
+        <div class="content">
+            <div class="toc-item"><div class="toc-num toc-num-1">01</div><div class="toc-info"><div class="toc-title">عنوان القسم الأول يكتب هنا</div><div class="toc-desc">وصف مختصر للقسم يكتب هنا</div></div><div class="toc-dots"></div><div class="toc-page">03</div></div>
+            <div class="toc-item"><div class="toc-num toc-num-2">02</div><div class="toc-info"><div class="toc-title">عنوان القسم الثاني يكتب هنا</div><div class="toc-desc">وصف مختصر للقسم يكتب هنا</div></div><div class="toc-dots"></div><div class="toc-page">08</div></div>
+            <div class="toc-item"><div class="toc-num toc-num-3">03</div><div class="toc-info"><div class="toc-title">عنوان القسم الثالث يكتب هنا</div><div class="toc-desc">وصف مختصر للقسم يكتب هنا</div></div><div class="toc-dots"></div><div class="toc-page">14</div></div>
+            <div class="toc-item"><div class="toc-num toc-num-4">04</div><div class="toc-info"><div class="toc-title">عنوان القسم الرابع يكتب هنا</div><div class="toc-desc">وصف مختصر للقسم يكتب هنا</div></div><div class="toc-dots"></div><div class="toc-page">20</div></div>
+            <div class="toc-item"><div class="toc-num toc-num-5">05</div><div class="toc-info"><div class="toc-title">عنوان القسم الخامس يكتب هنا</div><div class="toc-desc">وصف مختصر للقسم يكتب هنا</div></div><div class="toc-dots"></div><div class="toc-page">26</div></div>
+            <div class="toc-item"><div class="toc-num toc-num-6">06</div><div class="toc-info"><div class="toc-title">عنوان القسم السادس يكتب هنا</div><div class="toc-desc">وصف مختصر للقسم يكتب هنا</div></div><div class="toc-dots"></div><div class="toc-page">32</div></div>
+            <div class="toc-item"><div class="toc-num toc-num-7">07</div><div class="toc-info"><div class="toc-title">عنوان القسم السابع يكتب هنا</div><div class="toc-desc">وصف مختصر للقسم يكتب هنا</div></div><div class="toc-dots"></div><div class="toc-page">38</div></div>
+            <div class="toc-item"><div class="toc-num toc-num-8">08</div><div class="toc-info"><div class="toc-title">عنوان القسم الثامن يكتب هنا</div><div class="toc-desc">وصف مختصر للقسم يكتب هنا</div></div><div class="toc-dots"></div><div class="toc-page">44</div></div>
+            <div class="toc-item"><div class="toc-num toc-num-9">09</div><div class="toc-info"><div class="toc-title">عنوان القسم التاسع يكتب هنا</div><div class="toc-desc">وصف مختصر للقسم يكتب هنا</div></div><div class="toc-dots"></div><div class="toc-page">50</div></div>
+            <div class="toc-item"><div class="toc-num toc-num-10">10</div><div class="toc-info"><div class="toc-title">عنوان القسم العاشر يكتب هنا</div><div class="toc-desc">وصف مختصر للقسم يكتب هنا</div></div><div class="toc-dots"></div><div class="toc-page">56</div></div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

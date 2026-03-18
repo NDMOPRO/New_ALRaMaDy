@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل الخيارات الاستراتيجية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+        }
+        /* Header */
+        .header-strip { height: 8px; background: linear-gradient(90deg, #1B2A4A 0%, #00B388 50%, #E8A838 100%); }
+        .header { padding: 20px 40px 6px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .title-block h1 { font-size: 28px; font-weight: 800; color: #1B2A4A; margin: 0 0 5px 0; }
+        .title-block p { font-size: 14px; color: #64748b; margin: 0; }
+        .logo-box { display: flex; gap: 12px; background: #f8fafc; padding: 6px 12px; border-radius: 6px; border: 1px solid #e2e8f0; }
+        .logo-box img { height: 36px; object-fit: contain; }
+
+        /* Content */
+        .content { padding: 8px 30px; flex-grow: 1; display: flex; flex-direction: column; gap: 10px; }
+
+        /* Options Summary */
+        .options-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .option-card { border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; background: #f8fafc; position: relative; }
+        .option-card.winner { background: #f0fdf4; border-color: #00B388; box-shadow: 0 4px 6px rgba(0, 179, 136, 0.06); }
+        .option-badge { position: absolute; top: -8px; left: 12px; background: #64748b; color: white; font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
+        .option-card.winner .option-badge { background: #00B388; }
+        .opt-title { font-weight: 800; color: #1B2A4A; font-size: 14px; margin: 6px 0 4px 0; }
+        .opt-desc { font-size: 11px; color: #475569; line-height: 1.4; }
+
+        /* Matrix Table */
+        .matrix-container { border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { background-color: #1B2A4A; color: white; padding: 8px; text-align: center; font-weight: 700; border-right: 1px solid rgba(255,255,255,0.1); }
+        th:first-child { text-align: right; padding-right: 16px; }
+        td { padding: 6px; border-bottom: 1px solid #e2e8f0; text-align: center; color: #334155; vertical-align: middle; }
+        td:first-child { text-align: right; font-weight: 700; color: #1B2A4A; padding-right: 16px; background-color: #f8fafc; border-right: none; }
+        .weight-col { background-color: #f1f5f9; font-weight: 700; color: #64748b; }
+
+        /* Score Cells */
+        .score-box { display: inline-block; width: 24px; height: 24px; line-height: 24px; border-radius: 4px; color: white; font-weight: 800; font-size: 12px; }
+        .s-1 { background-color: #ef4444; }
+        .s-2 { background-color: #f97316; }
+        .s-3 { background-color: #eab308; }
+        .s-4 { background-color: #84cc16; }
+        .s-5 { background-color: #00B388; }
+        .weighted-val { font-size: 11px; color: #64748b; margin-top: 2px; font-weight: 600; }
+
+        /* Total Row */
+        .total-row td { background-color: #1B2A4A; color: white; font-weight: 800; font-size: 16px; border: none; }
+        .total-row td:first-child { background-color: #1B2A4A; color: white; text-align: right; }
+        .winner-cell { background-color: #00B388 !important; position: relative; }
+        .winner-cell::after { content: '★ الخيار الموصى به'; position: absolute; top: -18px; left: 50%; transform: translateX(-50%); background: #00B388; color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px 4px 0 0; white-space: nowrap; }
+
+        /* Recommendation Box */
+        .rec-box { background: linear-gradient(90deg, #f0fdf4 0%, #ffffff 100%); border-right: 4px solid #00B388; padding: 10px; border-radius: 4px; display: flex; gap: 12px; align-items: center; border: 1px solid #dcfce7; border-right-width: 4px; }
+        .rec-icon { width: 36px; height: 36px; background: #00B388; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold; }
+        .rec-content h3 { margin: 0 0 4px 0; color: #065f46; font-size: 14px; font-weight: 800; }
+        .rec-content p { margin: 0; color: #166534; font-size: 12px; line-height: 1.5; }
+
+        /* Footer */
+        .footer { padding: 8px 30px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #94a3b8; margin-top: auto; }
+        .page-num { color: #1B2A4A; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header-strip"></div>
+        <div class="header">
+            <div class="title-block">
+                <h1>تحليل الخيارات الاستراتيجية (Options Analysis)</h1>
+                <p>تقييم نماذج التشغيل المقترحة لإدارة البيانات الوطنية بناءً على معايير مرجحة</p>
+            </div>
+            <div class="logo-box">
+                <img src="assets/logo_ndmo.png" alt="NDMO">
+                <div style="width:1px; height:26px; background:#cbd5e1; margin:0 5px;"></div>
+                <img src="assets/logo_sdaia.png" alt="SDAIA">
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Options Summary -->
+            <div class="options-row">
+                <div class="option-card">
+                    <div class="option-badge">الخيار 1</div>
+                    <div class="opt-title">النموذج المركزي (Centralized)</div>
+                    <div class="opt-desc">تتولى جهة مركزية واحدة (NDMO) جميع مهام إدارة وتشغيل البيانات نيابة عن الجهات الحكومية.</div>
+                </div>
+                <div class="option-card">
+                    <div class="option-badge">الخيار 2</div>
+                    <div class="opt-title">النموذج اللامركزي (Decentralized)</div>
+                    <div class="opt-desc">تستقل كل جهة حكومية بإدارة بياناتها بالكامل دون تدخل مركزي، مع الاكتفاء بالتنسيق البسيط.</div>
+                </div>
+                <div class="option-card winner">
+                    <div class="option-badge">الخيار 3</div>
+                    <div class="opt-title">النموذج الفيدرالي / الهجين (Federated)</div>
+                    <div class="opt-desc">مركزية في التشريع والسياسات والمعايير، ولامركزية في التنفيذ والتشغيل داخل الجهات.</div>
+                </div>
+            </div>
+
+            <!-- Matrix -->
+            <div class="matrix-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="25%">معايير التقييم</th>
+                            <th width="10%">الوزن</th>
+                            <th width="20%">الخيار 1: المركزي</th>
+                            <th width="20%">الخيار 2: اللامركزي</th>
+                            <th width="25%">الخيار 3: الفيدرالي (الهجين)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>المواءمة الاستراتيجية</td>
+                            <td class="weight-col">30%</td>
+                            <td><span class="score-box s-5">5</span><div class="weighted-val">1.50</div></td>
+                            <td><span class="score-box s-2">2</span><div class="weighted-val">0.60</div></td>
+                            <td><span class="score-box s-5">5</span><div class="weighted-val">1.50</div></td>
+                        </tr>
+                        <tr>
+                            <td>سهولة التنفيذ والسرعة</td>
+                            <td class="weight-col">20%</td>
+                            <td><span class="score-box s-2">2</span><div class="weighted-val">0.40</div></td>
+                            <td><span class="score-box s-5">5</span><div class="weighted-val">1.00</div></td>
+                            <td><span class="score-box s-4">4</span><div class="weighted-val">0.80</div></td>
+                        </tr>
+                        <tr>
+                            <td>كفاءة التكلفة التشغيلية</td>
+                            <td class="weight-col">20%</td>
+                            <td><span class="score-box s-3">3</span><div class="weighted-val">0.60</div></td>
+                            <td><span class="score-box s-2">2</span><div class="weighted-val">0.40</div></td>
+                            <td><span class="score-box s-4">4</span><div class="weighted-val">0.80</div></td>
+                        </tr>
+                        <tr>
+                            <td>التحكم في المخاطر والامتثال</td>
+                            <td class="weight-col">15%</td>
+                            <td><span class="score-box s-5">5</span><div class="weighted-val">0.75</div></td>
+                            <td><span class="score-box s-1">1</span><div class="weighted-val">0.15</div></td>
+                            <td><span class="score-box s-4">4</span><div class="weighted-val">0.60</div></td>
+                        </tr>
+                        <tr>
+                            <td>القابلية للتوسع والاستدامة</td>
+                            <td class="weight-col">15%</td>
+                            <td><span class="score-box s-2">2</span><div class="weighted-val">0.30</div></td>
+                            <td><span class="score-box s-3">3</span><div class="weighted-val">0.45</div></td>
+                            <td><span class="score-box s-5">5</span><div class="weighted-val">0.75</div></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td>النتيجة النهائية (من 5)</td>
+                            <td>100%</td>
+                            <td>3.55</td>
+                            <td>2.60</td>
+                            <td class="winner-cell">4.45</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Recommendation -->
+            <div class="rec-box">
+                <div class="rec-icon">✓</div>
+                <div class="rec-content">
+                    <h3>التوصية: اعتماد النموذج الفيدرالي (الخيار 3)</h3>
+                    <p>حقق هذا الخيار أعلى درجة (4.45/5) نظراً لتحقيقه التوازن الأمثل بين الرقابة المركزية والمرونة التشغيلية، مما يضمن الامتثال للسياسات الوطنية مع تمكين الجهات من الابتكار وسرعة الإنجاز.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>المملكة العربية السعودية - مكتب إدارة البيانات الوطنية</div>
+            <div class="page-num">2.02</div>
+            <div>سري للغاية - للاستخدام الداخلي فقط</div>
+        </div>
+    </div>
+</body>
+</html>

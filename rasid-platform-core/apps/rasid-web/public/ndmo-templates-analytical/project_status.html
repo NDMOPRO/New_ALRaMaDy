@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حالة المشاريع</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1B2A4A; /* Royal Dark Blue */
+            --accent-color: #00B388; /* Teal */
+            --highlight-color: #E8A838; /* Gold */
+            --white: #FFFFFF;
+            --light-bg: #F8F9FA;
+            --border-color: #E0E0E0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: var(--white);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Royal Blue Header */
+        .header {
+            background-color: var(--primary-color);
+            height: 85px;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            position: relative;
+            z-index: 10;
+            border-bottom: 4px solid var(--highlight-color);
+        }
+
+        .header-title {
+            color: var(--white);
+            font-size: 28px;
+            font-weight: 800;
+            margin-left: 20px;
+        }
+
+        .header-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            font-weight: 500;
+            margin-right: auto;
+        }
+
+        .logo-container {
+            background-color: rgba(255,255,255,0.1);
+            padding: 5px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            height: 40px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        /* Content Area: Project Cards */
+        .content {
+            flex: 1;
+            padding: 30px 40px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            background-color: var(--light-bg);
+            align-content: start;
+        }
+
+        .project-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            border-top: 4px solid #ccc;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .proj-title {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 16px;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .status-green { background-color: var(--accent-color); }
+        .status-yellow { background-color: var(--highlight-color); }
+        .status-red { background-color: #E74C3C; }
+
+        .proj-desc {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            flex: 1;
+        }
+
+        .progress-section {
+            margin-bottom: 15px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .progress-bg {
+            height: 8px;
+            background-color: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #888;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        /* Card Variations */
+        .card-1 { border-top-color: var(--accent-color); }
+        .card-1 .progress-fill { background-color: var(--accent-color); width: 85%; }
+        
+        .card-2 { border-top-color: var(--highlight-color); }
+        .card-2 .progress-fill { background-color: var(--highlight-color); width: 60%; }
+
+        .card-3 { border-top-color: #E74C3C; }
+        .card-3 .progress-fill { background-color: #E74C3C; width: 30%; }
+
+        .card-4 { border-top-color: var(--primary-color); }
+        .card-4 .progress-fill { background-color: var(--primary-color); width: 95%; }
+
+        .card-5 { border-top-color: var(--accent-color); }
+        .card-5 .progress-fill { background-color: var(--accent-color); width: 75%; }
+
+        .card-6 { border-top-color: var(--highlight-color); }
+        .card-6 .progress-fill { background-color: var(--highlight-color); width: 50%; }
+
+        /* Footer */
+        .footer {
+            height: 40px;
+            background-color: var(--white);
+            border-top: 1px solid #E0E0E0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 10px;
+            color: #888;
+        }
+
+        .footer-text {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .page-number {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">عنوان الشريحة الرئيسي يكتب هنا</div>
+            <div class="header-subtitle">وصف مختصر لمحتوى الشريحة يكتب في هذا المكان</div>
+            <div class="logo-container">
+                <img src="assets/logo_ndmo.png" class="logo-img" alt="NDMO">
+                <img src="assets/logo_sdaia.png" class="logo-img" alt="SDAIA">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Project 1 -->
+            <div class="project-card card-1">
+                <div class="card-header">
+                    <div class="proj-title">اسم المشروع الأول</div>
+                    <div class="status-badge status-green">مكتمل</div>
+                </div>
+                <div class="proj-desc">وصف مختصر لأهداف ونطاق عمل المشروع الأول يكتب هنا بشكل واضح.</div>
+                <div class="progress-section">
+                    <div class="progress-label"><span>الإنجاز</span><span>85%</span></div>
+                    <div class="progress-bg"><div class="progress-fill"></div></div>
+                </div>
+                <div class="card-footer">
+                    <span>مدير المشروع: الاسم</span>
+                    <span>تاريخ الانتهاء: DD/MM/YYYY</span>
+                </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="project-card card-2">
+                <div class="card-header">
+                    <div class="proj-title">اسم المشروع الثاني</div>
+                    <div class="status-badge status-yellow">جاري العمل</div>
+                </div>
+                <div class="proj-desc">وصف مختصر لأهداف ونطاق عمل المشروع الثاني يكتب هنا بشكل واضح.</div>
+                <div class="progress-section">
+                    <div class="progress-label"><span>الإنجاز</span><span>60%</span></div>
+                    <div class="progress-bg"><div class="progress-fill"></div></div>
+                </div>
+                <div class="card-footer">
+                    <span>مدير المشروع: الاسم</span>
+                    <span>تاريخ الانتهاء: DD/MM/YYYY</span>
+                </div>
+            </div>
+
+            <!-- Project 3 -->
+            <div class="project-card card-3">
+                <div class="card-header">
+                    <div class="proj-title">اسم المشروع الثالث</div>
+                    <div class="status-badge status-red">متأخر</div>
+                </div>
+                <div class="proj-desc">وصف مختصر لأهداف ونطاق عمل المشروع الثالث يكتب هنا بشكل واضح.</div>
+                <div class="progress-section">
+                    <div class="progress-label"><span>الإنجاز</span><span>30%</span></div>
+                    <div class="progress-bg"><div class="progress-fill"></div></div>
+                </div>
+                <div class="card-footer">
+                    <span>مدير المشروع: الاسم</span>
+                    <span>تاريخ الانتهاء: DD/MM/YYYY</span>
+                </div>
+            </div>
+
+            <!-- Project 4 -->
+            <div class="project-card card-4">
+                <div class="card-header">
+                    <div class="proj-title">اسم المشروع الرابع</div>
+                    <div class="status-badge status-green">مكتمل</div>
+                </div>
+                <div class="proj-desc">وصف مختصر لأهداف ونطاق عمل المشروع الرابع يكتب هنا بشكل واضح.</div>
+                <div class="progress-section">
+                    <div class="progress-label"><span>الإنجاز</span><span>95%</span></div>
+                    <div class="progress-bg"><div class="progress-fill"></div></div>
+                </div>
+                <div class="card-footer">
+                    <span>مدير المشروع: الاسم</span>
+                    <span>تاريخ الانتهاء: DD/MM/YYYY</span>
+                </div>
+            </div>
+
+            <!-- Project 5 -->
+            <div class="project-card card-5">
+                <div class="card-header">
+                    <div class="proj-title">اسم المشروع الخامس</div>
+                    <div class="status-badge status-green">جاري العمل</div>
+                </div>
+                <div class="proj-desc">وصف مختصر لأهداف ونطاق عمل المشروع الخامس يكتب هنا بشكل واضح.</div>
+                <div class="progress-section">
+                    <div class="progress-label"><span>الإنجاز</span><span>75%</span></div>
+                    <div class="progress-bg"><div class="progress-fill"></div></div>
+                </div>
+                <div class="card-footer">
+                    <span>مدير المشروع: الاسم</span>
+                    <span>تاريخ الانتهاء: DD/MM/YYYY</span>
+                </div>
+            </div>
+
+            <!-- Project 6 -->
+            <div class="project-card card-6">
+                <div class="card-header">
+                    <div class="proj-title">اسم المشروع السادس</div>
+                    <div class="status-badge status-yellow">جاري العمل</div>
+                </div>
+                <div class="proj-desc">وصف مختصر لأهداف ونطاق عمل المشروع السادس يكتب هنا بشكل واضح.</div>
+                <div class="progress-section">
+                    <div class="progress-label"><span>الإنجاز</span><span>50%</span></div>
+                    <div class="progress-bg"><div class="progress-fill"></div></div>
+                </div>
+                <div class="card-footer">
+                    <span>مدير المشروع: الاسم</span>
+                    <span>تاريخ الانتهاء: DD/MM/YYYY</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالادارة العامة لادارة البيانات</div>
+            <div class="page-number">46</div>
+        </div>
+    </div>
+</body>
+</html>

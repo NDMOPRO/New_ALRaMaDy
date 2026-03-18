@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column;
+        }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 20px 40px 10px 40px; flex: 1; display: flex; gap: 20px; }
+
+        .main-col { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+
+        .level-card { display: flex; gap: 0; flex: 1; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden; }
+        .level-tag { width: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; gap: 6px; flex-shrink: 0; }
+        .level-tag i { font-size: 20px; }
+        .level-tag span { font-size: 12px; font-weight: 700; writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing: 2px; }
+        .lt-strategic { background: linear-gradient(180deg, #1B2A4A, #2B3D66); }
+        .lt-tactical { background: linear-gradient(180deg, #2B5EA7, #3A72BF); }
+        .lt-operational { background: linear-gradient(180deg, #00B388, #00C99A); }
+
+        .level-body { flex: 1; padding: 14px 20px; display: flex; flex-direction: column; gap: 10px; }
+        .level-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        .level-name { font-size: 17px; font-weight: 800; color: #1B2A4A; }
+        .level-freq { font-size: 12px; font-weight: 700; color: #666; background: #f0f0f0; padding: 4px 10px; }
+
+        .level-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1; }
+        .lg-item { display: flex; gap: 8px; align-items: flex-start; }
+        .lg-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+        .lg-text { font-size: 13px; color: #444; line-height: 1.5; }
+        .lg-text strong { color: #1B2A4A; font-weight: 700; }
+
+        .level-members { display: flex; gap: 8px; flex-wrap: wrap; }
+        .member-chip { font-size: 11px; font-weight: 700; color: #1B2A4A; background: rgba(27,42,74,0.06); padding: 4px 10px; }
+
+        /* Right Panel - Flow */
+        .side-panel { width: 300px; display: flex; flex-direction: column; gap: 12px; }
+
+        .flow-card { background: white; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); flex: 1; display: flex; flex-direction: column; }
+        .flow-title { font-size: 15px; font-weight: 800; color: #1B2A4A; margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+
+        .flow-steps { display: flex; flex-direction: column; gap: 0; flex: 1; justify-content: space-around; }
+        .flow-step { display: flex; align-items: center; gap: 10px; }
+        .fs-circle { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+        .fs-label { font-size: 13px; font-weight: 700; color: #333; }
+        .flow-arrow { display: flex; justify-content: center; padding: 4px 0; color: #ccc; font-size: 12px; margin-right: 12px; }
+
+        .escalation-card { background: #1B2A4A; padding: 16px; color: white; }
+        .esc-title { font-size: 14px; font-weight: 800; margin-bottom: 10px; color: #E8A838; }
+        .esc-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .esc-icon { width: 24px; height: 24px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 12px; color: #E8A838; flex-shrink: 0; }
+        .esc-text { font-size: 12px; line-height: 1.4; color: rgba(255,255,255,0.9); }
+
+        .authority-card { background: white; padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+        .auth-title { font-size: 14px; font-weight: 800; color: #1B2A4A; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 6px; }
+        .auth-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .auth-item { display: flex; align-items: center; gap: 6px; }
+        .auth-check { color: #00B388; font-size: 11px; }
+        .auth-label { font-size: 11px; color: #444; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">مستويات الحوكمة - الهيكل الثلاثي لإدارة البيانات</div>
+            <div class="header-badge">23</div>
+        </div>
+
+        <div class="content-area">
+            <div class="main-col">
+                <!-- Strategic Level -->
+                <div class="level-card">
+                    <div class="level-tag lt-strategic"><i class="fas fa-crown"></i><span>استراتيجي</span></div>
+                    <div class="level-body">
+                        <div class="level-header">
+                            <div class="level-name">المستوى الاستراتيجي - اللجنة التنفيذية العليا</div>
+                            <div class="level-freq"><i class="fas fa-calendar-alt"></i> ربع سنوي</div>
+                        </div>
+                        <div class="level-grid">
+                            <div class="lg-item"><div class="lg-dot" style="background:#1B2A4A"></div><div class="lg-text"><strong>التوجيه الاستراتيجي:</strong> اعتماد السياسات والأطر الوطنية لإدارة البيانات</div></div>
+                            <div class="lg-item"><div class="lg-dot" style="background:#1B2A4A"></div><div class="lg-text"><strong>تخصيص الموارد:</strong> اعتماد الميزانيات والكوادر البشرية للمبادرات</div></div>
+                            <div class="lg-item"><div class="lg-dot" style="background:#1B2A4A"></div><div class="lg-text"><strong>إدارة المخاطر:</strong> مراجعة المخاطر الاستراتيجية واتخاذ القرارات التصحيحية</div></div>
+                            <div class="lg-item"><div class="lg-dot" style="background:#1B2A4A"></div><div class="lg-text"><strong>قياس الأداء:</strong> مراجعة مؤشرات الأداء الاستراتيجية (OKRs)</div></div>
+                        </div>
+                        <div class="level-members">
+                            <div class="member-chip">رئيس الهيئة</div>
+                            <div class="member-chip">نائب الرئيس</div>
+                            <div class="member-chip">مدير عام البيانات CDO</div>
+                            <div class="member-chip">مدير عام التقنية CTO</div>
+                            <div class="member-chip">مدير المخاطر CRO</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tactical Level -->
+                <div class="level-card">
+                    <div class="level-tag lt-tactical"><i class="fas fa-cogs"></i><span>تكتيكي</span></div>
+                    <div class="level-body">
+                        <div class="level-header">
+                            <div class="level-name">المستوى التكتيكي - لجنة التوجيه ومجموعات العمل</div>
+                            <div class="level-freq"><i class="fas fa-calendar-alt"></i> شهري</div>
+                        </div>
+                        <div class="level-grid">
+                            <div class="lg-item"><div class="lg-dot" style="background:#2B5EA7"></div><div class="lg-text"><strong>تنسيق المبادرات:</strong> متابعة تنفيذ المشاريع وحل التبعيات بين الفرق</div></div>
+                            <div class="lg-item"><div class="lg-dot" style="background:#2B5EA7"></div><div class="lg-text"><strong>مراجعة الامتثال:</strong> تقييم مستوى التزام الجهات بالسياسات والضوابط</div></div>
+                            <div class="lg-item"><div class="lg-dot" style="background:#2B5EA7"></div><div class="lg-text"><strong>إدارة التغيير:</strong> تقييم طلبات التغيير والموافقة على التعديلات</div></div>
+                            <div class="lg-item"><div class="lg-dot" style="background:#2B5EA7"></div><div class="lg-text"><strong>تقارير الأداء:</strong> إعداد تقارير دورية للمستوى الاستراتيجي</div></div>
+                        </div>
+                        <div class="level-members">
+                            <div class="member-chip">مدراء المبادرات</div>
+                            <div class="member-chip">مسؤولو البيانات</div>
+                            <div class="member-chip">مسؤولو الامتثال</div>
+                            <div class="member-chip">مسؤولو الجودة</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Operational Level -->
+                <div class="level-card">
+                    <div class="level-tag lt-operational"><i class="fas fa-tools"></i><span>تشغيلي</span></div>
+                    <div class="level-body">
+                        <div class="level-header">
+                            <div class="level-name">المستوى التشغيلي - فرق التنفيذ والدعم الفني</div>
+                            <div class="level-freq"><i class="fas fa-calendar-alt"></i> أسبوعي</div>
+                        </div>
+                        <div class="level-grid">
+                            <div class="lg-item"><div class="lg-dot" style="background:#00B388"></div><div class="lg-text"><strong>تنفيذ المهام:</strong> تطبيق السياسات والإجراءات على مستوى العمليات اليومية</div></div>
+                            <div class="lg-item"><div class="lg-dot" style="background:#00B388"></div><div class="lg-text"><strong>مراقبة الجودة:</strong> تنفيذ فحوصات جودة البيانات وتصحيح الأخطاء</div></div>
+                            <div class="lg-item"><div class="lg-dot" style="background:#00B388"></div><div class="lg-text"><strong>الدعم الفني:</strong> معالجة طلبات الوصول والتكامل وإدارة الحوادث</div></div>
+                            <div class="lg-item"><div class="lg-dot" style="background:#00B388"></div><div class="lg-text"><strong>التوثيق:</strong> تحديث السجلات والبيانات الوصفية والتقارير التشغيلية</div></div>
+                        </div>
+                        <div class="level-members">
+                            <div class="member-chip">محللو البيانات</div>
+                            <div class="member-chip">مهندسو البيانات</div>
+                            <div class="member-chip">أمناء البيانات</div>
+                            <div class="member-chip">فريق الدعم</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="side-panel">
+                <div class="flow-card">
+                    <div class="flow-title"><i class="fas fa-sitemap" style="color:#2B5EA7"></i> مسار التقارير والتصعيد</div>
+                    <div class="flow-steps">
+                        <div class="flow-step"><div class="fs-circle" style="background:#1B2A4A">01</div><div class="fs-label">اللجنة التنفيذية العليا</div></div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-down"></i> توجيهات | <i class="fas fa-arrow-up"></i> تقارير</div>
+                        <div class="flow-step"><div class="fs-circle" style="background:#2B5EA7">02</div><div class="fs-label">لجنة التوجيه</div></div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-down"></i> مهام | <i class="fas fa-arrow-up"></i> تصعيد</div>
+                        <div class="flow-step"><div class="fs-circle" style="background:#00B388">03</div><div class="fs-label">فرق التنفيذ</div></div>
+                    </div>
+                </div>
+
+                <div class="escalation-card">
+                    <div class="esc-title"><i class="fas fa-exclamation-triangle"></i> قواعد التصعيد</div>
+                    <div class="esc-row"><div class="esc-icon"><i class="fas fa-clock"></i></div><div class="esc-text">تأخر أكثر من 15 يوم عمل → تصعيد للمستوى التكتيكي</div></div>
+                    <div class="esc-row"><div class="esc-icon"><i class="fas fa-shield-alt"></i></div><div class="esc-text">مخاطر عالية أو حرجة → تصعيد فوري للمستوى الاستراتيجي</div></div>
+                    <div class="esc-row"><div class="esc-icon"><i class="fas fa-ban"></i></div><div class="esc-text">عدم امتثال متكرر → إحالة للجنة الامتثال الوطنية</div></div>
+                    <div class="esc-row"><div class="esc-icon"><i class="fas fa-coins"></i></div><div class="esc-text">تجاوز الميزانية >10% → موافقة المستوى الاستراتيجي</div></div>
+                </div>
+
+                <div class="authority-card">
+                    <div class="auth-title"><i class="fas fa-key" style="color:#E8A838"></i> مصفوفة الصلاحيات</div>
+                    <div class="auth-grid">
+                        <div class="auth-item"><div class="auth-check"><i class="fas fa-check-circle"></i></div><div class="auth-label">اعتماد السياسات</div></div>
+                        <div class="auth-item"><div class="auth-check"><i class="fas fa-check-circle"></i></div><div class="auth-label">تخصيص الميزانية</div></div>
+                        <div class="auth-item"><div class="auth-check"><i class="fas fa-check-circle"></i></div><div class="auth-label">إيقاف المشاريع</div></div>
+                        <div class="auth-item"><div class="auth-check"><i class="fas fa-check-circle"></i></div><div class="auth-label">فرض العقوبات</div></div>
+                        <div class="auth-item"><div class="auth-check"><i class="fas fa-check-circle"></i></div><div class="auth-label">تعيين المسؤولين</div></div>
+                        <div class="auth-item"><div class="auth-check"><i class="fas fa-check-circle"></i></div><div class="auth-label">تعديل الأطر</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">23</div>
+    </div>
+</body>
+</html>

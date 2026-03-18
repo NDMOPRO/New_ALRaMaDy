@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+            display: flex;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 5px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .right-panel {
+            width: 480px;
+            background: linear-gradient(180deg, #1B2A4A 0%, #243656 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .section-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 280px;
+            font-weight: 800;
+            color: rgba(255,255,255,0.03);
+            line-height: 1;
+        }
+        .section-num-box {
+            width: 90px; height: 90px;
+            border: 3px solid #E8A838;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+        .section-num {
+            font-size: 42px;
+            font-weight: 800;
+            color: #E8A838;
+        }
+        .section-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 2;
+        }
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 60px 60px 60px;
+        }
+        .section-title {
+            font-size: 38px;
+            font-weight: 800;
+            color: #1B2A4A;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        .gold-line {
+            width: 80px;
+            height: 4px;
+            background: #E8A838;
+            margin-bottom: 25px;
+        }
+        .section-desc {
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        .section-meta {
+            display: flex;
+            gap: 30px;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .meta-icon {
+            width: 32px; height: 32px;
+            background: rgba(27,42,74,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #2B5EA7;
+        }
+        .meta-text {
+            font-size: 12px;
+            color: #888;
+        }
+        .meta-val {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1B2A4A;
+        }
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="right-panel">
+            <div class="section-watermark">01</div>
+            <div class="section-num-box"><div class="section-num">01</div></div>
+            <div class="section-label">القسم الأول</div>
+        </div>
+        <div class="left-panel">
+            <div class="section-title">الإطار العام<br>والسياق الاستراتيجي</div>
+            <div class="gold-line"></div>
+            <div class="section-desc">يتناول هذا القسم الخلفية التنظيمية والسياق الوطني والارتباط بالأهداف الاستراتيجية ورؤية المملكة 2030 وإطار الحوكمة الوطني ومتطلبات الامتثال.</div>
+            <div class="section-meta">
+                <div class="meta-item">
+                    <div class="meta-icon"><i class="fas fa-file-alt"></i></div>
+                    <div><div class="meta-text">عدد الشرائح</div><div class="meta-val">6 شرائح</div></div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-icon"><i class="fas fa-clock"></i></div>
+                    <div><div class="meta-text">الوقت المقدر</div><div class="meta-val">15 دقيقة</div></div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-icon"><i class="fas fa-layer-group"></i></div>
+                    <div><div class="meta-text">المحاور</div><div class="meta-val">4 محاور</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">02</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { height: 628px; padding: 10px 16px 4px 16px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 10px; }
+        .chart-section { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .chart-section .chart-title { font-size: 12px; font-weight: 700; color: #1B2A4A; display: flex; align-items: center; gap: 6px; align-self: flex-start; margin-bottom: 6px; }
+        .chart-section .chart-title i { color: #2B5EA7; font-size: 11px; }
+        .donut-wrap { position: relative; width: 380px; height: 380px; }
+        .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+        .dc-val { font-size: 36px; font-weight: 800; color: #1B2A4A; line-height: 1; }
+        .dc-label { font-size: 11px; color: #64748B; }
+        .breakdown-section { display: flex; flex-direction: column; gap: 6px; }
+        .bd-title { font-size: 12px; font-weight: 700; color: #1B2A4A; display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+        .bd-title i { color: #E8A838; font-size: 11px; }
+        .bd-item { background: #F8FAFC; border: 1px solid #E2E8F0; border-right: 4px solid #2B5EA7; padding: 10px 12px; display: flex; align-items: center; gap: 10px; }
+        .bd-item:nth-child(2) { border-right-color: #1B2A4A; }
+        .bd-item:nth-child(3) { border-right-color: #2B5EA7; }
+        .bd-item:nth-child(4) { border-right-color: #00B388; }
+        .bd-item:nth-child(5) { border-right-color: #E8A838; }
+        .bd-item:nth-child(6) { border-right-color: #8E44AD; }
+        .bd-item:nth-child(7) { border-right-color: #CBD5E1; }
+        .bd-pct { font-size: 22px; font-weight: 800; color: #1B2A4A; min-width: 50px; }
+        .bd-info { flex: 1; }
+        .bd-name { font-size: 10px; font-weight: 700; color: #1B2A4A; }
+        .bd-val { font-size: 9px; color: #64748B; }
+        .bd-bar { height: 3px; background: #E2E8F0; margin-top: 3px; }
+        .bd-bar-fill { height: 100%; }
+        .total-bar { background: #1B2A4A; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
+        .tb-label { font-size: 10px; color: rgba(255,255,255,0.7); }
+        .tb-val { font-size: 18px; font-weight: 800; color: white; }
+        .footer { height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 22px; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-chart-pie" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> عنوان الرسم البياني الحلقي - منفرد يكتب هنا</div>
+            <div class="header-num">3.33</div>
+        </div>
+        <div class="content">
+            <div class="chart-section">
+                <div class="chart-title"><i class="fas fa-chart-pie"></i> عنوان التوزيع الرئيسي يكتب هنا</div>
+                <div class="donut-wrap">
+                    <canvas id="donutMain"></canvas>
+                    <div class="donut-center"><div class="dc-val">45.2K</div><div class="dc-label">الإجمالي يكتب هنا</div></div>
+                </div>
+            </div>
+            <div class="breakdown-section">
+                <div class="bd-title"><i class="fas fa-list-ol"></i> تفصيل التوزيع يكتب هنا</div>
+                <div class="bd-item"><div class="bd-pct">35%</div><div class="bd-info"><div class="bd-name">الفئة الأولى يكتب هنا</div><div class="bd-val">15,820 عنصر</div><div class="bd-bar"><div class="bd-bar-fill" style="width:35%;background:#1B2A4A;"></div></div></div></div>
+                <div class="bd-item"><div class="bd-pct">25%</div><div class="bd-info"><div class="bd-name">الفئة الثانية يكتب هنا</div><div class="bd-val">11,300 عنصر</div><div class="bd-bar"><div class="bd-bar-fill" style="width:25%;background:#2B5EA7;"></div></div></div></div>
+                <div class="bd-item"><div class="bd-pct">20%</div><div class="bd-info"><div class="bd-name">الفئة الثالثة يكتب هنا</div><div class="bd-val">9,040 عنصر</div><div class="bd-bar"><div class="bd-bar-fill" style="width:20%;background:#00B388;"></div></div></div></div>
+                <div class="bd-item"><div class="bd-pct">12%</div><div class="bd-info"><div class="bd-name">الفئة الرابعة يكتب هنا</div><div class="bd-val">5,424 عنصر</div><div class="bd-bar"><div class="bd-bar-fill" style="width:12%;background:#E8A838;"></div></div></div></div>
+                <div class="bd-item"><div class="bd-pct">5%</div><div class="bd-info"><div class="bd-name">الفئة الخامسة يكتب هنا</div><div class="bd-val">2,260 عنصر</div><div class="bd-bar"><div class="bd-bar-fill" style="width:5%;background:#8E44AD;"></div></div></div></div>
+                <div class="bd-item"><div class="bd-pct">3%</div><div class="bd-info"><div class="bd-name">أخرى يكتب هنا</div><div class="bd-val">1,356 عنصر</div><div class="bd-bar"><div class="bd-bar-fill" style="width:3%;background:#CBD5E1;"></div></div></div></div>
+                <div class="total-bar"><div class="tb-label">الإجمالي يكتب هنا</div><div class="tb-val">45,200</div></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+    <script>
+        new Chart(document.getElementById('donutMain'), {
+            type: 'doughnut',
+            data: {
+                labels: ['الفئة الأولى','الفئة الثانية','الفئة الثالثة','الفئة الرابعة','الفئة الخامسة','أخرى'],
+                datasets: [{ data: [35,25,20,12,5,3], backgroundColor: ['#1B2A4A','#2B5EA7','#00B388','#E8A838','#8E44AD','#CBD5E1'], borderWidth: 2, borderColor: '#FFFFFF' }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, cutout: '55%',
+                plugins: { legend: { display: false } }
+            }
+        });
+    </script>
+</body>
+</html>

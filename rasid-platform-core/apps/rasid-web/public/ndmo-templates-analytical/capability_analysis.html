@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل القدرات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1B2A4A; /* Royal Dark Blue */
+            --accent-color: #00B388; /* Teal */
+            --highlight-color: #E8A838; /* Gold */
+            --white: #FFFFFF;
+            --light-bg: #F8F9FA;
+            --border-color: #E0E0E0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: var(--white);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Royal Blue Header */
+        .header {
+            background-color: var(--primary-color);
+            height: 85px;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            position: relative;
+            z-index: 10;
+            border-bottom: 4px solid var(--highlight-color);
+        }
+
+        .header-title {
+            color: var(--white);
+            font-size: 28px;
+            font-weight: 800;
+            margin-left: 20px;
+        }
+
+        .header-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            font-weight: 500;
+            margin-right: auto;
+        }
+
+        .logo-container {
+            background-color: rgba(255,255,255,0.1);
+            padding: 5px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            height: 40px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        /* Content Area: Capability Heatmap */
+        .content {
+            flex: 1;
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--light-bg);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        /* Capability Matrix */
+        .capability-matrix {
+            display: grid;
+            grid-template-columns: 200px repeat(5, 1fr);
+            gap: 10px;
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .matrix-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: 700;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .matrix-row-header {
+            background-color: #f1f2f6;
+            color: var(--primary-color);
+            padding: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .cap-cell {
+            padding: 15px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 12px;
+            position: relative;
+            border: 1px solid #eee;
+        }
+
+        .cap-level {
+            font-weight: 800;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .cap-desc {
+            font-size: 10px;
+            color: #555;
+        }
+
+        /* Heatmap Colors */
+        .lvl-1 { background-color: #ffebee; color: #c62828; border-color: #ffcdd2; } /* Very Low */
+        .lvl-2 { background-color: #fff3e0; color: #ef6c00; border-color: #ffe0b2; } /* Low */
+        .lvl-3 { background-color: #fffde7; color: #f9a825; border-color: #fff9c4; } /* Medium */
+        .lvl-4 { background-color: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; } /* High */
+        .lvl-5 { background-color: #e0f2f1; color: #00695c; border-color: #b2dfdb; } /* Optimized */
+
+        /* Legend */
+        .legend {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+            margin-left: 8px;
+        }
+
+        /* Footer */
+        .footer {
+            height: 40px;
+            background-color: var(--white);
+            border-top: 1px solid #E0E0E0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 10px;
+            color: #888;
+        }
+
+        .footer-text {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .page-number {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">عنوان الشريحة الرئيسي يكتب هنا</div>
+            <div class="header-subtitle">وصف مختصر لمحتوى الشريحة يكتب في هذا المكان</div>
+            <div class="logo-container">
+                <img src="assets/logo_ndmo.png" class="logo-img" alt="NDMO">
+                <img src="assets/logo_sdaia.png" class="logo-img" alt="SDAIA">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <div class="section-title">مصفوفة تقييم القدرات المؤسسية (Capability Heatmap)</div>
+            
+            <div class="capability-matrix">
+                <!-- Headers -->
+                <div></div> <!-- Empty Corner -->
+                <div class="matrix-header">الأفراد (People)</div>
+                <div class="matrix-header">العمليات (Process)</div>
+                <div class="matrix-header">التقنية (Technology)</div>
+                <div class="matrix-header">البيانات (Data)</div>
+                <div class="matrix-header">الحوكمة (Governance)</div>
+
+                <!-- Row 1: Strategy -->
+                <div class="matrix-row-header">الاستراتيجية</div>
+                <div class="cap-cell lvl-4">
+                    <div class="cap-level">4.0</div>
+                    <div class="cap-desc">متقدم</div>
+                </div>
+                <div class="cap-cell lvl-3">
+                    <div class="cap-level">3.2</div>
+                    <div class="cap-desc">محدد</div>
+                </div>
+                <div class="cap-cell lvl-2">
+                    <div class="cap-level">2.5</div>
+                    <div class="cap-desc">مكرر</div>
+                </div>
+                <div class="cap-cell lvl-4">
+                    <div class="cap-level">4.1</div>
+                    <div class="cap-desc">متقدم</div>
+                </div>
+                <div class="cap-cell lvl-5">
+                    <div class="cap-level">4.8</div>
+                    <div class="cap-desc">محسن</div>
+                </div>
+
+                <!-- Row 2: Operations -->
+                <div class="matrix-row-header">العمليات التشغيلية</div>
+                <div class="cap-cell lvl-3">
+                    <div class="cap-level">3.5</div>
+                    <div class="cap-desc">محدد</div>
+                </div>
+                <div class="cap-cell lvl-4">
+                    <div class="cap-level">4.2</div>
+                    <div class="cap-desc">متقدم</div>
+                </div>
+                <div class="cap-cell lvl-3">
+                    <div class="cap-level">3.0</div>
+                    <div class="cap-desc">محدد</div>
+                </div>
+                <div class="cap-cell lvl-3">
+                    <div class="cap-level">3.8</div>
+                    <div class="cap-desc">محدد</div>
+                </div>
+                <div class="cap-cell lvl-4">
+                    <div class="cap-level">4.0</div>
+                    <div class="cap-desc">متقدم</div>
+                </div>
+
+                <!-- Row 3: Infrastructure -->
+                <div class="matrix-row-header">البنية التحتية</div>
+                <div class="cap-cell lvl-2">
+                    <div class="cap-level">2.1</div>
+                    <div class="cap-desc">مكرر</div>
+                </div>
+                <div class="cap-cell lvl-2">
+                    <div class="cap-level">2.4</div>
+                    <div class="cap-desc">مكرر</div>
+                </div>
+                <div class="cap-cell lvl-5">
+                    <div class="cap-level">4.9</div>
+                    <div class="cap-desc">محسن</div>
+                </div>
+                <div class="cap-cell lvl-4">
+                    <div class="cap-level">4.3</div>
+                    <div class="cap-desc">متقدم</div>
+                </div>
+                <div class="cap-cell lvl-3">
+                    <div class="cap-level">3.1</div>
+                    <div class="cap-desc">محدد</div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="legend">
+                <div class="legend-item"><div class="legend-color" style="background-color: #ffebee; border: 1px solid #ffcdd2;"></div> 1. مبدئي</div>
+                <div class="legend-item"><div class="legend-color" style="background-color: #fff3e0; border: 1px solid #ffe0b2;"></div> 2. مكرر</div>
+                <div class="legend-item"><div class="legend-color" style="background-color: #fffde7; border: 1px solid #fff9c4;"></div> 3. محدد</div>
+                <div class="legend-item"><div class="legend-color" style="background-color: #e8f5e9; border: 1px solid #c8e6c9;"></div> 4. متقدم</div>
+                <div class="legend-item"><div class="legend-color" style="background-color: #e0f2f1; border: 1px solid #b2dfdb;"></div> 5. محسن</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالادارة العامة لادارة البيانات</div>
+            <div class="page-number">39</div>
+        </div>
+    </div>
+</body>
+</html>

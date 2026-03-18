@@ -6,7 +6,7 @@
 import { ENV } from "./_core/env";
 import { invokeLLM, type Message, type InvokeResult } from "./_core/llm";
 
-const OPENAI_BASE = "https://api.openai.com/v1";
+const OPENAI_BASE = process.env.OPENAI_BASE_URL || process.env.OPENAI_API_BASE || "https://api.openai.com/v1";
 
 // ─── Types ───────────────────────────────────────────────────────
 export interface ChatMessage {
@@ -42,7 +42,7 @@ async function callOpenAI(
   }
 
   const payload: Record<string, unknown> = {
-    model: options?.model || "gpt-4o-mini",
+    model: options?.model || "gpt-4.1-mini",
     messages,
     temperature: options?.temperature ?? 0.7,
     max_tokens: options?.max_tokens ?? 4096,
@@ -127,7 +127,7 @@ export async function callVision(
   }
 
   const payload = {
-    model: options?.model || "gpt-4o-mini",
+    model: options?.model || "gpt-4.1-mini",
     messages,
     temperature: options?.temperature ?? 0.2,
     max_tokens: options?.max_tokens ?? 4096,
@@ -298,7 +298,7 @@ export async function openaiChat(
 
   const {
     messages,
-    model = "gpt-4o-mini",
+    model = "gpt-4.1-mini",
     temperature = 0.7,
     max_tokens = 4096,
     response_format,
@@ -388,7 +388,7 @@ export async function openaiStream(
 
   const {
     messages,
-    model = "gpt-4o-mini",
+    model = "gpt-4.1-mini",
     temperature = 0.7,
     max_tokens = 4096,
   } = options;
@@ -427,8 +427,8 @@ export async function validateOpenAIKey(): Promise<boolean> {
     if (!apiKey) return false;
     // Try direct OpenAI API first, then proxy
     const endpoints = [
-      { url: "https://api.openai.com/v1/chat/completions", model: "gpt-4o-mini" },
       { url: `${OPENAI_BASE}/chat/completions`, model: "gpt-4.1-nano" },
+      { url: `${OPENAI_BASE}/chat/completions`, model: "gpt-4.1-mini" },
     ];
     for (const ep of endpoints) {
       try {

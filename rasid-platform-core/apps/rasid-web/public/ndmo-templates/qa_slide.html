@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: white; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 40px; flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
+        
+        /* Decorative Elements */
+        .bg-pattern { position: absolute; width: 100%; height: 100%; opacity: 0.03; background-image: radial-gradient(#1B2A4A 1px, transparent 1px); background-size: 20px 20px; z-index: 0; }
+        
+        .qa-container { text-align: center; z-index: 1; position: relative; }
+        
+        .qa-icon-circle { width: 180px; height: 180px; background: rgba(43,94,167,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px auto; border: 2px dashed #2B5EA7; position: relative; }
+        .qa-icon-circle::before { content: ''; position: absolute; width: 220px; height: 220px; border: 1px solid rgba(43,94,167,0.2); border-radius: 50%; animation: pulse 3s infinite; }
+        
+        .qa-icon { font-size: 80px; color: #1B2A4A; }
+        
+        .qa-title { font-size: 64px; font-weight: 800; color: #1B2A4A; margin-bottom: 16px; letter-spacing: -1px; }
+        .qa-subtitle { font-size: 24px; color: #666; font-weight: 500; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+        
+        .qa-line { width: 80px; height: 6px; background: linear-gradient(to right, #00B388, #2B5EA7); margin: 30px auto; border-radius: 3px; }
+
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.1; }
+            100% { transform: scale(0.8); opacity: 0.5; }
+        }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">النقاش المفتوح</div>
+            <div class="header-badge">52</div>
+        </div>
+
+        <div class="content-area">
+            <div class="bg-pattern"></div>
+            
+            <div class="qa-container">
+                <div class="qa-icon-circle">
+                    <i class="fas fa-comments qa-icon"></i>
+                </div>
+                
+                <div class="qa-title">الأسئلة والنقاش</div>
+                <div class="qa-line"></div>
+                <div class="qa-subtitle">
+                    يسعدنا استقبال استفساراتكم وملاحظاتكم حول<br>
+                    استراتيجية وخارطة طريق إدارة البيانات الوطنية
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">52</div>
+    </div>
+</body>
+</html>

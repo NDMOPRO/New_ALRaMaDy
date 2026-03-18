@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 40px; flex: 1; display: flex; gap: 30px; align-items: center; justify-content: center; }
+
+        .opp-card { flex: 1; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; flex-direction: column; height: 400px; position: relative; transition: transform 0.3s ease; }
+        .opp-card:hover { transform: translateY(-5px); }
+        
+        .oc-header { height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; position: relative; }
+        .bg-blue { background: linear-gradient(135deg, #2B5EA7, #1B3E75); }
+        .bg-green { background: linear-gradient(135deg, #00B388, #008560); }
+        .bg-gold { background: linear-gradient(135deg, #E8A838, #C78D24); }
+
+        .oc-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.9; }
+        .oc-title { font-size: 20px; font-weight: 800; text-align: center; padding: 0 20px; }
+
+        .oc-body { padding: 24px; flex: 1; display: flex; flex-direction: column; gap: 16px; }
+        .oc-point { display: flex; align-items: flex-start; gap: 12px; }
+        .oc-check { color: #00B388; font-size: 14px; margin-top: 4px; }
+        .oc-text { font-size: 14px; color: #555; line-height: 1.5; }
+        
+        .oc-stat { margin-top: auto; padding-top: 16px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .os-lbl { font-size: 12px; color: #888; font-weight: 700; }
+        .os-val { font-size: 24px; font-weight: 800; color: #333; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الفرص والممكنات - آفاق تطوير منظومة البيانات</div>
+            <div class="header-badge">36</div>
+        </div>
+
+        <div class="content-area">
+            <!-- Opportunity 1 -->
+            <div class="opp-card">
+                <div class="oc-header bg-blue">
+                    <div class="oc-icon"><i class="fas fa-rocket"></i></div>
+                    <div class="oc-title">تعزيز الكفاءة التشغيلية</div>
+                </div>
+                <div class="oc-body">
+                    <div class="oc-point">
+                        <div class="oc-check"><i class="fas fa-check-circle"></i></div>
+                        <div class="oc-text">تقليل التكاليف التشغيلية من خلال أتمتة عمليات معالجة البيانات.</div>
+                    </div>
+                    <div class="oc-point">
+                        <div class="oc-check"><i class="fas fa-check-circle"></i></div>
+                        <div class="oc-text">تحسين سرعة الوصول للمعلومات وتقليل الجهد اليدوي.</div>
+                    </div>
+                    <div class="oc-stat">
+                        <div class="os-lbl">توفير متوقع</div>
+                        <div class="os-val">30%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Opportunity 2 -->
+            <div class="opp-card">
+                <div class="oc-header bg-green">
+                    <div class="oc-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="oc-title">دعم الابتكار والمنتجات</div>
+                </div>
+                <div class="oc-body">
+                    <div class="oc-point">
+                        <div class="oc-check"><i class="fas fa-check-circle"></i></div>
+                        <div class="oc-text">تطوير منتجات وخدمات ذكية تعتمد على تحليل البيانات الضخمة.</div>
+                    </div>
+                    <div class="oc-point">
+                        <div class="oc-check"><i class="fas fa-check-circle"></i></div>
+                        <div class="oc-text">فتح قنوات جديدة للإيرادات من خلال تسييل البيانات (Monetization).</div>
+                    </div>
+                    <div class="oc-stat">
+                        <div class="os-lbl">منتجات جديدة</div>
+                        <div class="os-val">5+</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Opportunity 3 -->
+            <div class="opp-card">
+                <div class="oc-header bg-gold">
+                    <div class="oc-icon"><i class="fas fa-chess-king"></i></div>
+                    <div class="oc-title">دعم اتخاذ القرار</div>
+                </div>
+                <div class="oc-body">
+                    <div class="oc-point">
+                        <div class="oc-check"><i class="fas fa-check-circle"></i></div>
+                        <div class="oc-text">توفير لوحات قيادة لحظية للقيادة العليا لدعم القرارات الاستراتيجية.</div>
+                    </div>
+                    <div class="oc-point">
+                        <div class="oc-check"><i class="fas fa-check-circle"></i></div>
+                        <div class="oc-text">التنبؤ بالاتجاهات المستقبلية والمخاطر المحتملة استباقياً.</div>
+                    </div>
+                    <div class="oc-stat">
+                        <div class="os-lbl">دقة التنبؤ</div>
+                        <div class="os-val">85%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">36</div>
+    </div>
+</body>
+</html>

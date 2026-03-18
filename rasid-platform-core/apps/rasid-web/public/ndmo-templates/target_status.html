@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 30px 40px 10px 40px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        .target-statement { background: white; padding: 16px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 16px; border-right: 6px solid #00B388; }
+        .ts-icon { font-size: 32px; color: #00B388; }
+        .ts-text { font-size: 16px; color: #333; font-weight: 500; line-height: 1.5; }
+        .ts-bold { font-weight: 800; color: #1B2A4A; }
+
+        .pillars-container { flex: 1; display: flex; gap: 16px; align-items: stretch; }
+        
+        .pillar { flex: 1; display: flex; flex-direction: column; position: relative; }
+        .p-head { height: 60px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 14px; position: relative; z-index: 2; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .ph-1 { background: #1B2A4A; }
+        .ph-2 { background: #2B5EA7; }
+        .ph-3 { background: #00B388; }
+        .ph-4 { background: #E8A838; }
+
+        .p-body { flex: 1; background: white; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 12px; margin-top: -4px; padding-top: 16px; }
+        
+        .target-item { display: flex; align-items: flex-start; gap: 10px; }
+        .ti-check { color: #00B388; font-size: 12px; margin-top: 4px; }
+        .ti-content { flex: 1; }
+        .ti-title { font-size: 12px; font-weight: 800; color: #333; margin-bottom: 4px; }
+        .ti-desc { font-size: 11px; color: #666; line-height: 1.4; }
+
+        .p-metric { margin-top: auto; padding-top: 12px; border-top: 1px solid #eee; text-align: center; }
+        .pm-val { font-size: 24px; font-weight: 800; color: #1B2A4A; }
+        .pm-lbl { font-size: 10px; color: #888; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الوضع المستهدف - الركائز الاستراتيجية لإدارة البيانات</div>
+            <div class="header-badge">33</div>
+        </div>
+
+        <div class="content-area">
+            <div class="target-statement">
+                <div class="ts-icon"><i class="fas fa-bullseye"></i></div>
+                <div class="ts-text">الوصول إلى مستوى <span class="ts-bold">"مؤسسة تعتمد على البيانات" (Data-Driven Organization)</span> بحلول عام 2027، من خلال بناء منظومة متكاملة للحوكمة والجودة والتحليل.</div>
+            </div>
+
+            <div class="pillars-container">
+                <!-- Pillar 1 -->
+                <div class="pillar">
+                    <div class="p-head ph-1"><i class="fas fa-landmark" style="margin-left:8px"></i>الأساس التنظيمي</div>
+                    <div class="p-body">
+                        <div class="target-item">
+                            <div class="ti-check"><i class="fas fa-check"></i></div>
+                            <div class="ti-content">
+                                <div class="ti-title">حوكمة مؤسسية شاملة</div>
+                                <div class="ti-desc">تفعيل مكتب البيانات ولجان الإشراف بنسبة 100%.</div>
+                            </div>
+                        </div>
+                        <div class="target-item">
+                            <div class="ti-check"><i class="fas fa-check"></i></div>
+                            <div class="ti-content">
+                                <div class="ti-title">امتثال كامل</div>
+                                <div class="ti-desc">الامتثال لجميع ضوابط NDMO و NCA.</div>
+                            </div>
+                        </div>
+                        <div class="p-metric"><div class="pm-val">100%</div><div class="pm-lbl">امتثال تنظيمي</div></div>
+                    </div>
+                </div>
+
+                <!-- Pillar 2 -->
+                <div class="pillar">
+                    <div class="p-head ph-2"><i class="fas fa-cogs" style="margin-left:8px"></i>التميز التشغيلي</div>
+                    <div class="p-body">
+                        <div class="target-item">
+                            <div class="ti-check"><i class="fas fa-check"></i></div>
+                            <div class="ti-content">
+                                <div class="ti-title">جودة بيانات عالية</div>
+                                <div class="ti-desc">تحسين دقة واكتمال البيانات الأساسية.</div>
+                            </div>
+                        </div>
+                        <div class="target-item">
+                            <div class="ti-check"><i class="fas fa-check"></i></div>
+                            <div class="ti-content">
+                                <div class="ti-title">أتمتة العمليات</div>
+                                <div class="ti-desc">أتمتة عمليات التصنيف والمشاركة.</div>
+                            </div>
+                        </div>
+                        <div class="p-metric"><div class="pm-val">95%</div><div class="pm-lbl">جودة البيانات</div></div>
+                    </div>
+                </div>
+
+                <!-- Pillar 3 -->
+                <div class="pillar">
+                    <div class="p-head ph-3"><i class="fas fa-network-wired" style="margin-left:8px"></i>التكامل والمشاركة</div>
+                    <div class="p-body">
+                        <div class="target-item">
+                            <div class="ti-check"><i class="fas fa-check"></i></div>
+                            <div class="ti-content">
+                                <div class="ti-title">ترابط الأنظمة</div>
+                                <div class="ti-desc">ربط جميع الأنظمة عبر قناة التكامل الحكومية.</div>
+                            </div>
+                        </div>
+                        <div class="target-item">
+                            <div class="ti-check"><i class="fas fa-check"></i></div>
+                            <div class="ti-content">
+                                <div class="ti-title">نشر البيانات المفتوحة</div>
+                                <div class="ti-desc">نشر 50 مجموعة بيانات عالية القيمة.</div>
+                            </div>
+                        </div>
+                        <div class="p-metric"><div class="pm-val">50+</div><div class="pm-lbl">مجموعة بيانات</div></div>
+                    </div>
+                </div>
+
+                <!-- Pillar 4 -->
+                <div class="pillar">
+                    <div class="p-head ph-4"><i class="fas fa-lightbulb" style="margin-left:8px"></i>القيمة والأثر</div>
+                    <div class="p-body">
+                        <div class="target-item">
+                            <div class="ti-check"><i class="fas fa-check"></i></div>
+                            <div class="ti-content">
+                                <div class="ti-title">تحليل متقدم</div>
+                                <div class="ti-desc">استخدام الذكاء الاصطناعي في دعم القرار.</div>
+                            </div>
+                        </div>
+                        <div class="target-item">
+                            <div class="ti-check"><i class="fas fa-check"></i></div>
+                            <div class="ti-content">
+                                <div class="ti-title">منتجات بيانات</div>
+                                <div class="ti-desc">إطلاق منتجات بيانات تخدم المستفيدين.</div>
+                            </div>
+                        </div>
+                        <div class="p-metric"><div class="pm-val">5</div><div class="pm-lbl">منتجات ابتكارية</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">33</div>
+    </div>
+</body>
+</html>

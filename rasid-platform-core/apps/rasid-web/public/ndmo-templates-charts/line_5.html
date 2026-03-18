@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; background: #FFFFFF; position: relative; display: flex; flex-direction: column; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 20px 6px 20px; display: flex; flex-direction: column; gap: 8px; }
+
+        .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .kpi-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-top: 3px solid #2B5EA7; padding: 8px 12px; display: flex; align-items: center; gap: 10px; }
+        .kpi-card:nth-child(1) { border-top-color: #00B388; }
+        .kpi-card:nth-child(2) { border-top-color: #C0392B; }
+        .kpi-card:nth-child(3) { border-top-color: #1B2A4A; }
+        .kpi-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: white; }
+        .kpi-info { }
+        .kpi-label { font-size: 9px; color: #64748B; }
+        .kpi-value { font-size: 24px; font-weight: 800; color: #1B2A4A; line-height: 1; }
+        .kpi-sub { font-size: 8px; color: #94A3B8; }
+
+        .bottom-row { display: grid; grid-template-columns: 1.6fr 1fr; gap: 10px; flex: 1; }
+        .chart-box { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 8px 10px; display: flex; flex-direction: column; }
+        .chart-title { font-size: 12px; font-weight: 700; color: #1B2A4A; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+        .chart-title i { color: #2B5EA7; font-size: 11px; }
+        .chart-body { flex: 1; position: relative; }
+
+        .annot-box { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 8px 10px; display: flex; flex-direction: column; }
+        .annot-title { font-size: 11px; font-weight: 700; color: #1B2A4A; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .annot-title i { color: #E8A838; font-size: 10px; }
+        .annot-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #F1F5F9; }
+        .annot-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .annot-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+        .annot-content { }
+        .annot-period { font-size: 10px; font-weight: 700; color: #1B2A4A; }
+        .annot-desc { font-size: 9px; color: #64748B; line-height: 1.4; }
+
+        .footer { height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 22px; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-crosshairs" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> عنوان الرسم البياني الخطي - مع نقاط تركيز يكتب هنا</div>
+            <div class="header-num">3.23</div>
+        </div>
+        <div class="content">
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background:#00B388;border-radius:6px;"><i class="fas fa-arrow-up"></i></div>
+                    <div class="kpi-info"><div class="kpi-label">أعلى قيمة مسجلة يكتب هنا</div><div class="kpi-value">4,520</div><div class="kpi-sub">أكتوبر 2025</div></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background:#C0392B;border-radius:6px;"><i class="fas fa-arrow-down"></i></div>
+                    <div class="kpi-info"><div class="kpi-label">أدنى قيمة مسجلة يكتب هنا</div><div class="kpi-value">1,120</div><div class="kpi-sub">يناير 2025</div></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background:#1B2A4A;border-radius:6px;"><i class="fas fa-equals"></i></div>
+                    <div class="kpi-info"><div class="kpi-label">المتوسط العام يكتب هنا</div><div class="kpi-value">2,847</div><div class="kpi-sub">12 شهر</div></div>
+                </div>
+            </div>
+            <div class="bottom-row">
+                <div class="chart-box">
+                    <div class="chart-title"><i class="fas fa-chart-line"></i> عنوان الاتجاه مع نقاط التركيز يكتب هنا</div>
+                    <div class="chart-body"><canvas id="focusLine"></canvas></div>
+                </div>
+                <div class="annot-box">
+                    <div class="annot-title"><i class="fas fa-bookmark"></i> نقاط التركيز والملاحظات يكتب هنا</div>
+                    <div class="annot-item"><div class="annot-dot" style="background:#00B388"></div><div class="annot-content"><div class="annot-period">أكتوبر 2025 — أعلى قيمة</div><div class="annot-desc">وصف نقطة التركيز الأولى يكتب هنا مع توضيح سبب الارتفاع</div></div></div>
+                    <div class="annot-item"><div class="annot-dot" style="background:#C0392B"></div><div class="annot-content"><div class="annot-period">يناير 2025 — أدنى قيمة</div><div class="annot-desc">وصف نقطة التركيز الثانية يكتب هنا مع توضيح سبب الانخفاض</div></div></div>
+                    <div class="annot-item"><div class="annot-dot" style="background:#E8A838"></div><div class="annot-content"><div class="annot-period">مايو 2025 — نقطة تحول</div><div class="annot-desc">وصف نقطة التحول يكتب هنا مع توضيح التغير في الاتجاه</div></div></div>
+                    <div class="annot-item"><div class="annot-dot" style="background:#2B5EA7"></div><div class="annot-content"><div class="annot-period">أغسطس 2025 — استقرار</div><div class="annot-desc">وصف فترة الاستقرار يكتب هنا مع توضيح العوامل المؤثرة</div></div></div>
+                    <div class="annot-item"><div class="annot-dot" style="background:#1B2A4A"></div><div class="annot-content"><div class="annot-period">ديسمبر 2025 — التوقعات</div><div class="annot-desc">وصف التوقعات المستقبلية يكتب هنا مع الإجراءات المقترحة</div></div></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+    <script>
+        new Chart(document.getElementById('focusLine'), {
+            type: 'line',
+            data: {
+                labels: ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],
+                datasets: [{
+                    label: 'القيمة الفعلية يكتب هنا',
+                    data: [1120,1450,1800,2200,2650,3100,3400,3500,3800,4520,4200,3950],
+                    borderColor: '#1B2A4A', backgroundColor: 'rgba(27,42,74,0.06)', fill: true, tension: 0.4,
+                    pointRadius: [8,3,3,3,6,3,3,5,3,8,3,3],
+                    pointBackgroundColor: ['#C0392B','#1B2A4A','#1B2A4A','#1B2A4A','#E8A838','#1B2A4A','#1B2A4A','#2B5EA7','#1B2A4A','#00B388','#1B2A4A','#1B2A4A'],
+                    borderWidth: 2.5
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', labels: { font: { family: 'Tajawal', size: 9 }, boxWidth: 10 } } },
+                scales: {
+                    y: { grid: { color: '#F1F5F9' }, ticks: { font: { family: 'Tajawal', size: 9 }, callback: v => v.toLocaleString() } },
+                    x: { grid: { display: false }, ticks: { font: { family: 'Tajawal', size: 9 } } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

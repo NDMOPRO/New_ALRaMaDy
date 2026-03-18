@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+            flex-shrink: 0;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 30px 40px;
+            flex: 1;
+            display: flex;
+            gap: 25px;
+        }
+
+        /* Left Column: Context & Quote */
+        .context-col {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .intro-box {
+            background: white;
+            padding: 20px;
+            border-top: 4px solid #1B2A4A;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .ib-title { font-size: 14px; font-weight: 800; color: #1B2A4A; margin-bottom: 10px; }
+        .ib-text { font-size: 12px; color: #555; line-height: 1.6; text-align: justify; }
+
+        .quote-box {
+            background: linear-gradient(135deg, #1B2A4A 0%, #243656 100%);
+            color: white;
+            padding: 25px;
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .quote-icon {
+            font-size: 40px; color: #E8A838; opacity: 0.2;
+            position: absolute; top: 15px; right: 15px;
+        }
+        .quote-text {
+            font-size: 16px; font-weight: 700; line-height: 1.5;
+            margin-bottom: 15px; position: relative; z-index: 2;
+            font-style: italic;
+        }
+        .quote-source {
+            font-size: 11px; color: #E8A838; font-weight: 700;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 10px;
+        }
+
+        /* Right Column: Hierarchy */
+        .hierarchy-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Level 1: Royal Decrees */
+        .level-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .level-header {
+            display: flex; align-items: center; gap: 10px;
+            padding-bottom: 5px; border-bottom: 2px solid #ddd;
+        }
+        .lh-icon { color: #1B2A4A; font-size: 14px; }
+        .lh-title { font-size: 13px; font-weight: 800; color: #1B2A4A; }
+
+        .cards-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .reg-card {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-right: 4px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .rc-gold { border-color: #E8A838; }
+        .rc-blue { border-color: #2B5EA7; }
+        .rc-teal { border-color: #00B388; }
+
+        .rc-top { display: flex; justify-content: space-between; align-items: flex-start; }
+        .rc-ref {
+            font-size: 10px; font-weight: 700; color: white;
+            background: #1B2A4A; padding: 2px 6px; border-radius: 2px;
+        }
+        .rc-date { font-size: 10px; color: #888; }
+        
+        .rc-title { font-size: 13px; font-weight: 800; color: #333; line-height: 1.3; }
+        .rc-desc { font-size: 11px; color: #666; line-height: 1.4; }
+
+        /* Footer */
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الأسس التنظيمية - المرجعية القانونية والتشريعية</div>
+            <div class="header-badge">18</div>
+        </div>
+
+        <div class="content-area">
+            <!-- Left Column -->
+            <div class="context-col">
+                <div class="intro-box">
+                    <div class="ib-title">الإطار التشريعي</div>
+                    <div class="ib-text">
+                        تستند هذه المبادرة إلى مجموعة متكاملة من الأوامر الملكية والأنظمة واللوائح التي تشكل الأساس القانوني لإدارة البيانات وحوكمتها في المملكة، مما يمنحها الصفة الإلزامية والتنفيذية.
+                    </div>
+                </div>
+                <div class="quote-box">
+                    <i class="fas fa-quote-right quote-icon"></i>
+                    <div class="quote-text">
+                        "تكون الهيئة الوطنية للبيانات والذكاء الاصطناعي المرجع الوطني في كل ما يتعلق بالبيانات والذكاء الاصطناعي وتنظيمها وتطويرها والتعامل معها."
+                    </div>
+                    <div class="quote-source">
+                        مقتطف من تنظيم الهيئة - المادة الثالثة
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="hierarchy-col">
+                
+                <!-- Level 1: Royal Decrees -->
+                <div class="level-container">
+                    <div class="level-header">
+                        <div class="lh-icon"><i class="fas fa-crown" style="color:#E8A838"></i></div>
+                        <div class="lh-title">الأوامر والمراسيم الملكية (المستوى السيادي)</div>
+                    </div>
+                    <div class="cards-row">
+                        <div class="reg-card rc-gold">
+                            <div class="rc-top">
+                                <div class="rc-ref" style="background:#E8A838">أمر ملكي 59766</div>
+                                <div class="rc-date">1439 هـ</div>
+                            </div>
+                            <div class="rc-title">إنشاء الهيئة الوطنية للبيانات</div>
+                            <div class="rc-desc">تأسيس الهيئة (SDAIA) ومكتب إدارة البيانات الوطنية (NDMO) كجهة تنظيمية.</div>
+                        </div>
+                        <div class="reg-card rc-gold">
+                            <div class="rc-top">
+                                <div class="rc-ref" style="background:#E8A838">مرسوم ملكي م/19</div>
+                                <div class="rc-date">1443 هـ</div>
+                            </div>
+                            <div class="rc-title">نظام حماية البيانات الشخصية</div>
+                            <div class="rc-desc">الموافقة على النظام الشامل لحماية خصوصية البيانات الشخصية في المملكة.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Level 2: Council Resolutions -->
+                <div class="level-container">
+                    <div class="level-header">
+                        <div class="lh-icon"><i class="fas fa-landmark" style="color:#2B5EA7"></i></div>
+                        <div class="lh-title">قرارات مجلس الوزراء (المستوى التشريعي)</div>
+                    </div>
+                    <div class="cards-row">
+                        <div class="reg-card rc-blue">
+                            <div class="rc-top">
+                                <div class="rc-ref" style="background:#2B5EA7">قرار رقم 292</div>
+                                <div class="rc-date">1441 هـ</div>
+                            </div>
+                            <div class="rc-title">تنظيم الهيئة الوطنية للبيانات</div>
+                            <div class="rc-desc">تحديد الاختصاصات والمهام التنظيمية والرقابية للهيئة ومكاتبها.</div>
+                        </div>
+                        <div class="reg-card rc-blue">
+                            <div class="rc-top">
+                                <div class="rc-ref" style="background:#2B5EA7">قرار رقم 604</div>
+                                <div class="rc-date">1442 هـ</div>
+                            </div>
+                            <div class="rc-title">ضوابط التعامل مع البيانات</div>
+                            <div class="rc-desc">إلزام الجهات الحكومية بضوابط مكتب إدارة البيانات الوطنية.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Level 3: Regulations & Circulars -->
+                <div class="level-container">
+                    <div class="level-header">
+                        <div class="lh-icon"><i class="fas fa-book" style="color:#00B388"></i></div>
+                        <div class="lh-title">اللوائح والتعاميم (المستوى التنظيمي)</div>
+                    </div>
+                    <div class="cards-row">
+                        <div class="reg-card rc-teal">
+                            <div class="rc-top">
+                                <div class="rc-ref" style="background:#00B388">تعميم 2802</div>
+                                <div class="rc-date">1442 هـ</div>
+                            </div>
+                            <div class="rc-title">سياسة تصنيف البيانات</div>
+                            <div class="rc-desc">اعتماد مستويات التصنيف الأربعة وآليات الحماية لكل مستوى.</div>
+                        </div>
+                        <div class="reg-card rc-teal">
+                            <div class="rc-top">
+                                <div class="rc-ref" style="background:#00B388">سياسة NDMO</div>
+                                <div class="rc-date">1443 هـ</div>
+                            </div>
+                            <div class="rc-title">سياسة مشاركة البيانات</div>
+                            <div class="rc-desc">تنظيم عمليات تبادل البيانات بين الجهات الحكومية لتعزيز التكامل.</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">18</div>
+    </div>
+</body>
+</html>

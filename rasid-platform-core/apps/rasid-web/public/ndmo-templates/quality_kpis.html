@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 30px 40px 10px 40px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        /* Top Metrics */
+        .metrics-row { display: flex; gap: 20px; justify-content: space-between; }
+        .metric-card { flex: 1; background: white; padding: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 16px; }
+        .mc-icon { width: 50px; height: 50px; background: #f0f4f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #2B5EA7; }
+        .mc-info { display: flex; flex-direction: column; }
+        .mc-val { font-size: 24px; font-weight: 800; color: #1B2A4A; }
+        .mc-lbl { font-size: 12px; color: #666; }
+
+        /* Health Monitor Panel */
+        .health-panel { flex: 1; background: white; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+        
+        .dataset-row { display: flex; align-items: center; gap: 20px; padding-bottom: 16px; border-bottom: 1px solid #f5f5f5; }
+        .dataset-row:last-child { border-bottom: none; }
+        
+        .ds-name { width: 200px; font-weight: 700; font-size: 14px; color: #333; display: flex; flex-direction: column; }
+        .ds-sub { font-size: 11px; color: #888; font-weight: 400; margin-top: 4px; }
+        
+        .health-bar-container { flex: 1; display: flex; gap: 4px; height: 24px; }
+        .hb-seg { flex: 1; background: #eee; border-radius: 2px; position: relative; }
+        .hb-seg.ok { background: #00B388; }
+        .hb-seg.warn { background: #E8A838; }
+        .hb-seg.err { background: #E85B7A; }
+        
+        .ds-score { width: 60px; text-align: center; font-weight: 800; font-size: 16px; color: #1B2A4A; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">مراقبة الجودة - صحة البيانات (Data Health)</div>
+            <div class="header-badge">46</div>
+        </div>
+
+        <div class="content-area">
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <div class="mc-icon"><i class="fas fa-bullseye"></i></div>
+                    <div class="mc-info">
+                        <div class="mc-val">98.5%</div>
+                        <div class="mc-lbl">الدقة (Accuracy)</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="mc-icon"><i class="fas fa-compress-arrows-alt"></i></div>
+                    <div class="mc-info">
+                        <div class="mc-val">95.2%</div>
+                        <div class="mc-lbl">الاكتمال (Completeness)</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="mc-icon"><i class="fas fa-history"></i></div>
+                    <div class="mc-info">
+                        <div class="mc-val">99.0%</div>
+                        <div class="mc-lbl">الحداثة (Timeliness)</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="mc-icon"><i class="fas fa-equals"></i></div>
+                    <div class="mc-info">
+                        <div class="mc-val">92.8%</div>
+                        <div class="mc-lbl">الاتساق (Consistency)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="health-panel">
+                <!-- Row 1 -->
+                <div class="dataset-row">
+                    <div class="ds-name">
+                        سجل المواطنين الموحد
+                        <span class="ds-sub">التحديث: يومي | المصدر: NIC</span>
+                    </div>
+                    <div class="health-bar-container">
+                        <!-- 20 segments simulation -->
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                    </div>
+                    <div class="ds-score">100%</div>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="dataset-row">
+                    <div class="ds-name">
+                        بيانات التراخيص التجارية
+                        <span class="ds-sub">التحديث: لحظي | المصدر: MC</span>
+                    </div>
+                    <div class="health-bar-container">
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                        <div class="hb-seg warn"></div><div class="hb-seg warn"></div><div class="hb-seg warn"></div><div class="hb-seg warn"></div>
+                    </div>
+                    <div class="ds-score" style="color:#E8A838">80%</div>
+                </div>
+
+                <!-- Row 3 -->
+                <div class="dataset-row">
+                    <div class="ds-name">
+                        بيانات العقار والأراضي
+                        <span class="ds-sub">التحديث: أسبوعي | المصدر: REGA</span>
+                    </div>
+                    <div class="health-bar-container">
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                        <div class="hb-seg warn"></div><div class="hb-seg warn"></div><div class="hb-seg warn"></div><div class="hb-seg warn"></div>
+                        <div class="hb-seg err"></div><div class="hb-seg err"></div><div class="hb-seg err"></div><div class="hb-seg err"></div>
+                    </div>
+                    <div class="ds-score" style="color:#E85B7A">60%</div>
+                </div>
+
+                <!-- Row 4 -->
+                <div class="dataset-row">
+                    <div class="ds-name">
+                        المؤشرات الصحية الوطنية
+                        <span class="ds-sub">التحديث: شهري | المصدر: MOH</span>
+                    </div>
+                    <div class="health-bar-container">
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                        <div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div><div class="hb-seg ok"></div>
+                    </div>
+                    <div class="ds-score">100%</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">46</div>
+    </div>
+</body>
+</html>

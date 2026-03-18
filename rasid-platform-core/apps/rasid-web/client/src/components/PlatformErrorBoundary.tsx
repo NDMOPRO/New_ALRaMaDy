@@ -50,6 +50,10 @@ export default function PlatformErrorBoundary({ children }: PlatformErrorBoundar
   // ─── WebSocket Event Handlers ──────────────────────────────────
 
   const handleSystemEvent = useCallback((event: SystemEvent) => {
+    // In local/dev mode, suppress all platform connection toasts
+    const _isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('manus.computer'));
+    if (_isLocal) return;
+
     // Platform connection status change via WebSocket
     if (event.connected === false && event.source === 'websocket') {
       if (event.reconnecting) {
@@ -122,9 +126,16 @@ export default function PlatformErrorBoundary({ children }: PlatformErrorBoundar
   });
 
   // ─── Platform Health Monitoring ────────────────────────────────
+  // In local/dev mode, suppress connection toasts since platform engines are not available
+  const isLocalMode = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('manus.computer'));
 
   useEffect(() => {
     if (healthLoading) return;
+    // In local/dev mode, silently skip platform connection monitoring
+    if (isLocalMode) {
+      prevConnected.current = platformConnected;
+      return;
+    }
 
     // Skip initial state
     if (prevConnected.current === null) {
@@ -146,7 +157,6 @@ export default function PlatformErrorBoundary({ children }: PlatformErrorBoundar
               id: TOAST_IDS.CONNECTION_LOST,
               duration: 5000,
             });
-            // Force re-check by reloading health query
             window.location.reload();
           },
         },
@@ -167,7 +177,7 @@ export default function PlatformErrorBoundary({ children }: PlatformErrorBoundar
     }
 
     prevConnected.current = platformConnected;
-  }, [platformConnected, healthLoading]);
+  }, [platformConnected, healthLoading, isLocalMode]);
 
   return <>{children}</>;
 }

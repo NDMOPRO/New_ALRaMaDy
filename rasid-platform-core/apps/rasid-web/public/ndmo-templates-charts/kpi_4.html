@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 16px 4px 16px; display: grid; grid-template-columns: 1.6fr 1fr; gap: 10px; }
+        .progress-list { display: flex; flex-direction: column; gap: 5px; }
+        .pl-title { font-size: 13px; font-weight: 700; color: #1B2A4A; display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+        .pl-title i { color: #2B5EA7; font-size: 12px; }
+        .prog-item { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 8px 12px; }
+        .pi-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .pi-name { font-size: 11px; font-weight: 700; color: #1B2A4A; }
+        .pi-pct { font-size: 15px; font-weight: 800; color: #1B2A4A; }
+        .pi-bar { height: 6px; background: #E2E8F0; width: 100%; }
+        .pi-fill { height: 100%; }
+        .pi-bottom { display: flex; justify-content: space-between; margin-top: 3px; }
+        .pi-status { font-size: 9px; font-weight: 700; display: flex; align-items: center; gap: 3px; }
+        .pi-target { font-size: 9px; color: #64748B; }
+        .summary-col { display: flex; flex-direction: column; gap: 8px; }
+        .overall-card { background: #1B2A4A; padding: 16px; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+        .oc-label { font-size: 11px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+        .oc-circle { width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .oc-inner { width: 92px; height: 92px; border-radius: 50%; background: #1B2A4A; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+        .oc-val { font-size: 32px; font-weight: 800; color: white; line-height: 1; }
+        .oc-unit { font-size: 10px; color: rgba(255,255,255,0.6); }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex: 1; }
+        .sg-item { background: #F8FAFC; border: 1px solid #E2E8F0; border-top: 3px solid #2B5EA7; padding: 10px; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+        .sg-item:nth-child(1) { border-top-color: #00B388; }
+        .sg-item:nth-child(2) { border-top-color: #E8A838; }
+        .sg-item:nth-child(3) { border-top-color: #C0392B; }
+        .sg-item:nth-child(4) { border-top-color: #8E44AD; }
+        .sg-val { font-size: 26px; font-weight: 800; color: #1B2A4A; }
+        .sg-label { font-size: 10px; color: #64748B; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-tasks" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> عنوان لوحة مؤشرات الأداء - أشرطة تقدم يكتب هنا</div>
+            <div class="header-num">3.42</div>
+        </div>
+        <div class="content">
+            <div class="progress-list">
+                <div class="pl-title"><i class="fas fa-list-check"></i> قائمة المشاريع / الأهداف يكتب هنا</div>
+                <div class="prog-item"><div class="pi-top"><div class="pi-name"><i class="fas fa-circle" style="font-size:6px;color:#1B2A4A;margin-left:4px;"></i> اسم المشروع الأول يكتب هنا</div><div class="pi-pct">95%</div></div><div class="pi-bar"><div class="pi-fill" style="width:95%;background:#1B2A4A;"></div></div><div class="pi-bottom"><div class="pi-status" style="color:#00B388;"><i class="fas fa-check-circle"></i> مكتمل تقريباً</div><div class="pi-target">المستهدف: 100% | الموعد: Q4 يكتب هنا</div></div></div>
+                <div class="prog-item"><div class="pi-top"><div class="pi-name"><i class="fas fa-circle" style="font-size:6px;color:#2B5EA7;margin-left:4px;"></i> اسم المشروع الثاني يكتب هنا</div><div class="pi-pct">82%</div></div><div class="pi-bar"><div class="pi-fill" style="width:82%;background:#2B5EA7;"></div></div><div class="pi-bottom"><div class="pi-status" style="color:#00B388;"><i class="fas fa-check-circle"></i> على المسار</div><div class="pi-target">المستهدف: 90% | الموعد: Q3 يكتب هنا</div></div></div>
+                <div class="prog-item"><div class="pi-top"><div class="pi-name"><i class="fas fa-circle" style="font-size:6px;color:#00B388;margin-left:4px;"></i> اسم المشروع الثالث يكتب هنا</div><div class="pi-pct">74%</div></div><div class="pi-bar"><div class="pi-fill" style="width:74%;background:#00B388;"></div></div><div class="pi-bottom"><div class="pi-status" style="color:#00B388;"><i class="fas fa-check-circle"></i> على المسار</div><div class="pi-target">المستهدف: 85% | الموعد: Q4 يكتب هنا</div></div></div>
+                <div class="prog-item"><div class="pi-top"><div class="pi-name"><i class="fas fa-circle" style="font-size:6px;color:#E8A838;margin-left:4px;"></i> اسم المشروع الرابع يكتب هنا</div><div class="pi-pct">58%</div></div><div class="pi-bar"><div class="pi-fill" style="width:58%;background:#E8A838;"></div></div><div class="pi-bottom"><div class="pi-status" style="color:#E8A838;"><i class="fas fa-exclamation-circle"></i> يحتاج متابعة</div><div class="pi-target">المستهدف: 80% | الموعد: Q3 يكتب هنا</div></div></div>
+                <div class="prog-item"><div class="pi-top"><div class="pi-name"><i class="fas fa-circle" style="font-size:6px;color:#8E44AD;margin-left:4px;"></i> اسم المشروع الخامس يكتب هنا</div><div class="pi-pct">45%</div></div><div class="pi-bar"><div class="pi-fill" style="width:45%;background:#8E44AD;"></div></div><div class="pi-bottom"><div class="pi-status" style="color:#E8A838;"><i class="fas fa-exclamation-circle"></i> يحتاج متابعة</div><div class="pi-target">المستهدف: 70% | الموعد: Q4 يكتب هنا</div></div></div>
+                <div class="prog-item"><div class="pi-top"><div class="pi-name"><i class="fas fa-circle" style="font-size:6px;color:#C0392B;margin-left:4px;"></i> اسم المشروع السادس يكتب هنا</div><div class="pi-pct">28%</div></div><div class="pi-bar"><div class="pi-fill" style="width:28%;background:#C0392B;"></div></div><div class="pi-bottom"><div class="pi-status" style="color:#C0392B;"><i class="fas fa-times-circle"></i> متأخر</div><div class="pi-target">المستهدف: 60% | الموعد: Q2 يكتب هنا</div></div></div>
+                <div class="prog-item"><div class="pi-top"><div class="pi-name"><i class="fas fa-circle" style="font-size:6px;color:#2B5EA7;margin-left:4px;"></i> اسم المشروع السابع يكتب هنا</div><div class="pi-pct">67%</div></div><div class="pi-bar"><div class="pi-fill" style="width:67%;background:#2B5EA7;"></div></div><div class="pi-bottom"><div class="pi-status" style="color:#00B388;"><i class="fas fa-check-circle"></i> على المسار</div><div class="pi-target">المستهدف: 75% | الموعد: Q4 يكتب هنا</div></div></div>
+            </div>
+            <div class="summary-col">
+                <div class="overall-card">
+                    <div class="oc-label">نسبة الإنجاز الإجمالية يكتب هنا</div>
+                    <div class="oc-circle" style="background:conic-gradient(#00B388 0% 64%,rgba(255,255,255,0.15) 64% 100%);"><div class="oc-inner"><div class="oc-val">64%</div><div class="oc-unit">إجمالي الإنجاز</div></div></div>
+                </div>
+                <div class="stats-grid">
+                    <div class="sg-item"><div class="sg-val">3</div><div class="sg-label">على المسار يكتب هنا</div></div>
+                    <div class="sg-item"><div class="sg-val">2</div><div class="sg-label">يحتاج متابعة يكتب هنا</div></div>
+                    <div class="sg-item"><div class="sg-val">1</div><div class="sg-label">متأخر يكتب هنا</div></div>
+                    <div class="sg-item"><div class="sg-val">1</div><div class="sg-label">مكتمل تقريباً يكتب هنا</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

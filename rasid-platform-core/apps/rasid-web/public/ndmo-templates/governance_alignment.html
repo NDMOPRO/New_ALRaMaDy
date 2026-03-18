@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 20px 40px;
+            display: flex;
+            gap: 20px;
+            height: 600px;
+        }
+
+        /* Left Column: Hierarchy Pyramid */
+        .hierarchy-col {
+            flex: 0.35;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .pyramid-container {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .pyramid-level {
+            width: 100%;
+            text-align: center;
+            color: white;
+            padding: 15px 10px;
+            position: relative;
+            clip-path: polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .pl-1 { background: #1B2A4A; width: 60%; z-index: 3; margin-bottom: -5px; } /* Top */
+        .pl-2 { background: #2B5EA7; width: 80%; z-index: 2; margin-bottom: -5px; } /* Middle */
+        .pl-3 { background: #00B388; width: 100%; z-index: 1; } /* Base */
+
+        .pl-title { font-size: 12px; font-weight: 800; margin-bottom: 4px; }
+        .pl-desc { font-size: 10px; opacity: 0.9; }
+
+        .framework-info {
+            background: #fff;
+            padding: 15px;
+            border-right: 4px solid #E8A838;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .fi-title { font-size: 12px; font-weight: 700; color: #1B2A4A; margin-bottom: 8px; }
+        .fi-text { font-size: 11px; color: #666; line-height: 1.5; }
+
+        /* Right Column: Compliance Matrix */
+        .matrix-col {
+            flex: 0.65;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+        .matrix-header {
+            background: #f5f5f5;
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .mh-title { font-size: 14px; font-weight: 700; color: #1B2A4A; }
+        
+        .comp-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .comp-table th {
+            background: #1B2A4A;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 10px;
+            text-align: right;
+        }
+        .comp-table td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 11px;
+            color: #333;
+            vertical-align: middle;
+        }
+        .comp-table tr:nth-child(even) { background: #f9f9f9; }
+        
+        .domain-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            background: #eee;
+            color: #555;
+            border-radius: 2px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 700;
+            font-size: 10px;
+        }
+        .st-compliant { color: #00B388; }
+        .st-partial { color: #E8A838; }
+
+        .ref-code {
+            font-family: monospace;
+            background: rgba(27,42,74,0.05);
+            padding: 2px 4px;
+            color: #1B2A4A;
+            font-weight: 700;
+            font-size: 10px;
+        }
+
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الارتباط بالحوكمة - مصفوفة الامتثال التنظيمي</div>
+            <div class="header-badge">09</div>
+        </div>
+
+        <div class="content-area">
+            <!-- Left: Hierarchy -->
+            <div class="hierarchy-col">
+                <div class="pyramid-container">
+                    <div class="pyramid-level pl-1">
+                        <div class="pl-title">الأنظمة الوطنية</div>
+                        <div class="pl-desc">NDMO Regulations</div>
+                    </div>
+                    <div class="pyramid-level pl-2">
+                        <div class="pl-title">السياسات القطاعية</div>
+                        <div class="pl-desc">Sectoral Policies</div>
+                    </div>
+                    <div class="pyramid-level pl-3">
+                        <div class="pl-title">الإجراءات الداخلية</div>
+                        <div class="pl-desc">Internal Procedures</div>
+                    </div>
+                </div>
+                <div class="framework-info">
+                    <div class="fi-title">إطار الحوكمة المعتمد</div>
+                    <div class="fi-text">
+                        تستند المبادرة بشكل كامل إلى ضوابط الهيئة الوطنية للبيانات والذكاء الاصطناعي، مع التركيز على سياسات تصنيف البيانات وحماية البيانات الشخصية كركائز أساسية.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Matrix -->
+            <div class="matrix-col">
+                <div class="matrix-header">
+                    <div class="mh-title">مصفوفة الامتثال للضوابط الوطنية</div>
+                </div>
+                <table class="comp-table">
+                    <thead>
+                        <tr>
+                            <th width="15%">المجال</th>
+                            <th width="20%">المرجع التنظيمي</th>
+                            <th width="30%">المتطلب الرئيسي</th>
+                            <th width="25%">مواءمة المبادرة</th>
+                            <th width="10%">الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="domain-badge">إدارة البيانات</span></td>
+                            <td>
+                                <div class="ref-code">NDMO-V2-01</div>
+                                <div style="font-size:10px; margin-top:2px;">ضوابط إدارة البيانات</div>
+                            </td>
+                            <td>تأسيس مكتب إدارة بيانات وتحديد الأدوار والمسؤوليات.</td>
+                            <td>تم إنشاء مكتب البيانات وتعيين مشرفي البيانات في جميع الإدارات.</td>
+                            <td>
+                                <div class="status-badge st-compliant">
+                                    <i class="fas fa-check-circle"></i> ممتثل
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="domain-badge">تصنيف البيانات</span></td>
+                            <td>
+                                <div class="ref-code">NDMO-V2-02</div>
+                                <div style="font-size:10px; margin-top:2px;">سياسة تصنيف البيانات</div>
+                            </td>
+                            <td>تصنيف البيانات إلى 4 مستويات (عام، مقيد، سري، سري للغاية).</td>
+                            <td>تم تصنيف 100% من الأصول البيانية وفق المستويات الأربعة.</td>
+                            <td>
+                                <div class="status-badge st-compliant">
+                                    <i class="fas fa-check-circle"></i> ممتثل
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="domain-badge">الخصوصية</span></td>
+                            <td>
+                                <div class="ref-code">PDPL-2023</div>
+                                <div style="font-size:10px; margin-top:2px;">نظام حماية البيانات الشخصية</div>
+                            </td>
+                            <td>الحصول على الموافقة الصريحة ووجود سياسة خصوصية واضحة.</td>
+                            <td>تم تحديث نماذج جمع البيانات وإشعار الخصوصية في المنصة.</td>
+                            <td>
+                                <div class="status-badge st-compliant">
+                                    <i class="fas fa-check-circle"></i> ممتثل
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="domain-badge">مشاركة البيانات</span></td>
+                            <td>
+                                <div class="ref-code">NDMO-V2-04</div>
+                                <div style="font-size:10px; margin-top:2px;">سياسة مشاركة البيانات</div>
+                            </td>
+                            <td>وجود اتفاقيات مشاركة بيانات (DSA) موثقة.</td>
+                            <td>جاري توقيع اتفاقيات مع 3 جهات حكومية شريكة.</td>
+                            <td>
+                                <div class="status-badge st-partial">
+                                    <i class="fas fa-clock"></i> جزئي
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="domain-badge">البيانات المفتوحة</span></td>
+                            <td>
+                                <div class="ref-code">NDMO-V2-05</div>
+                                <div style="font-size:10px; margin-top:2px;">سياسة البيانات المفتوحة</div>
+                            </td>
+                            <td>نشر البيانات بصيغة مقروءة آلياً (CSV, JSON).</td>
+                            <td>تم نشر 50 مجموعة بيانات بصيغ مفتوحة على البوابة الوطنية.</td>
+                            <td>
+                                <div class="status-badge st-compliant">
+                                    <i class="fas fa-check-circle"></i> ممتثل
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">09</div>
+    </div>
+</body>
+</html>

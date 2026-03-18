@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 20px 6px 20px; display: flex; flex-direction: column; gap: 10px; }
+
+        /* Top Wheels Row */
+        .wheels-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; height: 130px; }
+        .wheel-card { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .wheel-title { font-size: 11px; font-weight: 700; color: #1B2A4A; margin-bottom: 5px; text-align: center; }
+        .wheel-chart-container { width: 80px; height: 80px; position: relative; }
+        .wheel-percent { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; font-weight: 800; color: #1B2A4A; }
+        .wheel-status { font-size: 9px; color: #64748B; margin-top: 4px; }
+
+        /* Main Content Split */
+        .main-split { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; flex: 1; }
+        
+        /* Checklist Table */
+        .checklist-panel { border: 1px solid #E2E8F0; display: flex; flex-direction: column; }
+        .panel-header { background: #F1F5F9; padding: 6px 10px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; }
+        .panel-title { font-size: 12px; font-weight: 700; color: #1B2A4A; display: flex; align-items: center; gap: 6px; }
+        .check-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+        .check-table th { background: #1B2A4A; color: white; padding: 6px; text-align: right; font-weight: 600; font-size: 9px; }
+        .check-table td { padding: 5px 6px; border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle; }
+        .check-table tr:nth-child(even) { background: #F8FAFC; }
+        .status-badge { padding: 2px 6px; border-radius: 2px; font-size: 8px; font-weight: 700; display: inline-block; min-width: 60px; text-align: center; }
+        .sb-green { background: #DCFCE7; color: #166534; }
+        .sb-yellow { background: #FEF9C3; color: #854D0E; }
+        .sb-red { background: #FEE2E2; color: #991B1B; }
+        .evidence-link { color: #2B5EA7; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+
+        /* Right Sidebar */
+        .sidebar { display: flex; flex-direction: column; gap: 10px; }
+        .violations-box { border: 1px solid #E53E3E; background: #FEF2F2; padding: 10px; }
+        .v-title { color: #991B1B; font-size: 11px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .v-list { list-style: none; }
+        .v-item { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 6px; font-size: 9px; color: #7F1D1D; border-bottom: 1px solid rgba(229,62,62,0.2); padding-bottom: 4px; }
+        .v-item:last-child { border-bottom: none; }
+        
+        .chart-box { border: 1px solid #E2E8F0; background: #F8FAFC; padding: 10px; flex: 1; display: flex; flex-direction: column; }
+        .cb-title { font-size: 11px; font-weight: 700; color: #1B2A4A; margin-bottom: 8px; }
+
+        /* Footer */
+        .footer { height: 32px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 18px; }
+        .footer-sep { width: 1px; height: 14px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-clipboard-check" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> لوحة مؤشرات الامتثال - متابعة المتطلبات</div>
+            <div class="header-num">2.5</div>
+        </div>
+
+        <div class="content">
+            <!-- Wheels Row -->
+            <div class="wheels-row">
+                <div class="wheel-card">
+                    <div class="wheel-title">حوكمة البيانات</div>
+                    <div class="wheel-chart-container">
+                        <canvas id="chartGov"></canvas>
+                        <div class="wheel-percent">92%</div>
+                    </div>
+                    <div class="wheel-status" style="color:#00B388">ممتثل</div>
+                </div>
+                <div class="wheel-card">
+                    <div class="wheel-title">حماية البيانات</div>
+                    <div class="wheel-chart-container">
+                        <canvas id="chartSec"></canvas>
+                        <div class="wheel-percent">88%</div>
+                    </div>
+                    <div class="wheel-status" style="color:#00B388">ممتثل</div>
+                </div>
+                <div class="wheel-card">
+                    <div class="wheel-title">جودة البيانات</div>
+                    <div class="wheel-chart-container">
+                        <canvas id="chartQual"></canvas>
+                        <div class="wheel-percent">75%</div>
+                    </div>
+                    <div class="wheel-status" style="color:#E8A838">امتثال جزئي</div>
+                </div>
+                <div class="wheel-card">
+                    <div class="wheel-title">البيانات المفتوحة</div>
+                    <div class="wheel-chart-container">
+                        <canvas id="chartOpen"></canvas>
+                        <div class="wheel-percent">64%</div>
+                    </div>
+                    <div class="wheel-status" style="color:#E8A838">يحتاج تحسين</div>
+                </div>
+                <div class="wheel-card">
+                    <div class="wheel-title">إدارة البيانات</div>
+                    <div class="wheel-chart-container">
+                        <canvas id="chartMgt"></canvas>
+                        <div class="wheel-percent">81%</div>
+                    </div>
+                    <div class="wheel-status" style="color:#00B388">ممتثل</div>
+                </div>
+            </div>
+
+            <!-- Main Split -->
+            <div class="main-split">
+                <!-- Checklist Table -->
+                <div class="checklist-panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fas fa-list-alt"></i> قائمة التحقق من الضوابط (عينة)</div>
+                        <div style="font-size:9px;color:#64748B">آخر تحديث: 15 مارس 2026</div>
+                    </div>
+                    <table class="check-table">
+                        <thead>
+                            <tr>
+                                <th style="width:50px">الرمز</th>
+                                <th>اسم الضابط</th>
+                                <th>المتطلب الرئيسي</th>
+                                <th style="width:80px">الحالة</th>
+                                <th style="width:100px">الأدلة</th>
+                                <th>ملاحظات المدقق</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>DG-01</td>
+                                <td>سياسة تصنيف البيانات</td>
+                                <td>وجود سياسة معتمدة لتصنيف البيانات وفق 4 مستويات</td>
+                                <td><span class="status-badge sb-green">ممتثل</span></td>
+                                <td><a href="#" class="evidence-link"><i class="fas fa-file-pdf"></i> السياسة v2.0</a></td>
+                                <td>تم الاعتماد والتعميم</td>
+                            </tr>
+                            <tr>
+                                <td>DG-02</td>
+                                <td>سجل البيانات الوطنية</td>
+                                <td>تسجيل جميع مجموعات البيانات في السجل الوطني</td>
+                                <td><span class="status-badge sb-green">ممتثل</span></td>
+                                <td><a href="#" class="evidence-link"><i class="fas fa-link"></i> رابط السجل</a></td>
+                                <td>مكتمل بنسبة 100%</td>
+                            </tr>
+                            <tr>
+                                <td>DQ-05</td>
+                                <td>معايير الجودة</td>
+                                <td>تطبيق معايير جودة البيانات على الأنظمة الحرجة</td>
+                                <td><span class="status-badge sb-yellow">امتثال جزئي</span></td>
+                                <td><a href="#" class="evidence-link"><i class="fas fa-file-excel"></i> تقرير الفحص</a></td>
+                                <td>جاري العمل على نظام CRM</td>
+                            </tr>
+                            <tr>
+                                <td>SEC-03</td>
+                                <td>التشفير</td>
+                                <td>تشفير البيانات الحساسة أثناء النقل والتخزين</td>
+                                <td><span class="status-badge sb-green">ممتثل</span></td>
+                                <td><a href="#" class="evidence-link"><i class="fas fa-shield-alt"></i> شهادة الفحص</a></td>
+                                <td>متوافق مع ضوابط NCA</td>
+                            </tr>
+                            <tr>
+                                <td>OD-01</td>
+                                <td>النشر</td>
+                                <td>نشر البيانات المفتوحة بصيغة مقروءة آلياً</td>
+                                <td><span class="status-badge sb-red">غير ممتثل</span></td>
+                                <td><span style="color:#94A3B8">-</span></td>
+                                <td>صيغ PDF فقط حالياً</td>
+                            </tr>
+                            <tr>
+                                <td>PRV-02</td>
+                                <td>إشعار الخصوصية</td>
+                                <td>نشر إشعار الخصوصية على جميع القنوات الرقمية</td>
+                                <td><span class="status-badge sb-green">ممتثل</span></td>
+                                <td><a href="#" class="evidence-link"><i class="fas fa-globe"></i> الموقع الإلكتروني</a></td>
+                                <td>متوفر وواضح</td>
+                            </tr>
+                            <tr>
+                                <td>DG-08</td>
+                                <td>أدوار ومسؤوليات</td>
+                                <td>تعيين مشرف بيانات لكل مجال بيانات</td>
+                                <td><span class="status-badge sb-yellow">امتثال جزئي</span></td>
+                                <td><a href="#" class="evidence-link"><i class="fas fa-users"></i> الهيكل التنظيمي</a></td>
+                                <td>تم تعيين 60% من المشرفين</td>
+                            </tr>
+                            <tr>
+                                <td>SEC-09</td>
+                                <td>إدارة الوصول</td>
+                                <td>مراجعة دورية لصلاحيات الوصول (ربع سنوي)</td>
+                                <td><span class="status-badge sb-green">ممتثل</span></td>
+                                <td><a href="#" class="evidence-link"><i class="fas fa-history"></i> سجل المراجعة</a></td>
+                                <td>آخر مراجعة: Q1-2026</td>
+                            </tr>
+                            <tr>
+                                <td>DQ-02</td>
+                                <td>تنظيف البيانات</td>
+                                <td>إجراء عمليات تنظيف دورية للبيانات</td>
+                                <td><span class="status-badge sb-yellow">امتثال جزئي</span></td>
+                                <td><a href="#" class="evidence-link"><i class="fas fa-tools"></i> تقرير التنظيف</a></td>
+                                <td>مجدول للشهر القادم</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Right Sidebar -->
+                <div class="sidebar">
+                    <div class="violations-box">
+                        <div class="v-title"><i class="fas fa-exclamation-triangle"></i> أبرز المخالفات الحرجة</div>
+                        <ul class="v-list">
+                            <li class="v-item"><i class="fas fa-times"></i> عدم نشر البيانات المفتوحة بصيغة CSV/JSON</li>
+                            <li class="v-item"><i class="fas fa-times"></i> تأخر تعيين مشرفي بيانات للمجالات الفرعية</li>
+                            <li class="v-item"><i class="fas fa-times"></i> نقص في توثيق ميتا داتا لبعض الأنظمة القديمة</li>
+                            <li class="v-item"><i class="fas fa-times"></i> عدم تحديث سياسة الاحتفاظ بالبيانات</li>
+                        </ul>
+                    </div>
+
+                    <div class="chart-box">
+                        <div class="cb-title">نسبة الامتثال حسب القطاع</div>
+                        <div style="flex:1;position:relative"><canvas id="sectorBarChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:1px 6px;"><img src="/home/ubuntu/ndmo_batch2/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:1px 6px;"><img src="/home/ubuntu/ndmo_batch2/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي - الشرائح التحليلية | سري</div>
+        </div>
+    </div>
+
+    <script>
+        // Common config for wheels
+        const wheelOptions = {
+            responsive: true, maintainAspectRatio: false, cutout: '75%',
+            plugins: { legend: { display: false }, tooltip: { enabled: false } }
+        };
+
+        new Chart(document.getElementById('chartGov'), { type: 'doughnut', data: { datasets: [{ data: [92, 8], backgroundColor: ['#00B388', '#E2E8F0'], borderWidth: 0 }] }, options: wheelOptions });
+        new Chart(document.getElementById('chartSec'), { type: 'doughnut', data: { datasets: [{ data: [88, 12], backgroundColor: ['#00B388', '#E2E8F0'], borderWidth: 0 }] }, options: wheelOptions });
+        new Chart(document.getElementById('chartQual'), { type: 'doughnut', data: { datasets: [{ data: [75, 25], backgroundColor: ['#E8A838', '#E2E8F0'], borderWidth: 0 }] }, options: wheelOptions });
+        new Chart(document.getElementById('chartOpen'), { type: 'doughnut', data: { datasets: [{ data: [64, 36], backgroundColor: ['#E8A838', '#E2E8F0'], borderWidth: 0 }] }, options: wheelOptions });
+        new Chart(document.getElementById('chartMgt'), { type: 'doughnut', data: { datasets: [{ data: [81, 19], backgroundColor: ['#00B388', '#E2E8F0'], borderWidth: 0 }] }, options: wheelOptions });
+
+        // Sector Bar Chart
+        new Chart(document.getElementById('sectorBarChart'), {
+            type: 'bar',
+            data: {
+                labels: ['المالية', 'الصحة', 'التعليم', 'النقل', 'البلدية'],
+                datasets: [{
+                    label: 'الامتثال',
+                    data: [95, 88, 82, 75, 68],
+                    backgroundColor: ['#00B388', '#00B388', '#2B5EA7', '#E8A838', '#E8A838'],
+                    barThickness: 15
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { max: 100, grid: { display: false }, ticks: { font: { family: 'Tajawal', size: 8 } } },
+                    y: { grid: { display: false }, ticks: { font: { family: 'Tajawal', size: 9 } } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; background: #FFFFFF; position: relative; display: flex; flex-direction: column; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 12px 20px 8px 20px; display: flex; flex-direction: column; gap: 10px; }
+
+        .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .kpi-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-top: 3px solid #2B5EA7; padding: 8px 10px; text-align: center; }
+        .kpi-card:nth-child(1) { border-top-color: #1B2A4A; }
+        .kpi-card:nth-child(2) { border-top-color: #00B388; }
+        .kpi-card:nth-child(3) { border-top-color: #E8A838; }
+        .kpi-card:nth-child(4) { border-top-color: #2B5EA7; }
+        .kpi-label { font-size: 9px; color: #64748B; font-weight: 500; }
+        .kpi-value { font-size: 22px; font-weight: 800; color: #1B2A4A; line-height: 1.2; }
+
+        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1; }
+        .chart-box { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px 12px; display: flex; flex-direction: column; }
+        .chart-title { font-size: 11px; font-weight: 700; color: #1B2A4A; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+        .chart-title i { color: #2B5EA7; font-size: 10px; }
+        .chart-body { flex: 1; position: relative; }
+
+        .footer { height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 22px; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-th-large" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> عنوان لوحة الملخص البيانية يكتب هنا</div>
+            <div class="header-num">3.18</div>
+        </div>
+        <div class="content">
+            <div class="kpi-row">
+                <div class="kpi-card"><div class="kpi-label">إجمالي العناصر يكتب هنا</div><div class="kpi-value">248</div></div>
+                <div class="kpi-card"><div class="kpi-label">نسبة الإنجاز يكتب هنا</div><div class="kpi-value">76%</div></div>
+                <div class="kpi-card"><div class="kpi-label">المتأخرة يكتب هنا</div><div class="kpi-value">18</div></div>
+                <div class="kpi-card"><div class="kpi-label">المكتملة يكتب هنا</div><div class="kpi-value">189</div></div>
+            </div>
+            <div class="charts-grid">
+                <div class="chart-box">
+                    <div class="chart-title"><i class="fas fa-chart-bar"></i> عنوان المجموعة الأولى يكتب هنا</div>
+                    <div class="chart-body"><canvas id="chart1"></canvas></div>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-title"><i class="fas fa-chart-bar"></i> عنوان المجموعة الثانية يكتب هنا</div>
+                    <div class="chart-body"><canvas id="chart2"></canvas></div>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-title"><i class="fas fa-chart-bar"></i> عنوان المجموعة الثالثة يكتب هنا</div>
+                    <div class="chart-body"><canvas id="chart3"></canvas></div>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-title"><i class="fas fa-chart-bar"></i> عنوان المجموعة الرابعة يكتب هنا</div>
+                    <div class="chart-body"><canvas id="chart4"></canvas></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+    <script>
+        const cfg = (labels, data, color) => ({
+            type: 'bar', data: { labels, datasets: [{ data, backgroundColor: color, barPercentage: 0.5 }] },
+            options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+                plugins: { legend: { display: false } },
+                scales: { x: { max: 100, grid: { color: '#F1F5F9' }, ticks: { font: { family: 'Tajawal', size: 8 }, callback: v => v+'%' } }, y: { grid: { display: false }, ticks: { font: { family: 'Tajawal', size: 9 } } } }
+            }
+        });
+        new Chart(document.getElementById('chart1'), cfg(['البند أ يكتب هنا','البند ب يكتب هنا','البند ج يكتب هنا','البند د يكتب هنا'], [92,85,78,65], '#1B2A4A'));
+        new Chart(document.getElementById('chart2'), cfg(['البند هـ يكتب هنا','البند و يكتب هنا','البند ز يكتب هنا','البند ح يكتب هنا'], [88,72,95,60], '#2B5EA7'));
+        new Chart(document.getElementById('chart3'), cfg(['البند ط يكتب هنا','البند ي يكتب هنا','البند ك يكتب هنا','البند ل يكتب هنا'], [75,82,68,90], '#00B388'));
+        new Chart(document.getElementById('chart4'), cfg(['البند م يكتب هنا','البند ن يكتب هنا','البند س يكتب هنا','البند ع يكتب هنا'], [80,55,70,85], '#E8A838'));
+    </script>
+</body>
+</html>

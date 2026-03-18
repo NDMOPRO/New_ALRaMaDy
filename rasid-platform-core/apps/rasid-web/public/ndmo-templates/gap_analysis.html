@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 30px 40px 10px 40px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        .chart-container { background: white; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); flex: 1; display: flex; flex-direction: column; position: relative; }
+        .cc-title { font-size: 16px; font-weight: 800; color: #1B2A4A; text-align: center; margin-bottom: 20px; }
+        
+        .butterfly-chart { display: flex; flex-direction: column; gap: 12px; flex: 1; justify-content: center; }
+        .chart-row { display: flex; align-items: center; height: 36px; }
+        
+        .center-axis { width: 160px; text-align: center; font-size: 12px; font-weight: 700; color: #333; z-index: 2; background: #f9f9f9; padding: 6px; border-radius: 4px; }
+        
+        .left-side { flex: 1; display: flex; justify-content: flex-end; align-items: center; padding-right: 10px; position: relative; }
+        .right-side { flex: 1; display: flex; justify-content: flex-start; align-items: center; padding-left: 10px; position: relative; }
+        
+        .bar-l { height: 24px; background: #E85B7A; border-radius: 4px 0 0 4px; position: relative; display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; color: white; font-size: 11px; font-weight: 700; }
+        .bar-r { height: 24px; background: #00B388; border-radius: 0 4px 4px 0; position: relative; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 11px; font-weight: 700; }
+        
+        .gap-val { position: absolute; font-size: 11px; font-weight: 800; color: #E8A838; }
+        .gap-l { left: -40px; }
+        .gap-r { right: -40px; }
+
+        .legend { display: flex; justify-content: center; gap: 30px; margin-top: 20px; padding-top: 10px; border-top: 1px solid #eee; }
+        .l-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #555; }
+        .l-box { width: 12px; height: 12px; border-radius: 2px; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">تحليل الفجوة - مقارنة الوضع الراهن والمستهدف</div>
+            <div class="header-badge">34</div>
+        </div>
+
+        <div class="content-area">
+            <div class="chart-container">
+                <div class="cc-title">تحليل الفجوة الاستراتيجية حسب مجالات العمل (Gap Analysis)</div>
+                
+                <div class="butterfly-chart">
+                    <!-- Row 1 -->
+                    <div class="chart-row">
+                        <div class="left-side">
+                            <div class="bar-l" style="width:40%">40%</div>
+                        </div>
+                        <div class="center-axis">حوكمة البيانات</div>
+                        <div class="right-side">
+                            <div class="bar-r" style="width:90%">90%</div>
+                            <div class="gap-val gap-r">فجوة: 50%</div>
+                        </div>
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div class="chart-row">
+                        <div class="left-side">
+                            <div class="bar-l" style="width:25%">25%</div>
+                        </div>
+                        <div class="center-axis">جودة البيانات</div>
+                        <div class="right-side">
+                            <div class="bar-r" style="width:85%">85%</div>
+                            <div class="gap-val gap-r">فجوة: 60%</div>
+                        </div>
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div class="chart-row">
+                        <div class="left-side">
+                            <div class="bar-l" style="width:60%">60%</div>
+                        </div>
+                        <div class="center-axis">أمن البيانات</div>
+                        <div class="right-side">
+                            <div class="bar-r" style="width:95%">95%</div>
+                            <div class="gap-val gap-r">فجوة: 35%</div>
+                        </div>
+                    </div>
+
+                    <!-- Row 4 -->
+                    <div class="chart-row">
+                        <div class="left-side">
+                            <div class="bar-l" style="width:30%">30%</div>
+                        </div>
+                        <div class="center-axis">البيانات المفتوحة</div>
+                        <div class="right-side">
+                            <div class="bar-r" style="width:80%">80%</div>
+                            <div class="gap-val gap-r">فجوة: 50%</div>
+                        </div>
+                    </div>
+
+                    <!-- Row 5 -->
+                    <div class="chart-row">
+                        <div class="left-side">
+                            <div class="bar-l" style="width:15%">15%</div>
+                        </div>
+                        <div class="center-axis">التحليل والذكاء</div>
+                        <div class="right-side">
+                            <div class="bar-r" style="width:75%">75%</div>
+                            <div class="gap-val gap-r">فجوة: 60%</div>
+                        </div>
+                    </div>
+
+                    <!-- Row 6 -->
+                    <div class="chart-row">
+                        <div class="left-side">
+                            <div class="bar-l" style="width:50%">50%</div>
+                        </div>
+                        <div class="center-axis">الموارد والكفاءات</div>
+                        <div class="right-side">
+                            <div class="bar-r" style="width:100%">100%</div>
+                            <div class="gap-val gap-r">فجوة: 50%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="l-item"><div class="l-box" style="background:#E85B7A"></div>الوضع الراهن (Current)</div>
+                    <div class="l-item"><div class="l-box" style="background:#00B388"></div>الوضع المستهدف (Target)</div>
+                    <div class="l-item"><div class="l-box" style="background:#E8A838"></div>حجم الفجوة (Gap)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">34</div>
+    </div>
+</body>
+</html>

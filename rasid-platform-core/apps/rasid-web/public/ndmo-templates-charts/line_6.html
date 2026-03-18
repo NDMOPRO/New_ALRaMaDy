@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; background: #FFFFFF; position: relative; display: flex; flex-direction: column; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 12px 20px 8px 20px; display: flex; flex-direction: column; gap: 10px; }
+
+        .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .kpi-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-top: 3px solid #2B5EA7; padding: 8px 12px; }
+        .kpi-card:nth-child(1) { border-top-color: #1B2A4A; }
+        .kpi-card:nth-child(2) { border-top-color: #00B388; }
+        .kpi-card:nth-child(3) { border-top-color: #E8A838; }
+        .kpi-card:nth-child(4) { border-top-color: #2B5EA7; }
+        .kpi-label { font-size: 10px; color: #64748B; font-weight: 500; }
+        .kpi-value-row { display: flex; align-items: baseline; justify-content: space-between; }
+        .kpi-value { font-size: 26px; font-weight: 800; color: #1B2A4A; line-height: 1; }
+        .kpi-unit { font-size: 11px; color: #94A3B8; }
+        .kpi-trend { display: flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 700; }
+        .kpi-trend.up { color: #00B388; }
+        .kpi-trend.down { color: #C0392B; }
+        .kpi-target { font-size: 9px; color: #94A3B8; display: flex; justify-content: space-between; }
+
+        .chart-box { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px 12px; display: flex; flex-direction: column; flex: 1; }
+        .chart-title { font-size: 12px; font-weight: 700; color: #1B2A4A; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .chart-title i { color: #2B5EA7; font-size: 11px; }
+        .chart-body { flex: 1; position: relative; }
+
+        .footer { height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 22px; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-balance-scale" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> عنوان الرسم البياني الخطي - مزدوج المحاور يكتب هنا</div>
+            <div class="header-num">3.24</div>
+        </div>
+        <div class="content">
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-label">المقياس الأول (المحور الأيمن) يكتب هنا</div>
+                    <div class="kpi-value-row"><div class="kpi-value">3,847</div><div class="kpi-trend up"><i class="fas fa-arrow-up"></i> 12%</div></div>
+                    <div class="kpi-target"><span>المستهدف: 4,200</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">المقياس الثاني (المحور الأيسر) يكتب هنا</div>
+                    <div class="kpi-value-row"><div class="kpi-value">78<span class="kpi-unit">%</span></div><div class="kpi-trend up"><i class="fas fa-arrow-up"></i> 5%</div></div>
+                    <div class="kpi-target"><span>المستهدف: 90%</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">معامل الارتباط يكتب هنا</div>
+                    <div class="kpi-value-row"><div class="kpi-value">0.87</div></div>
+                    <div class="kpi-target"><span>ارتباط قوي</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">عدد نقاط البيانات يكتب هنا</div>
+                    <div class="kpi-value-row"><div class="kpi-value">24</div><div class="kpi-unit">شهر</div></div>
+                    <div class="kpi-target"><span>من: Q1-24</span><span>إلى: Q4-25</span></div>
+                </div>
+            </div>
+            <div class="chart-box">
+                <div class="chart-title"><i class="fas fa-chart-line"></i> عنوان مقارنة المقياسين عبر الزمن يكتب هنا</div>
+                <div class="chart-body"><canvas id="dualChart"></canvas></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+    <script>
+        new Chart(document.getElementById('dualChart'), {
+            type: 'line',
+            data: {
+                labels: ['Q1-24','Q2-24','Q3-24','Q4-24','Q1-25','Q2-25','Q3-25','Q4-25'],
+                datasets: [{
+                    label: 'المقياس الأول (العدد) يكتب هنا',
+                    data: [1500,1800,2200,2600,2900,3200,3500,3847],
+                    borderColor: '#1B2A4A', backgroundColor: 'rgba(27,42,74,0.08)', fill: true, tension: 0.4, pointRadius: 4, borderWidth: 2.5, yAxisID: 'y'
+                }, {
+                    label: 'المقياس الثاني (النسبة) يكتب هنا',
+                    data: [55,58,62,65,68,72,75,78],
+                    borderColor: '#00B388', fill: false, tension: 0.4, pointRadius: 4, borderWidth: 2.5, yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', labels: { font: { family: 'Tajawal', size: 9 }, boxWidth: 10 } } },
+                scales: {
+                    y: { type: 'linear', position: 'right', grid: { color: '#F1F5F9' }, ticks: { font: { family: 'Tajawal', size: 9 }, callback: v => v.toLocaleString() }, title: { display: true, text: 'المقياس الأول يكتب هنا', font: { family: 'Tajawal', size: 9 } } },
+                    y1: { type: 'linear', position: 'left', grid: { drawOnChartArea: false }, ticks: { font: { family: 'Tajawal', size: 9 }, callback: v => v+'%' }, title: { display: true, text: 'المقياس الثاني يكتب هنا', font: { family: 'Tajawal', size: 9 } } },
+                    x: { grid: { display: false }, ticks: { font: { family: 'Tajawal', size: 9 } } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

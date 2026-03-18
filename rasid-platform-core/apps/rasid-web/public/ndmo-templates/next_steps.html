@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #1B2A4A; position: relative; display: flex; flex-direction: column; color: white; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; border-bottom: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; color: white; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; border-radius: 4px; }
+
+        .content-area { padding: 40px; flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 40px; }
+
+        .steps-container { display: flex; gap: 24px; justify-content: center; align-items: stretch; }
+
+        .step-card { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 30px; position: relative; transition: transform 0.3s, background 0.3s; }
+        .step-card:hover { transform: translateY(-10px); background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
+
+        .sc-num { font-size: 64px; font-weight: 800; color: rgba(255,255,255,0.05); position: absolute; top: 10px; left: 20px; line-height: 1; }
+        
+        .sc-icon { width: 50px; height: 50px; background: #00B388; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; margin-bottom: 20px; position: relative; z-index: 2; box-shadow: 0 4px 12px rgba(0,179,136,0.4); }
+        .sc-icon.blue { background: #2B5EA7; box-shadow: 0 4px 12px rgba(43,94,167,0.4); }
+        .sc-icon.gold { background: #E8A838; box-shadow: 0 4px 12px rgba(232,168,56,0.4); }
+
+        .sc-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: white; position: relative; z-index: 2; }
+        .sc-desc { font-size: 14px; color: #ccc; line-height: 1.6; position: relative; z-index: 2; margin-bottom: 16px; }
+        
+        .sc-list { list-style: none; padding: 0; position: relative; z-index: 2; }
+        .sc-list li { font-size: 13px; color: #ddd; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .sc-list li::before { content: ''; width: 6px; height: 6px; background: #00B388; border-radius: 50%; }
+        .sc-list.blue li::before { background: #2B5EA7; }
+        .sc-list.gold li::before { background: #E8A838; }
+
+        .arrow-next { position: absolute; top: 50%; left: -12px; font-size: 24px; color: rgba(255,255,255,0.2); transform: translateY(-50%); z-index: 1; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; border-radius: 2px; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: rgba(255,255,255,0.3); }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: white; font-size: 14px; opacity: 0.6; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الخطوات القادمة - خارطة الطريق للتنفيذ الفوري</div>
+            <div class="header-badge">50</div>
+        </div>
+
+        <div class="content-area">
+            <div class="steps-container">
+                <!-- Step 1 -->
+                <div class="step-card">
+                    <div class="sc-num">01</div>
+                    <div class="sc-icon"><i class="fas fa-rocket"></i></div>
+                    <div class="sc-title">الانطلاق الفوري</div>
+                    <div class="sc-desc">البدء في الأنشطة ذات الأولوية القصوى خلال الـ 30 يوماً القادمة.</div>
+                    <ul class="sc-list">
+                        <li>اعتماد ميثاق المشروع.</li>
+                        <li>تشكيل فريق العمل الأساسي.</li>
+                        <li>عقد ورشة عمل أصحاب المصلحة.</li>
+                    </ul>
+                </div>
+                <i class="fas fa-chevron-left arrow-next" style="left: 32%"></i>
+
+                <!-- Step 2 -->
+                <div class="step-card">
+                    <div class="sc-num">02</div>
+                    <div class="sc-icon blue"><i class="fas fa-cogs"></i></div>
+                    <div class="sc-title">التأسيس والتمكين</div>
+                    <div class="sc-desc">بناء القدرات وتفعيل الأدوات خلال الربع القادم (90 يوماً).</div>
+                    <ul class="sc-list blue">
+                        <li>تجهيز منصة إدارة البيانات.</li>
+                        <li>تدريب سفراء البيانات في الإدارات.</li>
+                        <li>إطلاق حملة التوعية الداخلية.</li>
+                    </ul>
+                </div>
+                <i class="fas fa-chevron-left arrow-next" style="left: 66%"></i>
+
+                <!-- Step 3 -->
+                <div class="step-card">
+                    <div class="sc-num">03</div>
+                    <div class="sc-icon gold"><i class="fas fa-flag-checkered"></i></div>
+                    <div class="sc-title">التوسع والاستدامة</div>
+                    <div class="sc-desc">تعميم النموذج وضمان استمرارية الأعمال بنهاية العام.</div>
+                    <ul class="sc-list gold">
+                        <li>قياس الأثر ورفع التقارير.</li>
+                        <li>تحديث السياسات بناءً على التطبيق.</li>
+                        <li>التكامل مع المنظومة الوطنية.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">50</div>
+    </div>
+</body>
+</html>

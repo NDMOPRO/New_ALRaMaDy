@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 30px 40px 10px 40px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        .gantt-container { background: white; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); flex: 1; display: flex; flex-direction: column; }
+        
+        .timeline-header { display: flex; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 10px; }
+        .th-col-1 { width: 250px; font-weight: 800; color: #1B2A4A; font-size: 14px; }
+        .th-quarters { flex: 1; display: flex; }
+        .th-q { flex: 1; text-align: center; font-weight: 800; color: #666; font-size: 14px; border-right: 1px dashed #eee; }
+        .th-q:last-child { border-right: none; }
+
+        /* Adjusted height and margins for compactness */
+        .gantt-row { display: flex; align-items: center; margin-bottom: 10px; position: relative; height: 36px; }
+        .gr-label { width: 250px; font-size: 13px; font-weight: 700; color: #333; padding-left: 10px; display: flex; align-items: center; gap: 8px; }
+        .gr-timeline { flex: 1; position: relative; height: 100%; display: flex; align-items: center; }
+        .gr-grid-lines { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; pointer-events: none; }
+        .gl-col { flex: 1; border-right: 1px dashed #f0f0f0; }
+
+        .g-bar { height: 24px; border-radius: 4px; position: absolute; display: flex; align-items: center; padding: 0 10px; color: white; font-size: 11px; font-weight: 700; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 2; }
+        .gb-blue { background: linear-gradient(90deg, #2B5EA7, #4A7FCB); }
+        .gb-green { background: linear-gradient(90deg, #00B388, #26D6AB); }
+        .gb-gold { background: linear-gradient(90deg, #E8A838, #F0C060); }
+        
+        .milestone { position: absolute; top: -6px; width: 2px; height: 52px; background: #E85B7A; z-index: 3; }
+        .m-flag { position: absolute; top: 0; left: 50%; transform: translateX(-50%); background: #E85B7A; color: white; font-size: 10px; padding: 2px 6px; border-radius: 2px; white-space: nowrap; font-weight: 700; }
+
+        .phase-sep { margin: 8px 0; border-top: 1px solid #eee; padding-top: 8px; font-size: 12px; font-weight: 800; color: #888; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">خارطة الطريق - الجدول الزمني للتنفيذ (2024)</div>
+            <div class="header-badge">38</div>
+        </div>
+
+        <div class="content-area">
+            <div class="gantt-container">
+                <div class="timeline-header">
+                    <div class="th-col-1">المرحلة / النشاط</div>
+                    <div class="th-quarters">
+                        <div class="th-q">الربع الأول (Q1)</div>
+                        <div class="th-q">الربع الثاني (Q2)</div>
+                        <div class="th-q">الربع الثالث (Q3)</div>
+                        <div class="th-q">الربع الرابع (Q4)</div>
+                    </div>
+                </div>
+
+                <div class="phase-sep">المرحلة 1: التأسيس والحوكمة</div>
+                
+                <div class="gantt-row">
+                    <div class="gr-label"><i class="fas fa-file-contract" style="color:#2B5EA7"></i> اعتماد السياسات</div>
+                    <div class="gr-timeline">
+                        <div class="gr-grid-lines"><div class="gl-col"></div><div class="gl-col"></div><div class="gl-col"></div><div class="gl-col"></div></div>
+                        <div class="g-bar gb-blue" style="left:0%; width:20%">يناير - فبراير</div>
+                        <div class="milestone" style="left:20%"><div class="m-flag">اعتماد</div></div>
+                    </div>
+                </div>
+
+                <div class="gantt-row">
+                    <div class="gr-label"><i class="fas fa-users-cog" style="color:#2B5EA7"></i> تشكيل اللجان</div>
+                    <div class="gr-timeline">
+                        <div class="gr-grid-lines"><div class="gl-col"></div><div class="gl-col"></div><div class="gl-col"></div><div class="gl-col"></div></div>
+                        <div class="g-bar gb-blue" style="left:10%; width:15%">فبراير - مارس</div>
+                    </div>
+                </div>
+
+                <div class="phase-sep">المرحلة 2: التشغيل والجودة</div>
+
+                <div class="gantt-row">
+                    <div class="gr-label"><i class="fas fa-database" style="color:#00B388"></i> حصر وتصنيف البيانات</div>
+                    <div class="gr-timeline">
+                        <div class="gr-grid-lines"><div class="gl-col"></div><div class="gl-col"></div><div class="gl-col"></div><div class="gl-col"></div></div>
+                        <div class="g-bar gb-green" style="left:25%; width:30%">أبريل - يونيو</div>
+                    </div>
+                </div>
+
+                <div class="gantt-row">
+                    <div class="gr-label"><i class="fas fa-check-double" style="color:#00B388"></i> معالجة جودة البيانات</div>
+                    <div class="gr-timeline">
+                        <div class="gr-grid-lines"><div class="gl-col"></div><div class="gl-col"></div><div class="gl-col"></div><div class="gl-col"></div></div>
+                        <div class="g-bar gb-green" style="left:40%; width:35%">مايو - أغسطس</div>
+                    </div>
+                </div>
+
+                <div class="phase-sep">المرحلة 3: التحليل والأثر</div>
+
+                <div class="gantt-row">
+                    <div class="gr-label"><i class="fas fa-chart-pie" style="color:#E8A838"></i> بناء لوحات القيادة</div>
+                    <div class="gr-timeline">
+                        <div class="gr-grid-lines"><div class="gl-col"></div><div class="gl-col"></div><div class="gl-col"></div><div class="gl-col"></div></div>
+                        <div class="g-bar gb-gold" style="left:60%; width:25%">يوليو - سبتمبر</div>
+                        <div class="milestone" style="left:85%"><div class="m-flag">إطلاق</div></div>
+                    </div>
+                </div>
+
+                <div class="gantt-row">
+                    <div class="gr-label"><i class="fas fa-robot" style="color:#E8A838"></i> حالات استخدام الذكاء الاصطناعي</div>
+                    <div class="gr-timeline">
+                        <div class="gr-grid-lines"><div class="gl-col"></div><div class="gl-col"></div><div class="gl-col"></div><div class="gl-col"></div></div>
+                        <div class="g-bar gb-gold" style="left:75%; width:25%">أكتوبر - ديسمبر</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">38</div>
+    </div>
+</body>
+</html>

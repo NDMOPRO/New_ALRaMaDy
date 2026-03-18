@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 12px 20px 4px 20px; display: flex; gap: 20px; }
+        .funnel-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+        .funnel-stage { display: flex; align-items: center; justify-content: center; color: white; text-align: center; }
+        .fs-1 { width: 700px; height: 70px; background: #1B2A4A; }
+        .fs-2 { width: 600px; height: 70px; background: #2B5EA7; }
+        .fs-3 { width: 500px; height: 70px; background: #00B388; }
+        .fs-4 { width: 400px; height: 70px; background: #E8A838; }
+        .fs-5 { width: 300px; height: 70px; background: #8E44AD; }
+        .fs-6 { width: 200px; height: 70px; background: #C0392B; }
+        .fs-inner { display: flex; align-items: center; gap: 10px; }
+        .fs-icon { font-size: 18px; opacity: 0.7; }
+        .fs-text { }
+        .fs-title { font-size: 13px; font-weight: 800; }
+        .fs-val { font-size: 10px; opacity: 0.8; }
+        .metrics-area { width: 340px; display: flex; flex-direction: column; gap: 6px; justify-content: center; }
+        .metric-row { display: flex; gap: 8px; align-items: center; padding: 8px 10px; border: 1px solid #E2E8F0; }
+        .mr-num { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+        .mn-1 { background: #1B2A4A; }
+        .mn-2 { background: #2B5EA7; }
+        .mn-3 { background: #00B388; }
+        .mn-4 { background: #E8A838; }
+        .mn-5 { background: #8E44AD; }
+        .mn-6 { background: #C0392B; }
+        .mr-info { flex: 1; }
+        .mr-title { font-size: 11px; font-weight: 700; color: #1B2A4A; }
+        .mr-desc { font-size: 9px; color: #64748B; }
+        .mr-vals { display: flex; flex-direction: column; align-items: flex-end; }
+        .mr-count { font-size: 16px; font-weight: 800; color: #1B2A4A; }
+        .mr-rate { font-size: 9px; font-weight: 700; }
+        .rate-up { color: #00B388; }
+        .rate-down { color: #C0392B; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-filter" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> عنوان مسار التحويل / القمع يكتب هنا</div>
+            <div class="header-num">3.60</div>
+        </div>
+        <div class="content">
+            <div class="funnel-area">
+                <div class="funnel-stage fs-1"><div class="fs-inner"><div class="fs-icon"><i class="fas fa-globe"></i></div><div class="fs-text"><div class="fs-title">المرحلة الأولى يكتب هنا</div><div class="fs-val">10,000 عنصر يكتب هنا</div></div></div></div>
+                <div class="funnel-stage fs-2"><div class="fs-inner"><div class="fs-icon"><i class="fas fa-eye"></i></div><div class="fs-text"><div class="fs-title">المرحلة الثانية يكتب هنا</div><div class="fs-val">6,500 عنصر يكتب هنا</div></div></div></div>
+                <div class="funnel-stage fs-3"><div class="fs-inner"><div class="fs-icon"><i class="fas fa-hand-pointer"></i></div><div class="fs-text"><div class="fs-title">المرحلة الثالثة يكتب هنا</div><div class="fs-val">3,200 عنصر يكتب هنا</div></div></div></div>
+                <div class="funnel-stage fs-4"><div class="fs-inner"><div class="fs-icon"><i class="fas fa-clipboard-check"></i></div><div class="fs-text"><div class="fs-title">المرحلة الرابعة يكتب هنا</div><div class="fs-val">1,800 عنصر يكتب هنا</div></div></div></div>
+                <div class="funnel-stage fs-5"><div class="fs-inner"><div class="fs-icon"><i class="fas fa-handshake"></i></div><div class="fs-text"><div class="fs-title">المرحلة الخامسة يكتب هنا</div><div class="fs-val">750 عنصر يكتب هنا</div></div></div></div>
+                <div class="funnel-stage fs-6"><div class="fs-inner"><div class="fs-icon"><i class="fas fa-trophy"></i></div><div class="fs-text"><div class="fs-title">المرحلة السادسة يكتب هنا</div><div class="fs-val">320 عنصر يكتب هنا</div></div></div></div>
+            </div>
+            <div class="metrics-area">
+                <div class="metric-row"><div class="mr-num mn-1">1</div><div class="mr-info"><div class="mr-title">عنوان المرحلة الأولى يكتب هنا</div><div class="mr-desc">وصف مختصر يكتب هنا</div></div><div class="mr-vals"><div class="mr-count">10,000</div><div class="mr-rate rate-up">100%</div></div></div>
+                <div class="metric-row"><div class="mr-num mn-2">2</div><div class="mr-info"><div class="mr-title">عنوان المرحلة الثانية يكتب هنا</div><div class="mr-desc">وصف مختصر يكتب هنا</div></div><div class="mr-vals"><div class="mr-count">6,500</div><div class="mr-rate rate-up">65%</div></div></div>
+                <div class="metric-row"><div class="mr-num mn-3">3</div><div class="mr-info"><div class="mr-title">عنوان المرحلة الثالثة يكتب هنا</div><div class="mr-desc">وصف مختصر يكتب هنا</div></div><div class="mr-vals"><div class="mr-count">3,200</div><div class="mr-rate rate-down">49%</div></div></div>
+                <div class="metric-row"><div class="mr-num mn-4">4</div><div class="mr-info"><div class="mr-title">عنوان المرحلة الرابعة يكتب هنا</div><div class="mr-desc">وصف مختصر يكتب هنا</div></div><div class="mr-vals"><div class="mr-count">1,800</div><div class="mr-rate rate-down">56%</div></div></div>
+                <div class="metric-row"><div class="mr-num mn-5">5</div><div class="mr-info"><div class="mr-title">عنوان المرحلة الخامسة يكتب هنا</div><div class="mr-desc">وصف مختصر يكتب هنا</div></div><div class="mr-vals"><div class="mr-count">750</div><div class="mr-rate rate-down">42%</div></div></div>
+                <div class="metric-row"><div class="mr-num mn-6">6</div><div class="mr-info"><div class="mr-title">عنوان المرحلة السادسة يكتب هنا</div><div class="mr-desc">وصف مختصر يكتب هنا</div></div><div class="mr-vals"><div class="mr-count">320</div><div class="mr-rate rate-down">43%</div></div></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

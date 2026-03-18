@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { height: 628px; padding: 8px 16px 4px 16px; display: grid; grid-template-columns: 1.6fr 1fr; grid-template-rows: 298px 298px; gap: 8px; }
+        .chart-box { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 6px 8px; display: flex; flex-direction: column; overflow: hidden; }
+        .chart-title { font-size: 11px; font-weight: 700; color: #1B2A4A; margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
+        .chart-title i { color: #2B5EA7; font-size: 10px; }
+        .chart-body { flex: 1; position: relative; min-height: 0; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .stat-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-top: 3px solid #2B5EA7; padding: 6px 8px; }
+        .stat-card:nth-child(1) { border-top-color: #1B2A4A; }
+        .stat-card:nth-child(2) { border-top-color: #2B5EA7; }
+        .stat-card:nth-child(3) { border-top-color: #00B388; }
+        .stat-card:nth-child(4) { border-top-color: #E8A838; }
+        .sc-label { font-size: 8px; color: #64748B; }
+        .sc-val { font-size: 18px; font-weight: 800; color: #1B2A4A; line-height: 1.2; }
+        .sc-sub { font-size: 8px; color: #00B388; font-weight: 700; }
+        .insight-box { background: #F8FAFC; border: 1px solid #E2E8F0; border-top: 3px solid #E8A838; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
+        .ins-title { font-size: 10px; font-weight: 700; color: #1B2A4A; display: flex; align-items: center; gap: 4px; }
+        .ins-title i { color: #E8A838; font-size: 9px; }
+        .ins-item { font-size: 8px; color: #64748B; line-height: 1.4; padding-right: 8px; border-right: 2px solid #E2E8F0; margin-bottom: 2px; }
+        .footer { height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 22px; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-water" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> عنوان الرسم البياني المساحي - متداخل (Stream) يكتب هنا</div>
+            <div class="header-num">3.30</div>
+        </div>
+        <div class="content">
+            <div class="chart-box">
+                <div class="chart-title"><i class="fas fa-chart-area"></i> عنوان التغيرات العضوية عبر الزمن يكتب هنا</div>
+                <div class="chart-body"><canvas id="streamChart"></canvas></div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="sc-label">إجمالي التدفق يكتب هنا</div><div class="sc-val">12,450</div><div class="sc-sub"><i class="fas fa-arrow-up"></i> +18%</div></div>
+                <div class="stat-card"><div class="sc-label">ذروة التدفق يكتب هنا</div><div class="sc-val">1,850</div><div class="sc-sub">أغسطس 2025</div></div>
+                <div class="stat-card"><div class="sc-label">أدنى تدفق يكتب هنا</div><div class="sc-val">680</div><div class="sc-sub" style="color:#C0392B">يناير 2025</div></div>
+                <div class="stat-card"><div class="sc-label">عدد التيارات يكتب هنا</div><div class="sc-val">4</div><div class="sc-sub">فئات رئيسية</div></div>
+            </div>
+            <div class="chart-box">
+                <div class="chart-title"><i class="fas fa-chart-pie"></i> عنوان التوزيع الحالي يكتب هنا</div>
+                <div class="chart-body"><canvas id="donutChart"></canvas></div>
+            </div>
+            <div class="insight-box">
+                <div class="ins-title"><i class="fas fa-lightbulb"></i> أبرز الملاحظات التحليلية يكتب هنا</div>
+                <div class="ins-item"><strong>الملاحظة الأولى:</strong> نص الملاحظة الأولى يكتب هنا مع توضيح الاتجاه الرئيسي</div>
+                <div class="ins-item"><strong>الملاحظة الثانية:</strong> نص الملاحظة الثانية يكتب هنا مع توضيح التغير الملحوظ</div>
+                <div class="ins-item"><strong>الملاحظة الثالثة:</strong> نص الملاحظة الثالثة يكتب هنا مع التوصية المقترحة</div>
+                <div class="ins-item"><strong>الملاحظة الرابعة:</strong> نص الملاحظة الرابعة يكتب هنا مع الإجراء المطلوب</div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+    <script>
+        new Chart(document.getElementById('streamChart'), {
+            type: 'line',
+            data: {
+                labels: ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],
+                datasets: [
+                    { label: 'التيار أ يكتب هنا', data: [200,250,300,350,400,450,500,550,520,480,460,440], borderColor: '#1B2A4A', backgroundColor: 'rgba(27,42,74,0.35)', fill: true, tension: 0.5, pointRadius: 0, borderWidth: 1 },
+                    { label: 'التيار ب يكتب هنا', data: [180,220,260,300,340,380,420,450,430,410,390,380], borderColor: '#2B5EA7', backgroundColor: 'rgba(43,94,167,0.35)', fill: true, tension: 0.5, pointRadius: 0, borderWidth: 1 },
+                    { label: 'التيار ج يكتب هنا', data: [150,180,210,240,280,320,350,400,380,360,340,330], borderColor: '#00B388', backgroundColor: 'rgba(0,179,136,0.35)', fill: true, tension: 0.5, pointRadius: 0, borderWidth: 1 },
+                    { label: 'التيار د يكتب هنا', data: [150,170,190,210,240,270,300,450,420,380,350,340], borderColor: '#E8A838', backgroundColor: 'rgba(232,168,56,0.35)', fill: true, tension: 0.5, pointRadius: 0, borderWidth: 1 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', labels: { font: { family: 'Tajawal', size: 8 }, boxWidth: 8, padding: 4 } } },
+                scales: {
+                    y: { stacked: true, grid: { color: '#F1F5F9' }, ticks: { font: { family: 'Tajawal', size: 8 } } },
+                    x: { grid: { display: false }, ticks: { font: { family: 'Tajawal', size: 8 } } }
+                }
+            }
+        });
+        new Chart(document.getElementById('donutChart'), {
+            type: 'doughnut',
+            data: { labels: ['التيار أ','التيار ب','التيار ج','التيار د'], datasets: [{ data: [30,26,24,20], backgroundColor: ['#1B2A4A','#2B5EA7','#00B388','#E8A838'], borderWidth: 0 }] },
+            options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'bottom', labels: { font: { family: 'Tajawal', size: 8 }, boxWidth: 8, padding: 4 } } } }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+            flex-shrink: 0;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 20px 40px;
+            flex: 1;
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Left Panel: Maturity */
+        .maturity-panel {
+            flex: 0.25;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-top: 4px solid #E8A838;
+        }
+        .mp-title { font-size: 14px; font-weight: 800; color: #1B2A4A; margin-bottom: 20px; text-align: center; }
+        
+        .score-circle {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            border: 8px solid #E8A838;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .score-val { font-size: 36px; font-weight: 800; color: #1B2A4A; line-height: 1; }
+        .score-max { font-size: 14px; color: #888; }
+        .score-label {
+            position: absolute; bottom: -30px;
+            background: #E8A838; color: white;
+            padding: 4px 12px; border-radius: 10px;
+            font-size: 11px; font-weight: 700;
+        }
+
+        .domain-scores { width: 100%; margin-top: 30px; display: flex; flex-direction: column; gap: 12px; }
+        .ds-item { display: flex; flex-direction: column; gap: 4px; }
+        .ds-header { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: #555; }
+        .ds-bar-bg { width: 100%; height: 6px; background: #eee; border-radius: 3px; }
+        .ds-bar-fill { height: 100%; background: #1B2A4A; border-radius: 3px; }
+        
+        /* Center Panel: Findings Grid */
+        .findings-panel {
+            flex: 0.5;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 15px;
+        }
+        .finding-card {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            border-right: 3px solid #ccc;
+        }
+        .fc-people { border-color: #00B388; }
+        .fc-process { border-color: #2B5EA7; }
+        .fc-tech { border-color: #E8A838; }
+        .fc-data { border-color: #8B7EC8; }
+
+        .fc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+        .fc-icon { color: #666; font-size: 14px; }
+        .fc-title { font-size: 13px; font-weight: 800; color: #1B2A4A; }
+        
+        .gap-list { list-style: none; }
+        .gap-item {
+            font-size: 11px; color: #555; margin-bottom: 8px;
+            padding-right: 12px; position: relative; line-height: 1.4;
+        }
+        .gap-item::before {
+            content: '✖'; position: absolute; right: 0; color: #E85B7A; font-size: 10px;
+        }
+
+        /* Right Panel: Risks */
+        .risks-panel {
+            flex: 0.25;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .rp-title { font-size: 14px; font-weight: 800; color: #E85B7A; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        
+        .risk-card {
+            background: #fff5f5;
+            border: 1px solid #ffebeb;
+            padding: 12px;
+            border-right: 3px solid #E85B7A;
+        }
+        .risk-lvl {
+            font-size: 10px; font-weight: 800; color: #E85B7A; text-transform: uppercase; margin-bottom: 4px;
+        }
+        .risk-desc { font-size: 11px; font-weight: 700; color: #333; line-height: 1.4; }
+        .risk-impact { font-size: 10px; color: #666; margin-top: 4px; }
+
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الحالة الراهنة - تقييم النضج والفجوات</div>
+            <div class="header-badge">15</div>
+        </div>
+
+        <div class="content-area">
+            <!-- Maturity Panel -->
+            <div class="maturity-panel">
+                <div class="mp-title">مستوى النضج العام</div>
+                <div class="score-circle">
+                    <div class="score-val">2.1</div>
+                    <div class="score-max">من 5.0</div>
+                    <div class="score-label">مستوى أولي</div>
+                </div>
+                
+                <div class="domain-scores">
+                    <div class="ds-item">
+                        <div class="ds-header"><span>الحوكمة والسياسات</span><span>1.5</span></div>
+                        <div class="ds-bar-bg"><div class="ds-bar-fill" style="width: 30%; background: #E85B7A;"></div></div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-header"><span>جودة البيانات</span><span>2.0</span></div>
+                        <div class="ds-bar-bg"><div class="ds-bar-fill" style="width: 40%; background: #E8A838;"></div></div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-header"><span>العمليات والتشغيل</span><span>2.5</span></div>
+                        <div class="ds-bar-bg"><div class="ds-bar-fill" style="width: 50%; background: #E8A838;"></div></div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-header"><span>التقنية والأدوات</span><span>3.0</span></div>
+                        <div class="ds-bar-bg"><div class="ds-bar-fill" style="width: 60%; background: #2B5EA7;"></div></div>
+                    </div>
+                    <div class="ds-item">
+                        <div class="ds-header"><span>الأفراد والثقافة</span><span>1.8</span></div>
+                        <div class="ds-bar-bg"><div class="ds-bar-fill" style="width: 36%; background: #E85B7A;"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Findings Grid -->
+            <div class="findings-panel">
+                <div class="finding-card fc-people">
+                    <div class="fc-header">
+                        <div class="fc-icon"><i class="fas fa-users"></i></div>
+                        <div class="fc-title">الأفراد والثقافة (People)</div>
+                    </div>
+                    <ul class="gap-list">
+                        <li class="gap-item">نقص حاد في الكوادر المتخصصة في حوكمة البيانات (يوجد موظف واحد فقط).</li>
+                        <li class="gap-item">غياب برامج التدريب والتوعية بأهمية البيانات.</li>
+                        <li class="gap-item">عدم وضوح الأدوار والمسؤوليات المتعلقة بملكية البيانات.</li>
+                    </ul>
+                </div>
+                <div class="finding-card fc-process">
+                    <div class="fc-header">
+                        <div class="fc-icon"><i class="fas fa-cogs"></i></div>
+                        <div class="fc-title">العمليات (Process)</div>
+                    </div>
+                    <ul class="gap-list">
+                        <li class="gap-item">الاعتماد على العمليات اليدوية في جمع وتنظيف البيانات (Excel).</li>
+                        <li class="gap-item">عدم وجود سياسات موثقة لتصنيف ومشاركة البيانات.</li>
+                        <li class="gap-item">طول دورة حياة طلب البيانات (تستغرق 14 يوم عمل).</li>
+                    </ul>
+                </div>
+                <div class="finding-card fc-tech">
+                    <div class="fc-header">
+                        <div class="fc-icon"><i class="fas fa-server"></i></div>
+                        <div class="fc-title">التقنية (Technology)</div>
+                    </div>
+                    <ul class="gap-list">
+                        <li class="gap-item">تعدد الأنظمة وتكرار تخزين البيانات (Data Redundancy).</li>
+                        <li class="gap-item">غياب أدوات أتمتة جودة البيانات (Data Quality Tools).</li>
+                        <li class="gap-item">عدم وجود فهرس بيانات مركزي (Data Catalog).</li>
+                    </ul>
+                </div>
+                <div class="finding-card fc-data">
+                    <div class="fc-header">
+                        <div class="fc-icon"><i class="fas fa-database"></i></div>
+                        <div class="fc-title">البيانات (Data)</div>
+                    </div>
+                    <ul class="gap-list">
+                        <li class="gap-item">انخفاض جودة بيانات العملاء (نقص في العناوين بنسبة 40%).</li>
+                        <li class="gap-item">عدم وجود معايير موحدة للبيانات الوصفية (Metadata).</li>
+                        <li class="gap-item">صعوبة الوصول للبيانات التاريخية لأغراض التحليل.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Risks Panel -->
+            <div class="risks-panel">
+                <div class="rp-title"><i class="fas fa-exclamation-triangle"></i> أبرز المخاطر</div>
+                
+                <div class="risk-card">
+                    <div class="risk-lvl">مخاطر عالية</div>
+                    <div class="risk-desc">عدم الامتثال لنظام حماية البيانات الشخصية (PDPL).</div>
+                    <div class="risk-impact">الأثر: غرامات مالية ومساءلة قانونية.</div>
+                </div>
+                
+                <div class="risk-card">
+                    <div class="risk-lvl">مخاطر متوسطة</div>
+                    <div class="risk-desc">اتخاذ قرارات استراتيجية بناءً على بيانات غير دقيقة.</div>
+                    <div class="risk-impact">الأثر: هدر الموارد وضعف التخطيط.</div>
+                </div>
+                
+                <div class="risk-card">
+                    <div class="risk-lvl">مخاطر متوسطة</div>
+                    <div class="risk-desc">تسرب الكفاءات بسبب غياب المسار الوظيفي الواضح.</div>
+                    <div class="risk-impact">الأثر: فقدان المعرفة المؤسسية.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">15</div>
+    </div>
+</body>
+</html>

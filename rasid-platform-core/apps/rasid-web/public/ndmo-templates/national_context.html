@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 20px 40px;
+            display: flex;
+            gap: 20px;
+            height: 600px;
+        }
+
+        /* Left Column: Strategic House */
+        .strat-house {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Roof: Vision 2030 */
+        .vision-roof {
+            background: linear-gradient(135deg, #006C35 0%, #004D25 100%); /* Saudi Green */
+            color: white;
+            padding: 15px;
+            border-radius: 4px 4px 0 0; /* Slight rounding for roof effect */
+            text-align: center;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .vision-logo-text { font-size: 24px; font-weight: 800; letter-spacing: 1px; }
+        .vision-desc { font-size: 12px; opacity: 0.9; margin-top: 5px; }
+
+        /* Beam: NSDAI */
+        .nsdai-beam {
+            background: #1B2A4A;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .nsdai-title { font-size: 16px; font-weight: 700; }
+        .nsdai-sub { font-size: 11px; opacity: 0.7; }
+
+        /* Pillars Container */
+        .pillars-container {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+        }
+        .pillar {
+            flex: 1;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            padding: 15px 10px;
+            text-align: center;
+            border-top: 4px solid #ccc;
+        }
+        .p-teal { border-color: #00B388; }
+        .p-blue { border-color: #2B5EA7; }
+        .p-gold { border-color: #E8A838; }
+        .p-purple { border-color: #8B7EC8; }
+
+        .p-icon {
+            width: 40px; height: 40px;
+            margin: 0 auto 10px auto;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+        .p-teal .p-icon { background: rgba(0,179,136,0.1); color: #00B388; }
+        .p-blue .p-icon { background: rgba(43,94,167,0.1); color: #2B5EA7; }
+        .p-gold .p-icon { background: rgba(232,168,56,0.1); color: #E8A838; }
+        .p-purple .p-icon { background: rgba(139,126,200,0.1); color: #8B7EC8; }
+
+        .p-title { font-size: 13px; font-weight: 700; color: #1B2A4A; margin-bottom: 8px; }
+        .p-list { list-style: none; text-align: right; padding-right: 5px; }
+        .p-list li {
+            font-size: 10px; color: #666; margin-bottom: 6px;
+            position: relative; padding-right: 10px;
+        }
+        .p-list li::before {
+            content: '•'; position: absolute; right: 0; color: #ccc;
+        }
+
+        /* Foundation */
+        .foundation {
+            background: #444;
+            color: white;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+        .f-item { font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .f-item i { color: #E8A838; }
+
+        /* Right Column: National Targets */
+        .targets-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .target-card {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-right: 4px solid #1B2A4A;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .tc-icon {
+            font-size: 24px; color: #1B2A4A; opacity: 0.2;
+        }
+        .tc-content { flex: 1; }
+        .tc-val { font-size: 24px; font-weight: 800; color: #1B2A4A; line-height: 1; }
+        .tc-label { font-size: 11px; color: #666; margin-top: 4px; }
+        .tc-trend { font-size: 10px; font-weight: 700; color: #00B388; margin-top: 2px; }
+
+        .map-container {
+            flex: 1;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        .map-title { font-size: 12px; font-weight: 700; color: #1B2A4A; margin-bottom: 10px; }
+        .map-placeholder {
+            width: 100%; height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20,50 Q50,10 80,50 T20,50" fill="none" stroke="%23eee" stroke-width="2"/></svg>') no-repeat center;
+            background-size: contain;
+            display: flex; align-items: center; justify-content: center;
+            color: #ccc; font-size: 10px;
+        }
+        /* Abstract Map Representation */
+        .saudi-map {
+            width: 100%; height: 180px;
+            background: #f9f9f9;
+            border: 1px dashed #ddd;
+            display: flex; align-items: center; justify-content: center;
+            color: #aaa; font-weight: 700;
+        }
+
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">السياق الوطني - منظومة البيانات والذكاء الاصطناعي</div>
+            <div class="header-badge">06</div>
+        </div>
+
+        <div class="content-area">
+            <!-- Strategic House -->
+            <div class="strat-house">
+                <div class="vision-roof">
+                    <div class="vision-logo-text">رؤية المملكة 2030</div>
+                    <div class="vision-desc">مجتمع حيوي • اقتصاد مزدهر • وطن طموح</div>
+                </div>
+                
+                <div class="nsdai-beam">
+                    <div class="nsdai-title">الاستراتيجية الوطنية للبيانات والذكاء الاصطناعي (NSDAI)</div>
+                    <div class="nsdai-sub">"جعل المملكة مركزاً عالمياً لتقنيات البيانات والذكاء الاصطناعي"</div>
+                </div>
+
+                <div class="pillars-container">
+                    <div class="pillar p-teal">
+                        <div class="p-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="p-title">الاقتصاد الرقمي</div>
+                        <ul class="p-list">
+                            <li>تنمية الشركات الناشئة</li>
+                            <li>جذب الاستثمارات</li>
+                            <li>خلق فرص عمل</li>
+                        </ul>
+                    </div>
+                    <div class="pillar p-blue">
+                        <div class="p-icon"><i class="fas fa-university"></i></div>
+                        <div class="p-title">الحكومة الذكية</div>
+                        <ul class="p-list">
+                            <li>تحسين الخدمات</li>
+                            <li>دعم اتخاذ القرار</li>
+                            <li>كفاءة الإنفاق</li>
+                        </ul>
+                    </div>
+                    <div class="pillar p-gold">
+                        <div class="p-icon"><i class="fas fa-lightbulb"></i></div>
+                        <div class="p-title">الابتكار والبحث</div>
+                        <ul class="p-list">
+                            <li>توطين التقنية</li>
+                            <li>الشراكات البحثية</li>
+                            <li>براءات الاختراع</li>
+                        </ul>
+                    </div>
+                    <div class="pillar p-purple">
+                        <div class="p-icon"><i class="fas fa-globe"></i></div>
+                        <div class="p-title">الريادة العالمية</div>
+                        <ul class="p-list">
+                            <li>المؤشرات الدولية</li>
+                            <li>المساهمة العالمية</li>
+                            <li>تصدير المعرفة</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="foundation">
+                    <div class="f-item"><i class="fas fa-server"></i> البنية التحتية</div>
+                    <div class="f-item"><i class="fas fa-gavel"></i> الحوكمة والتنظيم</div>
+                    <div class="f-item"><i class="fas fa-users"></i> الكوادر البشرية</div>
+                    <div class="f-item"><i class="fas fa-handshake"></i> الشراكات الاستراتيجية</div>
+                </div>
+            </div>
+
+            <!-- Right Column: Targets & Map -->
+            <div class="targets-col">
+                <div class="target-card">
+                    <div class="tc-icon"><i class="fas fa-trophy"></i></div>
+                    <div class="tc-content">
+                        <div class="tc-val">Top 10</div>
+                        <div class="tc-label">التصنيف العالمي في البيانات المفتوحة</div>
+                        <div class="tc-trend">▲ متقدم 3 مراكز</div>
+                    </div>
+                </div>
+                <div class="target-card">
+                    <div class="tc-icon"><i class="fas fa-briefcase"></i></div>
+                    <div class="tc-content">
+                        <div class="tc-val">20,000+</div>
+                        <div class="tc-label">وظيفة متخصصة في البيانات والذكاء الاصطناعي</div>
+                        <div class="tc-trend">▲ 15% نمو سنوي</div>
+                    </div>
+                </div>
+                <div class="target-card">
+                    <div class="tc-icon"><i class="fas fa-coins"></i></div>
+                    <div class="tc-content">
+                        <div class="tc-val">40%</div>
+                        <div class="tc-label">مساهمة الاقتصاد الرقمي في الناتج المحلي</div>
+                        <div class="tc-trend">▲ هدف 2030</div>
+                    </div>
+                </div>
+
+                <div class="map-container">
+                    <div class="map-title">النطاق الجغرافي والتغطية</div>
+                    <div class="saudi-map">
+                        <i class="fas fa-map-marked-alt" style="font-size: 48px; color: #ddd;"></i>
+                        <span style="margin-right: 10px; font-size: 12px; color: #888;">تغطية شاملة لجميع مناطق المملكة</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">06</div>
+    </div>
+</body>
+</html>

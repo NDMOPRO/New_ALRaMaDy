@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        .slide-container { width: 1280px; min-height: 720px; font-family: 'Tajawal', sans-serif; background: #EEF1F5; display: flex; flex-direction: column; }
+        .header { height: 62px; background: #0C1E3A; display: flex; align-items: center; justify-content: center; position: relative; }
+        .header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #2E86AB 0%, #0EA47A 50%, #D4A843 100%); }
+        .header-tag { position: absolute; top: 10px; right: 40px; font-size: 7px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.3); font-family: 'Inter', sans-serif; }
+        .header-title { font-size: 21px; font-weight: 700; color: #FFFFFF; }
+        .header-deco { position: absolute; left: 30px; top: 50%; transform: translateY(-50%); display: flex; gap: 4px; align-items: flex-end; }
+        .deco-bar { width: 4px; border-radius: 2px; }
+        .deco-bar:nth-child(1) { height: 18px; background: #2E86AB; }
+        .deco-bar:nth-child(2) { height: 28px; background: #5BA4C9; }
+        .deco-bar:nth-child(3) { height: 14px; background: #0EA47A; }
+
+        .body { flex: 1; padding: 10px 14px 6px; display: grid; grid-template-columns: 1fr 280px; gap: 10px; }
+
+        .chart-area { background: #FFFFFF; border-radius: 10px; padding: 10px 14px 6px; box-shadow: 0 2px 10px rgba(12,30,58,0.06); display: flex; flex-direction: column; }
+        .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+        .chart-title { font-size: 13px; font-weight: 700; color: #0C1E3A; }
+        .chart-subtitle { font-size: 9px; color: #A0AEC0; margin-top: 1px; }
+        .chart-period { font-family: 'Inter', sans-serif; font-size: 8px; font-weight: 700; color: #2E86AB; background: rgba(46,134,171,0.08); padding: 3px 10px; border-radius: 20px; }
+        .chart-body { flex: 1; position: relative; min-height: 0; }
+        .chart-legend { display: flex; gap: 16px; justify-content: center; margin-top: 4px; }
+        .legend-item { display: flex; align-items: center; gap: 5px; font-size: 9px; color: #64748B; font-weight: 500; }
+        .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+        .legend-line { width: 16px; height: 2px; border-radius: 1px; }
+
+        .insights-panel { display: flex; flex-direction: column; gap: 8px; }
+        .insight-card { background: #FFFFFF; border-radius: 10px; padding: 12px 14px; box-shadow: 0 2px 10px rgba(12,30,58,0.06); flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .insight-num { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 800; color: #2E86AB; }
+        .insight-title { font-size: 12px; font-weight: 700; color: #0C1E3A; line-height: 1.3; }
+        .insight-desc { font-size: 10px; color: #64748B; line-height: 1.5; }
+        .insight-metric { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 800; color: #0C1E3A; margin-top: 2px; }
+        .insight-badge { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+        .badge-up { background: rgba(14,164,122,0.1); color: #0EA47A; }
+        .badge-down { background: rgba(224,82,82,0.1); color: #E05252; }
+
+        .footer-area { height: 26px; background: #FFFFFF; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; box-shadow: 0 -1px 4px rgba(12,30,58,0.04); }
+        .footer-right { display: flex; align-items: center; gap: 8px; }
+        .footer-logo { height: 22px; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #E2E8F0; }
+        .footer-text { font-size: 8.5px; color: #A0AEC0; }
+        .footer-page { font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 700; color: #0C1E3A; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header">
+            <div class="header-deco"><div class="deco-bar"></div><div class="deco-bar"></div><div class="deco-bar"></div></div>
+            <div class="header-tag">TEMPLATE — BAR + TREND LINE</div>
+            <div class="header-title">عنوان الرسم البياني مع خط الاتجاه يكتب هنا</div>
+        </div>
+        <div class="body">
+            <div class="chart-area">
+                <div class="chart-header">
+                    <div><div class="chart-title">عنوان الرسم البياني يكتب هنا</div><div class="chart-subtitle">وصف مختصر يكتب هنا — مصدر البيانات</div></div>
+                    <div class="chart-period">2024-2026</div>
+                </div>
+                <div class="chart-body"><canvas id="comboChart"></canvas></div>
+                <div class="chart-legend">
+                    <div class="legend-item"><div class="legend-dot" style="background:#3498DB"></div>القيم الفعلية يكتب هنا</div>
+                    <div class="legend-item"><div class="legend-line" style="background:#E05252"></div>خط الاتجاه يكتب هنا</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#E0ECF5"></div>المستهدف يكتب هنا</div>
+                </div>
+            </div>
+            <div class="insights-panel">
+                <div class="insight-card">
+                    <div class="insight-num">01</div>
+                    <div class="insight-title">عنوان الملاحظة الأولى يكتب هنا</div>
+                    <div class="insight-desc">وصف مختصر للملاحظة التحليلية يكتب هنا مع التفاصيل</div>
+                    <div class="insight-metric">+18.5%</div>
+                    <span class="insight-badge badge-up">▲ نمو إيجابي</span>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-num">02</div>
+                    <div class="insight-title">عنوان الملاحظة الثانية يكتب هنا</div>
+                    <div class="insight-desc">وصف مختصر للملاحظة التحليلية يكتب هنا مع التفاصيل</div>
+                    <div class="insight-metric">92.3%</div>
+                    <span class="insight-badge badge-up">▲ أعلى من المستهدف</span>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-num">03</div>
+                    <div class="insight-title">عنوان الملاحظة الثالثة يكتب هنا</div>
+                    <div class="insight-desc">وصف مختصر للملاحظة التحليلية يكتب هنا مع التفاصيل</div>
+                    <div class="insight-metric">-4.2%</div>
+                    <span class="insight-badge badge-down">▼ يحتاج متابعة</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-area">
+            <div class="footer-right">
+                <img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" class="footer-logo" alt="NDMO">
+                <div class="footer-sep"></div>
+                <img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" class="footer-logo" alt="SDAIA">
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+            <div class="footer-page">04 / 60</div>
+        </div>
+    </div>
+    <script>
+        Chart.register(ChartDataLabels);
+        Chart.defaults.font.family = 'Inter';
+        const ctx = document.getElementById('comboChart').getContext('2d');
+        const grad = ctx.createLinearGradient(0, 0, 0, 400);
+        grad.addColorStop(0, '#3498DB');
+        grad.addColorStop(1, '#1A6FA0');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024', 'Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025', 'Q1 2026'],
+                datasets: [
+                    { type: 'bar', label: 'القيم الفعلية', data: [1800, 2100, 2400, 2200, 2600, 2900, 3200, 3500, 3800], backgroundColor: grad, borderRadius: 5, barPercentage: 0.5, order: 2 },
+                    { type: 'bar', label: 'المستهدف', data: [2000, 2200, 2500, 2500, 2800, 3000, 3300, 3600, 4000], backgroundColor: '#E0ECF5', borderRadius: 5, barPercentage: 0.5, order: 3 },
+                    { type: 'line', label: 'خط الاتجاه', data: [1900, 2150, 2450, 2350, 2700, 2950, 3200, 3500, 3800], borderColor: '#E05252', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#E05252', pointBorderColor: '#FFFFFF', pointBorderWidth: 2, tension: 0.4, fill: false, order: 1 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { backgroundColor: '#0C1E3A', titleFont: { family: 'Tajawal', size: 11, weight: '700' }, bodyFont: { family: 'Inter', size: 10, weight: '600' }, cornerRadius: 8, padding: 10, mode: 'index' },
+                    datalabels: { display: false }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#A0AEC0', font: { family: 'Inter', size: 8, weight: '500' }, maxRotation: 45 } },
+                    y: { grid: { color: 'rgba(0,0,0,0.025)', drawBorder: false }, ticks: { color: '#CBD5E0', font: { size: 8 }, callback: function(v) { return v >= 1000 ? (v/1000)+'K' : v; } }, beginAtZero: true }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

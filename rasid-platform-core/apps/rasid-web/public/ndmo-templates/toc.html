@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 20px 40px;
+        }
+        .toc-item {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: stretch;
+            min-height: 80px;
+        }
+        .toc-item.active {
+            border: 2px solid #00B388;
+            box-shadow: 0 2px 10px rgba(0,179,136,0.15);
+        }
+        .toc-num-bar {
+            width: 50px;
+            background: #1B2A4A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 800;
+        }
+        .toc-item.active .toc-num-bar { background: #00B388; }
+        .toc-content {
+            flex: 1;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .toc-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1B2A4A;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+        .toc-desc {
+            font-size: 10px;
+            color: #888;
+            line-height: 1.3;
+        }
+        .toc-page {
+            font-size: 10px;
+            color: #aaa;
+            margin-top: 4px;
+            font-weight: 700;
+        }
+
+        .progress-bar {
+            margin: 15px 40px 0 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .prog-label { font-size: 11px; color: #888; font-weight: 500; white-space: nowrap; }
+        .prog-track {
+            flex: 1;
+            height: 6px;
+            background: #ddd;
+        }
+        .prog-fill {
+            height: 100%;
+            width: 8%;
+            background: linear-gradient(to left, #00B388, #2B5EA7);
+        }
+        .prog-pct { font-size: 11px; font-weight: 700; color: #00B388; }
+
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">فهرس العرض التقديمي</div>
+            <div class="header-badge">03</div>
+        </div>
+
+        <div class="toc-grid">
+            <div class="toc-item active">
+                <div class="toc-num-bar">01</div>
+                <div class="toc-content">
+                    <div class="toc-title">الملخص التنفيذي</div>
+                    <div class="toc-desc">نظرة شاملة على أبرز المؤشرات والنتائج</div>
+                    <div class="toc-page">الصفحة 04</div>
+                </div>
+            </div>
+            <div class="toc-item">
+                <div class="toc-num-bar">02</div>
+                <div class="toc-content">
+                    <div class="toc-title">الخلفية التنظيمية</div>
+                    <div class="toc-desc">الإطار المؤسسي والهيكل التنظيمي</div>
+                    <div class="toc-page">الصفحة 05</div>
+                </div>
+            </div>
+            <div class="toc-item">
+                <div class="toc-num-bar">03</div>
+                <div class="toc-content">
+                    <div class="toc-title">السياق الوطني</div>
+                    <div class="toc-desc">الإطار الوطني والتوجهات العامة</div>
+                    <div class="toc-page">الصفحة 06</div>
+                </div>
+            </div>
+            <div class="toc-item">
+                <div class="toc-num-bar">04</div>
+                <div class="toc-content">
+                    <div class="toc-title">الارتباط الاستراتيجي</div>
+                    <div class="toc-desc">الربط بالأهداف والرؤية والحوكمة</div>
+                    <div class="toc-page">الصفحات 07-10</div>
+                </div>
+            </div>
+            <div class="toc-item">
+                <div class="toc-num-bar">05</div>
+                <div class="toc-content">
+                    <div class="toc-title">الغرض والنطاق</div>
+                    <div class="toc-desc">أهداف العرض وحدود النطاق</div>
+                    <div class="toc-page">الصفحات 11-12</div>
+                </div>
+            </div>
+            <div class="toc-item">
+                <div class="toc-num-bar">06</div>
+                <div class="toc-content">
+                    <div class="toc-title">تعريف المبادرة</div>
+                    <div class="toc-desc">المبادرة وأهدافها ومخرجاتها</div>
+                    <div class="toc-page">الصفحة 13</div>
+                </div>
+            </div>
+            <div class="toc-item">
+                <div class="toc-num-bar">07</div>
+                <div class="toc-content">
+                    <div class="toc-title">المجال البياني</div>
+                    <div class="toc-desc">تعريف المجال وتصنيفات البيانات</div>
+                    <div class="toc-page">الصفحة 14</div>
+                </div>
+            </div>
+            <div class="toc-item">
+                <div class="toc-num-bar">08</div>
+                <div class="toc-content">
+                    <div class="toc-title">الحالة الراهنة والمستهدفة</div>
+                    <div class="toc-desc">تحليل الفجوات والأهداف المرجوة</div>
+                    <div class="toc-page">الصفحات 15-16</div>
+                </div>
+            </div>
+            <div class="toc-item">
+                <div class="toc-num-bar">09</div>
+                <div class="toc-content">
+                    <div class="toc-title">المبادئ الحاكمة</div>
+                    <div class="toc-desc">القيم والمبادئ الأساسية للعمل</div>
+                    <div class="toc-page">الصفحة 17</div>
+                </div>
+            </div>
+            <div class="toc-item">
+                <div class="toc-num-bar">10</div>
+                <div class="toc-content">
+                    <div class="toc-title">الأسس التنظيمية والمرجعيات</div>
+                    <div class="toc-desc">التشريعات والمعايير الوطنية</div>
+                    <div class="toc-page">الصفحات 18-19</div>
+                </div>
+            </div>
+            <div class="toc-item">
+                <div class="toc-num-bar">11</div>
+                <div class="toc-content">
+                    <div class="toc-title">الأدوار وأصحاب المصلحة</div>
+                    <div class="toc-desc">مصفوفة المسؤوليات والتأثير</div>
+                    <div class="toc-page">الصفحات 20-21</div>
+                </div>
+            </div>
+            <div class="toc-item">
+                <div class="toc-num-bar">12</div>
+                <div class="toc-content">
+                    <div class="toc-title">نموذج الحوكمة</div>
+                    <div class="toc-desc">الهيكل الشامل لنموذج الحوكمة</div>
+                    <div class="toc-page">الصفحة 22</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="prog-label">تقدم العرض</div>
+            <div class="prog-track"><div class="prog-fill"></div></div>
+            <div class="prog-pct">8%</div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">03</div>
+    </div>
+</body>
+</html>

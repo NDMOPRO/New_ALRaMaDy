@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>تحليل الامتثال | Compliance Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; background-color: #f0f0f0; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        /* NDMO Identity Colors */
+        .bg-ndmo-blue { background-color: #1B2A4A; }
+        .text-ndmo-blue { color: #1B2A4A; }
+        .bg-ndmo-teal { background-color: #00B388; }
+        .text-ndmo-teal { color: #00B388; }
+        .bg-ndmo-gold { background-color: #E8A838; }
+        .text-ndmo-gold { color: #E8A838; }
+        
+        /* Heatmap Colors */
+        .score-high { background-color: #E6F7F3; color: #00664D; border: 1px solid #00B388; }
+        .score-med { background-color: #FFF8E6; color: #996B00; border: 1px solid #E8A838; }
+        .score-low { background-color: #FEECEC; color: #CC0000; border: 1px solid #FF4D4D; }
+        
+        /* Table Styling */
+        .heatmap-table { width: 100%; border-collapse: separate; border-spacing: 4px; }
+        .heatmap-table th { font-size: 12px; color: #1B2A4A; font-weight: 700; padding: 8px; text-align: center; background-color: #F0F4F8; }
+        .heatmap-table td { font-size: 14px; font-weight: 700; padding: 10px; text-align: center; border-radius: 4px; }
+        .heatmap-row-header { text-align: right !important; background-color: transparent !important; font-weight: 700; color: #1B2A4A; font-size: 13px; }
+
+        /* Custom Scrollbar for dense lists if needed (though we avoid scroll in slides) */
+        .dense-list-item { border-bottom: 1px solid #eee; padding: 8px 0; display: flex; justify-content: space-between; align-items: center; }
+        .dense-list-item:last-child { border-bottom: none; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Header -->
+        <div class="h-24 w-full relative">
+            <!-- Accent Line -->
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-ndmo-blue via-ndmo-teal to-ndmo-gold"></div>
+            
+            <div class="flex justify-between items-center px-12 pt-8">
+                <div>
+                    <h1 class="text-3xl font-bold text-ndmo-blue mb-1">تحليل الامتثال لسياسات البيانات</h1>
+                    <p class="text-lg text-gray-500 font-medium">Compliance Analysis & Heatmap Assessment</p>
+                </div>
+                <!-- Logo Container -->
+                <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-100">
+                    <img src="/home/ubuntu/ndmo_ref_v5/assets/logo_ndmo.png" alt="NDMO Logo" style="height: 50px; object-fit: contain;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 px-12 py-4 flex gap-6">
+            
+            <!-- Left Column: Heatmap & Metrics (70%) -->
+            <div class="w-[70%] flex flex-col gap-6">
+                
+                <!-- Top KPI Cards -->
+                <div class="grid grid-cols-4 gap-4">
+                    <!-- KPI 1 -->
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-1 h-full bg-ndmo-blue"></div>
+                        <p class="text-xs text-gray-500 font-bold mb-1">نسبة الامتثال العام</p>
+                        <div class="flex items-end gap-2">
+                            <span class="text-3xl font-bold text-ndmo-blue">87%</span>
+                            <span class="text-xs text-ndmo-teal font-bold mb-1">▲ 5%</span>
+                        </div>
+                        <p class="text-[10px] text-gray-400 mt-1">مقارنة بالربع السابق</p>
+                    </div>
+                    <!-- KPI 2 -->
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-1 h-full bg-ndmo-gold"></div>
+                        <p class="text-xs text-gray-500 font-bold mb-1">مخاطر الامتثال</p>
+                        <div class="flex items-end gap-2">
+                            <span class="text-3xl font-bold text-ndmo-gold">12</span>
+                            <span class="text-xs text-gray-400 mb-1">حالة نشطة</span>
+                        </div>
+                        <p class="text-[10px] text-gray-400 mt-1">تتطلب إجراء تصحيحي</p>
+                    </div>
+                    <!-- KPI 3 -->
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-1 h-full bg-ndmo-teal"></div>
+                        <p class="text-xs text-gray-500 font-bold mb-1">الجهات الممتثلة</p>
+                        <div class="flex items-end gap-2">
+                            <span class="text-3xl font-bold text-ndmo-teal">24</span>
+                            <span class="text-xs text-gray-400 mb-1">/ 30 جهة</span>
+                        </div>
+                        <p class="text-[10px] text-gray-400 mt-1">ضمن النطاق المستهدف</p>
+                    </div>
+                    <!-- KPI 4 -->
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-1 h-full bg-gray-400"></div>
+                        <p class="text-xs text-gray-500 font-bold mb-1">مؤشر النضج</p>
+                        <div class="flex items-end gap-2">
+                            <span class="text-3xl font-bold text-gray-700">3.8</span>
+                            <span class="text-xs text-gray-400 mb-1">/ 5.0</span>
+                        </div>
+                        <p class="text-[10px] text-gray-400 mt-1">مستوى "مُدار"</p>
+                    </div>
+                </div>
+
+                <!-- Heatmap Section -->
+                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm flex-1 flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-ndmo-blue font-bold text-lg flex items-center gap-2">
+                            <span class="w-2 h-2 bg-ndmo-blue rounded-full"></span>
+                            خارطة الامتثال حسب المجالات والقطاعات
+                        </h3>
+                        <div class="flex gap-3 text-[10px]">
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 bg-[#E6F7F3] border border-[#00B388]"></span> مرتفع (>90%)</span>
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 bg-[#FFF8E6] border border-[#E8A838]"></span> متوسط (70-90%)</span>
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 bg-[#FEECEC] border border-[#FF4D4D]"></span> منخفض (<70%)</span>
+                        </div>
+                    </div>
+                    
+                    <table class="heatmap-table h-full">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;">القطاع / المجال</th>
+                                <th>حكومة البيانات<br><span class="text-[9px] font-normal text-gray-500">Data Gov</span></th>
+                                <th>جودة البيانات<br><span class="text-[9px] font-normal text-gray-500">Data Quality</span></th>
+                                <th>حماية البيانات<br><span class="text-[9px] font-normal text-gray-500">Data Protection</span></th>
+                                <th>البيانات المفتوحة<br><span class="text-[9px] font-normal text-gray-500">Open Data</span></th>
+                                <th>إدارة البيانات<br><span class="text-[9px] font-normal text-gray-500">Data Mgmt</span></th>
+                                <th>المتوسط</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="heatmap-row-header">الموارد البشرية</td>
+                                <td class="score-high">95%</td>
+                                <td class="score-high">92%</td>
+                                <td class="score-med">88%</td>
+                                <td class="score-low">65%</td>
+                                <td class="score-high">91%</td>
+                                <td class="font-bold text-ndmo-blue bg-gray-50">86%</td>
+                            </tr>
+                            <tr>
+                                <td class="heatmap-row-header">تقنية المعلومات</td>
+                                <td class="score-high">98%</td>
+                                <td class="score-high">96%</td>
+                                <td class="score-high">99%</td>
+                                <td class="score-high">94%</td>
+                                <td class="score-high">97%</td>
+                                <td class="font-bold text-ndmo-blue bg-gray-50">97%</td>
+                            </tr>
+                            <tr>
+                                <td class="heatmap-row-header">الشؤون المالية</td>
+                                <td class="score-med">85%</td>
+                                <td class="score-high">91%</td>
+                                <td class="score-high">95%</td>
+                                <td class="score-low">60%</td>
+                                <td class="score-med">88%</td>
+                                <td class="font-bold text-ndmo-blue bg-gray-50">84%</td>
+                            </tr>
+                            <tr>
+                                <td class="heatmap-row-header">العمليات والتشغيل</td>
+                                <td class="score-med">78%</td>
+                                <td class="score-med">82%</td>
+                                <td class="score-med">80%</td>
+                                <td class="score-med">75%</td>
+                                <td class="score-med">85%</td>
+                                <td class="font-bold text-ndmo-blue bg-gray-50">80%</td>
+                            </tr>
+                            <tr>
+                                <td class="heatmap-row-header">الاستراتيجية</td>
+                                <td class="score-high">92%</td>
+                                <td class="score-med">85%</td>
+                                <td class="score-med">88%</td>
+                                <td class="score-high">96%</td>
+                                <td class="score-high">90%</td>
+                                <td class="font-bold text-ndmo-blue bg-gray-50">90%</td>
+                            </tr>
+                            <tr>
+                                <td class="heatmap-row-header">خدمة العملاء</td>
+                                <td class="score-low">68%</td>
+                                <td class="score-low">70%</td>
+                                <td class="score-high">92%</td>
+                                <td class="score-low">55%</td>
+                                <td class="score-med">74%</td>
+                                <td class="font-bold text-ndmo-blue bg-gray-50">72%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right Column: Analysis & Issues (30%) -->
+            <div class="w-[30%] flex flex-col gap-6">
+                
+                <!-- Top Issues -->
+                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm flex-1">
+                    <h3 class="text-ndmo-blue font-bold text-base mb-4 border-b border-gray-100 pb-2">أبرز مخالفات الامتثال</h3>
+                    <div class="flex flex-col gap-3">
+                        <!-- Issue 1 -->
+                        <div class="flex gap-3 items-start">
+                            <div class="w-6 h-6 rounded bg-red-50 text-red-600 flex items-center justify-center text-xs font-bold mt-1">1</div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-800">تصنيف البيانات غير مكتمل</p>
+                                <p class="text-[10px] text-gray-500 leading-tight mt-1">40% من البيانات في قطاع العمليات لم يتم تصنيفها وفق السياسة الوطنية.</p>
+                                <span class="inline-block mt-1 px-2 py-0.5 bg-red-100 text-red-700 text-[9px] rounded">عالي الخطورة</span>
+                            </div>
+                        </div>
+                        <!-- Issue 2 -->
+                        <div class="flex gap-3 items-start">
+                            <div class="w-6 h-6 rounded bg-orange-50 text-orange-600 flex items-center justify-center text-xs font-bold mt-1">2</div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-800">سجلات الوصول غير محدثة</p>
+                                <p class="text-[10px] text-gray-500 leading-tight mt-1">عدم تحديث سجلات الوصول للأنظمة الحساسة بشكل دوري (ربع سنوي).</p>
+                                <span class="inline-block mt-1 px-2 py-0.5 bg-orange-100 text-orange-700 text-[9px] rounded">متوسط الخطورة</span>
+                            </div>
+                        </div>
+                        <!-- Issue 3 -->
+                        <div class="flex gap-3 items-start">
+                            <div class="w-6 h-6 rounded bg-yellow-50 text-yellow-600 flex items-center justify-center text-xs font-bold mt-1">3</div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-800">نقص في توثيق الميتا داتا</p>
+                                <p class="text-[10px] text-gray-500 leading-tight mt-1">غياب وصف البيانات الوصفية لبعض مجموعات البيانات المفتوحة.</p>
+                                <span class="inline-block mt-1 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-[9px] rounded">منخفض الخطورة</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trend Analysis -->
+                <div class="bg-ndmo-blue rounded-lg p-5 shadow-sm text-white h-48 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-full opacity-10" style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 10px 10px;"></div>
+                    <h3 class="font-bold text-base mb-4 relative z-10">اتجاه الامتثال (6 أشهر)</h3>
+                    
+                    <div class="flex items-end justify-between h-24 gap-2 relative z-10 px-2">
+                        <!-- Bar 1 -->
+                        <div class="w-full flex flex-col items-center gap-1">
+                            <div class="w-full bg-white/20 rounded-t h-[40%]"></div>
+                            <span class="text-[9px] text-gray-300">يناير</span>
+                        </div>
+                        <!-- Bar 2 -->
+                        <div class="w-full flex flex-col items-center gap-1">
+                            <div class="w-full bg-white/30 rounded-t h-[55%]"></div>
+                            <span class="text-[9px] text-gray-300">فبراير</span>
+                        </div>
+                        <!-- Bar 3 -->
+                        <div class="w-full flex flex-col items-center gap-1">
+                            <div class="w-full bg-white/40 rounded-t h-[60%]"></div>
+                            <span class="text-[9px] text-gray-300">مارس</span>
+                        </div>
+                        <!-- Bar 4 -->
+                        <div class="w-full flex flex-col items-center gap-1">
+                            <div class="w-full bg-white/50 rounded-t h-[75%]"></div>
+                            <span class="text-[9px] text-gray-300">أبريل</span>
+                        </div>
+                        <!-- Bar 5 -->
+                        <div class="w-full flex flex-col items-center gap-1">
+                            <div class="w-full bg-white/70 rounded-t h-[82%]"></div>
+                            <span class="text-[9px] text-gray-300">مايو</span>
+                        </div>
+                        <!-- Bar 6 -->
+                        <div class="w-full flex flex-col items-center gap-1">
+                            <div class="w-full bg-ndmo-teal rounded-t h-[87%] relative group">
+                                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-white text-ndmo-blue text-[9px] font-bold px-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">87%</div>
+                            </div>
+                            <span class="text-[9px] text-white font-bold">يونيو</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="h-12 w-full bg-white border-t border-gray-200 flex justify-between items-center px-12 relative z-10">
+            <div class="flex items-center gap-2">
+                <span class="text-[10px] text-gray-400">Confidential & Proprietary</span>
+                <span class="text-[10px] text-gray-300">|</span>
+                <span class="text-[10px] text-gray-400">NDMO Reference Model V5.0</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-[10px] text-ndmo-blue font-bold">Page 24</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

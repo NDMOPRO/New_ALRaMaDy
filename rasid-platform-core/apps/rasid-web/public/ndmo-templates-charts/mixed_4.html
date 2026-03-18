@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 8px 14px 4px 14px; display: flex; flex-direction: column; gap: 6px; }
+        .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; flex-shrink: 0; }
+        .kpi-card { border: 1px solid #E2E8F0; padding: 8px 10px; text-align: center; }
+        .kpi-icon { font-size: 14px; margin-bottom: 2px; }
+        .kpi-val { font-size: 22px; font-weight: 800; color: #1B2A4A; }
+        .kpi-label { font-size: 9px; color: #64748B; }
+        .kpi-change { font-size: 9px; font-weight: 700; margin-top: 2px; }
+        .up { color: #00B388; }
+        .down { color: #C0392B; }
+        .metrics-grid { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr; gap: 6px; }
+        .metric-card { border: 1px solid #E2E8F0; padding: 10px; display: flex; flex-direction: column; }
+        .mc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+        .mc-title { font-size: 11px; font-weight: 700; color: #1B2A4A; }
+        .mc-badge { font-size: 8px; padding: 1px 6px; font-weight: 700; }
+        .badge-green { background: #ECFDF5; color: #00B388; }
+        .badge-yellow { background: #FFFBEB; color: #E8A838; }
+        .badge-red { background: #FEF2F2; color: #C0392B; }
+        .badge-blue { background: #EFF6FF; color: #2B5EA7; }
+        .mc-val-row { display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px; }
+        .mc-val { font-size: 24px; font-weight: 800; color: #1B2A4A; }
+        .mc-unit { font-size: 10px; color: #64748B; }
+        .mc-target { font-size: 9px; color: #64748B; }
+        .mc-target span { font-weight: 700; color: #1B2A4A; }
+        .progress-bar { height: 6px; background: #E2E8F0; width: 100%; margin-top: 4px; }
+        .pb-fill { height: 100%; }
+        .pb-green { background: #00B388; }
+        .pb-yellow { background: #E8A838; }
+        .pb-red { background: #C0392B; }
+        .pb-blue { background: #2B5EA7; }
+        .mc-details { display: flex; gap: 8px; margin-top: auto; padding-top: 6px; border-top: 1px solid #F1F5F9; }
+        .md-item { font-size: 9px; color: #64748B; }
+        .md-item span { font-weight: 700; color: #1B2A4A; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-tachometer-alt" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> لوحة مؤشرات الأداء التنفيذية يكتب هنا</div>
+            <div class="header-num">3.56</div>
+        </div>
+        <div class="content">
+            <div class="kpi-row">
+                <div class="kpi-card"><div class="kpi-icon" style="color:#1B2A4A;"><i class="fas fa-database"></i></div><div class="kpi-val">12,450</div><div class="kpi-label">المؤشر الأول يكتب هنا</div><div class="kpi-change up"><i class="fas fa-arrow-up"></i> +12.5%</div></div>
+                <div class="kpi-card"><div class="kpi-icon" style="color:#2B5EA7;"><i class="fas fa-users"></i></div><div class="kpi-val">3,280</div><div class="kpi-label">المؤشر الثاني يكتب هنا</div><div class="kpi-change up"><i class="fas fa-arrow-up"></i> +8.3%</div></div>
+                <div class="kpi-card"><div class="kpi-icon" style="color:#00B388;"><i class="fas fa-check-circle"></i></div><div class="kpi-val">94.7%</div><div class="kpi-label">المؤشر الثالث يكتب هنا</div><div class="kpi-change up"><i class="fas fa-arrow-up"></i> +3.2%</div></div>
+                <div class="kpi-card"><div class="kpi-icon" style="color:#E8A838;"><i class="fas fa-clock"></i></div><div class="kpi-val">2.4</div><div class="kpi-label">المؤشر الرابع يكتب هنا</div><div class="kpi-change down"><i class="fas fa-arrow-down"></i> -15.0%</div></div>
+                <div class="kpi-card"><div class="kpi-icon" style="color:#C0392B;"><i class="fas fa-exclamation-triangle"></i></div><div class="kpi-val">7</div><div class="kpi-label">المؤشر الخامس يكتب هنا</div><div class="kpi-change down"><i class="fas fa-arrow-down"></i> -22.0%</div></div>
+            </div>
+            <div class="metrics-grid">
+                <div class="metric-card"><div class="mc-header"><div class="mc-title"><i class="fas fa-chart-bar" style="color:#2B5EA7;margin-left:4px;font-size:10px;"></i> عنوان المقياس الأول يكتب هنا</div><div class="mc-badge badge-green">على المسار</div></div><div class="mc-val-row"><div class="mc-val">87.5%</div><div class="mc-unit">من المستهدف يكتب هنا</div></div><div class="mc-target">المستهدف: <span>95% يكتب هنا</span></div><div class="progress-bar"><div class="pb-fill pb-green" style="width:87.5%;"></div></div><div class="mc-details"><div class="md-item">الفعلي: <span>87.5%</span></div><div class="md-item">الفجوة: <span>7.5%</span></div></div></div>
+                <div class="metric-card"><div class="mc-header"><div class="mc-title"><i class="fas fa-shield-alt" style="color:#00B388;margin-left:4px;font-size:10px;"></i> عنوان المقياس الثاني يكتب هنا</div><div class="mc-badge badge-green">متقدم</div></div><div class="mc-val-row"><div class="mc-val">92.0%</div><div class="mc-unit">من المستهدف يكتب هنا</div></div><div class="mc-target">المستهدف: <span>90% يكتب هنا</span></div><div class="progress-bar"><div class="pb-fill pb-green" style="width:92%;"></div></div><div class="mc-details"><div class="md-item">الفعلي: <span>92%</span></div><div class="md-item">الفائض: <span>+2%</span></div></div></div>
+                <div class="metric-card"><div class="mc-header"><div class="mc-title"><i class="fas fa-clock" style="color:#E8A838;margin-left:4px;font-size:10px;"></i> عنوان المقياس الثالث يكتب هنا</div><div class="mc-badge badge-yellow">تحت المراقبة</div></div><div class="mc-val-row"><div class="mc-val">68.0%</div><div class="mc-unit">من المستهدف يكتب هنا</div></div><div class="mc-target">المستهدف: <span>85% يكتب هنا</span></div><div class="progress-bar"><div class="pb-fill pb-yellow" style="width:68%;"></div></div><div class="mc-details"><div class="md-item">الفعلي: <span>68%</span></div><div class="md-item">الفجوة: <span>17%</span></div></div></div>
+                <div class="metric-card"><div class="mc-header"><div class="mc-title"><i class="fas fa-bolt" style="color:#8E44AD;margin-left:4px;font-size:10px;"></i> عنوان المقياس الرابع يكتب هنا</div><div class="mc-badge badge-blue">قيد التنفيذ</div></div><div class="mc-val-row"><div class="mc-val">45.0%</div><div class="mc-unit">من المستهدف يكتب هنا</div></div><div class="mc-target">المستهدف: <span>100% يكتب هنا</span></div><div class="progress-bar"><div class="pb-fill pb-blue" style="width:45%;"></div></div><div class="mc-details"><div class="md-item">الفعلي: <span>45%</span></div><div class="md-item">المتبقي: <span>55%</span></div></div></div>
+                <div class="metric-card"><div class="mc-header"><div class="mc-title"><i class="fas fa-exclamation-circle" style="color:#C0392B;margin-left:4px;font-size:10px;"></i> عنوان المقياس الخامس يكتب هنا</div><div class="mc-badge badge-red">متأخر</div></div><div class="mc-val-row"><div class="mc-val">35.0%</div><div class="mc-unit">من المستهدف يكتب هنا</div></div><div class="mc-target">المستهدف: <span>80% يكتب هنا</span></div><div class="progress-bar"><div class="pb-fill pb-red" style="width:35%;"></div></div><div class="mc-details"><div class="md-item">الفعلي: <span>35%</span></div><div class="md-item">الفجوة: <span>45%</span></div></div></div>
+                <div class="metric-card"><div class="mc-header"><div class="mc-title"><i class="fas fa-star" style="color:#E8A838;margin-left:4px;font-size:10px;"></i> عنوان المقياس السادس يكتب هنا</div><div class="mc-badge badge-green">ممتاز</div></div><div class="mc-val-row"><div class="mc-val">98.5%</div><div class="mc-unit">من المستهدف يكتب هنا</div></div><div class="mc-target">المستهدف: <span>95% يكتب هنا</span></div><div class="progress-bar"><div class="pb-fill pb-green" style="width:98.5%;"></div></div><div class="mc-details"><div class="md-item">الفعلي: <span>98.5%</span></div><div class="md-item">الفائض: <span>+3.5%</span></div></div></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

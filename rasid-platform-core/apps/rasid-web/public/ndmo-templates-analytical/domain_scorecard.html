@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بطاقة أداء مجال بيانات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f5f5f5; /* For preview only */
+            color: #1B2A4A;
+            overflow: hidden;
+        }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            height: 100px;
+            padding: 30px 50px 10px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #E8A838;
+            background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
+        }
+        .logo-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 5px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .logo {
+            height: 50px;
+            object-fit: contain;
+        }
+        .header-text {
+            text-align: left;
+        }
+        .main-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1B2A4A;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .sub-title {
+            font-size: 14px;
+            color: #00B388;
+            font-weight: 700;
+        }
+
+        /* Content Layout */
+        .content {
+            flex: 1;
+            padding: 20px 50px;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+        }
+
+        /* Left Column: Summary & Radar */
+        .summary-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .score-card {
+            background: #F8F9FA;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .score-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #1B2A4A;
+        }
+        .score-value {
+            font-size: 56px;
+            font-weight: 800;
+            color: #1B2A4A;
+            line-height: 1;
+            margin: 10px 0;
+        }
+        .score-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+        .score-trend {
+            font-size: 12px;
+            color: #00B388;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .radar-container {
+            background: #fff;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 15px;
+            height: 300px;
+            position: relative;
+        }
+        .chart-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1B2A4A;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .meta-info {
+            background: #1B2A4A;
+            color: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 12px;
+        }
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 4px;
+        }
+        .meta-row:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+        .meta-label { opacity: 0.7; }
+        .meta-val { font-weight: 700; color: #E8A838; }
+
+        /* Right Column: Detailed Dimensions */
+        .details-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .dimensions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .dim-card {
+            background: #fff;
+            border: 1px solid #E0E0E0;
+            border-radius: 6px;
+            padding: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 110px;
+        }
+        .dim-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .dim-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1B2A4A;
+        }
+        .dim-icon {
+            width: 24px;
+            height: 24px;
+            background: #F0F4F8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #1B2A4A;
+        }
+        .dim-score {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1B2A4A;
+        }
+        .dim-bar-bg {
+            height: 4px;
+            background: #eee;
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .dim-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+        }
+        .dim-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Issues Table */
+        .issues-container {
+            background: #fff;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 15px;
+            flex: 1;
+        }
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        th {
+            background: #F0F4F8;
+            color: #1B2A4A;
+            font-weight: 700;
+            padding: 8px;
+            text-align: right;
+            border-bottom: 2px solid #1B2A4A;
+        }
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+        }
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .status-high { background: #FFEbee; color: #c62828; }
+        .status-med { background: #FFF8E1; color: #F57F17; }
+        .status-low { background: #E8F5E9; color: #2E7D32; }
+
+        /* Footer */
+        .footer {
+            height: 50px;
+            background: #1B2A4A;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 50px;
+            color: #fff;
+            font-size: 12px;
+        }
+        .page-number {
+            font-weight: 700;
+            background: #E8A838;
+            color: #1B2A4A;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-container">
+                <img src="/home/ubuntu/ndmo_ref_v5/assets/NDMO_Logo.png" alt="NDMO Logo" class="logo">
+            </div>
+            <div class="header-text">
+                <div class="main-title">بطاقة أداء مجال البيانات</div>
+                <div class="sub-title">التحليل التفصيلي لجودة وامتثال مجال "الموارد البشرية"</div>
+            </div>
+            <div class="logo-container">
+                <img src="/home/ubuntu/ndmo_ref_v5/assets/SDAIA_Logo.png" alt="SDAIA Logo" class="logo">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Left Column -->
+            <div class="summary-panel">
+                <!-- Overall Score -->
+                <div class="score-card">
+                    <div class="score-label">مؤشر الجودة العام</div>
+                    <div class="score-value">82%</div>
+                    <div class="score-trend">
+                        <span>▲ 4.5%</span>
+                        <span>مقارنة بالربع السابق</span>
+                    </div>
+                </div>
+
+                <!-- Meta Info -->
+                <div class="meta-info">
+                    <div class="meta-row">
+                        <span class="meta-label">المجال:</span>
+                        <span class="meta-val">الموارد البشرية (HR)</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">المالك:</span>
+                        <span class="meta-val">نائب الرئيس للموارد البشرية</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">مشرفي البيانات:</span>
+                        <span class="meta-val">4 مشرفين</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">الأهمية:</span>
+                        <span class="meta-val" style="color: #ff5252;">عالية جداً (Critical)</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">آخر تحديث:</span>
+                        <span class="meta-val">15 مارس 2026</span>
+                    </div>
+                </div>
+
+                <!-- Radar Chart -->
+                <div class="radar-container">
+                    <div class="chart-title">تحليل الأبعاد الستة</div>
+                    <div style="height: 240px; display: flex; justify-content: center;">
+                        <canvas id="dimensionsRadar"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="details-panel">
+                <!-- 6 Dimensions Grid -->
+                <div class="dimensions-grid">
+                    <!-- 1. Accuracy -->
+                    <div class="dim-card">
+                        <div class="dim-header">
+                            <div class="dim-title">الدقة (Accuracy)</div>
+                            <div class="dim-icon">A</div>
+                        </div>
+                        <div class="dim-score">95%</div>
+                        <div class="dim-bar-bg">
+                            <div class="dim-bar-fill" style="width: 95%; background: #00B388;"></div>
+                        </div>
+                        <div class="dim-stats">
+                            <span>الأخطاء: 12</span>
+                            <span>السجلات: 15,400</span>
+                        </div>
+                    </div>
+
+                    <!-- 2. Completeness -->
+                    <div class="dim-card">
+                        <div class="dim-header">
+                            <div class="dim-title">الاكتمال (Completeness)</div>
+                            <div class="dim-icon">C</div>
+                        </div>
+                        <div class="dim-score">78%</div>
+                        <div class="dim-bar-bg">
+                            <div class="dim-bar-fill" style="width: 78%; background: #E8A838;"></div>
+                        </div>
+                        <div class="dim-stats">
+                            <span>حقول فارغة: 3,200</span>
+                            <span>إلزامي: نعم</span>
+                        </div>
+                    </div>
+
+                    <!-- 3. Timeliness -->
+                    <div class="dim-card">
+                        <div class="dim-header">
+                            <div class="dim-title">التوقيت (Timeliness)</div>
+                            <div class="dim-icon">T</div>
+                        </div>
+                        <div class="dim-score">100%</div>
+                        <div class="dim-bar-bg">
+                            <div class="dim-bar-fill" style="width: 100%; background: #00B388;"></div>
+                        </div>
+                        <div class="dim-stats">
+                            <span>تحديث: فوري</span>
+                            <span>تأخير: 0 ثانية</span>
+                        </div>
+                    </div>
+
+                    <!-- 4. Consistency -->
+                    <div class="dim-card">
+                        <div class="dim-header">
+                            <div class="dim-title">الاتساق (Consistency)</div>
+                            <div class="dim-icon">Co</div>
+                        </div>
+                        <div class="dim-score">65%</div>
+                        <div class="dim-bar-bg">
+                            <div class="dim-bar-fill" style="width: 65%; background: #ff5252;"></div>
+                        </div>
+                        <div class="dim-stats">
+                            <span>تعارض: 4 أنظمة</span>
+                            <span>المطابقة: ضعيفة</span>
+                        </div>
+                    </div>
+
+                    <!-- 5. Uniqueness -->
+                    <div class="dim-card">
+                        <div class="dim-header">
+                            <div class="dim-title">الفرادة (Uniqueness)</div>
+                            <div class="dim-icon">U</div>
+                        </div>
+                        <div class="dim-score">98%</div>
+                        <div class="dim-bar-bg">
+                            <div class="dim-bar-fill" style="width: 98%; background: #00B388;"></div>
+                        </div>
+                        <div class="dim-stats">
+                            <span>تكرار: 45 سجل</span>
+                            <span>المفتاح: الهوية</span>
+                        </div>
+                    </div>
+
+                    <!-- 6. Validity -->
+                    <div class="dim-card">
+                        <div class="dim-header">
+                            <div class="dim-title">الصلاحية (Validity)</div>
+                            <div class="dim-icon">V</div>
+                        </div>
+                        <div class="dim-score">90%</div>
+                        <div class="dim-bar-bg">
+                            <div class="dim-bar-fill" style="width: 90%; background: #00B388;"></div>
+                        </div>
+                        <div class="dim-stats">
+                            <span>تنسيق خطأ: 150</span>
+                            <span>قواعد: 12 قاعدة</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issues Table -->
+                <div class="issues-container">
+                    <div class="chart-title">أبرز مشاكل جودة البيانات وخطط المعالجة</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>المعرف</th>
+                                <th>وصف المشكلة</th>
+                                <th>البعد المتأثر</th>
+                                <th>الأثر</th>
+                                <th>حالة المعالجة</th>
+                                <th>تاريخ الإغلاق المتوقع</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>DQ-HR-001</td>
+                                <td>عدم اكتمال تواريخ الميلاد للموظفين الجدد</td>
+                                <td>الاكتمال</td>
+                                <td style="color: #c62828; font-weight: 700;">عالي</td>
+                                <td><span class="status-badge status-med">جاري العمل</span></td>
+                                <td>30/04/2026</td>
+                            </tr>
+                            <tr>
+                                <td>DQ-HR-002</td>
+                                <td>تكرار سجلات الموظفين عند النقل بين الإدارات</td>
+                                <td>الفرادة</td>
+                                <td style="color: #F57F17; font-weight: 700;">متوسط</td>
+                                <td><span class="status-badge status-low">مكتمل</span></td>
+                                <td>15/03/2026</td>
+                            </tr>
+                            <tr>
+                                <td>DQ-HR-003</td>
+                                <td>اختلاف مسميات الوظائف بين نظام الرواتب ونظام الأداء</td>
+                                <td>الاتساق</td>
+                                <td style="color: #c62828; font-weight: 700;">عالي</td>
+                                <td><span class="status-badge status-high">لم يبدأ</span></td>
+                                <td>15/05/2026</td>
+                            </tr>
+                            <tr>
+                                <td>DQ-HR-004</td>
+                                <td>تنسيق أرقام الهواتف غير موحد (دولي/محلي)</td>
+                                <td>الصلاحية</td>
+                                <td style="color: #2E7D32; font-weight: 700;">منخفض</td>
+                                <td><span class="status-badge status-med">جاري العمل</span></td>
+                                <td>01/04/2026</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>مكتب إدارة البيانات الوطنية | NDMO</div>
+            <div>سري للغاية - للاستخدام الداخلي فقط</div>
+            <div class="page-number">2.4</div>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('dimensionsRadar').getContext('2d');
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['الدقة', 'الاكتمال', 'التوقيت', 'الاتساق', 'الفرادة', 'الصلاحية'],
+                datasets: [{
+                    label: 'مستوى الجودة الحالي',
+                    data: [95, 78, 100, 65, 98, 90],
+                    fill: true,
+                    backgroundColor: 'rgba(0, 179, 136, 0.2)',
+                    borderColor: '#00B388',
+                    pointBackgroundColor: '#00B388',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#00B388'
+                }, {
+                    label: 'المستهدف',
+                    data: [98, 95, 100, 90, 100, 98],
+                    fill: true,
+                    backgroundColor: 'rgba(27, 42, 74, 0.1)',
+                    borderColor: '#1B2A4A',
+                    pointBackgroundColor: '#1B2A4A',
+                    pointBorderColor: '#fff',
+                    borderDash: [5, 5]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: '#eee' },
+                        grid: { color: '#eee' },
+                        pointLabels: {
+                            font: { family: 'Tajawal', size: 10, weight: 'bold' },
+                            color: '#1B2A4A'
+                        },
+                        suggestedMin: 50,
+                        suggestedMax: 100
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { family: 'Tajawal', size: 10 }, boxWidth: 10 }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

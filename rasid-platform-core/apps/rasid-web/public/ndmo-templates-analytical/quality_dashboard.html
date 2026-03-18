@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 20px 6px 20px; display: grid; grid-template-columns: 1fr 1.4fr; gap: 15px; }
+
+        /* Left Panel: Radar */
+        .chart-panel { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px; display: flex; flex-direction: column; }
+        .panel-title { font-size: 13px; font-weight: 700; color: #1B2A4A; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .panel-title i { color: #2B5EA7; font-size: 12px; }
+        .chart-container { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; }
+
+        /* Right Panel: Scorecard */
+        .scorecard-panel { display: flex; flex-direction: column; gap: 10px; }
+        .dq-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+        .dq-table th { background: #1B2A4A; color: white; padding: 6px 8px; text-align: right; font-weight: 600; font-size: 10px; }
+        .dq-table td { padding: 6px 8px; border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle; }
+        .dq-table tr:nth-child(even) { background: #F8FAFC; }
+        
+        .dim-icon { width: 20px; text-align: center; color: #2B5EA7; margin-left: 5px; }
+        .score-bar-container { width: 100px; height: 6px; background: #E2E8F0; border-radius: 2px; overflow: hidden; }
+        .score-bar-fill { height: 100%; border-radius: 2px; }
+        .trend-icon { font-size: 9px; margin-left: 2px; }
+        .trend-up { color: #00B388; }
+        .trend-down { color: #E53E3E; }
+        .trend-flat { color: #E8A838; }
+
+        /* Bottom Stats */
+        .profiling-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: auto; }
+        .prof-item { background: #F1F5F9; padding: 8px 12px; border-right: 3px solid #1B2A4A; display: flex; justify-content: space-between; align-items: center; }
+        .prof-label { font-size: 10px; color: #64748B; font-weight: 600; }
+        .prof-val { font-size: 16px; font-weight: 800; color: #1B2A4A; }
+        .prof-sub { font-size: 9px; color: #94A3B8; }
+
+        .footer { height: 32px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 18px; }
+        .footer-logos > div { background: white; padding: 1px 6px; }
+        .footer-sep { width: 1px; height: 14px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-microscope" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> لوحة مؤشرات جودة البيانات - مراقب الجودة</div>
+            <div class="header-num">2.4</div>
+        </div>
+
+        <div class="content">
+            <!-- Left: Radar Chart -->
+            <div class="chart-panel">
+                <div class="panel-title"><i class="fas fa-project-diagram"></i> أبعاد جودة البيانات الستة</div>
+                <div class="chart-container">
+                    <canvas id="dqRadarChart"></canvas>
+                </div>
+                <div style="margin-top:10px;padding:8px;background:white;border:1px solid #E2E8F0;font-size:10px;color:#64748B;line-height:1.4;">
+                    <strong>تحليل سريع:</strong><br>
+                    يظهر بُعد "الاكتمال" و"الصحة" أعلى مستويات الأداء، بينما يحتاج بُعد "التوقيت" و"التفرد" إلى تحسينات عاجلة للوصول للمستهدفات الوطنية.
+                </div>
+            </div>
+
+            <!-- Right: Scorecard -->
+            <div class="scorecard-panel">
+                <div class="panel-title"><i class="fas fa-list-alt"></i> بطاقة أداء أبعاد الجودة التفصيلية</div>
+                <table class="dq-table">
+                    <thead>
+                        <tr>
+                            <th>البُعد</th>
+                            <th>الوصف</th>
+                            <th>النتيجة</th>
+                            <th>المستهدف</th>
+                            <th>الفجوة</th>
+                            <th>الحالة</th>
+                            <th>الاتجاه</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><i class="fas fa-bullseye dim-icon"></i> الدقة (Accuracy)</td>
+                            <td>مدى صحة البيانات ومطابقتها للواقع</td>
+                            <td style="font-weight:700">92%</td>
+                            <td>95%</td>
+                            <td style="color:#E8A838">-3%</td>
+                            <td><div class="score-bar-container"><div class="score-bar-fill" style="width:92%;background:#00B388"></div></div></td>
+                            <td><span class="trend-up"><i class="fas fa-arrow-up trend-icon"></i></span></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-battery-full dim-icon"></i> الاكتمال (Completeness)</td>
+                            <td>تفر جميع الحقول المطلوبة دون نقص</td>
+                            <td style="font-weight:700">88%</td>
+                            <td>90%</td>
+                            <td style="color:#E8A838">-2%</td>
+                            <td><div class="score-bar-container"><div class="score-bar-fill" style="width:88%;background:#00B388"></div></div></td>
+                            <td><span class="trend-up"><i class="fas fa-arrow-up trend-icon"></i></span></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-equals dim-icon"></i> الاتساق (Consistency)</td>
+                            <td>خلو البيانات من التناقض عبر الأنظمة</td>
+                            <td style="font-weight:700">76%</td>
+                            <td>85%</td>
+                            <td style="color:#E53E3E">-9%</td>
+                            <td><div class="score-bar-container"><div class="score-bar-fill" style="width:76%;background:#E8A838"></div></div></td>
+                            <td><span class="trend-flat"><i class="fas fa-minus trend-icon"></i></span></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-clock dim-icon"></i> التوقيت (Timeliness)</td>
+                            <td>توفر البيانات في الوقت المناسب للاستخدام</td>
+                            <td style="font-weight:700">65%</td>
+                            <td>80%</td>
+                            <td style="color:#E53E3E">-15%</td>
+                            <td><div class="score-bar-container"><div class="score-bar-fill" style="width:65%;background:#E53E3E"></div></div></td>
+                            <td><span class="trend-down"><i class="fas fa-arrow-down trend-icon"></i></span></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-check-circle dim-icon"></i> الصحة (Validity)</td>
+                            <td>التزام البيانات بالقواعد والصيغ المحددة</td>
+                            <td style="font-weight:700">94%</td>
+                            <td>95%</td>
+                            <td style="color:#00B388">-1%</td>
+                            <td><div class="score-bar-container"><div class="score-bar-fill" style="width:94%;background:#00B388"></div></div></td>
+                            <td><span class="trend-up"><i class="fas fa-arrow-up trend-icon"></i></span></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-fingerprint dim-icon"></i> التفرد (Uniqueness)</td>
+                            <td>عدم تكرار السجلات لنفس الكيان</td>
+                            <td style="font-weight:700">72%</td>
+                            <td>90%</td>
+                            <td style="color:#E53E3E">-18%</td>
+                            <td><div class="score-bar-container"><div class="score-bar-fill" style="width:72%;background:#E53E3E"></div></div></td>
+                            <td><span class="trend-up"><i class="fas fa-arrow-up trend-icon"></i></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="profiling-strip">
+                    <div class="prof-item">
+                        <div>
+                            <div class="prof-label">إجمالي السجلات</div>
+                            <div class="prof-val">1.4M</div>
+                        </div>
+                        <div class="prof-sub">سجل نشط</div>
+                    </div>
+                    <div class="prof-item">
+                        <div>
+                            <div class="prof-label">السجلات المكررة</div>
+                            <div class="prof-val" style="color:#E53E3E">12,450</div>
+                        </div>
+                        <div class="prof-sub">0.8%</div>
+                    </div>
+                    <div class="prof-item">
+                        <div>
+                            <div class="prof-label">القيم المفقودة</div>
+                            <div class="prof-val" style="color:#E8A838">85,200</div>
+                        </div>
+                        <div class="prof-sub">6.1%</div>
+                    </div>
+                    <div class="prof-item">
+                        <div>
+                            <div class="prof-label">مؤشر الجودة العام</div>
+                            <div class="prof-val" style="color:#2B5EA7">81.2%</div>
+                        </div>
+                        <div class="prof-sub">+2.4%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:1px 6px;"><img src="/home/ubuntu/ndmo_batch2/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:1px 6px;"><img src="/home/ubuntu/ndmo_batch2/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي - الشرائح التحليلية | سري</div>
+        </div>
+    </div>
+
+    <script>
+        new Chart(document.getElementById('dqRadarChart'), {
+            type: 'radar',
+            data: {
+                labels: ['الدقة', 'الاكتمال', 'الاتساق', 'التوقيت', 'الصحة', 'التفرد'],
+                datasets: [{
+                    label: 'الأداء الحالي',
+                    data: [92, 88, 76, 65, 94, 72],
+                    fill: true,
+                    backgroundColor: 'rgba(0, 179, 136, 0.2)',
+                    borderColor: '#00B388',
+                    pointBackgroundColor: '#00B388',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#00B388'
+                }, {
+                    label: 'المستهدف',
+                    data: [95, 90, 85, 80, 95, 90],
+                    fill: true,
+                    backgroundColor: 'rgba(43, 94, 167, 0.1)',
+                    borderColor: '#2B5EA7',
+                    pointBackgroundColor: '#2B5EA7',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#2B5EA7',
+                    borderDash: [5, 5]
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                elements: { line: { borderWidth: 2 } },
+                scales: {
+                    r: {
+                        angleLines: { display: true, color: '#E2E8F0' },
+                        grid: { color: '#E2E8F0' },
+                        pointLabels: { font: { family: 'Tajawal', size: 11, weight: 'bold' }, color: '#1B2A4A' },
+                        ticks: { backdropColor: 'transparent', font: { size: 8 } },
+                        suggestedMin: 50,
+                        suggestedMax: 100
+                    }
+                },
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { family: 'Tajawal', size: 10 }, boxWidth: 10, padding: 10 } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

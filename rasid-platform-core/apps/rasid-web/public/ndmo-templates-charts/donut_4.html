@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { height: 628px; padding: 10px 16px 4px 16px; display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; }
+        .donut-section { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .ds-title { font-size: 12px; font-weight: 700; color: #1B2A4A; align-self: flex-start; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+        .ds-title i { color: #2B5EA7; font-size: 11px; }
+        .donut-wrap { position: relative; flex: 1; width: 100%; min-height: 0; }
+        .donut-center { position: absolute; top: 45%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+        .dcv { font-size: 32px; font-weight: 800; color: #1B2A4A; line-height: 1; }
+        .dcl { font-size: 10px; color: #64748B; }
+        .legend-section { display: flex; flex-direction: column; gap: 6px; }
+        .lg-title { font-size: 12px; font-weight: 700; color: #1B2A4A; display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+        .lg-title i { color: #E8A838; font-size: 11px; }
+        .lg-table { width: 100%; border-collapse: collapse; }
+        .lg-table th { font-size: 8px; color: #64748B; font-weight: 700; text-align: right; padding: 6px 8px; border-bottom: 2px solid #1B2A4A; background: #F1F5F9; }
+        .lg-table td { font-size: 9px; color: #1B2A4A; padding: 8px; border-bottom: 1px solid #E2E8F0; }
+        .lg-table tr:last-child td { border-bottom: none; }
+        .lg-color { width: 10px; height: 10px; display: inline-block; margin-left: 6px; }
+        .lg-name { font-weight: 700; }
+        .lg-pct { font-size: 14px; font-weight: 800; color: #1B2A4A; }
+        .lg-trend { font-size: 8px; font-weight: 700; }
+        .lg-bar { height: 3px; background: #E2E8F0; margin-top: 3px; }
+        .lg-bar-fill { height: 100%; }
+        .total-row { background: #1B2A4A; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+        .tr-label { font-size: 10px; color: rgba(255,255,255,0.7); }
+        .tr-val { font-size: 20px; font-weight: 800; color: white; }
+        .footer { height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 22px; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-list-alt" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> عنوان الرسم البياني الحلقي - مع تفاصيل نصية يكتب هنا</div>
+            <div class="header-num">3.36</div>
+        </div>
+        <div class="content">
+            <div class="donut-section">
+                <div class="ds-title"><i class="fas fa-chart-pie"></i> عنوان التوزيع يكتب هنا</div>
+                <div class="donut-wrap">
+                    <canvas id="donutDetail"></canvas>
+                    <div class="donut-center"><div class="dcv">52.4K</div><div class="dcl">الإجمالي يكتب هنا</div></div>
+                </div>
+            </div>
+            <div class="legend-section">
+                <div class="lg-title"><i class="fas fa-table"></i> تفصيل البيانات يكتب هنا</div>
+                <table class="lg-table">
+                    <thead><tr><th></th><th>الفئة</th><th>القيمة</th><th>النسبة</th><th>التغير</th><th>المؤشر</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="lg-color" style="background:#1B2A4A;"></span></td><td class="lg-name">الفئة الأولى يكتب هنا</td><td>18,340</td><td class="lg-pct">35%</td><td class="lg-trend" style="color:#00B388;"><i class="fas fa-arrow-up"></i> +5%</td><td><div class="lg-bar"><div class="lg-bar-fill" style="width:35%;background:#1B2A4A;"></div></div></td></tr>
+                        <tr><td><span class="lg-color" style="background:#2B5EA7;"></span></td><td class="lg-name">الفئة الثانية يكتب هنا</td><td>13,100</td><td class="lg-pct">25%</td><td class="lg-trend" style="color:#00B388;"><i class="fas fa-arrow-up"></i> +3%</td><td><div class="lg-bar"><div class="lg-bar-fill" style="width:25%;background:#2B5EA7;"></div></div></td></tr>
+                        <tr><td><span class="lg-color" style="background:#00B388;"></span></td><td class="lg-name">الفئة الثالثة يكتب هنا</td><td>10,480</td><td class="lg-pct">20%</td><td class="lg-trend" style="color:#C0392B;"><i class="fas fa-arrow-down"></i> -2%</td><td><div class="lg-bar"><div class="lg-bar-fill" style="width:20%;background:#00B388;"></div></div></td></tr>
+                        <tr><td><span class="lg-color" style="background:#E8A838;"></span></td><td class="lg-name">الفئة الرابعة يكتب هنا</td><td>6,288</td><td class="lg-pct">12%</td><td class="lg-trend" style="color:#E8A838;"><i class="fas fa-minus"></i> 0%</td><td><div class="lg-bar"><div class="lg-bar-fill" style="width:12%;background:#E8A838;"></div></div></td></tr>
+                        <tr><td><span class="lg-color" style="background:#8E44AD;"></span></td><td class="lg-name">الفئة الخامسة يكتب هنا</td><td>2,620</td><td class="lg-pct">5%</td><td class="lg-trend" style="color:#00B388;"><i class="fas fa-arrow-up"></i> +1%</td><td><div class="lg-bar"><div class="lg-bar-fill" style="width:5%;background:#8E44AD;"></div></div></td></tr>
+                        <tr><td><span class="lg-color" style="background:#CBD5E1;"></span></td><td class="lg-name">أخرى يكتب هنا</td><td>1,572</td><td class="lg-pct">3%</td><td class="lg-trend" style="color:#C0392B;"><i class="fas fa-arrow-down"></i> -1%</td><td><div class="lg-bar"><div class="lg-bar-fill" style="width:3%;background:#CBD5E1;"></div></div></td></tr>
+                    </tbody>
+                </table>
+                <div class="total-row"><div class="tr-label">الإجمالي يكتب هنا</div><div class="tr-val">52,400</div></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+    <script>
+        new Chart(document.getElementById('donutDetail'), {
+            type: 'doughnut',
+            data: { labels: ['الفئة الأولى','الفئة الثانية','الفئة الثالثة','الفئة الرابعة','الفئة الخامسة','أخرى'], datasets: [{ data: [35,25,20,12,5,3], backgroundColor: ['#1B2A4A','#2B5EA7','#00B388','#E8A838','#8E44AD','#CBD5E1'], borderWidth: 2, borderColor: '#FFF' }] },
+            options: { responsive: true, maintainAspectRatio: false, cutout: '55%', plugins: { legend: { display: false } } }
+        });
+    </script>
+</body>
+</html>

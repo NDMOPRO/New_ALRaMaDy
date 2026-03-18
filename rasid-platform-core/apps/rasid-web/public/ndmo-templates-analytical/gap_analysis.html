@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل الفجوات - Gap Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            background-color: #ffffff;
+            color: #1B2A4A;
+            overflow: hidden;
+        }
+        
+        /* Slide Container - Fixed 16:9 Aspect Ratio */
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            position: relative;
+            background-color: #ffffff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Background Texture */
+        .bg-texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(45deg, #f8f9fa 25%, transparent 25%), 
+                linear-gradient(-45deg, #f8f9fa 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #f8f9fa 75%), 
+                linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            opacity: 0.5;
+            z-index: 0;
+        }
+
+        /* Header */
+        .header {
+            height: 80px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #2B5EA7 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            color: white;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header-title h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .header-title p {
+            font-size: 14px;
+            font-weight: 400;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+
+        .logo-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 8px 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            height: 50px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo-container img {
+            height: 34px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 20px 40px 30px 40px;
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Top Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            border-right: 4px solid #1B2A4A;
+        }
+
+        .stat-info h3 {
+            font-size: 12px;
+            color: #64748b;
+            margin: 0 0 4px 0;
+        }
+
+        .stat-info p {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1B2A4A;
+            margin: 0;
+        }
+
+        .stat-icon {
+            width: 36px;
+            height: 36px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2B5EA7;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* Butterfly Chart Container */
+        .butterfly-container {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+
+        .chart-col-header {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1B2A4A;
+            text-align: center;
+        }
+
+        /* The Grid for the Chart */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 2fr 3fr 1.5fr 3fr 2fr; /* Root Cause | Current | Domain | Target | Initiative */
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .chart-row {
+            display: contents; /* Allows children to participate in the grid */
+        }
+
+        /* Domain Label (Center) */
+        .domain-label {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #1B2A4A;
+            border-radius: 4px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        /* Bars */
+        .bar-container {
+            display: flex;
+            align-items: center;
+            height: 30px;
+            position: relative;
+        }
+
+        .bar-container.current {
+            justify-content: flex-end; /* Align to right (towards center in RTL? No, towards center means left in RTL) */
+            /* In RTL: Flex-start is Right. Flex-end is Left. */
+            /* We want Current bars on the Right side of the center label, growing towards the Left (center). */
+            /* So justify-content: flex-end is correct for LTR, but in RTL flex-end is Left. */
+            /* Let's use explicit directions */
+            flex-direction: row; 
+        }
+
+        .bar-container.target {
+            justify-content: flex-start; /* Align to right (away from center) */
+            flex-direction: row;
+        }
+
+        .bar {
+            height: 24px;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .bar.current-bar {
+            background: linear-gradient(90deg, #94a3b8 0%, #64748b 100%);
+            justify-content: flex-start; /* Text inside bar */
+        }
+
+        .bar.target-bar {
+            background: linear-gradient(90deg, #2B5EA7 0%, #1B2A4A 100%);
+            justify-content: flex-end; /* Text inside bar */
+        }
+
+        /* Side Text Columns */
+        .side-text {
+            font-size: 10px;
+            color: #475569;
+            line-height: 1.4;
+            background: #f8fafc;
+            padding: 8px;
+            border-radius: 4px;
+            border-right: 2px solid transparent;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .side-text.root-cause {
+            border-right-color: #ef4444; /* Red for problem */
+            text-align: right;
+        }
+
+        .side-text.initiative {
+            border-right-color: #00B388; /* Green for solution */
+            text-align: right;
+        }
+
+        /* Gap Badge */
+        .gap-badge {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: 700;
+            color: #ef4444;
+            z-index: 2;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* Footer */
+        .footer {
+            height: 40px;
+            background-color: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            font-size: 10px;
+            color: #64748b;
+            position: relative;
+            z-index: 10;
+        }
+
+        .page-number {
+            font-weight: 700;
+            color: #1B2A4A;
+            background: #e2e8f0;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #475569;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="slide-container">
+        <div class="bg-texture"></div>
+
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">
+                <h1>تحليل الفجوات الاستراتيجية (Gap Analysis)</h1>
+                <p>مقارنة تفصيلية بين مستوى النضج الحالي والمستهدف عبر المجالات الرئيسية</p>
+            </div>
+            <div class="logo-container">
+                <img src="../assets/logo_ndmo.png" alt="NDMO Logo">
+                <div style="width: 1px; height: 24px; background: #e2e8f0; margin: 0 10px;"></div>
+                <img src="../assets/logo_sdaia.png" alt="SDAIA Logo">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            
+            <!-- Top Stats -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>متوسط الفجوة الكلية</h3>
+                        <p style="color: #ef4444;">-42%</p>
+                    </div>
+                    <div class="stat-icon" style="color: #ef4444; background: #fef2f2;">📉</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>المجال الأكثر تأثراً</h3>
+                        <p>حوكمة البيانات</p>
+                    </div>
+                    <div class="stat-icon">⚠️</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>عدد المبادرات المطلوبة</h3>
+                        <p>18 مبادرة</p>
+                    </div>
+                    <div class="stat-icon">🚀</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>الإطار الزمني للإغلاق</h3>
+                        <p>24 شهراً</p>
+                    </div>
+                    <div class="stat-icon">⏳</div>
+                </div>
+            </div>
+
+            <!-- Butterfly Chart Section -->
+            <div class="butterfly-container">
+                
+                <!-- Chart Headers -->
+                <div class="chart-grid" style="margin-bottom: 15px; border-bottom: 2px solid #1B2A4A; padding-bottom: 10px;">
+                    <div class="chart-col-header">أبرز التحديات (Root Causes)</div>
+                    <div class="chart-col-header">الوضع الراهن (Current)</div>
+                    <div class="chart-col-header">المجال (Domain)</div>
+                    <div class="chart-col-header">الوضع المستهدف (Target)</div>
+                    <div class="chart-col-header">المبادرات التصحيحية (Initiatives)</div>
+                </div>
+
+                <!-- Row 1: Data Governance -->
+                <div class="chart-grid">
+                    <div class="side-text root-cause">
+                        غياب السياسات الموثقة وتعدد المرجعيات التنظيمية داخل الجهة
+                    </div>
+                    <div class="bar-container current" style="justify-content: flex-end;"> <!-- Align bars to center (left side of container) -->
+                        <div class="bar current-bar" style="width: 25%;">25%</div>
+                    </div>
+                    <div class="domain-label">
+                        حوكمة البيانات
+                        <div class="gap-badge">-60%</div>
+                    </div>
+                    <div class="bar-container target">
+                        <div class="bar target-bar" style="width: 85%;">85%</div>
+                    </div>
+                    <div class="side-text initiative">
+                        تأسيس مكتب إدارة البيانات وتفعيل مجلس الحوكمة
+                    </div>
+                </div>
+
+                <!-- Row 2: Data Quality -->
+                <div class="chart-grid">
+                    <div class="side-text root-cause">
+                        انخفاض دقة البيانات الوصفية وعدم وجود معايير للجودة
+                    </div>
+                    <div class="bar-container current" style="justify-content: flex-end;">
+                        <div class="bar current-bar" style="width: 35%;">35%</div>
+                    </div>
+                    <div class="domain-label">
+                        جودة البيانات
+                        <div class="gap-badge">-55%</div>
+                    </div>
+                    <div class="bar-container target">
+                        <div class="bar target-bar" style="width: 90%;">90%</div>
+                    </div>
+                    <div class="side-text initiative">
+                        تنفيذ مشروع تنظيف البيانات وتطبيق أدوات الفحص الآلي
+                    </div>
+                </div>
+
+                <!-- Row 3: Data Architecture -->
+                <div class="chart-grid">
+                    <div class="side-text root-cause">
+                        عدم وجود نموذج بيانات موحد وتشتت المصادر
+                    </div>
+                    <div class="bar-container current" style="justify-content: flex-end;">
+                        <div class="bar current-bar" style="width: 40%;">40%</div>
+                    </div>
+                    <div class="domain-label">
+                        معمارية البيانات
+                        <div class="gap-badge">-40%</div>
+                    </div>
+                    <div class="bar-container target">
+                        <div class="bar target-bar" style="width: 80%;">80%</div>
+                    </div>
+                    <div class="side-text initiative">
+                        بناء قاموس البيانات الوطني وتوحيد النماذج
+                    </div>
+                </div>
+
+                <!-- Row 4: Data Security -->
+                <div class="chart-grid">
+                    <div class="side-text root-cause">
+                        ضعف ضوابط الوصول وعدم تصنيف البيانات حسب الحساسية
+                    </div>
+                    <div class="bar-container current" style="justify-content: flex-end;">
+                        <div class="bar current-bar" style="width: 55%;">55%</div>
+                    </div>
+                    <div class="domain-label">
+                        أمن وحماية البيانات
+                        <div class="gap-badge">-40%</div>
+                    </div>
+                    <div class="bar-container target">
+                        <div class="bar target-bar" style="width: 95%;">95%</div>
+                    </div>
+                    <div class="side-text initiative">
+                        تطبيق ضوابط الأمن السيبراني (NCA) وتصنيف البيانات
+                    </div>
+                </div>
+
+                <!-- Row 5: Data Usage -->
+                <div class="chart-grid">
+                    <div class="side-text root-cause">
+                        الاعتماد على التقارير اليدوية وغياب التحليلات المتقدمة
+                    </div>
+                    <div class="bar-container current" style="justify-content: flex-end;">
+                        <div class="bar current-bar" style="width: 20%;">20%</div>
+                    </div>
+                    <div class="domain-label">
+                        تحليل واستخدام البيانات
+                        <div class="gap-badge">-60%</div>
+                    </div>
+                    <div class="bar-container target">
+                        <div class="bar target-bar" style="width: 80%;">80%</div>
+                    </div>
+                    <div class="side-text initiative">
+                        بناء منصة ذكاء أعمال مركزية وتدريب الكوادر
+                    </div>
+                </div>
+
+                <!-- Legend -->
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #64748b;"></div>
+                        <span>الوضع الراهن (Current State)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #1B2A4A;"></div>
+                        <span>الوضع المستهدف (Target State)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ef4444;"></div>
+                        <span>الفجوة (Gap)</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>المملكة العربية السعودية - مكتب إدارة البيانات الوطنية</div>
+            <div class="page-number">2.04</div>
+            <div>سري للغاية - للاستخدام الداخلي فقط</div>
+        </div>
+    </div>
+
+</body>
+</html>

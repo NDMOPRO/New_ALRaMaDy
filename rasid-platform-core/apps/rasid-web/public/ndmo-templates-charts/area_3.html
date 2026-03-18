@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 12px 20px 8px 20px; display: flex; flex-direction: column; gap: 10px; }
+        .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .kpi-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-top: 3px solid #2B5EA7; padding: 8px 10px; text-align: center; }
+        .kpi-card:nth-child(1) { border-top-color: #1B2A4A; }
+        .kpi-card:nth-child(2) { border-top-color: #2B5EA7; }
+        .kpi-card:nth-child(3) { border-top-color: #00B388; }
+        .kpi-card:nth-child(4) { border-top-color: #E8A838; }
+        .kpi-label { font-size: 9px; color: #64748B; font-weight: 500; }
+        .kpi-value { font-size: 28px; font-weight: 800; color: #1B2A4A; line-height: 1.2; }
+        .kpi-sub { font-size: 8px; color: #94A3B8; }
+        .chart-box { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px 12px; display: flex; flex-direction: column; flex: 1; }
+        .chart-title { font-size: 12px; font-weight: 700; color: #1B2A4A; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .chart-title i { color: #2B5EA7; font-size: 11px; }
+        .chart-body { flex: 1; position: relative; }
+        .footer { height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 22px; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-percentage" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> عنوان الرسم البياني المساحي - نسبة مئوية (100%) يكتب هنا</div>
+            <div class="header-num">3.29</div>
+        </div>
+        <div class="content">
+            <div class="kpi-row">
+                <div class="kpi-card"><div class="kpi-label">الفئة الأولى يكتب هنا</div><div class="kpi-value">42%</div><div class="kpi-sub">ارتفعت من 35% في يناير</div></div>
+                <div class="kpi-card"><div class="kpi-label">الفئة الثانية يكتب هنا</div><div class="kpi-value">28%</div><div class="kpi-sub">انخفضت من 32% في يناير</div></div>
+                <div class="kpi-card"><div class="kpi-label">الفئة الثالثة يكتب هنا</div><div class="kpi-value">18%</div><div class="kpi-sub">ثابتة تقريباً</div></div>
+                <div class="kpi-card"><div class="kpi-label">الفئة الرابعة يكتب هنا</div><div class="kpi-value">12%</div><div class="kpi-sub">انخفضت من 15% في يناير</div></div>
+            </div>
+            <div class="chart-box">
+                <div class="chart-title"><i class="fas fa-chart-area"></i> عنوان التغير في التوزيع النسبي عبر الزمن يكتب هنا</div>
+                <div class="chart-body"><canvas id="pctArea"></canvas></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+    <script>
+        new Chart(document.getElementById('pctArea'), {
+            type: 'line',
+            data: {
+                labels: ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],
+                datasets: [
+                    { label: 'الفئة الأولى يكتب هنا', data: [35,36,37,38,38,39,40,40,41,41,42,42], borderColor: '#1B2A4A', backgroundColor: 'rgba(27,42,74,0.5)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 1 },
+                    { label: 'الفئة الثانية يكتب هنا', data: [32,31,31,30,30,29,29,29,28,28,28,28], borderColor: '#2B5EA7', backgroundColor: 'rgba(43,94,167,0.5)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 1 },
+                    { label: 'الفئة الثالثة يكتب هنا', data: [18,18,18,18,18,18,18,18,18,18,18,18], borderColor: '#00B388', backgroundColor: 'rgba(0,179,136,0.5)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 1 },
+                    { label: 'الفئة الرابعة يكتب هنا', data: [15,15,14,14,14,14,13,13,13,13,12,12], borderColor: '#E8A838', backgroundColor: 'rgba(232,168,56,0.5)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 1 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', labels: { font: { family: 'Tajawal', size: 9 }, boxWidth: 10 } } },
+                scales: {
+                    y: { stacked: true, max: 100, grid: { color: '#F1F5F9' }, ticks: { font: { family: 'Tajawal', size: 9 }, callback: v => v+'%' } },
+                    x: { grid: { display: false }, ticks: { font: { family: 'Tajawal', size: 9 } } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

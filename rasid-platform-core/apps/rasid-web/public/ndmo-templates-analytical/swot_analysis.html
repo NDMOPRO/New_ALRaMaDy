@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل SWOT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1B2A4A; /* Royal Dark Blue */
+            --accent-color: #00B388; /* Teal */
+            --highlight-color: #E8A838; /* Gold */
+            --danger-color: #E74C3C;
+            --white: #FFFFFF;
+            --light-bg: #F8F9FA;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: var(--white);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Royal Blue Header */
+        .header {
+            background-color: var(--primary-color);
+            height: 85px;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            position: relative;
+            z-index: 10;
+            border-bottom: 4px solid var(--highlight-color);
+        }
+
+        .header-title {
+            color: var(--white);
+            font-size: 28px;
+            font-weight: 800;
+            margin-left: 20px;
+        }
+
+        .header-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            font-weight: 500;
+            margin-right: auto;
+        }
+
+        .logo-container {
+            background-color: rgba(255,255,255,0.1);
+            padding: 5px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            height: 40px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        /* Content Area: 2x2 Matrix */
+        .content {
+            flex: 1;
+            padding: 30px 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px;
+            background-color: var(--light-bg);
+        }
+
+        .swot-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .swot-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 6px;
+            height: 100%;
+        }
+
+        /* Strengths */
+        .card-s { border-top: 6px solid var(--accent-color); }
+        .card-s::before { background-color: var(--accent-color); }
+        .title-s { color: var(--accent-color); }
+
+        /* Weaknesses */
+        .card-w { border-top: 6px solid var(--highlight-color); }
+        .card-w::before { background-color: var(--highlight-color); }
+        .title-w { color: var(--highlight-color); }
+
+        /* Opportunities */
+        .card-o { border-top: 6px solid var(--primary-color); }
+        .card-o::before { background-color: var(--primary-color); }
+        .title-o { color: var(--primary-color); }
+
+        /* Threats */
+        .card-t { border-top: 6px solid var(--danger-color); }
+        .card-t::before { background-color: var(--danger-color); }
+        .title-t { color: var(--danger-color); }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .card-icon {
+            font-size: 32px;
+            opacity: 0.2;
+        }
+
+        .swot-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .swot-item {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 12px;
+            padding-right: 20px;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .swot-item::before {
+            content: '•';
+            position: absolute;
+            right: 0;
+            color: inherit; /* Inherit from card color logic if needed, or set specific */
+            font-weight: bold;
+            font-size: 18px;
+            top: -2px;
+        }
+        
+        .card-s .swot-item::before { color: var(--accent-color); }
+        .card-w .swot-item::before { color: var(--highlight-color); }
+        .card-o .swot-item::before { color: var(--primary-color); }
+        .card-t .swot-item::before { color: var(--danger-color); }
+
+        /* Footer */
+        .footer {
+            height: 40px;
+            background-color: var(--white);
+            border-top: 1px solid #E0E0E0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 10px;
+            color: #888;
+        }
+
+        .page-number {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">التحليل الرباعي (SWOT Analysis)</div>
+            <div class="header-subtitle">تقييم الوضع الراهن لإدارة البيانات الوطنية</div>
+            <div class="logo-container">
+                <img src="assets/logo_ndmo.png" class="logo-img" alt="NDMO">
+                <img src="assets/logo_sdaia.png" class="logo-img" alt="SDAIA">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Strengths -->
+            <div class="swot-card card-s">
+                <div class="card-header">
+                    <div class="card-title title-s">نقاط القوة (Strengths)</div>
+                    <div class="card-icon">💪</div>
+                </div>
+                <ul class="swot-list">
+                    <li class="swot-item">وجود إطار تنظيمي وطني قوي لحوكمة البيانات (NDMO Policies).</li>
+                    <li class="swot-item">دعم القيادة العليا للتحول الرقمي ورؤية 2030.</li>
+                    <li class="swot-item">بنية تحتية تقنية متطورة (السحابة الحكومية ديم).</li>
+                    <li class="swot-item">تأسيس مكاتب بيانات في معظم الجهات الحكومية الرئيسية.</li>
+                    <li class="swot-item">وجود منصة وطنية للبيانات المفتوحة واستراتيجية للذكاء الاصطناعي.</li>
+                </ul>
+            </div>
+
+            <!-- Weaknesses -->
+            <div class="swot-card card-w">
+                <div class="card-header">
+                    <div class="card-title title-w">نقاط الضعف (Weaknesses)</div>
+                    <div class="card-icon">⚠️</div>
+                </div>
+                <ul class="swot-list">
+                    <li class="swot-item">نقص الكوادر الوطنية المتخصصة في إدارة البيانات وجودتها.</li>
+                    <li class="swot-item">تباين مستوى النضج الرقمي بين الجهات الحكومية المختلفة.</li>
+                    <li class="swot-item">محدودية ثقافة مشاركة البيانات بين القطاعات (Data Silos).</li>
+                    <li class="swot-item">عدم اكتمال تصنيف البيانات في بعض الجهات الحيوية.</li>
+                    <li class="swot-item">بطء إجراءات الامتثال وتطبيق الضوابط في الجهات الصغيرة.</li>
+                </ul>
+            </div>
+
+            <!-- Opportunities -->
+            <div class="swot-card card-o">
+                <div class="card-header">
+                    <div class="card-title title-o">الفرص (Opportunities)</div>
+                    <div class="card-icon">🚀</div>
+                </div>
+                <ul class="swot-list">
+                    <li class="swot-item">الاستفادة من الذكاء الاصطناعي لتحسين جودة البيانات آلياً.</li>
+                    <li class="swot-item">خلق اقتصاد رقمي جديد مبني على البيانات المفتوحة.</li>
+                    <li class="swot-item">تطوير شراكات استراتيجية مع القطاع الخاص لتبادل البيانات.</li>
+                    <li class="swot-item">بناء قدرات وطنية من خلال برامج التدريب المتخصصة.</li>
+                    <li class="swot-item">تحسين الخدمات الحكومية الاستباقية بناءً على تحليل البيانات.</li>
+                </ul>
+            </div>
+
+            <!-- Threats -->
+            <div class="swot-card card-t">
+                <div class="card-header">
+                    <div class="card-title title-t">التهديدات (Threats)</div>
+                    <div class="card-icon">🛡️</div>
+                </div>
+                <ul class="swot-list">
+                    <li class="swot-item">الهجمات السيبرانية المتزايدة ومخاطر تسريب البيانات الحساسة.</li>
+                    <li class="swot-item">مقاومة التغيير التنظيمي داخل الجهات الحكومية التقليدية.</li>
+                    <li class="swot-item">التطور التكنولوجي السريع الذي قد يتجاوز التشريعات الحالية.</li>
+                    <li class="swot-item">نقص الميزانيات المخصصة لمشاريع إدارة البيانات في بعض الجهات.</li>
+                    <li class="swot-item">عدم الامتثال الكامل لقانون حماية البيانات الشخصية (PDPL).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>سري للغاية - للاستخدام الداخلي فقط</div>
+            <div class="page-number">31</div>
+        </div>
+    </div>
+</body>
+</html>

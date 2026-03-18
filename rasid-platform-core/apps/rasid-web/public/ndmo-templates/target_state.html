@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+            flex-shrink: 0;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 20px 40px;
+            flex: 1;
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Left: TOM Diagram */
+        .tom-container {
+            flex: 2.2;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .tom-title {
+            font-size: 16px; font-weight: 800; color: #1B2A4A;
+            border-bottom: 2px solid #00B388; padding-bottom: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .tom-badge {
+            background: #00B388; color: white; padding: 2px 8px; font-size: 11px; border-radius: 2px;
+        }
+
+        .tom-diagram {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: relative;
+        }
+
+        /* Layers */
+        .tom-layer {
+            border: 1px solid #ddd;
+            padding: 10px;
+            position: relative;
+        }
+        .tl-label {
+            position: absolute; top: -10px; right: 15px;
+            background: white; padding: 0 10px;
+            font-size: 11px; font-weight: 700; color: #1B2A4A;
+            border: 1px solid #ddd;
+        }
+        
+        /* Layer 1: Governance */
+        .gov-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+        }
+        .gov-box {
+            background: #1B2A4A; color: white; padding: 10px; text-align: center;
+            font-size: 11px; font-weight: 700;
+        }
+
+        /* Layer 2: Operations */
+        .ops-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+        }
+        .ops-box {
+            background: #f0fcf9; border: 1px solid #00B388; color: #00664d;
+            padding: 12px 5px; text-align: center;
+            font-size: 11px; font-weight: 700;
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+        }
+        .ops-icon { font-size: 14px; opacity: 0.7; }
+
+        /* Layer 3: Tech */
+        .tech-bar {
+            background: #eef2f7; border: 1px solid #2B5EA7; color: #1B2A4A;
+            padding: 10px; text-align: center; font-size: 11px; font-weight: 700;
+            display: flex; justify-content: space-around;
+        }
+
+        /* Side Pillars */
+        .side-pillar {
+            position: absolute; top: 20px; bottom: 20px; width: 30px;
+            background: #E8A838; color: white;
+            display: flex; align-items: center; justify-content: center;
+            writing-mode: vertical-rl; font-size: 11px; font-weight: 700; letter-spacing: 1px;
+        }
+        .sp-left { left: -15px; }
+        .sp-right { right: -15px; } /* Not used in this layout to keep it clean */
+
+        /* Arrows connecting layers */
+        .layer-arrow {
+            text-align: center; color: #ccc; font-size: 12px; margin: -8px 0; z-index: 1;
+        }
+
+        /* Right: Shifts & Outcomes */
+        .right-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .shift-card {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            flex: 1;
+        }
+        .card-title {
+            font-size: 13px; font-weight: 700; color: #1B2A4A; margin-bottom: 15px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        
+        .shift-list { display: flex; flex-direction: column; gap: 12px; }
+        .shift-item {
+            display: flex; align-items: center; justify-content: space-between;
+            font-size: 11px;
+            background: #f9f9f9; padding: 8px;
+        }
+        .si-from { color: #888; text-decoration: line-through; }
+        .si-arrow { color: #00B388; }
+        .si-to { color: #1B2A4A; font-weight: 700; }
+
+        .outcome-box {
+            background: #1B2A4A; color: white; padding: 15px;
+            display: flex; flex-direction: column; gap: 15px;
+        }
+        .oc-item { display: flex; align-items: center; gap: 10px; }
+        .oc-val { font-size: 24px; font-weight: 800; color: #00B388; width: 60px; text-align: right; }
+        .oc-desc { font-size: 11px; line-height: 1.3; }
+
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الحالة المستهدفة - نموذج التشغيل المستهدف (TOM)</div>
+            <div class="header-badge">16</div>
+        </div>
+
+        <div class="content-area">
+            <!-- TOM Diagram -->
+            <div class="tom-container">
+                <div class="tom-title">
+                    <span>بنية نموذج التشغيل المستهدف</span>
+                    <span class="tom-badge">Target Operating Model</span>
+                </div>
+                <div class="tom-diagram">
+                    <div class="side-pillar sp-left">إدارة التغيير والتواصل</div>
+                    
+                    <!-- Layer 1 -->
+                    <div class="tom-layer" style="border-color: #1B2A4A;">
+                        <div class="tl-label" style="color: #1B2A4A; border-color: #1B2A4A;">الحوكمة والاستراتيجية</div>
+                        <div class="gov-grid">
+                            <div class="gov-box">استراتيجية البيانات</div>
+                            <div class="gov-box">السياسات والمعايير</div>
+                            <div class="gov-box">الامتثال والرقابة</div>
+                        </div>
+                    </div>
+
+                    <div class="layer-arrow"><i class="fas fa-chevron-down"></i></div>
+
+                    <!-- Layer 2 -->
+                    <div class="tom-layer" style="border-color: #00B388;">
+                        <div class="tl-label" style="color: #00B388; border-color: #00B388;">عمليات إدارة البيانات</div>
+                        <div class="ops-grid">
+                            <div class="ops-box">
+                                <i class="fas fa-check-circle ops-icon"></i>
+                                <span>جودة البيانات</span>
+                            </div>
+                            <div class="ops-box">
+                                <i class="fas fa-tags ops-icon"></i>
+                                <span>البيانات الوصفية</span>
+                            </div>
+                            <div class="ops-box">
+                                <i class="fas fa-database ops-icon"></i>
+                                <span>البيانات المرجعية</span>
+                            </div>
+                            <div class="ops-box">
+                                <i class="fas fa-project-diagram ops-icon"></i>
+                                <span>هيكلية البيانات</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layer-arrow"><i class="fas fa-chevron-down"></i></div>
+
+                    <!-- Layer 3 -->
+                    <div class="tom-layer" style="border-color: #2B5EA7;">
+                        <div class="tl-label" style="color: #2B5EA7; border-color: #2B5EA7;">الممكنات التقنية</div>
+                        <div class="tech-bar">
+                            <span><i class="fas fa-server"></i> بحيرة البيانات الوطنية</span>
+                            <span><i class="fas fa-network-wired"></i> منصة التكامل (ESB)</span>
+                            <span><i class="fas fa-shield-alt"></i> أدوات الأمن والحماية</span>
+                        </div>
+                    </div>
+
+                    <!-- Layer 4 -->
+                    <div class="tom-layer" style="border-color: #E8A838; margin-top: 10px;">
+                        <div class="tl-label" style="color: #E8A838; border-color: #E8A838;">المستفيدون والقيمة</div>
+                        <div class="tech-bar" style="background: #fff8e6; border-color: #E8A838; color: #b38600;">
+                            <span>دعم اتخاذ القرار</span>
+                            <span>الخدمات الذكية</span>
+                            <span>الابتكار والبحث</span>
+                            <span>القطاع الخاص</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-col">
+                <div class="shift-card">
+                    <div class="card-title">
+                        <i class="fas fa-exchange-alt" style="color:#00B388;"></i>
+                        <span>التحولات الاستراتيجية</span>
+                    </div>
+                    <div class="shift-list">
+                        <div class="shift-item">
+                            <span class="si-from">إدارة لا مركزية</span>
+                            <i class="fas fa-arrow-left si-arrow"></i>
+                            <span class="si-to">حوكمة مركزية موحدة</span>
+                        </div>
+                        <div class="shift-item">
+                            <span class="si-from">بيانات منعزلة (Silos)</span>
+                            <i class="fas fa-arrow-left si-arrow"></i>
+                            <span class="si-to">بيانات مترابطة ومتكاملة</span>
+                        </div>
+                        <div class="shift-item">
+                            <span class="si-from">جودة بيانات منخفضة</span>
+                            <i class="fas fa-arrow-left si-arrow"></i>
+                            <span class="si-to">بيانات موثوقة ودقيقة</span>
+                        </div>
+                        <div class="shift-item">
+                            <span class="si-from">إجراءات يدوية</span>
+                            <i class="fas fa-arrow-left si-arrow"></i>
+                            <span class="si-to">أتمتة كاملة للعمليات</span>
+                        </div>
+                        <div class="shift-item">
+                            <span class="si-from">تفاعل رد فعل</span>
+                            <i class="fas fa-arrow-left si-arrow"></i>
+                            <span class="si-to">تنبؤي واستباقي</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="outcome-box">
+                    <div class="card-title" style="color:white; margin-bottom:10px;">
+                        <i class="fas fa-flag-checkered"></i>
+                        <span>المستهدفات الكمية (2027)</span>
+                    </div>
+                    <div class="oc-item">
+                        <div class="oc-val">95%</div>
+                        <div class="oc-desc">نسبة امتثال الجهات لسياسات البيانات الوطنية</div>
+                    </div>
+                    <div class="oc-item">
+                        <div class="oc-val">100%</div>
+                        <div class="oc-desc">أتمتة عمليات تبادل البيانات بين الجهات الحكومية</div>
+                    </div>
+                    <div class="oc-item">
+                        <div class="oc-val">4.5</div>
+                        <div class="oc-desc">مستوى نضج إدارة البيانات (من 5)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">16</div>
+    </div>
+</body>
+</html>

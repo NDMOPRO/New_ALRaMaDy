@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 40px; flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
+
+        /* Central Hub */
+        .impact-hub { width: 180px; height: 180px; background: white; border-radius: 50%; box-shadow: 0 0 30px rgba(0,0,0,0.1); position: absolute; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border: 8px solid #f5f5f5; }
+        .ih-icon { font-size: 48px; color: #1B2A4A; margin-bottom: 10px; }
+        .ih-text { font-size: 16px; font-weight: 800; color: #1B2A4A; }
+
+        /* Quadrants */
+        .quadrant { position: absolute; width: 450px; height: 250px; background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: flex; flex-direction: column; transition: transform 0.3s; }
+        .quadrant:hover { transform: scale(1.02); z-index: 5; }
+
+        .q-tl { top: 80px; left: 100px; border-right: 4px solid #00B388; text-align: left; align-items: flex-end; }
+        .q-tr { top: 80px; right: 100px; border-left: 4px solid #2B5EA7; }
+        .q-bl { bottom: 80px; left: 100px; border-right: 4px solid #E8A838; text-align: left; align-items: flex-end; }
+        .q-br { bottom: 80px; right: 100px; border-left: 4px solid #E85B7A; }
+
+        /* Connecting Lines (Simulated) */
+        .line { position: absolute; background: #ccc; z-index: 1; }
+        .l-v { width: 2px; height: 600px; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+        .l-h { width: 1000px; height: 2px; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+
+        .q-title { font-size: 18px; font-weight: 800; color: #333; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        .q-list { list-style: none; }
+        .q-list li { font-size: 14px; color: #666; margin-bottom: 8px; position: relative; padding-right: 16px; }
+        .q-list li::before { content: '•'; color: #ccc; font-size: 20px; position: absolute; right: 0; top: -2px; }
+        
+        .q-icon { font-size: 24px; }
+        .c-1 { color: #00B388; }
+        .c-2 { color: #2B5EA7; }
+        .c-3 { color: #E8A838; }
+        .c-4 { color: #E85B7A; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الأثر المتوقع - القيمة المضافة للاقتصاد والمجتمع</div>
+            <div class="header-badge">49</div>
+        </div>
+
+        <div class="content-area">
+            <div class="line l-v"></div>
+            <div class="line l-h"></div>
+            
+            <div class="impact-hub">
+                <div class="ih-icon"><i class="fas fa-bullseye"></i></div>
+                <div class="ih-text">القيمة<br>الوطنية</div>
+            </div>
+
+            <!-- Q1: Economic -->
+            <div class="quadrant q-tr">
+                <div class="q-title"><i class="fas fa-chart-line q-icon c-2"></i> الأثر الاقتصادي</div>
+                <ul class="q-list">
+                    <li>زيادة مساهمة البيانات في الناتج المحلي الإجمالي.</li>
+                    <li>خلق فرص استثمارية جديدة في قطاع التقنية.</li>
+                    <li>تحسين كفاءة الإنفاق الحكومي وتقليل الهدر.</li>
+                </ul>
+            </div>
+
+            <!-- Q2: Social -->
+            <div class="quadrant q-tl">
+                <div class="q-title">الأثر الاجتماعي <i class="fas fa-users q-icon c-1"></i></div>
+                <ul class="q-list">
+                    <li>تحسين جودة الخدمات المقدمة للمواطنين.</li>
+                    <li>تعزيز الشفافية والمشاركة المجتمعية.</li>
+                    <li>حماية الخصوصية والبيانات الشخصية للأفراد.</li>
+                </ul>
+            </div>
+
+            <!-- Q3: Strategic -->
+            <div class="quadrant q-br">
+                <div class="q-title"><i class="fas fa-chess q-icon c-4"></i> الأثر الاستراتيجي</div>
+                <ul class="q-list">
+                    <li>دعم اتخاذ القرار المبني على الحقائق.</li>
+                    <li>تعزيز مكانة المملكة في المؤشرات الدولية.</li>
+                    <li>تحقيق التكامل بين الجهات الحكومية.</li>
+                </ul>
+            </div>
+
+            <!-- Q4: Innovation -->
+            <div class="quadrant q-bl">
+                <div class="q-title">الابتكار والتطوير <i class="fas fa-lightbulb q-icon c-3"></i></div>
+                <ul class="q-list">
+                    <li>تمكين حلول الذكاء الاصطناعي والمدن الذكية.</li>
+                    <li>توفير بيئة خصبة للبحث والتطوير.</li>
+                    <li>تسريع وتيرة التحول الرقمي الشامل.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">49</div>
+    </div>
+</body>
+</html>

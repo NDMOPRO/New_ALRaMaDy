@@ -4,15 +4,24 @@
 
 import type { SlideData } from "./slideTemplates";
 
+// ─── TOC Item (with description for Slides Outline) ───
+export interface TOCItem {
+  index: number;
+  title: string;
+  layout: string;
+  description: string;
+}
+
 // ─── Rich Content Types ───
 export interface SlideContent {
   kind: "slides";
   topic: string;
-  toc: string[];
+  toc: TOCItem[];           // Full TOC items with descriptions
   slides: SlideData[];
   themeId: string;
-  status: "generating" | "complete" | "error";
+  status: "outline" | "generating" | "complete" | "error";
   currentIndex: number;
+  presentationId?: number;  // DB id for saving
 }
 
 export interface ChatMessage {
@@ -26,46 +35,32 @@ export interface ChatMessage {
   richContent?: SlideContent;
 }
 
-// ─── Welcome Actions ───
+// ─── Welcome Actions (reduced) ───
 export const WELCOME_ACTIONS = [
   {
     id: "presentation",
     label: "عرض تقديمي",
     icon: "slideshow",
     color: "#d4af37",
-    prompt: "أنشئ عرض تقديمي عن الذكاء الاصطناعي",
+    prompt: "أنشئ عرض تقديمي",
   },
   {
     id: "report",
     label: "تقرير",
     icon: "description",
     color: "#3b82f6",
-    prompt: "أنشئ تقرير عن التحول الرقمي",
+    prompt: "أنشئ تقرير",
   },
   {
     id: "dashboard",
     label: "لوحة مؤشرات",
     icon: "dashboard",
     color: "#059669",
-    prompt: "أنشئ لوحة مؤشرات أداء",
-  },
-  {
-    id: "analysis",
-    label: "تحليل بيانات",
-    icon: "analytics",
-    color: "#8b5cf6",
-    prompt: "حلل بيانات المبيعات",
-  },
-  {
-    id: "translate",
-    label: "ترجمة",
-    icon: "translate",
-    color: "#ec4899",
-    prompt: "ترجم النص التالي إلى الإنجليزية",
+    prompt: "أنشئ لوحة مؤشرات",
   },
   {
     id: "chat",
-    label: "محادثة عامة",
+    label: "محادثة",
     icon: "chat",
     color: "#f59e0b",
     prompt: "مرحباً راصد",

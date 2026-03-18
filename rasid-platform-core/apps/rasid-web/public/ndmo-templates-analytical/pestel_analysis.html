@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل PESTEL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1B2A4A; /* Royal Dark Blue */
+            --accent-color: #00B388; /* Teal */
+            --highlight-color: #E8A838; /* Gold */
+            --white: #FFFFFF;
+            --light-bg: #F8F9FA;
+            --border-color: #E0E0E0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: var(--white);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Royal Blue Header */
+        .header {
+            background-color: var(--primary-color);
+            height: 85px;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            position: relative;
+            z-index: 10;
+            border-bottom: 4px solid var(--highlight-color);
+        }
+
+        .header-title {
+            color: var(--white);
+            font-size: 28px;
+            font-weight: 800;
+            margin-left: 20px;
+        }
+
+        .header-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            font-weight: 500;
+            margin-right: auto;
+        }
+
+        .logo-container {
+            background-color: rgba(255,255,255,0.1);
+            padding: 5px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            height: 40px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        /* Content Area: 6 Columns */
+        .content {
+            flex: 1;
+            padding: 30px 40px;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 15px;
+            background-color: var(--light-bg);
+        }
+
+        .pestel-column {
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            border-top: 4px solid transparent;
+        }
+
+        /* Political */
+        .col-p { border-top-color: #E74C3C; }
+        .head-p { background-color: rgba(231, 76, 60, 0.1); color: #E74C3C; }
+
+        /* Economic */
+        .col-e { border-top-color: #F39C12; }
+        .head-e { background-color: rgba(243, 156, 18, 0.1); color: #F39C12; }
+
+        /* Social */
+        .col-s { border-top-color: #9B59B6; }
+        .head-s { background-color: rgba(155, 89, 182, 0.1); color: #9B59B6; }
+
+        /* Technological */
+        .col-t { border-top-color: #3498DB; }
+        .head-t { background-color: rgba(52, 152, 219, 0.1); color: #3498DB; }
+
+        /* Environmental */
+        .col-en { border-top-color: #2ECC71; }
+        .head-en { background-color: rgba(46, 204, 113, 0.1); color: #2ECC71; }
+
+        /* Legal */
+        .col-l { border-top-color: #34495E; }
+        .head-l { background-color: rgba(52, 73, 94, 0.1); color: #34495E; }
+
+        .col-header {
+            padding: 15px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+
+        .col-content {
+            padding: 15px;
+            flex: 1;
+        }
+
+        .pestel-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .pestel-item {
+            font-size: 11px;
+            color: #555;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            padding-right: 12px;
+            position: relative;
+        }
+
+        .pestel-item::before {
+            content: '▪';
+            position: absolute;
+            right: 0;
+            color: var(--primary-color);
+            font-size: 14px;
+            top: -2px;
+        }
+
+        /* Footer */
+        .footer {
+            height: 40px;
+            background-color: var(--white);
+            border-top: 1px solid #E0E0E0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 10px;
+            color: #888;
+        }
+
+        .page-number {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">تحليل العوامل الخارجية (PESTEL)</div>
+            <div class="header-subtitle">دراسة المؤثرات المحيطة بمنظومة البيانات الوطنية</div>
+            <div class="logo-container">
+                <img src="assets/logo_ndmo.png" class="logo-img" alt="NDMO">
+                <img src="assets/logo_sdaia.png" class="logo-img" alt="SDAIA">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Political -->
+            <div class="pestel-column col-p">
+                <div class="col-header head-p">Political</div>
+                <div class="col-content">
+                    <ul class="pestel-list">
+                        <li class="pestel-item">دعم حكومي قوي للتحول الرقمي ورؤية 2030.</li>
+                        <li class="pestel-item">استقرار سياسي يعزز الاستثمار في التقنية.</li>
+                        <li class="pestel-item">سياسات وطنية لتعزيز السيادة الرقمية.</li>
+                        <li class="pestel-item">اتفاقيات دولية لتبادل البيانات (G20).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Economic -->
+            <div class="pestel-column col-e">
+                <div class="col-header head-e">Economic</div>
+                <div class="col-content">
+                    <ul class="pestel-list">
+                        <li class="pestel-item">نمو الاقتصاد الرقمي والاستثمار في البيانات.</li>
+                        <li class="pestel-item">تخصيص ميزانيات ضخمة لمشاريع البنية التحتية.</li>
+                        <li class="pestel-item">فرص خلق وظائف جديدة في مجال البيانات.</li>
+                        <li class="pestel-item">تقليل التكاليف التشغيلية من خلال الأتمتة.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Social -->
+            <div class="pestel-column col-s">
+                <div class="col-header head-s">Social</div>
+                <div class="col-content">
+                    <ul class="pestel-list">
+                        <li class="pestel-item">زيادة الوعي المجتمعي بأهمية الخصوصية.</li>
+                        <li class="pestel-item">ارتفاع نسبة الشباب المستخدمين للتقنية.</li>
+                        <li class="pestel-item">تغير سلوك المستهلك نحو الخدمات الرقمية.</li>
+                        <li class="pestel-item">الحاجة لبرامج محو الأمية الرقمية.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Technological -->
+            <div class="pestel-column col-t">
+                <div class="col-header head-t">Technological</div>
+                <div class="col-content">
+                    <ul class="pestel-list">
+                        <li class="pestel-item">تطور سريع في تقنيات الذكاء الاصطناعي (AI).</li>
+                        <li class="pestel-item">انتشار إنترنت الأشياء (IoT) والمدن الذكية.</li>
+                        <li class="pestel-item">تبني الحوسبة السحابية (Cloud First).</li>
+                        <li class="pestel-item">تحديات الأمن السيبراني المتزايدة.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Environmental -->
+            <div class="pestel-column col-en">
+                <div class="col-header head-en">Environmental</div>
+                <div class="col-content">
+                    <ul class="pestel-list">
+                        <li class="pestel-item">مبادرات مراكز البيانات الخضراء (Green Data).</li>
+                        <li class="pestel-item">تقليل البصمة الكربونية عبر التحول الرقمي.</li>
+                        <li class="pestel-item">إدارة النفايات الإلكترونية للأجهزة التقنية.</li>
+                        <li class="pestel-item">استخدام البيانات في حماية البيئة.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Legal -->
+            <div class="pestel-column col-l">
+                <div class="col-header head-l">Legal</div>
+                <div class="col-content">
+                    <ul class="pestel-list">
+                        <li class="pestel-item">نظام حماية البيانات الشخصية (PDPL).</li>
+                        <li class="pestel-item">لوائح حرية المعلومات والبيانات المفتوحة.</li>
+                        <li class="pestel-item">تشريعات الملكية الفكرية للبيانات.</li>
+                        <li class="pestel-item">ضوابط الامتثال والمعايير الدولية (GDPR).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>سري للغاية - للاستخدام الداخلي فقط</div>
+            <div class="page-number">32</div>
+        </div>
+    </div>
+</body>
+</html>

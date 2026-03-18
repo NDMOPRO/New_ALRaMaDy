@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+            flex-shrink: 0;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 20px 40px;
+            flex: 1;
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Left Panel: NDMO Framework */
+        .framework-panel {
+            flex: 2;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            border-top: 4px solid #1B2A4A;
+        }
+        .fp-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;
+        }
+        .fp-title { font-size: 16px; font-weight: 800; color: #1B2A4A; }
+        .fp-subtitle { font-size: 12px; color: #666; }
+
+        .domains-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            flex: 1;
+        }
+        
+        .domain-group {
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .dg-title {
+            font-size: 12px; font-weight: 700; color: white;
+            padding: 6px 10px; border-radius: 2px; text-align: center;
+        }
+        .dg-gov { background: #1B2A4A; }
+        .dg-ops { background: #00B388; }
+        .dg-tech { background: #2B5EA7; }
+
+        .domain-box {
+            background: #f9f9f9;
+            border: 1px solid #eee;
+            padding: 8px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .db-code {
+            font-size: 10px; font-weight: 700; color: #888;
+            background: #eee; padding: 2px 4px; border-radius: 2px; width: 35px; text-align: center;
+        }
+        .db-name { font-size: 11px; font-weight: 700; color: #333; line-height: 1.2; }
+
+        /* Right Panel: Complementary Standards */
+        .comp-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .comp-card {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-right: 4px solid #ccc;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .cc-nca { border-color: #E8A838; }
+        .cc-dga { border-color: #2B5EA7; }
+        .cc-intl { border-color: #00B388; }
+
+        .cc-header {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+        }
+        .cc-icon {
+            width: 30px; height: 30px; background: #f5f5f5;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; color: #333; font-size: 14px;
+        }
+        .cc-title { font-size: 13px; font-weight: 800; color: #1B2A4A; }
+        
+        .cc-list {
+            display: flex; flex-direction: column; gap: 8px; flex: 1;
+        }
+        .cc-item {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 11px; background: #f9f9f9; padding: 6px 10px;
+            border-radius: 2px;
+        }
+        .cc-code { font-weight: 700; color: #555; }
+        .cc-desc { color: #666; }
+
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">المرجعيات الوطنية - إطار عمل إدارة البيانات الوطني</div>
+            <div class="header-badge">19</div>
+        </div>
+
+        <div class="content-area">
+            <!-- Left Panel: NDMO Framework -->
+            <div class="framework-panel">
+                <div class="fp-header">
+                    <div class="fp-title">مجالات إدارة البيانات الوطنية (NDMO Domains)</div>
+                    <div class="fp-subtitle">15 مجالاً قياسياً</div>
+                </div>
+                
+                <div class="domains-grid">
+                    <!-- Governance Group -->
+                    <div class="domain-group">
+                        <div class="dg-title dg-gov">الحوكمة والاستراتيجية</div>
+                        <div class="domain-box">
+                            <div class="db-code">DG</div>
+                            <div class="db-name">حوكمة البيانات</div>
+                        </div>
+                        <div class="domain-box">
+                            <div class="db-code">DS</div>
+                            <div class="db-name">استراتيجية البيانات</div>
+                        </div>
+                        <div class="domain-box">
+                            <div class="db-code">DC</div>
+                            <div class="db-name">فهرسة وتصنيف البيانات</div>
+                        </div>
+                        <div class="domain-box">
+                            <div class="db-code">DQ</div>
+                            <div class="db-name">جودة البيانات</div>
+                        </div>
+                        <div class="domain-box">
+                            <div class="db-code">DO</div>
+                            <div class="db-name">تشغيل البيانات</div>
+                        </div>
+                    </div>
+
+                    <!-- Operations Group -->
+                    <div class="domain-group">
+                        <div class="dg-title dg-ops">إدارة المحتوى والعمليات</div>
+                        <div class="domain-box">
+                            <div class="db-code">DM</div>
+                            <div class="db-name">إدارة البيانات الوصفية</div>
+                        </div>
+                        <div class="domain-box">
+                            <div class="db-code">DR</div>
+                            <div class="db-name">إدارة البيانات المرجعية</div>
+                        </div>
+                        <div class="domain-box">
+                            <div class="db-code">CM</div>
+                            <div class="db-name">إدارة المحتوى</div>
+                        </div>
+                        <div class="domain-box">
+                            <div class="db-code">BI</div>
+                            <div class="db-name">ذكاء الأعمال والتحليل</div>
+                        </div>
+                        <div class="domain-box">
+                            <div class="db-code">OD</div>
+                            <div class="db-name">البيانات المفتوحة</div>
+                        </div>
+                    </div>
+
+                    <!-- Technology Group -->
+                    <div class="domain-group">
+                        <div class="dg-title dg-tech">التقنية والحماية</div>
+                        <div class="domain-box">
+                            <div class="db-code">DA</div>
+                            <div class="db-name">هيكلية البيانات</div>
+                        </div>
+                        <div class="domain-box">
+                            <div class="db-code">DB</div>
+                            <div class="db-name">نمذجة البيانات</div>
+                        </div>
+                        <div class="domain-box">
+                            <div class="db-code">DS</div>
+                            <div class="db-name">أمن وحماية البيانات</div>
+                        </div>
+                        <div class="domain-box">
+                            <div class="db-code">DI</div>
+                            <div class="db-name">تكامل البيانات</div>
+                        </div>
+                        <div class="domain-box">
+                            <div class="db-code">DL</div>
+                            <div class="db-name">تخزين وحفظ البيانات</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Complementary Standards -->
+            <div class="comp-panel">
+                <!-- NCA -->
+                <div class="comp-card cc-nca">
+                    <div class="cc-header">
+                        <div class="cc-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div class="cc-title">الأمن السيبراني (NCA)</div>
+                    </div>
+                    <div class="cc-list">
+                        <div class="cc-item">
+                            <span class="cc-code">ECC-1:2018</span>
+                            <span class="cc-desc">الضوابط الأساسية</span>
+                        </div>
+                        <div class="cc-item">
+                            <span class="cc-code">DCC-1:2020</span>
+                            <span class="cc-desc">ضوابط أمن البيانات</span>
+                        </div>
+                        <div class="cc-item">
+                            <span class="cc-code">CSCC-1:2019</span>
+                            <span class="cc-desc">ضوابط السحابة</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DGA -->
+                <div class="comp-card cc-dga">
+                    <div class="cc-header">
+                        <div class="cc-icon"><i class="fas fa-laptop-code"></i></div>
+                        <div class="cc-title">الحكومة الرقمية (DGA)</div>
+                    </div>
+                    <div class="cc-list">
+                        <div class="cc-item">
+                            <span class="cc-code">NDEA</span>
+                            <span class="cc-desc">البنية المؤسسية الوطنية</span>
+                        </div>
+                        <div class="cc-item">
+                            <span class="cc-code">DGP-001</span>
+                            <span class="cc-desc">سياسة الحكومة الرقمية</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- International -->
+                <div class="comp-card cc-intl">
+                    <div class="cc-header">
+                        <div class="cc-icon"><i class="fas fa-globe"></i></div>
+                        <div class="cc-title">المعايير العالمية</div>
+                    </div>
+                    <div class="cc-list">
+                        <div class="cc-item">
+                            <span class="cc-code">DAMA-DMBOK2</span>
+                            <span class="cc-desc">الإطار المرجعي</span>
+                        </div>
+                        <div class="cc-item">
+                            <span class="cc-code">ISO 8000</span>
+                            <span class="cc-desc">جودة البيانات</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">19</div>
+    </div>
+</body>
+</html>

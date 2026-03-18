@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 16px 4px 16px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .option-col { display: flex; flex-direction: column; border: 1px solid #E2E8F0; }
+        .opt-header { padding: 12px; text-align: center; color: white; }
+        .opt-header-1 { background: #1B2A4A; }
+        .opt-header-2 { background: #2B5EA7; }
+        .opt-header-3 { background: #00B388; }
+        .opt-name { font-size: 16px; font-weight: 800; }
+        .opt-desc { font-size: 10px; opacity: 0.7; }
+        .opt-score { font-size: 24px; font-weight: 800; margin-top: 4px; }
+        .pros-section { flex: 1; padding: 8px 10px; }
+        .section-title { font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 4px; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid #E2E8F0; }
+        .pros-title { color: #00B388; }
+        .cons-title { color: #C0392B; }
+        .pc-item { display: flex; align-items: flex-start; gap: 5px; font-size: 10px; color: #334155; line-height: 1.5; margin-bottom: 3px; }
+        .pc-item i { font-size: 8px; margin-top: 4px; flex-shrink: 0; }
+        .pro-icon { color: #00B388; }
+        .con-icon { color: #C0392B; }
+        .cons-section { padding: 8px 10px; background: #FAFAFA; border-top: 1px solid #E2E8F0; }
+        .opt-footer { padding: 6px 10px; background: #F8FAFC; border-top: 1px solid #E2E8F0; text-align: center; }
+        .opt-rec { font-size: 10px; font-weight: 700; padding: 2px 10px; display: inline-block; }
+        .rec-yes { background: #ECFDF5; color: #00B388; }
+        .rec-maybe { background: #FFFBEB; color: #E8A838; }
+        .rec-no { background: #FEF2F2; color: #C0392B; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-balance-scale" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> عنوان مقارنة المزايا والعيوب يكتب هنا</div>
+            <div class="header-num">3.52</div>
+        </div>
+        <div class="content">
+            <div class="option-col">
+                <div class="opt-header opt-header-1"><div class="opt-name">اسم الخيار الأول يكتب هنا</div><div class="opt-desc">وصف مختصر يكتب هنا</div><div class="opt-score">7.5 / 10</div></div>
+                <div class="pros-section"><div class="section-title pros-title"><i class="fas fa-thumbs-up"></i> المزايا يكتب هنا</div><div class="pc-item"><i class="fas fa-check pro-icon"></i> الميزة الأولى للخيار الأول يكتب هنا</div><div class="pc-item"><i class="fas fa-check pro-icon"></i> الميزة الثانية للخيار الأول يكتب هنا</div><div class="pc-item"><i class="fas fa-check pro-icon"></i> الميزة الثالثة للخيار الأول يكتب هنا</div><div class="pc-item"><i class="fas fa-check pro-icon"></i> الميزة الرابعة للخيار الأول يكتب هنا</div></div>
+                <div class="cons-section"><div class="section-title cons-title"><i class="fas fa-thumbs-down"></i> العيوب يكتب هنا</div><div class="pc-item"><i class="fas fa-times con-icon"></i> العيب الأول للخيار الأول يكتب هنا</div><div class="pc-item"><i class="fas fa-times con-icon"></i> العيب الثاني للخيار الأول يكتب هنا</div><div class="pc-item"><i class="fas fa-times con-icon"></i> العيب الثالث للخيار الأول يكتب هنا</div></div>
+                <div class="opt-footer"><span class="opt-rec rec-maybe">مناسب بشروط يكتب هنا</span></div>
+            </div>
+            <div class="option-col">
+                <div class="opt-header opt-header-2"><div class="opt-name">اسم الخيار الثاني يكتب هنا</div><div class="opt-desc">وصف مختصر يكتب هنا</div><div class="opt-score">9.0 / 10</div></div>
+                <div class="pros-section"><div class="section-title pros-title"><i class="fas fa-thumbs-up"></i> المزايا يكتب هنا</div><div class="pc-item"><i class="fas fa-check pro-icon"></i> الميزة الأولى للخيار الثاني يكتب هنا</div><div class="pc-item"><i class="fas fa-check pro-icon"></i> الميزة الثانية للخيار الثاني يكتب هنا</div><div class="pc-item"><i class="fas fa-check pro-icon"></i> الميزة الثالثة للخيار الثاني يكتب هنا</div><div class="pc-item"><i class="fas fa-check pro-icon"></i> الميزة الرابعة للخيار الثاني يكتب هنا</div><div class="pc-item"><i class="fas fa-check pro-icon"></i> الميزة الخامسة للخيار الثاني يكتب هنا</div></div>
+                <div class="cons-section"><div class="section-title cons-title"><i class="fas fa-thumbs-down"></i> العيوب يكتب هنا</div><div class="pc-item"><i class="fas fa-times con-icon"></i> العيب الأول للخيار الثاني يكتب هنا</div></div>
+                <div class="opt-footer"><span class="opt-rec rec-yes"><i class="fas fa-star" style="margin-left:3px;"></i> الخيار الموصى به يكتب هنا</span></div>
+            </div>
+            <div class="option-col">
+                <div class="opt-header opt-header-3"><div class="opt-name">اسم الخيار الثالث يكتب هنا</div><div class="opt-desc">وصف مختصر يكتب هنا</div><div class="opt-score">5.0 / 10</div></div>
+                <div class="pros-section"><div class="section-title pros-title"><i class="fas fa-thumbs-up"></i> المزايا يكتب هنا</div><div class="pc-item"><i class="fas fa-check pro-icon"></i> الميزة الأولى للخيار الثالث يكتب هنا</div><div class="pc-item"><i class="fas fa-check pro-icon"></i> الميزة الثانية للخيار الثالث يكتب هنا</div></div>
+                <div class="cons-section"><div class="section-title cons-title"><i class="fas fa-thumbs-down"></i> العيوب يكتب هنا</div><div class="pc-item"><i class="fas fa-times con-icon"></i> العيب الأول للخيار الثالث يكتب هنا</div><div class="pc-item"><i class="fas fa-times con-icon"></i> العيب الثاني للخيار الثالث يكتب هنا</div><div class="pc-item"><i class="fas fa-times con-icon"></i> العيب الثالث للخيار الثالث يكتب هنا</div><div class="pc-item"><i class="fas fa-times con-icon"></i> العيب الرابع للخيار الثالث يكتب هنا</div></div>
+                <div class="opt-footer"><span class="opt-rec rec-no">غير موصى به يكتب هنا</span></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { height: 628px; padding: 10px 16px 4px 16px; display: flex; flex-direction: column; gap: 8px; }
+        .sub-title { font-size: 11px; color: #64748B; text-align: center; flex-shrink: 0; }
+        .gauges-row { flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; min-height: 0; }
+        .gauge-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-top: 3px solid #2B5EA7; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .gauge-card:nth-child(1) { border-top-color: #00B388; }
+        .gauge-card:nth-child(2) { border-top-color: #2B5EA7; }
+        .gauge-card:nth-child(3) { border-top-color: #E8A838; }
+        .gc-name { font-size: 13px; font-weight: 700; color: #1B2A4A; margin-bottom: 4px; }
+        .gc-desc { font-size: 9px; color: #64748B; text-align: center; margin-bottom: 6px; }
+        .gauge-wrap { position: relative; width: 280px; height: 160px; }
+        .gauge-center { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); text-align: center; }
+        .gv { font-size: 36px; font-weight: 800; line-height: 1; }
+        .gl { font-size: 9px; color: #64748B; }
+        .gauge-info { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; margin-top: 8px; }
+        .gi-item { background: white; border: 1px solid #E2E8F0; padding: 6px 8px; text-align: center; }
+        .gi-label { font-size: 8px; color: #64748B; }
+        .gi-val { font-size: 14px; font-weight: 800; color: #1B2A4A; }
+        .status-bar { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+        .sb-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .sb-text { font-size: 9px; font-weight: 700; }
+        .footer { height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 22px; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-tachometer-alt" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> عنوان الرسم البياني الحلقي - نصف دائري (Gauge) يكتب هنا</div>
+            <div class="header-num">3.38</div>
+        </div>
+        <div class="content">
+            <div class="sub-title">وصف مختصر لقياس مستوى الإنجاز عبر المؤشرات الرئيسية يكتب هنا</div>
+            <div class="gauges-row">
+                <div class="gauge-card">
+                    <div class="gc-name">المؤشر الأول يكتب هنا</div>
+                    <div class="gc-desc">وصف مختصر للمؤشر يكتب هنا</div>
+                    <div class="gauge-wrap"><canvas id="g1"></canvas><div class="gauge-center"><div class="gv" style="color:#00B388;">87%</div><div class="gl">نسبة الإنجاز</div></div></div>
+                    <div class="gauge-info">
+                        <div class="gi-item"><div class="gi-label">المستهدف يكتب هنا</div><div class="gi-val">95%</div></div>
+                        <div class="gi-item"><div class="gi-label">الفجوة يكتب هنا</div><div class="gi-val" style="color:#E8A838;">8%</div></div>
+                    </div>
+                    <div class="status-bar"><div class="sb-dot" style="background:#00B388;"></div><div class="sb-text" style="color:#00B388;">أداء جيد - يكتب هنا</div></div>
+                </div>
+                <div class="gauge-card">
+                    <div class="gc-name">المؤشر الثاني يكتب هنا</div>
+                    <div class="gc-desc">وصف مختصر للمؤشر يكتب هنا</div>
+                    <div class="gauge-wrap"><canvas id="g2"></canvas><div class="gauge-center"><div class="gv" style="color:#2B5EA7;">62%</div><div class="gl">نسبة الإنجاز</div></div></div>
+                    <div class="gauge-info">
+                        <div class="gi-item"><div class="gi-label">المستهدف يكتب هنا</div><div class="gi-val">85%</div></div>
+                        <div class="gi-item"><div class="gi-label">الفجوة يكتب هنا</div><div class="gi-val" style="color:#C0392B;">23%</div></div>
+                    </div>
+                    <div class="status-bar"><div class="sb-dot" style="background:#E8A838;"></div><div class="sb-text" style="color:#E8A838;">يحتاج تحسين - يكتب هنا</div></div>
+                </div>
+                <div class="gauge-card">
+                    <div class="gc-name">المؤشر الثالث يكتب هنا</div>
+                    <div class="gc-desc">وصف مختصر للمؤشر يكتب هنا</div>
+                    <div class="gauge-wrap"><canvas id="g3"></canvas><div class="gauge-center"><div class="gv" style="color:#E8A838;">41%</div><div class="gl">نسبة الإنجاز</div></div></div>
+                    <div class="gauge-info">
+                        <div class="gi-item"><div class="gi-label">المستهدف يكتب هنا</div><div class="gi-val">90%</div></div>
+                        <div class="gi-item"><div class="gi-label">الفجوة يكتب هنا</div><div class="gi-val" style="color:#C0392B;">49%</div></div>
+                    </div>
+                    <div class="status-bar"><div class="sb-dot" style="background:#C0392B;"></div><div class="sb-text" style="color:#C0392B;">متأخر - يكتب هنا</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+    <script>
+        function makeGauge(id, val, color) {
+            new Chart(document.getElementById(id), {
+                type: 'doughnut',
+                data: { datasets: [{ data: [val, 100-val], backgroundColor: [color, '#E2E8F0'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, rotation: -90, circumference: 180, cutout: '70%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+            });
+        }
+        makeGauge('g1', 87, '#00B388');
+        makeGauge('g2', 62, '#2B5EA7');
+        makeGauge('g3', 41, '#E8A838');
+    </script>
+</body>
+</html>

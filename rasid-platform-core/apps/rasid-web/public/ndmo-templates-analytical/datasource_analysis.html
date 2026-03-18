@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل مصادر البيانات - Data Source Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f0f0;
+            overflow: hidden;
+        }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Header */
+        .header-strip {
+            height: 8px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #00B388 50%, #E8A838 100%);
+        }
+        .header-content {
+            padding: 15px 40px 10px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+            background: #fff;
+        }
+        .logo-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .logo-img {
+            height: 40px;
+            object-fit: contain;
+        }
+        .slide-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1B2A4A;
+            margin: 0;
+        }
+        .slide-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+
+        /* Content */
+        .content-wrapper {
+            padding: 20px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            flex: 1;
+        }
+
+        /* KPI Cards */
+        .kpi-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        .kpi-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .kpi-info h3 {
+            font-size: 11px;
+            color: #64748b;
+            margin: 0 0 5px 0;
+            font-weight: 700;
+        }
+        .kpi-info .value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1B2A4A;
+        }
+        .kpi-info .trend {
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .trend-up { color: #00B388; }
+        .trend-down { color: #ef4444; }
+        .kpi-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        /* Table Section */
+        .table-section {
+            flex: 1;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .table-header {
+            background: #1B2A4A;
+            color: white;
+            padding: 10px 15px;
+            font-weight: 700;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        th {
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 700;
+            text-align: right;
+            padding: 10px 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        td {
+            padding: 8px 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
+        }
+        tr:nth-child(even) { background: #f8fafc; }
+        
+        /* Badges */
+        .badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 9px;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .badge-api { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+        .badge-db { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .badge-file { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
+        
+        .badge-high { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .badge-med { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+        .badge-low { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 5px;
+        }
+        .dot-green { background: #22c55e; box-shadow: 0 0 0 2px #dcfce7; }
+        .dot-amber { background: #f59e0b; box-shadow: 0 0 0 2px #fef3c7; }
+        .dot-red { background: #ef4444; box-shadow: 0 0 0 2px #fee2e2; }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background: #e2e8f0;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        .progress-bar { height: 100%; border-radius: 3px; }
+        .bg-green { background: #00B388; }
+        .bg-blue { background: #2B5EA7; }
+        .bg-amber { background: #E8A838; }
+
+        /* Footer */
+        .footer {
+            padding: 10px 40px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: #6b7280;
+            background-color: #f9fafb;
+            margin-top: auto;
+        }
+        .page-number { font-weight: 700; color: #1B2A4A; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Header -->
+        <div class="header-strip"></div>
+        <div class="header-content">
+            <div>
+                <h1 class="slide-title">تحليل مصادر البيانات (Data Source Analysis)</h1>
+                <p class="slide-subtitle">جرد شامل لمصادر البيانات الوطنية وتقييم جودتها ومستوى ارتباطها</p>
+            </div>
+            <div class="logo-container">
+                <img src="assets/logo_sdaia.png" class="logo-img" alt="SDAIA">
+                <img src="assets/logo_ndmo.png" class="logo-img" alt="NDMO">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content-wrapper">
+            
+            <!-- KPIs -->
+            <div class="kpi-container">
+                <div class="kpi-card">
+                    <div class="kpi-info">
+                        <h3>إجمالي المصادر</h3>
+                        <div class="value">142</div>
+                        <div class="trend trend-up">▲ 12 مصدر جديد</div>
+                    </div>
+                    <div class="kpi-icon" style="background:#1B2A4A;"><i class="fas fa-database"></i> DB</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-info">
+                        <h3>نسبة الربط الآلي</h3>
+                        <div class="value">68%</div>
+                        <div class="trend trend-up">▲ 5% تحسن</div>
+                    </div>
+                    <div class="kpi-icon" style="background:#00B388;"><i class="fas fa-plug"></i> API</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-info">
+                        <h3>متوسط الجودة</h3>
+                        <div class="value">84.5%</div>
+                        <div class="trend trend-up">▲ 2.1 نقطة</div>
+                    </div>
+                    <div class="kpi-icon" style="background:#2B5EA7;"><i class="fas fa-star"></i> Q</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-info">
+                        <h3>مصادر حرجة</h3>
+                        <div class="value">18</div>
+                        <div class="trend trend-down">▼ 2 تحت المراجعة</div>
+                    </div>
+                    <div class="kpi-icon" style="background:#E8A838;"><i class="fas fa-exclamation-triangle"></i> !</div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-section">
+                <div class="table-header">
+                    <span>سجل مصادر البيانات الرئيسية (Master Data Source Inventory)</span>
+                    <span style="background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:4px; font-size:10px;">Last Updated: 15 Mar 2026</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="5%">ID</th>
+                            <th width="20%">اسم المصدر (Source Name)</th>
+                            <th width="10%">النوع</th>
+                            <th width="15%">المالك (Owner)</th>
+                            <th width="10%">الحساسية</th>
+                            <th width="10%">التحديث</th>
+                            <th width="15%">مؤشر الجودة (DQI)</th>
+                            <th width="15%">الحالة (Status)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight:700; color:#1B2A4A;">SRC-001</td>
+                            <td style="font-weight:600;">السجل المدني الموحد (NIC)</td>
+                            <td><span class="badge badge-api">REST API</span></td>
+                            <td>مركز المعلومات الوطني</td>
+                            <td><span class="badge badge-high">عالية جداً</span></td>
+                            <td>Real-time</td>
+                            <td>
+                                <div style="display:flex; justify-content:space-between; font-size:9px; margin-bottom:2px;"><span>98%</span></div>
+                                <div class="progress-container"><div class="progress-bar bg-green" style="width:98%;"></div></div>
+                            </td>
+                            <td><span class="status-dot dot-green"></span> متصل (Active)</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1B2A4A;">SRC-002</td>
+                            <td style="font-weight:600;">نظام الموارد البشرية (HRSD)</td>
+                            <td><span class="badge badge-db">Oracle DB</span></td>
+                            <td>وزارة الموارد البشرية</td>
+                            <td><span class="badge badge-high">عالية</span></td>
+                            <td>Daily</td>
+                            <td>
+                                <div style="display:flex; justify-content:space-between; font-size:9px; margin-bottom:2px;"><span>85%</span></div>
+                                <div class="progress-container"><div class="progress-bar bg-blue" style="width:85%;"></div></div>
+                            </td>
+                            <td><span class="status-dot dot-green"></span> متصل (Active)</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1B2A4A;">SRC-003</td>
+                            <td style="font-weight:600;">السجل التجاري (MC)</td>
+                            <td><span class="badge badge-api">SOAP API</span></td>
+                            <td>وزارة التجارة</td>
+                            <td><span class="badge badge-med">متوسطة</span></td>
+                            <td>Real-time</td>
+                            <td>
+                                <div style="display:flex; justify-content:space-between; font-size:9px; margin-bottom:2px;"><span>92%</span></div>
+                                <div class="progress-container"><div class="progress-bar bg-green" style="width:92%;"></div></div>
+                            </td>
+                            <td><span class="status-dot dot-green"></span> متصل (Active)</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1B2A4A;">SRC-004</td>
+                            <td style="font-weight:600;">بيانات العقار (REGA)</td>
+                            <td><span class="badge badge-file">CSV/Excel</span></td>
+                            <td>الهيئة العامة للعقار</td>
+                            <td><span class="badge badge-med">متوسطة</span></td>
+                            <td>Weekly</td>
+                            <td>
+                                <div style="display:flex; justify-content:space-between; font-size:9px; margin-bottom:2px;"><span>65%</span></div>
+                                <div class="progress-container"><div class="progress-bar bg-amber" style="width:65%;"></div></div>
+                            </td>
+                            <td><span class="status-dot dot-amber"></span> جزئي (Partial)</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1B2A4A;">SRC-005</td>
+                            <td style="font-weight:600;">الفواتير الإلكترونية (ZATCA)</td>
+                            <td><span class="badge badge-api">REST API</span></td>
+                            <td>هيئة الزكاة والضريبة</td>
+                            <td><span class="badge badge-high">عالية</span></td>
+                            <td>Real-time</td>
+                            <td>
+                                <div style="display:flex; justify-content:space-between; font-size:9px; margin-bottom:2px;"><span>95%</span></div>
+                                <div class="progress-container"><div class="progress-bar bg-green" style="width:95%;"></div></div>
+                            </td>
+                            <td><span class="status-dot dot-green"></span> متصل (Active)</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1B2A4A;">SRC-006</td>
+                            <td style="font-weight:600;">بيانات التعليم العام (MOE)</td>
+                            <td><span class="badge badge-db">SQL Server</span></td>
+                            <td>وزارة التعليم</td>
+                            <td><span class="badge badge-med">متوسطة</span></td>
+                            <td>Daily</td>
+                            <td>
+                                <div style="display:flex; justify-content:space-between; font-size:9px; margin-bottom:2px;"><span>78%</span></div>
+                                <div class="progress-container"><div class="progress-bar bg-blue" style="width:78%;"></div></div>
+                            </td>
+                            <td><span class="status-dot dot-amber"></span> صيانة (Maint)</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1B2A4A;">SRC-007</td>
+                            <td style="font-weight:600;">البيانات الجغرافية (MOMRAH)</td>
+                            <td><span class="badge badge-file">Shapefile</span></td>
+                            <td>وزارة الشؤون البلدية</td>
+                            <td><span class="badge badge-low">منخفضة</span></td>
+                            <td>Monthly</td>
+                            <td>
+                                <div style="display:flex; justify-content:space-between; font-size:9px; margin-bottom:2px;"><span>55%</span></div>
+                                <div class="progress-container"><div class="progress-bar bg-amber" style="width:55%;"></div></div>
+                            </td>
+                            <td><span class="status-dot dot-red"></span> منقطع (Offline)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>مكتب إدارة البيانات الوطنية | NDMO</div>
+            <div class="page-number">2.03</div>
+            <div>سري للغاية - للاستخدام الداخلي فقط</div>
+        </div>
+    </div>
+</body>
+</html>

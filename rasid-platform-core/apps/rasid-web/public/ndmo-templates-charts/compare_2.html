@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 16px 4px 16px; display: flex; flex-direction: column; gap: 6px; }
+        .table-wrap { flex: 1; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        thead th { background: #1B2A4A; color: white; font-size: 12px; font-weight: 700; padding: 10px 8px; text-align: center; }
+        thead th:first-child { text-align: right; min-width: 200px; }
+        thead th.recommended { background: #2B5EA7; position: relative; }
+        thead th.recommended::after { content: "موصى به"; position: absolute; top: -1px; left: 50%; transform: translateX(-50%); background: #E8A838; color: #1B2A4A; font-size: 8px; font-weight: 800; padding: 1px 8px; }
+        tbody td { font-size: 11px; color: #1B2A4A; padding: 7px 8px; border-bottom: 1px solid #E2E8F0; text-align: center; }
+        tbody td:first-child { text-align: right; font-weight: 600; }
+        tbody tr:nth-child(even) { background: #F8FAFC; }
+        .check { color: #00B388; font-size: 14px; }
+        .cross { color: #CBD5E1; font-size: 14px; }
+        .partial { color: #E8A838; font-size: 14px; }
+        .cat-row td { background: #EFF6FF; font-weight: 800; color: #2B5EA7; font-size: 11px; }
+        .price-row td { background: #1B2A4A; color: white; font-size: 13px; font-weight: 800; }
+        .price-row td:first-child { color: rgba(255,255,255,0.7); }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-columns" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> عنوان مصفوفة مقارنة الخيارات / الميزات يكتب هنا</div>
+            <div class="header-num">3.50</div>
+        </div>
+        <div class="content">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>الميزة / المعيار يكتب هنا</th><th>الخيار الأول يكتب هنا</th><th class="recommended">الخيار الثاني يكتب هنا</th><th>الخيار الثالث يكتب هنا</th><th>الخيار الرابع يكتب هنا</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr class="cat-row"><td colspan="5"><i class="fas fa-layer-group" style="margin-left:4px;"></i> الفئة الأولى يكتب هنا</td></tr>
+                        <tr><td>اسم الميزة الأولى يكتب هنا</td><td><i class="fas fa-check-circle check"></i></td><td><i class="fas fa-check-circle check"></i></td><td><i class="fas fa-check-circle check"></i></td><td><i class="fas fa-times-circle cross"></i></td></tr>
+                        <tr><td>اسم الميزة الثانية يكتب هنا</td><td><i class="fas fa-times-circle cross"></i></td><td><i class="fas fa-check-circle check"></i></td><td><i class="fas fa-check-circle check"></i></td><td><i class="fas fa-times-circle cross"></i></td></tr>
+                        <tr><td>اسم الميزة الثالثة يكتب هنا</td><td><i class="fas fa-check-circle check"></i></td><td><i class="fas fa-check-circle check"></i></td><td><i class="fas fa-minus-circle partial"></i></td><td><i class="fas fa-check-circle check"></i></td></tr>
+                        <tr class="cat-row"><td colspan="5"><i class="fas fa-shield-alt" style="margin-left:4px;"></i> الفئة الثانية يكتب هنا</td></tr>
+                        <tr><td>اسم الميزة الرابعة يكتب هنا</td><td><i class="fas fa-check-circle check"></i></td><td><i class="fas fa-check-circle check"></i></td><td><i class="fas fa-times-circle cross"></i></td><td><i class="fas fa-check-circle check"></i></td></tr>
+                        <tr><td>اسم الميزة الخامسة يكتب هنا</td><td><i class="fas fa-minus-circle partial"></i></td><td><i class="fas fa-check-circle check"></i></td><td><i class="fas fa-check-circle check"></i></td><td><i class="fas fa-minus-circle partial"></i></td></tr>
+                        <tr><td>اسم الميزة السادسة يكتب هنا</td><td><i class="fas fa-times-circle cross"></i></td><td><i class="fas fa-check-circle check"></i></td><td><i class="fas fa-times-circle cross"></i></td><td><i class="fas fa-check-circle check"></i></td></tr>
+                        <tr class="cat-row"><td colspan="5"><i class="fas fa-cogs" style="margin-left:4px;"></i> الفئة الثالثة يكتب هنا</td></tr>
+                        <tr><td>اسم الميزة السابعة يكتب هنا</td><td><i class="fas fa-check-circle check"></i></td><td><i class="fas fa-check-circle check"></i></td><td><i class="fas fa-check-circle check"></i></td><td><i class="fas fa-check-circle check"></i></td></tr>
+                        <tr><td>اسم الميزة الثامنة يكتب هنا</td><td><i class="fas fa-times-circle cross"></i></td><td><i class="fas fa-check-circle check"></i></td><td><i class="fas fa-minus-circle partial"></i></td><td><i class="fas fa-times-circle cross"></i></td></tr>
+                        <tr class="price-row"><td>التكلفة / التقييم الإجمالي يكتب هنا</td><td>5 / 10</td><td style="color:#00B388;">9 / 10</td><td>6 / 10</td><td>5 / 10</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

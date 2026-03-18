@@ -1032,12 +1032,12 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
         )}
       </div>
 
-      {/* ═══ Slide Viewer & Editor ═══ */}
+      {/* ═══ Slide Viewer & Editor — VERTICAL LAYOUT ═══ */}
       {showSlideViewer && slideHtmls.length > 0 && (
         <div className="px-2 md:px-4 pb-2">
           <div className="rounded-2xl border border-border/40 bg-card overflow-hidden shadow-lg">
             {/* Toolbar */}
-            <div className="flex items-center justify-between px-3 py-2 border-b border-border/30 bg-muted/30">
+            <div className="flex items-center justify-between px-3 py-2 border-b border-border/30 bg-muted/30 sticky top-0 z-10">
               <div className="flex items-center gap-2">
                 <MaterialIcon icon="slideshow" size={16} className="text-primary" />
                 <span className="text-[12px] font-bold text-foreground">عرض تقديمي — {generatedSlides.length} شريحة</span>
@@ -1062,96 +1062,91 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
               </div>
             </div>
 
-            {/* Slide preview */}
-            <div className="relative bg-neutral-900 flex items-center justify-center" style={{ minHeight: 320 }}>
-              <iframe
-                srcDoc={slideHtmls[currentSlideIndex] || ''}
-                className="border-0 shadow-2xl"
-                style={{ width: 640, height: 360, borderRadius: 8, background: '#fff' }}
-                title={`شريحة ${currentSlideIndex + 1}`}
-              />
-              {/* Nav arrows */}
-              {currentSlideIndex > 0 && (
-                <button onClick={() => setCurrentSlideIndex(i => i - 1)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 shadow-lg flex items-center justify-center hover:bg-white transition-all active:scale-90">
-                  <MaterialIcon icon="chevron_right" size={20} className="text-neutral-700" />
-                </button>
-              )}
-              {currentSlideIndex < slideHtmls.length - 1 && (
-                <button onClick={() => setCurrentSlideIndex(i => i + 1)}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 shadow-lg flex items-center justify-center hover:bg-white transition-all active:scale-90">
-                  <MaterialIcon icon="chevron_left" size={20} className="text-neutral-700" />
-                </button>
-              )}
-              {/* Slide number */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/60 text-white text-[11px] font-bold">
-                {currentSlideIndex + 1} / {slideHtmls.length}
-              </div>
-            </div>
-
-            {/* Slide thumbnails */}
-            <div className="flex gap-1.5 p-2 overflow-x-auto bg-muted/20 border-t border-border/30">
-              {slideHtmls.map((_, i) => (
-                <button key={i} onClick={() => { setCurrentSlideIndex(i); setEditingSlide(null); }}
-                  className={`shrink-0 rounded-lg overflow-hidden border-2 transition-all ${i === currentSlideIndex ? 'border-primary shadow-md scale-105' : 'border-transparent opacity-70 hover:opacity-100'}`}>
-                  <iframe srcDoc={slideHtmls[i]} style={{ width: 120, height: 67.5, pointerEvents: 'none' }} title={`thumb-${i}`} className="border-0" />
-                </button>
-              ))}
-            </div>
-
-            {/* Edit panel for current slide */}
-            <div className="border-t border-border/30 p-3 bg-card">
-              {editingSlide === currentSlideIndex ? (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-foreground">تعديل الشريحة {currentSlideIndex + 1}</span>
+            {/* ─── ALL SLIDES VERTICALLY ─── */}
+            <div className="flex flex-col gap-4 p-3 md:p-4 max-h-[70vh] overflow-y-auto">
+              {slideHtmls.map((html, i) => (
+                <div
+                  key={`vslide-${i}`}
+                  id={`chatcanvas-slide-${i}`}
+                  className={`rounded-xl border transition-all ${
+                    currentSlideIndex === i
+                      ? 'border-primary/40 shadow-lg shadow-primary/5'
+                      : 'border-border/30 hover:border-primary/20'
+                  }`}
+                >
+                  {/* Slide header */}
+                  <div className="flex items-center justify-between px-3 py-1.5 bg-muted/20 border-b border-border/20 rounded-t-xl">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">P{i + 1}</span>
+                      <span className="text-[11px] font-medium text-foreground truncate max-w-[200px]">{generatedSlides[i]?.title || `شريحة ${i + 1}`}</span>
+                      <span className="text-[9px] text-muted-foreground">— {generatedSlides[i]?.layout}</span>
+                    </div>
                     <button onClick={() => {
-                      // Apply edit and regenerate HTML
-                      const updated = [...generatedSlides];
-                      if (editField.field === 'title') updated[currentSlideIndex] = { ...updated[currentSlideIndex], title: editField.value };
-                      else if (editField.field === 'content') updated[currentSlideIndex] = { ...updated[currentSlideIndex], content: editField.value };
-                      else if (editField.field === 'subtitle') updated[currentSlideIndex] = { ...updated[currentSlideIndex], subtitle: editField.value };
-                      setGeneratedSlides(updated);
-                      setSlideHtmls(generateHtmlPresentation(updated, slideThemeId));
-                      setEditingSlide(null);
-                    }} className="px-3 py-1.5 rounded-lg bg-primary text-white text-[10px] font-bold hover:bg-primary/90 transition-all active:scale-95">
-                      حفظ التعديل
+                      setCurrentSlideIndex(i);
+                      setEditingSlide(i);
+                      const slide = generatedSlides[i];
+                      setEditField({ field: 'title', value: slide?.title || '' });
+                    }} className="flex items-center gap-1 px-2 py-1 rounded-lg border border-border hover:border-primary/30 hover:bg-primary/[0.03] text-[9px] font-medium transition-all active:scale-95">
+                      <MaterialIcon icon="edit" size={11} className="text-primary" />
+                      تعديل
                     </button>
                   </div>
-                  <div className="flex gap-1.5">
-                    {['title', 'subtitle', 'content'].map(f => (
-                      <button key={f} onClick={() => {
-                        const slide = generatedSlides[currentSlideIndex];
-                        setEditField({ field: f, value: (slide as any)?.[f] || '' });
-                      }} className={`px-2.5 py-1 rounded-lg text-[10px] font-medium border transition-all ${editField.field === f ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:border-primary/30'}`}>
-                        {f === 'title' ? 'العنوان' : f === 'subtitle' ? 'العنوان الفرعي' : 'المحتوى'}
-                      </button>
-                    ))}
+
+                  {/* Slide iframe */}
+                  <div className="bg-neutral-900 flex items-center justify-center p-2 md:p-3">
+                    <iframe
+                      srcDoc={html}
+                      className="border-0 shadow-xl rounded-lg w-full"
+                      style={{ aspectRatio: '16/9', maxWidth: 640, background: '#fff' }}
+                      title={`شريحة ${i + 1}`}
+                    />
                   </div>
-                  <textarea
-                    value={editField.value}
-                    onChange={e => setEditField(prev => ({ ...prev, value: e.target.value }))}
-                    rows={3}
-                    className="w-full text-[12px] bg-muted/30 border border-border rounded-lg px-3 py-2 outline-none focus:border-primary/40 resize-none"
-                    placeholder="اكتب التعديل..."
-                  />
+
+                  {/* Edit panel (inline, only for this slide) */}
+                  {editingSlide === i && (
+                    <div className="border-t border-border/30 p-3 bg-card rounded-b-xl animate-fade-in">
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] font-bold text-foreground">تعديل الشريحة {i + 1}</span>
+                          <div className="flex gap-1">
+                            <button onClick={() => {
+                              const updated = [...generatedSlides];
+                              if (editField.field === 'title') updated[i] = { ...updated[i], title: editField.value };
+                              else if (editField.field === 'content') updated[i] = { ...updated[i], content: editField.value };
+                              else if (editField.field === 'subtitle') updated[i] = { ...updated[i], subtitle: editField.value };
+                              setGeneratedSlides(updated);
+                              setSlideHtmls(generateHtmlPresentation(updated, slideThemeId));
+                              setEditingSlide(null);
+                            }} className="px-3 py-1.5 rounded-lg bg-primary text-white text-[10px] font-bold hover:bg-primary/90 transition-all active:scale-95">
+                              حفظ
+                            </button>
+                            <button onClick={() => setEditingSlide(null)} className="px-2 py-1.5 rounded-lg border border-border text-[10px] text-muted-foreground hover:bg-accent transition-all">
+                              إلغاء
+                            </button>
+                          </div>
+                        </div>
+                        <div className="flex gap-1.5">
+                          {['title', 'subtitle', 'content'].map(f => (
+                            <button key={f} onClick={() => {
+                              const slide = generatedSlides[i];
+                              setEditField({ field: f, value: (slide as any)?.[f] || '' });
+                            }} className={`px-2.5 py-1 rounded-lg text-[10px] font-medium border transition-all ${editField.field === f ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:border-primary/30'}`}>
+                              {f === 'title' ? 'العنوان' : f === 'subtitle' ? 'العنوان الفرعي' : 'المحتوى'}
+                            </button>
+                          ))}
+                        </div>
+                        <textarea
+                          value={editField.value}
+                          onChange={e => setEditField(prev => ({ ...prev, value: e.target.value }))}
+                          rows={3}
+                          className="w-full text-[12px] bg-muted/30 border border-border rounded-lg px-3 py-2 outline-none focus:border-primary/40 resize-none"
+                          placeholder="اكتب التعديل..."
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-[12px] font-bold text-foreground">{generatedSlides[currentSlideIndex]?.title}</span>
-                    <span className="text-[10px] text-muted-foreground mr-2">— {generatedSlides[currentSlideIndex]?.layout}</span>
-                  </div>
-                  <button onClick={() => {
-                    setEditingSlide(currentSlideIndex);
-                    const slide = generatedSlides[currentSlideIndex];
-                    setEditField({ field: 'title', value: slide?.title || '' });
-                  }} className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-border hover:border-primary/30 hover:bg-primary/[0.03] text-[10px] font-medium transition-all active:scale-95">
-                    <MaterialIcon icon="edit" size={13} className="text-primary" />
-                    تعديل
-                  </button>
-                </div>
-              )}
+              ))}
             </div>
           </div>
         </div>

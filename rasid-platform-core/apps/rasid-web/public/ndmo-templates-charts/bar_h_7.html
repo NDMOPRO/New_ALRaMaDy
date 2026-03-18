@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; background: #FFFFFF; position: relative; display: flex; flex-direction: column; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 12px 20px 8px 20px; display: grid; grid-template-columns: 1.8fr 1fr; gap: 10px; }
+
+        .chart-box { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px 12px; display: flex; flex-direction: column; }
+        .chart-title { font-size: 12px; font-weight: 700; color: #1B2A4A; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .chart-title i { color: #2B5EA7; font-size: 11px; }
+        .chart-body { flex: 1; position: relative; }
+
+        .right-col { display: flex; flex-direction: column; gap: 8px; }
+        .stat-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-top: 3px solid #2B5EA7; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+        .stat-card:nth-child(1) { border-top-color: #1B2A4A; }
+        .stat-card:nth-child(2) { border-top-color: #2B5EA7; }
+        .stat-card:nth-child(3) { border-top-color: #00B388; }
+        .stat-card:nth-child(4) { border-top-color: #E8A838; }
+        .stat-card:nth-child(5) { border-top-color: #C0392B; }
+        .stat-label { font-size: 10px; color: #64748B; font-weight: 500; }
+        .stat-value { font-size: 28px; font-weight: 800; color: #1B2A4A; line-height: 1; }
+        .stat-unit { font-size: 11px; color: #94A3B8; font-weight: 500; }
+        .stat-trend { display: flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 700; }
+        .stat-trend.up { color: #00B388; }
+        .stat-trend.down { color: #C0392B; }
+        .stat-sub { font-size: 9px; color: #94A3B8; display: flex; justify-content: space-between; }
+
+        .detail-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+        .detail-table th { background: #1B2A4A; color: white; font-size: 9px; font-weight: 700; padding: 5px 8px; text-align: right; }
+        .detail-table td { font-size: 9px; color: #1B2A4A; padding: 5px 8px; border-bottom: 1px solid #E2E8F0; }
+        .detail-table tr:nth-child(even) td { background: #F8FAFC; }
+        .detail-table .val { font-weight: 800; font-size: 11px; }
+
+        .footer { height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 22px; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-chart-bar" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> عنوان الرسم البياني الأفقي مع التفاصيل الرقمية يكتب هنا</div>
+            <div class="header-num">3.17</div>
+        </div>
+        <div class="content">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div class="chart-box" style="flex:1;">
+                    <div class="chart-title"><i class="fas fa-align-left"></i> عنوان الرسم البياني يكتب هنا</div>
+                    <div class="chart-body"><canvas id="hBarChart"></canvas></div>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-title"><i class="fas fa-table"></i> جدول التفاصيل الرقمية يكتب هنا</div>
+                    <table class="detail-table">
+                        <tr><th>العنصر</th><th>القيمة الحالية</th><th>المستهدف</th><th>الفجوة</th><th>الحالة</th></tr>
+                        <tr><td>العنصر الأول يكتب هنا</td><td class="val">92%</td><td>95%</td><td>3%</td><td style="color:#00B388;font-weight:700;">● ممتاز</td></tr>
+                        <tr><td>العنصر الثاني يكتب هنا</td><td class="val">85%</td><td>90%</td><td>5%</td><td style="color:#2B5EA7;font-weight:700;">● جيد</td></tr>
+                        <tr><td>العنصر الثالث يكتب هنا</td><td class="val">78%</td><td>85%</td><td>7%</td><td style="color:#E8A838;font-weight:700;">● متوسط</td></tr>
+                        <tr><td>العنصر الرابع يكتب هنا</td><td class="val">65%</td><td>80%</td><td>15%</td><td style="color:#C0392B;font-weight:700;">● ضعيف</td></tr>
+                        <tr><td>العنصر الخامس يكتب هنا</td><td class="val">88%</td><td>90%</td><td>2%</td><td style="color:#00B388;font-weight:700;">● ممتاز</td></tr>
+                    </table>
+                </div>
+            </div>
+            <div class="right-col">
+                <div class="stat-card">
+                    <div class="stat-label">المتوسط العام يكتب هنا</div>
+                    <div class="stat-value">81.6<span class="stat-unit">%</span></div>
+                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> 4.2%</div>
+                    <div class="stat-sub"><span>المستهدف: 88%</span><span>الفجوة: 6.4%</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">أعلى قيمة يكتب هنا</div>
+                    <div class="stat-value">92<span class="stat-unit">%</span></div>
+                    <div class="stat-trend up"><i class="fas fa-arrow-up"></i> العنصر الأول</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">أدنى قيمة يكتب هنا</div>
+                    <div class="stat-value">65<span class="stat-unit">%</span></div>
+                    <div class="stat-trend down"><i class="fas fa-arrow-down"></i> العنصر الرابع</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">عدد العناصر فوق المستهدف</div>
+                    <div class="stat-value">2<span class="stat-unit"> / 5</span></div>
+                    <div class="stat-sub"><span>نسبة الإنجاز: 40%</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">عدد العناصر الحرجة</div>
+                    <div class="stat-value">1</div>
+                    <div class="stat-trend down"><i class="fas fa-exclamation-triangle"></i> يتطلب تدخل</div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+    <script>
+        new Chart(document.getElementById('hBarChart'), {
+            type: 'bar',
+            data: {
+                labels: ['العنصر الأول يكتب هنا','العنصر الثاني يكتب هنا','العنصر الثالث يكتب هنا','العنصر الرابع يكتب هنا','العنصر الخامس يكتب هنا'],
+                datasets: [{
+                    label: 'القيمة الحالية',
+                    data: [92, 85, 78, 65, 88],
+                    backgroundColor: '#2B5EA7',
+                    barPercentage: 0.6
+                }, {
+                    label: 'المستهدف',
+                    data: [95, 90, 85, 80, 90],
+                    backgroundColor: 'rgba(43,94,167,0.15)',
+                    barPercentage: 0.6
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: { legend: { display: true, position: 'top', labels: { font: { family: 'Tajawal', size: 9 }, boxWidth: 10 } } },
+                scales: {
+                    x: { max: 100, grid: { color: '#F1F5F9' }, ticks: { font: { family: 'Tajawal', size: 9 }, callback: v => v + '%' } },
+                    y: { grid: { display: false }, ticks: { font: { family: 'Tajawal', size: 10 } } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

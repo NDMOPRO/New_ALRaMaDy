@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 16px 40px 10px 40px; flex: 1; display: flex; gap: 14px; }
+
+        .main-panel { flex: 2.5; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; flex-direction: column; }
+        .mp-header { padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1B2A4A; }
+        .mp-title { font-size: 15px; font-weight: 800; color: #1B2A4A; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f8f8f8; font-size: 11px; font-weight: 800; color: #1B2A4A; padding: 8px 10px; text-align: right; border-bottom: 1px solid #eee; }
+        td { font-size: 11px; padding: 7px 10px; border-bottom: 1px solid #f5f5f5; color: #333; }
+        tr:nth-child(even) td { background: #fcfcfc; }
+        
+        .control-type { padding: 2px 6px; font-size: 10px; font-weight: 700; display: inline-block; }
+        .ct-admin { background: rgba(43,94,167,0.1); color: #2B5EA7; }
+        .ct-tech { background: rgba(0,179,136,0.1); color: #00B388; }
+        .ct-phys { background: rgba(232,168,56,0.1); color: #E8A838; }
+
+        .status-badge { padding: 2px 6px; font-size: 10px; font-weight: 700; border-radius: 2px; }
+        .sb-comp { background: #00B388; color: white; }
+        .sb-part { background: #E8A838; color: white; }
+        .sb-non { background: #E85B7A; color: white; }
+
+        .side-panel { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+        .stat-card { background: white; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 10px; }
+        .sc-title { font-size: 13px; font-weight: 800; color: #666; }
+        .sc-val-row { display: flex; align-items: baseline; gap: 8px; }
+        .sc-val { font-size: 32px; font-weight: 800; color: #1B2A4A; line-height: 1; }
+        .sc-sub { font-size: 11px; color: #00B388; font-weight: 700; }
+        
+        .chart-placeholder { height: 120px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; position: relative; }
+        .bar-chart { display: flex; align-items: flex-end; gap: 12px; height: 80px; }
+        .bar { width: 24px; background: #2B5EA7; position: relative; }
+        .bar span { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 10px; font-weight: 700; color: #333; }
+
+        .risk-card { background: #1B2A4A; color: white; padding: 16px; flex: 1; }
+        .rc-head { font-size: 13px; font-weight: 800; color: #E8A838; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+        .risk-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 11px; }
+        .ri-label { color: rgba(255,255,255,0.8); }
+        .ri-val { font-weight: 700; color: #E85B7A; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الضوابط المرتبطة - سجل الضوابط الإدارية والتقنية</div>
+            <div class="header-badge">27</div>
+        </div>
+
+        <div class="content-area">
+            <div class="main-panel">
+                <div class="mp-header">
+                    <div class="mp-title"><i class="fas fa-tasks" style="margin-left:8px;color:#2B5EA7"></i>قائمة الضوابط التفصيلية</div>
+                    <div style="font-size:11px;color:#666">إجمالي الضوابط: 45</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>رمز الضابط</th><th>اسم الضابط</th><th>النوع</th><th>الوصف المختصر</th><th>المالك</th><th>الأولوية</th><th>الحالة</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>G-ADM-01</td><td>سياسة التصنيف</td><td><span class="control-type ct-admin">إداري</span></td><td>تحديد مستويات سرية البيانات وآليات الوسم</td><td>مكتب البيانات</td><td>عالية</td><td><span class="status-badge sb-comp">ممتثل</span></td></tr>
+                        <tr><td>G-TEC-02</td><td>التشفير</td><td><span class="control-type ct-tech">تقني</span></td><td>تشفير البيانات الحساسة أثناء النقل والتخزين</td><td>الأمن السيبراني</td><td>عالية</td><td><span class="status-badge sb-comp">ممتثل</span></td></tr>
+                        <tr><td>G-TEC-03</td><td>إدارة الهوية</td><td><span class="control-type ct-tech">تقني</span></td><td>التحقق الثنائي وإدارة صلاحيات الوصول (IAM)</td><td>الأمن السيبراني</td><td>عالية</td><td><span class="status-badge sb-part">جزئي</span></td></tr>
+                        <tr><td>G-PHY-04</td><td>أمن المراكز</td><td><span class="control-type ct-phys">مادي</span></td><td>التحكم بالدخول لمراكز البيانات وغرف الخوادم</td><td>الأمن والسلامة</td><td>متوسطة</td><td><span class="status-badge sb-comp">ممتثل</span></td></tr>
+                        <tr><td>G-ADM-05</td><td>التدريب والتوعية</td><td><span class="control-type ct-admin">إداري</span></td><td>برامج توعوية دورية للموظفين حول حماية البيانات</td><td>الموارد البشرية</td><td>متوسطة</td><td><span class="status-badge sb-part">جزئي</span></td></tr>
+                        <tr><td>G-TEC-06</td><td>منع التسريب (DLP)</td><td><span class="control-type ct-tech">تقني</span></td><td>أنظمة مراقبة ومنع تسريب البيانات الحساسة</td><td>الأمن السيبراني</td><td>عالية</td><td><span class="status-badge sb-non">غير ممتثل</span></td></tr>
+                        <tr><td>G-ADM-07</td><td>إدارة الحوادث</td><td><span class="control-type ct-admin">إداري</span></td><td>إجراءات الإبلاغ والاستجابة لانتهاكات البيانات</td><td>مكتب البيانات</td><td>عالية</td><td><span class="status-badge sb-comp">ممتثل</span></td></tr>
+                        <tr><td>G-TEC-08</td><td>النسخ الاحتياطي</td><td><span class="control-type ct-tech">تقني</span></td><td>سياسات وجداول النسخ الاحتياطي والاستعادة</td><td>التقنية</td><td>عالية</td><td><span class="status-badge sb-comp">ممتثل</span></td></tr>
+                        <tr><td>G-ADM-09</td><td>التخلص الآمن</td><td><span class="control-type ct-admin">إداري</span></td><td>إجراءات إتلاف الوسائط والبيانات منتهية الصلاحية</td><td>الخدمات المشتركة</td><td>منخفضة</td><td><span class="status-badge sb-part">جزئي</span></td></tr>
+                        <tr><td>G-PHY-10</td><td>المراقبة البيئية</td><td><span class="control-type ct-phys">مادي</span></td><td>مراقبة الحرارة والرطوبة والحرائق في المراكز</td><td>الصيانة</td><td>متوسطة</td><td><span class="status-badge sb-comp">ممتثل</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="side-panel">
+                <div class="stat-card">
+                    <div class="sc-title">نسبة الامتثال الكلية</div>
+                    <div class="sc-val-row"><div class="sc-val">82%</div><div class="sc-sub"><i class="fas fa-arrow-up"></i> +5%</div></div>
+                    <div style="height:4px;background:#eee;width:100%;margin-top:4px"><div style="height:100%;width:82%;background:#00B388"></div></div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="sc-title">توزيع الضوابط حسب النوع</div>
+                    <div class="chart-placeholder">
+                        <div class="bar-chart">
+                            <div class="bar" style="height:60%;background:#2B5EA7"><span>45%</span></div>
+                            <div class="bar" style="height:30%;background:#00B388"><span>35%</span></div>
+                            <div class="bar" style="height:20%;background:#E8A838"><span>20%</span></div>
+                        </div>
+                    </div>
+                    <div style="display:flex;justify-content:space-around;font-size:10px;color:#666"><span>إداري</span><span>تقني</span><span>مادي</span></div>
+                </div>
+
+                <div class="risk-card">
+                    <div class="rc-head">أبرز الفجوات والمخاطر</div>
+                    <div class="risk-item"><div class="ri-label">عدم اكتمال DLP</div><div class="ri-val">عالٍ جداً</div></div>
+                    <div class="risk-item"><div class="ri-label">نقص التوعية الأمنية</div><div class="ri-val">متوسط</div></div>
+                    <div class="risk-item"><div class="ri-label">إجراءات الإتلاف</div><div class="ri-val">منخفض</div></div>
+                    <div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.1);font-size:11px;color:#E8A838;text-align:center"><i class="fas fa-exclamation-triangle"></i> مطلوب خطة تصحيحية عاجلة</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">27</div>
+    </div>
+</body>
+</html>

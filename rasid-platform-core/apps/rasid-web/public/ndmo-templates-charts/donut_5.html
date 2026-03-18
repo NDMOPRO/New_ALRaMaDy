@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { height: 628px; padding: 8px 16px 4px 16px; display: flex; flex-direction: column; gap: 8px; }
+        .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; flex-shrink: 0; }
+        .kpi-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-top: 3px solid #2B5EA7; padding: 6px 8px; text-align: center; }
+        .kpi-card:nth-child(1) { border-top-color: #1B2A4A; }
+        .kpi-card:nth-child(2) { border-top-color: #2B5EA7; }
+        .kpi-card:nth-child(3) { border-top-color: #00B388; }
+        .kpi-card:nth-child(4) { border-top-color: #E8A838; }
+        .kpi-card:nth-child(5) { border-top-color: #8E44AD; }
+        .kpi-label { font-size: 8px; color: #64748B; }
+        .kpi-value { font-size: 20px; font-weight: 800; color: #1B2A4A; line-height: 1.2; }
+        .kpi-sub { font-size: 7px; color: #00B388; font-weight: 700; }
+        .bottom-row { flex: 1; display: grid; grid-template-columns: 1.3fr 1fr; gap: 8px; min-height: 0; }
+        .chart-box { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 8px 10px; display: flex; flex-direction: column; }
+        .chart-title { font-size: 11px; font-weight: 700; color: #1B2A4A; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+        .chart-title i { color: #2B5EA7; font-size: 10px; }
+        .chart-body { flex: 1; position: relative; min-height: 0; }
+        .insights-col { display: flex; flex-direction: column; gap: 6px; }
+        .ins-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-right: 3px solid #2B5EA7; padding: 10px 12px; flex: 1; }
+        .ins-card:nth-child(1) { border-right-color: #1B2A4A; }
+        .ins-card:nth-child(2) { border-right-color: #00B388; }
+        .ins-card:nth-child(3) { border-right-color: #E8A838; }
+        .ic-title { font-size: 10px; font-weight: 700; color: #1B2A4A; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+        .ic-title i { font-size: 9px; }
+        .ic-text { font-size: 9px; color: #64748B; line-height: 1.5; }
+        .ic-val { font-size: 18px; font-weight: 800; color: #1B2A4A; margin-top: 4px; }
+        .footer { height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 22px; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-chart-pie" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> عنوان الرسم البياني الدائري - Pie Chart يكتب هنا</div>
+            <div class="header-num">3.37</div>
+        </div>
+        <div class="content">
+            <div class="kpi-row">
+                <div class="kpi-card"><div class="kpi-label">الفئة الأولى يكتب هنا</div><div class="kpi-value">38%</div><div class="kpi-sub"><i class="fas fa-arrow-up"></i> +4%</div></div>
+                <div class="kpi-card"><div class="kpi-label">الفئة الثانية يكتب هنا</div><div class="kpi-value">26%</div><div class="kpi-sub"><i class="fas fa-arrow-up"></i> +2%</div></div>
+                <div class="kpi-card"><div class="kpi-label">الفئة الثالثة يكتب هنا</div><div class="kpi-value">18%</div><div class="kpi-sub" style="color:#C0392B"><i class="fas fa-arrow-down"></i> -1%</div></div>
+                <div class="kpi-card"><div class="kpi-label">الفئة الرابعة يكتب هنا</div><div class="kpi-value">12%</div><div class="kpi-sub" style="color:#E8A838"><i class="fas fa-minus"></i> 0%</div></div>
+                <div class="kpi-card"><div class="kpi-label">أخرى يكتب هنا</div><div class="kpi-value">6%</div><div class="kpi-sub" style="color:#C0392B"><i class="fas fa-arrow-down"></i> -3%</div></div>
+            </div>
+            <div class="bottom-row">
+                <div class="chart-box">
+                    <div class="chart-title"><i class="fas fa-chart-pie"></i> عنوان التوزيع الدائري التقليدي يكتب هنا</div>
+                    <div class="chart-body"><canvas id="pieChart"></canvas></div>
+                </div>
+                <div class="insights-col">
+                    <div class="ins-card"><div class="ic-title"><i class="fas fa-trophy" style="color:#1B2A4A;"></i> الفئة الأعلى يكتب هنا</div><div class="ic-text">وصف الفئة الأعلى ولماذا تحتل المرتبة الأولى يكتب هنا مع التوضيح</div><div class="ic-val">38%</div></div>
+                    <div class="ins-card"><div class="ic-title"><i class="fas fa-chart-line" style="color:#00B388;"></i> أكبر نمو يكتب هنا</div><div class="ic-text">وصف الفئة التي حققت أكبر نمو والأسباب الرئيسية يكتب هنا</div><div class="ic-val">+4%</div></div>
+                    <div class="ins-card"><div class="ic-title"><i class="fas fa-exclamation-triangle" style="color:#E8A838;"></i> نقطة اهتمام يكتب هنا</div><div class="ic-text">وصف النقطة التي تحتاج اهتمام والإجراء المقترح يكتب هنا</div><div class="ic-val" style="color:#C0392B;">-3%</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+    <script>
+        new Chart(document.getElementById('pieChart'), {
+            type: 'pie',
+            data: { labels: ['الفئة الأولى يكتب هنا','الفئة الثانية يكتب هنا','الفئة الثالثة يكتب هنا','الفئة الرابعة يكتب هنا','أخرى يكتب هنا'], datasets: [{ data: [38,26,18,12,6], backgroundColor: ['#1B2A4A','#2B5EA7','#00B388','#E8A838','#CBD5E1'], borderWidth: 2, borderColor: '#FFF' }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Tajawal', size: 9 }, boxWidth: 10, padding: 6 } } } }
+        });
+    </script>
+</body>
+</html>

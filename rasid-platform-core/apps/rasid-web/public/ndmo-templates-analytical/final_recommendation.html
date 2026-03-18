@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التوصيات الختامية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1B2A4A; /* Royal Dark Blue */
+            --accent-color: #00B388; /* Teal */
+            --highlight-color: #E8A838; /* Gold */
+            --white: #FFFFFF;
+            --light-bg: #F8F9FA;
+            --border-color: #E0E0E0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: var(--white);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Royal Blue Header */
+        .header {
+            background-color: var(--primary-color);
+            height: 85px;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            position: relative;
+            z-index: 10;
+            border-bottom: 4px solid var(--highlight-color);
+        }
+
+        .header-title {
+            color: var(--white);
+            font-size: 28px;
+            font-weight: 800;
+            margin-left: 20px;
+        }
+
+        .header-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            font-weight: 500;
+            margin-right: auto;
+        }
+
+        .logo-container {
+            background-color: rgba(255,255,255,0.1);
+            padding: 5px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            height: 40px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        /* Content Area: Recommendations */
+        .content {
+            flex: 1;
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--light-bg);
+            justify-content: center;
+        }
+
+        .recommendation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .rec-item {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: flex-start;
+            border-right: 6px solid var(--primary-color);
+            transition: transform 0.2s ease;
+        }
+
+        .rec-item:hover {
+            transform: translateX(-5px);
+        }
+
+        .rec-number {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-left: 20px;
+            background-color: #f1f2f6;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .rec-content {
+            flex: 1;
+        }
+
+        .rec-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .rec-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .rec-meta {
+            margin-top: 10px;
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .meta-tag {
+            background-color: #f8f9fa;
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+
+        /* Styles for specific items */
+        .rec-item.priority-high { border-right-color: var(--accent-color); }
+        .rec-item.priority-high .rec-number { color: var(--accent-color); background-color: rgba(0, 179, 136, 0.1); }
+        
+        .rec-item.priority-med { border-right-color: var(--highlight-color); }
+        .rec-item.priority-med .rec-number { color: var(--highlight-color); background-color: rgba(232, 168, 56, 0.1); }
+
+        /* Footer */
+        .footer {
+            height: 40px;
+            background-color: var(--white);
+            border-top: 1px solid #E0E0E0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 10px;
+            color: #888;
+        }
+
+        .footer-text {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .page-number {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">عنوان الشريحة الرئيسي يكتب هنا</div>
+            <div class="header-subtitle">وصف مختصر لمحتوى الشريحة يكتب في هذا المكان</div>
+            <div class="logo-container">
+                <img src="assets/logo_ndmo.png" class="logo-img" alt="NDMO">
+                <img src="assets/logo_sdaia.png" class="logo-img" alt="SDAIA">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <div class="recommendation-list">
+                <!-- Rec 1 -->
+                <div class="rec-item priority-high">
+                    <div class="rec-number">01</div>
+                    <div class="rec-content">
+                        <div class="rec-title">التوصية الاستراتيجية الأولى</div>
+                        <div class="rec-desc">وصف تفصيلي للتوصية الأولى المقترحة، مع توضيح الأثر المتوقع والفائدة المرجوة من تطبيقها بشكل عاجل.</div>
+                        <div class="rec-meta">
+                            <span class="meta-tag">الأولوية: عالية</span>
+                            <span class="meta-tag">المدة: 3 أشهر</span>
+                            <span class="meta-tag">المسؤول: الإدارة العليا</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rec 2 -->
+                <div class="rec-item priority-med">
+                    <div class="rec-number">02</div>
+                    <div class="rec-content">
+                        <div class="rec-title">التوصية الاستراتيجية الثانية</div>
+                        <div class="rec-desc">وصف تفصيلي للتوصية الثانية المقترحة، مع توضيح الأثر المتوقع والفائدة المرجوة من تطبيقها.</div>
+                        <div class="rec-meta">
+                            <span class="meta-tag">الأولوية: متوسطة</span>
+                            <span class="meta-tag">المدة: 6 أشهر</span>
+                            <span class="meta-tag">المسؤول: إدارة التقنية</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rec 3 -->
+                <div class="rec-item">
+                    <div class="rec-number">03</div>
+                    <div class="rec-content">
+                        <div class="rec-title">التوصية الاستراتيجية الثالثة</div>
+                        <div class="rec-desc">وصف تفصيلي للتوصية الثالثة المقترحة، مع توضيح الأثر المتوقع والفائدة المرجوة من تطبيقها.</div>
+                        <div class="rec-meta">
+                            <span class="meta-tag">الأولوية: عادية</span>
+                            <span class="meta-tag">المدة: 12 شهر</span>
+                            <span class="meta-tag">المسؤول: الموارد البشرية</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rec 4 -->
+                <div class="rec-item">
+                    <div class="rec-number">04</div>
+                    <div class="rec-content">
+                        <div class="rec-title">التوصية الاستراتيجية الرابعة</div>
+                        <div class="rec-desc">وصف تفصيلي للتوصية الرابعة المقترحة، مع توضيح الأثر المتوقع والفائدة المرجوة من تطبيقها.</div>
+                        <div class="rec-meta">
+                            <span class="meta-tag">الأولوية: عادية</span>
+                            <span class="meta-tag">المدة: مستمر</span>
+                            <span class="meta-tag">المسؤول: جميع الإدارات</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالادارة العامة لادارة البيانات</div>
+            <div class="page-number">49</div>
+        </div>
+    </div>
+</body>
+</html>

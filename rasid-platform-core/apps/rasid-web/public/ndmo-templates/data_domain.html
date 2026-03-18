@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+            flex-shrink: 0;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 20px 40px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Metrics Row */
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            height: 90px;
+        }
+        .metric-card {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 3px solid #ccc;
+        }
+        .mc-teal { border-color: #00B388; }
+        .mc-blue { border-color: #2B5EA7; }
+        .mc-gold { border-color: #E8A838; }
+        .mc-purple { border-color: #8B7EC8; }
+
+        .mc-icon {
+            width: 40px; height: 40px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            color: #1B2A4A; font-size: 18px;
+        }
+        .mc-content { flex: 1; }
+        .mc-label { font-size: 11px; color: #666; margin-bottom: 2px; }
+        .mc-val { font-size: 20px; font-weight: 800; color: #1B2A4A; }
+        .mc-sub { font-size: 10px; color: #888; }
+
+        /* Main Split */
+        .main-split {
+            flex: 1;
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Domains Grid */
+        .domains-area {
+            flex: 3;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .domain-card {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            border-top: 3px solid #1B2A4A;
+        }
+        .dc-header {
+            padding: 10px 15px;
+            background: #f9f9f9;
+            border-bottom: 1px solid #eee;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .dc-icon { color: #2B5EA7; font-size: 14px; }
+        .dc-title { font-size: 13px; font-weight: 700; color: #1B2A4A; }
+        
+        .dc-list {
+            padding: 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .dataset-item {
+            display: flex; align-items: center; justify-content: space-between;
+            font-size: 11px; color: #555;
+            padding-bottom: 5px; border-bottom: 1px dashed #eee;
+        }
+        .dataset-item:last-child { border-bottom: none; }
+        .ds-name { font-weight: 500; display: flex; align-items: center; gap: 6px; }
+        .ds-name::before { content: '•'; color: #ccc; }
+        .ds-tag { 
+            font-size: 9px; padding: 1px 6px; border-radius: 2px; font-weight: 700;
+        }
+        .tag-pub { background: #e6f7f2; color: #00B388; }
+        .tag-res { background: #eef4fb; color: #2B5EA7; }
+        .tag-con { background: #fef6e6; color: #E8A838; }
+
+        /* Classification Sidebar */
+        .class-sidebar {
+            flex: 1;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-title {
+            font-size: 13px; font-weight: 800; color: #1B2A4A;
+            margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #eee;
+        }
+        
+        .class-chart {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .class-row { display: flex; flex-direction: column; gap: 5px; }
+        .cr-header { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: #555; }
+        .cr-bar-bg { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
+        .cr-bar-fill { height: 100%; border-radius: 4px; }
+        
+        .fill-green { background: #00B388; width: 25%; }
+        .fill-blue { background: #2B5EA7; width: 45%; }
+        .fill-gold { background: #E8A838; width: 20%; }
+        .fill-red { background: #E85B7A; width: 10%; }
+
+        .legend-box {
+            margin-top: 20px;
+            background: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #eee;
+        }
+        .legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; font-size: 10px; color: #666; }
+        .l-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">تعريف المجال البياني - تصنيف الأصول المعلوماتية</div>
+            <div class="header-badge">14</div>
+        </div>
+
+        <div class="content-area">
+            <!-- Metrics -->
+            <div class="metrics-row">
+                <div class="metric-card mc-teal">
+                    <div class="mc-icon"><i class="fas fa-database"></i></div>
+                    <div class="mc-content">
+                        <div class="mc-label">إجمالي مجموعات البيانات</div>
+                        <div class="mc-val">145</div>
+                        <div class="mc-sub">مجموعة بيانات معرفة</div>
+                    </div>
+                </div>
+                <div class="metric-card mc-blue">
+                    <div class="mc-icon"><i class="fas fa-server"></i></div>
+                    <div class="mc-content">
+                        <div class="mc-label">حجم البيانات التقديري</div>
+                        <div class="mc-val">8.5 TB</div>
+                        <div class="mc-sub">بيانات مهيكلة وغير مهيكلة</div>
+                    </div>
+                </div>
+                <div class="metric-card mc-gold">
+                    <div class="mc-icon"><i class="fas fa-network-wired"></i></div>
+                    <div class="mc-content">
+                        <div class="mc-label">الأنظمة المصدرية</div>
+                        <div class="mc-val">12</div>
+                        <div class="mc-sub">نظام تشغيلي</div>
+                    </div>
+                </div>
+                <div class="metric-card mc-purple">
+                    <div class="mc-icon"><i class="fas fa-sync"></i></div>
+                    <div class="mc-content">
+                        <div class="mc-label">معدل التحديث</div>
+                        <div class="mc-val">يومي</div>
+                        <div class="mc-sub">لـ 60% من البيانات</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Split -->
+            <div class="main-split">
+                <!-- Domains Grid -->
+                <div class="domains-area">
+                    <!-- Domain 1 -->
+                    <div class="domain-card">
+                        <div class="dc-header">
+                            <div class="dc-icon"><i class="fas fa-users"></i></div>
+                            <div class="dc-title">الموارد البشرية</div>
+                        </div>
+                        <div class="dc-list">
+                            <div class="dataset-item">
+                                <div class="ds-name">سجل الموظفين الموحد</div>
+                                <div class="ds-tag tag-res">مقيد</div>
+                            </div>
+                            <div class="dataset-item">
+                                <div class="ds-name">بيانات الرواتب والمزايا</div>
+                                <div class="ds-tag tag-con">سري</div>
+                            </div>
+                            <div class="dataset-item">
+                                <div class="ds-name">سجل التدريب والتطوير</div>
+                                <div class="ds-tag tag-res">مقيد</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Domain 2 -->
+                    <div class="domain-card">
+                        <div class="dc-header">
+                            <div class="dc-icon"><i class="fas fa-coins"></i></div>
+                            <div class="dc-title">الشؤون المالية</div>
+                        </div>
+                        <div class="dc-list">
+                            <div class="dataset-item">
+                                <div class="ds-name">الميزانية السنوية</div>
+                                <div class="ds-tag tag-pub">عام</div>
+                            </div>
+                            <div class="dataset-item">
+                                <div class="ds-name">أوامر الصرف والدفع</div>
+                                <div class="ds-tag tag-con">سري</div>
+                            </div>
+                            <div class="dataset-item">
+                                <div class="ds-name">العقود والمشتريات</div>
+                                <div class="ds-tag tag-res">مقيد</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Domain 3 -->
+                    <div class="domain-card">
+                        <div class="dc-header">
+                            <div class="dc-icon"><i class="fas fa-cogs"></i></div>
+                            <div class="dc-title">العمليات التشغيلية</div>
+                        </div>
+                        <div class="dc-list">
+                            <div class="dataset-item">
+                                <div class="ds-name">سجل المعاملات اليومي</div>
+                                <div class="ds-tag tag-res">مقيد</div>
+                            </div>
+                            <div class="dataset-item">
+                                <div class="ds-name">مؤشرات الأداء التشغيلي</div>
+                                <div class="ds-tag tag-pub">عام</div>
+                            </div>
+                            <div class="dataset-item">
+                                <div class="ds-name">تقارير الجودة</div>
+                                <div class="ds-tag tag-res">مقيد</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Domain 4 -->
+                    <div class="domain-card">
+                        <div class="dc-header">
+                            <div class="dc-icon"><i class="fas fa-user-friends"></i></div>
+                            <div class="dc-title">المستفيدين والعملاء</div>
+                        </div>
+                        <div class="dc-list">
+                            <div class="dataset-item">
+                                <div class="ds-name">الملف الشخصي للمستفيد</div>
+                                <div class="ds-tag tag-con">سري</div>
+                            </div>
+                            <div class="dataset-item">
+                                <div class="ds-name">سجل الطلبات والخدمات</div>
+                                <div class="ds-tag tag-res">مقيد</div>
+                            </div>
+                            <div class="dataset-item">
+                                <div class="ds-name">استطلاعات الرضا</div>
+                                <div class="ds-tag tag-pub">عام</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Domain 5 -->
+                    <div class="domain-card">
+                        <div class="dc-header">
+                            <div class="dc-icon"><i class="fas fa-gavel"></i></div>
+                            <div class="dc-title">الشؤون القانونية</div>
+                        </div>
+                        <div class="dc-list">
+                            <div class="dataset-item">
+                                <div class="ds-name">القضايا والتحقيقات</div>
+                                <div class="ds-tag tag-con" style="background:#ffebeb; color:#E85B7A;">سري للغاية</div>
+                            </div>
+                            <div class="dataset-item">
+                                <div class="ds-name">اللوائح والسياسات</div>
+                                <div class="ds-tag tag-pub">عام</div>
+                            </div>
+                            <div class="dataset-item">
+                                <div class="ds-name">الاستشارات القانونية</div>
+                                <div class="ds-tag tag-con">سري</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Domain 6 -->
+                    <div class="domain-card">
+                        <div class="dc-header">
+                            <div class="dc-icon"><i class="fas fa-laptop-code"></i></div>
+                            <div class="dc-title">البنية التقنية</div>
+                        </div>
+                        <div class="dc-list">
+                            <div class="dataset-item">
+                                <div class="ds-name">سجل الأصول التقنية</div>
+                                <div class="ds-tag tag-res">مقيد</div>
+                            </div>
+                            <div class="dataset-item">
+                                <div class="ds-name">سجلات الدخول (Logs)</div>
+                                <div class="ds-tag tag-con">سري</div>
+                            </div>
+                            <div class="dataset-item">
+                                <div class="ds-name">بنية الشبكة والمخططات</div>
+                                <div class="ds-tag tag-con" style="background:#ffebeb; color:#E85B7A;">سري للغاية</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Classification Sidebar -->
+                <div class="class-sidebar">
+                    <div class="sidebar-title">توزيع مستويات التصنيف</div>
+                    <div class="class-chart">
+                        <div class="class-row">
+                            <div class="cr-header"><span>عام (Public)</span><span>25%</span></div>
+                            <div class="cr-bar-bg"><div class="cr-bar-fill fill-green"></div></div>
+                        </div>
+                        <div class="class-row">
+                            <div class="cr-header"><span>مقيد (Restricted)</span><span>45%</span></div>
+                            <div class="cr-bar-bg"><div class="cr-bar-fill fill-blue"></div></div>
+                        </div>
+                        <div class="class-row">
+                            <div class="cr-header"><span>سري (Confidential)</span><span>20%</span></div>
+                            <div class="cr-bar-bg"><div class="cr-bar-fill fill-gold"></div></div>
+                        </div>
+                        <div class="class-row">
+                            <div class="cr-header"><span>سري للغاية (Top Secret)</span><span>10%</span></div>
+                            <div class="cr-bar-bg"><div class="cr-bar-fill fill-red"></div></div>
+                        </div>
+                    </div>
+                    <div class="legend-box">
+                        <div class="legend-item"><div class="l-dot" style="background:#00B388"></div> متاح للنشر العام</div>
+                        <div class="legend-item"><div class="l-dot" style="background:#2B5EA7"></div> متاح للموظفين المختصين</div>
+                        <div class="legend-item"><div class="l-dot" style="background:#E8A838"></div> متاح لقيادات محددة</div>
+                        <div class="legend-item"><div class="l-dot" style="background:#E85B7A"></div> متاح لأشخاص محددين بالاسم</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">14</div>
+    </div>
+</body>
+</html>

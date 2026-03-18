@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 20px 40px;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .intro-box {
+            background: white;
+            padding: 15px 20px;
+            border-right: 4px solid #1B2A4A;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .intro-text { font-size: 14px; color: #555; font-weight: 500; width: 70%; }
+        .intro-stat { text-align: center; border-right: 1px solid #eee; padding-right: 20px; }
+        .is-val { font-size: 24px; font-weight: 800; color: #1B2A4A; }
+        .is-lbl { font-size: 10px; color: #888; }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            flex: 1;
+        }
+
+        .pillar-col {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .p-header {
+            padding: 15px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ph-icon { font-size: 24px; margin-bottom: 8px; opacity: 0.9; }
+        .ph-title { font-size: 16px; font-weight: 800; line-height: 1.2; }
+        .ph-bg-icon {
+            position: absolute; bottom: -10px; left: -10px;
+            font-size: 80px; opacity: 0.1; transform: rotate(15deg);
+        }
+
+        .col-blue .p-header { background: linear-gradient(135deg, #2B5EA7, #1B2A4A); }
+        .col-teal .p-header { background: linear-gradient(135deg, #00B388, #008F6B); }
+        .col-gold .p-header { background: linear-gradient(135deg, #E8A838, #C98A20); }
+        .col-purple .p-header { background: linear-gradient(135deg, #8B7EC8, #6A5ACD); }
+
+        .contrib-card {
+            background: white;
+            flex: 1;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-top: 3px solid #ccc;
+        }
+        .col-blue .contrib-card { border-color: #2B5EA7; }
+        .col-teal .contrib-card { border-color: #00B388; }
+        .col-gold .contrib-card { border-color: #E8A838; }
+        .col-purple .contrib-card { border-color: #8B7EC8; }
+
+        .card-label {
+            font-size: 11px; font-weight: 700; color: #1B2A4A;
+            margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;
+        }
+        .contrib-list { list-style: none; }
+        .contrib-list li {
+            font-size: 11px; color: #555; margin-bottom: 8px;
+            padding-right: 12px; position: relative; line-height: 1.4;
+        }
+        .contrib-list li::before {
+            content: '•'; position: absolute; right: 0; color: #1B2A4A; font-weight: bold;
+        }
+
+        .kpi-box {
+            background: white;
+            padding: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .kpi-icon {
+            width: 30px; height: 30px;
+            background: #f5f5f5;
+            display: flex; align-items: center; justify-content: center;
+            color: #666; font-size: 12px;
+        }
+        .kpi-content { flex: 1; }
+        .kpi-title { font-size: 10px; color: #888; }
+        .kpi-val { font-size: 14px; font-weight: 800; color: #1B2A4A; }
+
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الارتباط الاستراتيجي - مواءمة المبادرة مع الاستراتيجية الوطنية</div>
+            <div class="header-badge">07</div>
+        </div>
+
+        <div class="content-area">
+            <div class="intro-box">
+                <div class="intro-text">
+                    تساهم هذه المبادرة بشكل مباشر في تحقيق مستهدفات الاستراتيجية الوطنية للبيانات والذكاء الاصطناعي، من خلال التركيز على أربعة محاور رئيسية تضمن تكامل الجهود وتعظيم الأثر.
+                </div>
+                <div class="intro-stat">
+                    <div class="is-val">100%</div>
+                    <div class="is-lbl">مواءمة استراتيجية</div>
+                </div>
+                <div class="intro-stat">
+                    <div class="is-val">4</div>
+                    <div class="is-lbl">محاور رئيسية</div>
+                </div>
+            </div>
+
+            <div class="pillars-grid">
+                <!-- Pillar 1 -->
+                <div class="pillar-col col-blue">
+                    <div class="p-header">
+                        <i class="fas fa-database ph-bg-icon"></i>
+                        <div class="ph-icon"><i class="fas fa-database"></i></div>
+                        <div class="ph-title">توافر البيانات<br>Data Availability</div>
+                    </div>
+                    <div class="contrib-card">
+                        <div class="card-label">مساهمة المبادرة</div>
+                        <ul class="contrib-list">
+                            <li>توفير آليات لجمع البيانات من المصادر المتعددة بشكل آلي.</li>
+                            <li>إنشاء مستودع مركزي للبيانات الوصفية (Metadata).</li>
+                            <li>تسهيل الوصول للبيانات المفتوحة للباحثين والمطورين.</li>
+                        </ul>
+                    </div>
+                    <div class="kpi-box">
+                        <div class="kpi-icon"><i class="fas fa-chart-bar"></i></div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">مؤشر الأداء المرتبط</div>
+                            <div class="kpi-val">عدد مجموعات البيانات المنشورة</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pillar 2 -->
+                <div class="pillar-col col-teal">
+                    <div class="p-header">
+                        <i class="fas fa-check-circle ph-bg-icon"></i>
+                        <div class="ph-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="ph-title">جودة البيانات<br>Data Quality</div>
+                    </div>
+                    <div class="contrib-card">
+                        <div class="card-label">مساهمة المبادرة</div>
+                        <ul class="contrib-list">
+                            <li>تطبيق معايير جودة البيانات الوطنية على كافة المدخلات.</li>
+                            <li>أتمتة عمليات تنظيف وتصحيح البيانات.</li>
+                            <li>رصد مؤشرات الجودة بشكل دوري ورفع التقارير.</li>
+                        </ul>
+                    </div>
+                    <div class="kpi-box">
+                        <div class="kpi-icon"><i class="fas fa-percentage"></i></div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">مؤشر الأداء المرتبط</div>
+                            <div class="kpi-val">نسبة دقة واكتمال البيانات</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pillar 3 -->
+                <div class="pillar-col col-gold">
+                    <div class="p-header">
+                        <i class="fas fa-lightbulb ph-bg-icon"></i>
+                        <div class="ph-icon"><i class="fas fa-lightbulb"></i></div>
+                        <div class="ph-title">خلق القيمة<br>Value Creation</div>
+                    </div>
+                    <div class="contrib-card">
+                        <div class="card-label">مساهمة المبادرة</div>
+                        <ul class="contrib-list">
+                            <li>تمكين اتخاذ القرارات المبنية على البيانات.</li>
+                            <li>تطوير منتجات تحليلية تدعم الاقتصاد الرقمي.</li>
+                            <li>تحسين كفاءة الإنفاق الحكومي من خلال التحليلات.</li>
+                        </ul>
+                    </div>
+                    <div class="kpi-box">
+                        <div class="kpi-icon"><i class="fas fa-coins"></i></div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">مؤشر الأداء المرتبط</div>
+                            <div class="kpi-val">العائد الاقتصادي من البيانات</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pillar 4 -->
+                <div class="pillar-col col-purple">
+                    <div class="p-header">
+                        <i class="fas fa-users-cog ph-bg-icon"></i>
+                        <div class="ph-icon"><i class="fas fa-users-cog"></i></div>
+                        <div class="ph-title">بناء القدرات<br>Capabilities</div>
+                    </div>
+                    <div class="contrib-card">
+                        <div class="card-label">مساهمة المبادرة</div>
+                        <ul class="contrib-list">
+                            <li>نقل المعرفة وتدريب الكوادر الوطنية.</li>
+                            <li>تعزيز ثقافة البيانات في الجهة.</li>
+                            <li>توفير أدوات تقنية متقدمة للموظفين.</li>
+                        </ul>
+                    </div>
+                    <div class="kpi-box">
+                        <div class="kpi-icon"><i class="fas fa-user-graduate"></i></div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">مؤشر الأداء المرتبط</div>
+                            <div class="kpi-val">عدد المتخصصين المؤهلين</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">07</div>
+    </div>
+</body>
+</html>

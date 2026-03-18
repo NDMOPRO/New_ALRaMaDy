@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الملخص الإحصائي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1B2A4A; /* Royal Dark Blue */
+            --accent-color: #00B388; /* Teal */
+            --highlight-color: #E8A838; /* Gold */
+            --white: #FFFFFF;
+            --light-bg: #F8F9FA;
+            --border-color: #E0E0E0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: var(--white);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Royal Blue Header */
+        .header {
+            background-color: var(--primary-color);
+            height: 85px;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            position: relative;
+            z-index: 10;
+            border-bottom: 4px solid var(--highlight-color);
+        }
+
+        .header-title {
+            color: var(--white);
+            font-size: 28px;
+            font-weight: 800;
+            margin-left: 20px;
+        }
+
+        .header-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            font-weight: 500;
+            margin-right: auto;
+        }
+
+        .logo-container {
+            background-color: rgba(255,255,255,0.1);
+            padding: 5px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            height: 40px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        /* Content Area: Stats Grid */
+        .content {
+            flex: 1;
+            padding: 30px 40px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: 150px 1fr;
+            gap: 20px;
+            background-color: var(--light-bg);
+        }
+
+        /* Stat Cards (Top Row) */
+        .stat-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .stat-value {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .stat-trend {
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .trend-up { color: var(--accent-color); }
+        .trend-down { color: #E74C3C; }
+
+        /* Chart Area (Bottom Left) */
+        .chart-area {
+            grid-column: 1 / 3;
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .chart-placeholder {
+            flex: 1;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            font-size: 14px;
+            border: 1px dashed #ddd;
+        }
+
+        /* Detailed List (Bottom Right) */
+        .list-area {
+            grid-column: 3 / 5;
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .list-item:last-child { border-bottom: none; }
+
+        .item-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-title { font-weight: 700; color: #333; font-size: 14px; }
+        .item-sub { font-size: 11px; color: #888; }
+
+        .item-val {
+            font-weight: 800;
+            color: var(--primary-color);
+            font-size: 16px;
+        }
+
+        /* Footer */
+        .footer {
+            height: 40px;
+            background-color: var(--white);
+            border-top: 1px solid #E0E0E0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 10px;
+            color: #888;
+        }
+
+        .footer-text {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .page-number {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">عنوان الشريحة الرئيسي يكتب هنا</div>
+            <div class="header-subtitle">وصف مختصر لمحتوى الشريحة يكتب في هذا المكان</div>
+            <div class="logo-container">
+                <img src="assets/logo_ndmo.png" class="logo-img" alt="NDMO">
+                <img src="assets/logo_sdaia.png" class="logo-img" alt="SDAIA">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Stat Cards -->
+            <div class="stat-card">
+                <div class="stat-value">XXXX</div>
+                <div class="stat-label">إجمالي السجلات</div>
+                <div class="stat-trend trend-up">▲ 15% زيادة</div>
+            </div>
+            <div class="stat-card" style="border-top-color: var(--accent-color);">
+                <div class="stat-value" style="color: var(--accent-color);">XX%</div>
+                <div class="stat-label">نسبة الإنجاز</div>
+                <div class="stat-trend trend-up">▲ 5% تحسن</div>
+            </div>
+            <div class="stat-card" style="border-top-color: var(--highlight-color);">
+                <div class="stat-value" style="color: var(--highlight-color);">XXX</div>
+                <div class="stat-label">عدد المستفيدين</div>
+                <div class="stat-trend trend-down">▼ 2% انخفاض</div>
+            </div>
+            <div class="stat-card" style="border-top-color: #E74C3C;">
+                <div class="stat-value" style="color: #E74C3C;">XX</div>
+                <div class="stat-label">البلاغات المفتوحة</div>
+                <div class="stat-trend trend-down">▼ 10% انخفاض</div>
+            </div>
+
+            <!-- Chart Area -->
+            <div class="chart-area">
+                <div class="chart-title">تحليل البيانات الشهرية</div>
+                <div class="chart-placeholder">
+                    <!-- Placeholder for Chart.js canvas -->
+                    [مساحة مخصصة للرسم البياني]
+                </div>
+            </div>
+
+            <!-- List Area -->
+            <div class="list-area">
+                <div class="chart-title">أعلى الجهات أداءً</div>
+                
+                <div class="list-item">
+                    <div class="item-info">
+                        <div class="item-title">الجهة الأولى</div>
+                        <div class="item-sub">القطاع الحكومي</div>
+                    </div>
+                    <div class="item-val">98%</div>
+                </div>
+
+                <div class="list-item">
+                    <div class="item-info">
+                        <div class="item-title">الجهة الثانية</div>
+                        <div class="item-sub">القطاع المالي</div>
+                    </div>
+                    <div class="item-val">95%</div>
+                </div>
+
+                <div class="list-item">
+                    <div class="item-info">
+                        <div class="item-title">الجهة الثالثة</div>
+                        <div class="item-sub">القطاع الصحي</div>
+                    </div>
+                    <div class="item-val">92%</div>
+                </div>
+
+                <div class="list-item">
+                    <div class="item-info">
+                        <div class="item-title">الجهة الرابعة</div>
+                        <div class="item-sub">القطاع التعليمي</div>
+                    </div>
+                    <div class="item-val">89%</div>
+                </div>
+
+                <div class="list-item">
+                    <div class="item-info">
+                        <div class="item-title">الجهة الخامسة</div>
+                        <div class="item-sub">القطاع الخدمي</div>
+                    </div>
+                    <div class="item-val">85%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالادارة العامة لادارة البيانات</div>
+            <div class="page-number">45</div>
+        </div>
+    </div>
+</body>
+</html>

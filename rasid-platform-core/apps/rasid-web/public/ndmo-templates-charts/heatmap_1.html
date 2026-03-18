@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 12px 30px 4px 30px; display: flex; gap: 20px; }
+        .pyramid-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+        .pyramid-level { display: flex; align-items: center; justify-content: center; color: white; text-align: center; }
+        .pl-1 { width: 200px; height: 60px; background: #1B2A4A; }
+        .pl-2 { width: 340px; height: 60px; background: #2B5EA7; }
+        .pl-3 { width: 480px; height: 60px; background: #00B388; }
+        .pl-4 { width: 620px; height: 60px; background: #E8A838; }
+        .pl-5 { width: 760px; height: 60px; background: #8E44AD; }
+        .pl-inner { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .pl-title { font-size: 13px; font-weight: 800; }
+        .pl-desc { font-size: 9px; opacity: 0.8; }
+        .details-area { width: 360px; display: flex; flex-direction: column; gap: 4px; justify-content: center; }
+        .detail-card { display: flex; gap: 8px; padding: 8px 10px; border-right: 3px solid; }
+        .dc-1 { border-color: #1B2A4A; background: #F8FAFC; }
+        .dc-2 { border-color: #2B5EA7; background: #F8FAFC; }
+        .dc-3 { border-color: #00B388; background: #F8FAFC; }
+        .dc-4 { border-color: #E8A838; background: #F8FAFC; }
+        .dc-5 { border-color: #8E44AD; background: #F8FAFC; }
+        .dc-num { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 800; flex-shrink: 0; }
+        .dn-1 { background: #1B2A4A; }
+        .dn-2 { background: #2B5EA7; }
+        .dn-3 { background: #00B388; }
+        .dn-4 { background: #E8A838; }
+        .dn-5 { background: #8E44AD; }
+        .dc-info { }
+        .dc-title { font-size: 11px; font-weight: 700; color: #1B2A4A; }
+        .dc-desc { font-size: 9px; color: #64748B; line-height: 1.4; }
+        .dc-tags { display: flex; gap: 3px; margin-top: 2px; }
+        .dc-tag { font-size: 8px; padding: 1px 5px; background: #EFF6FF; color: #2B5EA7; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-layer-group" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> عنوان الهرم التنظيمي / التسلسل الهرمي يكتب هنا</div>
+            <div class="header-num">3.57</div>
+        </div>
+        <div class="content">
+            <div class="pyramid-area">
+                <div class="pyramid-level pl-1"><div class="pl-inner"><div class="pl-title">المستوى الأول يكتب هنا</div><div class="pl-desc">وصف مختصر يكتب هنا</div></div></div>
+                <div class="pyramid-level pl-2"><div class="pl-inner"><div class="pl-title">المستوى الثاني يكتب هنا</div><div class="pl-desc">وصف مختصر يكتب هنا</div></div></div>
+                <div class="pyramid-level pl-3"><div class="pl-inner"><div class="pl-title">المستوى الثالث يكتب هنا</div><div class="pl-desc">وصف مختصر يكتب هنا</div></div></div>
+                <div class="pyramid-level pl-4"><div class="pl-inner"><div class="pl-title">المستوى الرابع يكتب هنا</div><div class="pl-desc">وصف مختصر يكتب هنا</div></div></div>
+                <div class="pyramid-level pl-5"><div class="pl-inner"><div class="pl-title">المستوى الخامس يكتب هنا</div><div class="pl-desc">وصف مختصر يكتب هنا</div></div></div>
+            </div>
+            <div class="details-area">
+                <div class="detail-card dc-1"><div class="dc-num dn-1">1</div><div class="dc-info"><div class="dc-title">عنوان المستوى الأول يكتب هنا</div><div class="dc-desc">وصف تفصيلي للمستوى الأول يكتب هنا مع الشرح المطلوب</div><div class="dc-tags"><span class="dc-tag">وسم يكتب هنا</span><span class="dc-tag">وسم يكتب هنا</span></div></div></div>
+                <div class="detail-card dc-2"><div class="dc-num dn-2">2</div><div class="dc-info"><div class="dc-title">عنوان المستوى الثاني يكتب هنا</div><div class="dc-desc">وصف تفصيلي للمستوى الثاني يكتب هنا مع الشرح المطلوب</div><div class="dc-tags"><span class="dc-tag">وسم يكتب هنا</span><span class="dc-tag">وسم يكتب هنا</span></div></div></div>
+                <div class="detail-card dc-3"><div class="dc-num dn-3">3</div><div class="dc-info"><div class="dc-title">عنوان المستوى الثالث يكتب هنا</div><div class="dc-desc">وصف تفصيلي للمستوى الثالث يكتب هنا مع الشرح المطلوب</div><div class="dc-tags"><span class="dc-tag">وسم يكتب هنا</span><span class="dc-tag">وسم يكتب هنا</span></div></div></div>
+                <div class="detail-card dc-4"><div class="dc-num dn-4">4</div><div class="dc-info"><div class="dc-title">عنوان المستوى الرابع يكتب هنا</div><div class="dc-desc">وصف تفصيلي للمستوى الرابع يكتب هنا مع الشرح المطلوب</div><div class="dc-tags"><span class="dc-tag">وسم يكتب هنا</span><span class="dc-tag">وسم يكتب هنا</span></div></div></div>
+                <div class="detail-card dc-5"><div class="dc-num dn-5">5</div><div class="dc-info"><div class="dc-title">عنوان المستوى الخامس يكتب هنا</div><div class="dc-desc">وصف تفصيلي للمستوى الخامس يكتب هنا مع الشرح المطلوب</div><div class="dc-tags"><span class="dc-tag">وسم يكتب هنا</span><span class="dc-tag">وسم يكتب هنا</span></div></div></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

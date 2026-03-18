@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: white; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 40px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        .glossary-table { width: 100%; border-collapse: collapse; }
+        
+        .glossary-table th { background: #1B2A4A; color: white; padding: 16px 20px; text-align: right; font-size: 16px; font-weight: 700; border-bottom: 4px solid #00B388; }
+        .glossary-table td { padding: 16px 20px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; line-height: 1.6; vertical-align: top; }
+        
+        .glossary-table tr:nth-child(even) { background: #f9f9f9; }
+        .glossary-table tr:hover { background: #f0f4f8; }
+        
+        .term-col { width: 25%; font-weight: 800; color: #2B5EA7; }
+        .def-col { width: 75%; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">قاموس المصطلحات - التعريفات الأساسية</div>
+            <div class="header-badge">56</div>
+        </div>
+
+        <div class="content-area">
+            <table class="glossary-table">
+                <thead>
+                    <tr>
+                        <th class="term-col">المصطلح</th>
+                        <th class="def-col">التعريف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="term-col">إدارة البيانات الوطنية (NDM)</td>
+                        <td class="def-col">مجموعة من الممارسات والمفاهيم والعمليات التي تهدف إلى إدارة البيانات كأصل وطني ذي قيمة عالية، لضمان جودتها وتوفرها وأمنها.</td>
+                    </tr>
+                    <tr>
+                        <td class="term-col">البيانات الوصفية (Metadata)</td>
+                        <td class="def-col">بيانات توفر معلومات حول بيانات أخرى، مثل وصف المحتوى، المصدر، التاريخ، المالك، والتصنيف الأمني، لتسهيل اكتشافها وإدارتها.</td>
+                    </tr>
+                    <tr>
+                        <td class="term-col">تصنيف البيانات (Data Classification)</td>
+                        <td class="def-col">عملية تنظيم البيانات في فئات بناءً على مستوى حساسيتها وتأثير الإفصاح عنها، لتحديد ضوابط الحماية المناسبة (مثل: عام، مقيد، سري، سري للغاية).</td>
+                    </tr>
+                    <tr>
+                        <td class="term-col">جودة البيانات (Data Quality)</td>
+                        <td class="def-col">مقياس لمدى ملاءمة البيانات للغرض المقصود منها، بناءً على معايير مثل الدقة، الاكتمال، الاتساق، والحداثة.</td>
+                    </tr>
+                    <tr>
+                        <td class="term-col">البيانات المفتوحة (Open Data)</td>
+                        <td class="def-col">بيانات يمكن لأي فرد استخدامها بحرية ودون قيود تقنية أو قانونية، وغالباً ما تنشر بصيغ قابلة للقراءة آلياً لتعزيز الشفافية والابتكار.</td>
+                    </tr>
+                    <tr>
+                        <td class="term-col">إطار الحوكمة (Governance Framework)</td>
+                        <td class="def-col">هيكل يحدد السياسات، المعايير، الأدوار، والمسؤوليات اللازمة لضمان الإدارة الفعالة والامتثال التنظيمي للبيانات داخل المنظمة.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">56</div>
+    </div>
+</body>
+</html>

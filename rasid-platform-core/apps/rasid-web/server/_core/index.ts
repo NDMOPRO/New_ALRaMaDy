@@ -48,6 +48,10 @@ async function startServer() {
   // Serve uploaded files
   app.use("/uploads", express.static(uploadsDir));
 
+  // Serve NDMO assets (logos, backgrounds, character images)
+  const ndmoAssetsDir = path.join(process.cwd(), "public", "ndmo-assets");
+  app.use("/ndmo-assets", express.static(ndmoAssetsDir, { maxAge: '7d' }));
+
   // File upload API
   app.use("/api/upload", uploadRouter);
 

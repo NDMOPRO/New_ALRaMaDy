@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        .slide-container { width: 1280px; min-height: 720px; font-family: 'Tajawal', sans-serif; background: #EEF1F5; display: flex; flex-direction: column; }
+        .header { height: 62px; background: #0C1E3A; display: flex; align-items: center; justify-content: center; position: relative; }
+        .header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #2E86AB 0%, #0EA47A 50%, #D4A843 100%); }
+        .header-tag { position: absolute; top: 10px; right: 40px; font-size: 7px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.3); font-family: 'Inter', sans-serif; }
+        .header-title { font-size: 21px; font-weight: 700; color: #FFFFFF; }
+        .header-deco { position: absolute; left: 30px; top: 50%; transform: translateY(-50%); display: flex; gap: 4px; align-items: flex-end; }
+        .deco-bar { width: 4px; border-radius: 2px; }
+        .deco-bar:nth-child(1) { height: 18px; background: #2E86AB; }
+        .deco-bar:nth-child(2) { height: 28px; background: #5BA4C9; }
+        .deco-bar:nth-child(3) { height: 14px; background: #0EA47A; }
+
+        .body { flex: 1; padding: 10px 14px 6px; display: grid; grid-template-columns: 1fr 300px; gap: 10px; }
+
+        .tracker-card { background: #FFFFFF; border-radius: 10px; padding: 12px 16px 8px; box-shadow: 0 2px 10px rgba(12,30,58,0.06); }
+        .tracker-title { font-size: 13px; font-weight: 700; color: #0C1E3A; margin-bottom: 8px; }
+        .track-item { display: grid; grid-template-columns: 160px 1fr 50px; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .track-name { font-size: 10px; font-weight: 600; color: #0C1E3A; }
+        .track-bar { height: 8px; background: #F0F2F5; border-radius: 4px; }
+        .track-fill { height: 8px; border-radius: 4px; }
+        .track-pct { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 800; color: #0C1E3A; text-align: left; }
+
+        .right-col { display: flex; flex-direction: column; gap: 8px; }
+        .donut-card { background: #FFFFFF; border-radius: 10px; padding: 10px 14px 6px; box-shadow: 0 2px 10px rgba(12,30,58,0.06); flex: 1; display: flex; flex-direction: column; }
+        .donut-title { font-size: 11px; font-weight: 700; color: #0C1E3A; text-align: center; margin-bottom: 2px; }
+        .donut-body { flex: 1; position: relative; min-height: 0; }
+        .donut-center { position: absolute; top: 45%; left: 50%; transform: translate(-50%,-50%); text-align: center; pointer-events: none; }
+        .donut-val { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 800; color: #0C1E3A; }
+        .donut-label { font-size: 9px; color: #A0AEC0; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .stat-mini { background: #FFFFFF; border-radius: 10px; padding: 10px; box-shadow: 0 2px 10px rgba(12,30,58,0.06); text-align: center; }
+        .stat-mini-val { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 800; color: #0C1E3A; }
+        .stat-mini-label { font-size: 8px; color: #64748B; margin-top: 2px; }
+
+        .footer-area { height: 26px; background: #FFFFFF; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; box-shadow: 0 -1px 4px rgba(12,30,58,0.04); }
+        .footer-right { display: flex; align-items: center; gap: 8px; }
+        .footer-logo { height: 22px; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #E2E8F0; }
+        .footer-text { font-size: 8.5px; color: #A0AEC0; }
+        .footer-page { font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 700; color: #0C1E3A; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header">
+            <div class="header-deco"><div class="deco-bar"></div><div class="deco-bar"></div><div class="deco-bar"></div></div>
+            <div class="header-tag">TEMPLATE — PROGRESS TRACKER</div>
+            <div class="header-title">عنوان متتبع التقدم يكتب هنا</div>
+        </div>
+        <div class="body">
+            <div class="tracker-card">
+                <div class="tracker-title">عنوان قائمة التتبع يكتب هنا</div>
+                <div class="track-item"><div class="track-name">العنصر الأول يكتب هنا</div><div class="track-bar"><div class="track-fill" style="width:95%;background:linear-gradient(90deg,#0EA47A,#45D4A8)"></div></div><div class="track-pct">95%</div></div>
+                <div class="track-item"><div class="track-name">العنصر الثاني يكتب هنا</div><div class="track-bar"><div class="track-fill" style="width:88%;background:linear-gradient(90deg,#0EA47A,#45D4A8)"></div></div><div class="track-pct">88%</div></div>
+                <div class="track-item"><div class="track-name">العنصر الثالث يكتب هنا</div><div class="track-bar"><div class="track-fill" style="width:82%;background:linear-gradient(90deg,#3498DB,#5BA4C9)"></div></div><div class="track-pct">82%</div></div>
+                <div class="track-item"><div class="track-name">العنصر الرابع يكتب هنا</div><div class="track-bar"><div class="track-fill" style="width:76%;background:linear-gradient(90deg,#3498DB,#5BA4C9)"></div></div><div class="track-pct">76%</div></div>
+                <div class="track-item"><div class="track-name">العنصر الخامس يكتب هنا</div><div class="track-bar"><div class="track-fill" style="width:68%;background:linear-gradient(90deg,#D4A843,#E8C46A)"></div></div><div class="track-pct">68%</div></div>
+                <div class="track-item"><div class="track-name">العنصر السادس يكتب هنا</div><div class="track-bar"><div class="track-fill" style="width:55%;background:linear-gradient(90deg,#D4A843,#E8C46A)"></div></div><div class="track-pct">55%</div></div>
+                <div class="track-item"><div class="track-name">العنصر السابع يكتب هنا</div><div class="track-bar"><div class="track-fill" style="width:42%;background:linear-gradient(90deg,#E05252,#F07070)"></div></div><div class="track-pct">42%</div></div>
+                <div class="track-item"><div class="track-name">العنصر الثامن يكتب هنا</div><div class="track-bar"><div class="track-fill" style="width:28%;background:linear-gradient(90deg,#E05252,#F07070)"></div></div><div class="track-pct">28%</div></div>
+            </div>
+            <div class="right-col">
+                <div class="donut-card">
+                    <div class="donut-title">نسبة الإنجاز الإجمالية</div>
+                    <div class="donut-body">
+                        <canvas id="progressDonut"></canvas>
+                        <div class="donut-center"><div class="donut-val">67%</div><div class="donut-label">المتوسط العام</div></div>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-mini"><div class="stat-mini-val" style="color:#0EA47A">3</div><div class="stat-mini-label">مكتمل (80%+)</div></div>
+                    <div class="stat-mini"><div class="stat-mini-val" style="color:#3498DB">2</div><div class="stat-mini-label">قيد التنفيذ</div></div>
+                    <div class="stat-mini"><div class="stat-mini-val" style="color:#D4A843">1</div><div class="stat-mini-label">متأخر</div></div>
+                    <div class="stat-mini"><div class="stat-mini-val" style="color:#E05252">2</div><div class="stat-mini-label">حرج</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-area">
+            <div class="footer-right">
+                <img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" class="footer-logo" alt="NDMO">
+                <div class="footer-sep"></div>
+                <img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" class="footer-logo" alt="SDAIA">
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+            <div class="footer-page">15 / 60</div>
+        </div>
+    </div>
+    <script>
+        Chart.register(ChartDataLabels);
+        new Chart(document.getElementById('progressDonut'), {
+            type: 'doughnut',
+            data: { labels: ['مكتمل','متبقي'], datasets: [{ data: [67,33], backgroundColor: ['#0EA47A','#F0F2F5'], borderWidth: 0, borderRadius: 6 }] },
+            options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { display: false }, datalabels: { display: false } } }
+        });
+    </script>
+</body>
+</html>

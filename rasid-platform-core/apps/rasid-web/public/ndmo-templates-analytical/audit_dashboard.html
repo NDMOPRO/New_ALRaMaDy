@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 20px 6px 20px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 12px; }
+        .panel-title { font-size: 12px; font-weight: 700; color: #1B2A4A; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .panel-title i { color: #2B5EA7; font-size: 11px; }
+
+        /* Heatmap */
+        .heatmap-panel { display: flex; flex-direction: column; }
+        .heatmap { width: 100%; border-collapse: collapse; }
+        .heatmap th { background: #1B2A4A; color: white; font-size: 8px; padding: 4px 3px; text-align: center; font-weight: 600; }
+        .heatmap th:first-child { text-align: right; min-width: 90px; }
+        .heatmap td { font-size: 9px; text-align: center; padding: 5px 3px; font-weight: 700; border: 1px solid #F1F5F9; }
+        .heatmap td:first-child { text-align: right; font-weight: 500; color: #334155; background: #F8FAFC; font-size: 9px; }
+        .h-high { background: #DCFCE7; color: #166534; }
+        .h-med { background: #FEF9C3; color: #854D0E; }
+        .h-low { background: #FEE2E2; color: #991B1B; }
+        .h-na { background: #F1F5F9; color: #94A3B8; }
+
+        /* Right Panel */
+        .right-panel { display: flex; flex-direction: column; gap: 8px; }
+        .scores-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .score-card { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 8px; text-align: center; }
+        .score-label { font-size: 9px; color: #64748B; font-weight: 500; }
+        .score-val { font-size: 26px; font-weight: 800; color: #1B2A4A; line-height: 1.2; }
+        .score-bar { height: 6px; background: #E2E8F0; margin-top: 4px; }
+        .score-fill { height: 100%; }
+        .score-sub { font-size: 8px; color: #94A3B8; margin-top: 2px; }
+
+        /* Risk Breakdown */
+        .risk-panel { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 8px; flex: 1; display: flex; flex-direction: column; }
+        .risk-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+        .risk-label { font-size: 9px; color: #334155; min-width: 70px; font-weight: 500; }
+        .risk-bar-bg { flex: 1; height: 14px; background: #E2E8F0; display: flex; }
+        .risk-seg { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 7px; color: white; font-weight: 700; }
+
+        /* Findings */
+        .findings-panel { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 8px; }
+        .findings-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .finding-item { text-align: center; }
+        .fi-icon { font-size: 14px; margin-bottom: 2px; }
+        .fi-val { font-size: 16px; font-weight: 800; color: #1B2A4A; }
+        .fi-label { font-size: 8px; color: #64748B; }
+
+        /* Bottom Summary */
+        .bottom-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 6px 20px 4px 20px; }
+        .strip-item { border-right: 3px solid #2B5EA7; background: #F8FAFC; padding: 5px 8px; }
+        .strip-item:nth-child(1) { border-right-color: #00B388; }
+        .strip-item:nth-child(2) { border-right-color: #1B2A4A; }
+        .strip-item:nth-child(3) { border-right-color: #E8A838; }
+        .strip-item:nth-child(4) { border-right-color: #E53E3E; }
+        .strip-item:nth-child(5) { border-right-color: #2B5EA7; }
+        .si-label { font-size: 8px; color: #64748B; font-weight: 500; }
+        .si-val { font-size: 13px; font-weight: 800; color: #1B2A4A; }
+
+        .footer { height: 32px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 18px; }
+        .footer-sep { width: 1px; height: 14px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-shield-alt" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> لوحة المؤشرات الرقابية - مصفوفة الامتثال</div>
+            <div class="header-num">2.3</div>
+        </div>
+
+        <div class="content">
+            <!-- Left: Heatmap -->
+            <div class="heatmap-panel">
+                <div class="panel-title"><i class="fas fa-th"></i> مصفوفة الامتثال الحرارية - الضوابط × القطاعات</div>
+                <table class="heatmap">
+                    <thead>
+                        <tr><th>الضابط / القطاع</th><th>الاتصالات</th><th>المالية</th><th>الصحة</th><th>التعليم</th><th>النقل</th><th>الطاقة</th><th>البيئة</th><th>العدل</th><th>التجارة</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>تصنيف البيانات</td><td class="h-high">92%</td><td class="h-high">88%</td><td class="h-med">72%</td><td class="h-med">68%</td><td class="h-high">85%</td><td class="h-med">75%</td><td class="h-low">45%</td><td class="h-med">70%</td><td class="h-high">82%</td></tr>
+                        <tr><td>حماية البيانات</td><td class="h-high">95%</td><td class="h-high">90%</td><td class="h-high">88%</td><td class="h-med">78%</td><td class="h-med">72%</td><td class="h-high">82%</td><td class="h-med">65%</td><td class="h-high">85%</td><td class="h-med">75%</td></tr>
+                        <tr><td>جودة البيانات</td><td class="h-high">85%</td><td class="h-med">78%</td><td class="h-med">70%</td><td class="h-low">55%</td><td class="h-med">68%</td><td class="h-med">72%</td><td class="h-low">48%</td><td class="h-med">62%</td><td class="h-med">70%</td></tr>
+                        <tr><td>مشاركة البيانات</td><td class="h-med">75%</td><td class="h-high">82%</td><td class="h-med">65%</td><td class="h-med">72%</td><td class="h-low">58%</td><td class="h-med">68%</td><td class="h-low">42%</td><td class="h-low">55%</td><td class="h-med">65%</td></tr>
+                        <tr><td>البيانات المفتوحة</td><td class="h-high">88%</td><td class="h-med">72%</td><td class="h-low">55%</td><td class="h-med">68%</td><td class="h-med">62%</td><td class="h-low">50%</td><td class="h-low">38%</td><td class="h-low">48%</td><td class="h-med">60%</td></tr>
+                        <tr><td>حوكمة البيانات</td><td class="h-high">90%</td><td class="h-high">85%</td><td class="h-med">78%</td><td class="h-med">65%</td><td class="h-med">75%</td><td class="h-med">70%</td><td class="h-low">52%</td><td class="h-med">68%</td><td class="h-med">72%</td></tr>
+                        <tr><td>إدارة البيانات الرئيسية</td><td class="h-med">78%</td><td class="h-high">82%</td><td class="h-med">62%</td><td class="h-low">50%</td><td class="h-med">65%</td><td class="h-med">60%</td><td class="h-low">40%</td><td class="h-low">55%</td><td class="h-med">62%</td></tr>
+                        <tr><td>إدارة البيانات الوصفية</td><td class="h-high">82%</td><td class="h-med">75%</td><td class="h-med">68%</td><td class="h-low">58%</td><td class="h-med">70%</td><td class="h-med">65%</td><td class="h-low">45%</td><td class="h-med">60%</td><td class="h-med">68%</td></tr>
+                        <tr><td>أمن البيانات</td><td class="h-high">95%</td><td class="h-high">92%</td><td class="h-high">90%</td><td class="h-high">85%</td><td class="h-high">88%</td><td class="h-high">85%</td><td class="h-med">72%</td><td class="h-high">88%</td><td class="h-high">82%</td></tr>
+                        <tr><td>خصوصية البيانات</td><td class="h-high">88%</td><td class="h-high">85%</td><td class="h-high">82%</td><td class="h-med">78%</td><td class="h-med">75%</td><td class="h-med">78%</td><td class="h-med">65%</td><td class="h-high">80%</td><td class="h-med">75%</td></tr>
+                    </tbody>
+                </table>
+                <div style="display:flex;gap:12px;margin-top:6px;font-size:8px;color:#64748B">
+                    <span><span style="display:inline-block;width:10px;height:10px;background:#DCFCE7;margin-left:3px;vertical-align:middle"></span> ≥80% ممتثل</span>
+                    <span><span style="display:inline-block;width:10px;height:10px;background:#FEF9C3;margin-left:3px;vertical-align:middle"></span> 60-79% جزئي</span>
+                    <span><span style="display:inline-block;width:10px;height:10px;background:#FEE2E2;margin-left:3px;vertical-align:middle"></span> <60% غير ممتثل</span>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="right-panel">
+                <div class="scores-row">
+                    <div class="score-card">
+                        <div class="score-label">الامتثال الكلي</div>
+                        <div class="score-val" style="color:#00B388">72%</div>
+                        <div class="score-bar"><div class="score-fill" style="width:72%;background:#00B388"></div></div>
+                        <div class="score-sub">المستهدف: 90%</div>
+                    </div>
+                    <div class="score-card">
+                        <div class="score-label">الضوابط المفعلة</div>
+                        <div class="score-val">142<span style="font-size:12px">/168</span></div>
+                        <div class="score-bar"><div class="score-fill" style="width:84%;background:#2B5EA7"></div></div>
+                        <div class="score-sub">84.5%</div>
+                    </div>
+                    <div class="score-card">
+                        <div class="score-label">المخالفات المفتوحة</div>
+                        <div class="score-val" style="color:#E53E3E">23</div>
+                        <div class="score-bar"><div class="score-fill" style="width:30%;background:#E53E3E"></div></div>
+                        <div class="score-sub">-4 عن الربع السابق</div>
+                    </div>
+                </div>
+
+                <div class="risk-panel">
+                    <div class="panel-title"><i class="fas fa-exclamation-triangle"></i> توزيع المخاطر حسب الخطورة</div>
+                    <div class="risk-row"><div class="risk-label">حرجة</div><div class="risk-bar-bg"><div class="risk-seg" style="width:15%;background:#991B1B">3</div></div></div>
+                    <div class="risk-row"><div class="risk-label">عالية</div><div class="risk-bar-bg"><div class="risk-seg" style="width:30%;background:#E53E3E">7</div></div></div>
+                    <div class="risk-row"><div class="risk-label">متوسطة</div><div class="risk-bar-bg"><div class="risk-seg" style="width:50%;background:#E8A838">12</div></div></div>
+                    <div class="risk-row"><div class="risk-label">منخفضة</div><div class="risk-bar-bg"><div class="risk-seg" style="width:70%;background:#00B388">18</div></div></div>
+                </div>
+
+                <div class="findings-panel">
+                    <div class="panel-title"><i class="fas fa-clipboard-check"></i> ملخص نتائج التدقيق</div>
+                    <div class="findings-grid">
+                        <div class="finding-item"><div class="fi-icon" style="color:#00B388"><i class="fas fa-check-circle"></i></div><div class="fi-val">156</div><div class="fi-label">مطابق</div></div>
+                        <div class="finding-item"><div class="fi-icon" style="color:#E8A838"><i class="fas fa-exclamation-circle"></i></div><div class="fi-val">34</div><div class="fi-label">ملاحظة</div></div>
+                        <div class="finding-item"><div class="fi-icon" style="color:#E53E3E"><i class="fas fa-times-circle"></i></div><div class="fi-val">12</div><div class="fi-label">عدم مطابقة</div></div>
+                        <div class="finding-item"><div class="fi-icon" style="color:#94A3B8"><i class="fas fa-minus-circle"></i></div><div class="fi-val">8</div><div class="fi-label">غير قابل للتطبيق</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-strip">
+            <div class="strip-item"><div class="si-label">الجهات المدققة</div><div class="si-val">42 من 60</div></div>
+            <div class="strip-item"><div class="si-label">التقارير المنجزة</div><div class="si-val">38 تقرير</div></div>
+            <div class="strip-item"><div class="si-label">التوصيات المفتوحة</div><div class="si-val">67 توصية</div></div>
+            <div class="strip-item"><div class="si-label">المخالفات الحرجة</div><div class="si-val">3 مخالفات</div></div>
+            <div class="strip-item"><div class="si-label">موعد التدقيق القادم</div><div class="si-val">Q2-2026</div></div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:1px 6px;"><img src="/home/ubuntu/ndmo_batch2/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:1px 6px;"><img src="/home/ubuntu/ndmo_batch2/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي - الشرائح التحليلية | سري</div>
+        </div>
+    </div>
+</body>
+</html>

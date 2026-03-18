@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 16px 4px 16px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px; }
+        .quad { border: 1px solid #E2E8F0; padding: 12px; display: flex; flex-direction: column; }
+        .quad-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 2px solid; }
+        .quad-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: white; flex-shrink: 0; }
+        .quad-title { font-size: 14px; font-weight: 800; color: #1B2A4A; }
+        .quad-subtitle { font-size: 10px; color: #64748B; }
+        .quad-list { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .qi { display: flex; align-items: flex-start; gap: 6px; font-size: 11px; color: #334155; line-height: 1.4; }
+        .qi i { font-size: 7px; margin-top: 5px; flex-shrink: 0; }
+        .q1 .quad-header { border-color: #1B2A4A; }
+        .q1 .quad-icon { background: #1B2A4A; }
+        .q1 .qi i { color: #1B2A4A; }
+        .q2 .quad-header { border-color: #2B5EA7; }
+        .q2 .quad-icon { background: #2B5EA7; }
+        .q2 .qi i { color: #2B5EA7; }
+        .q3 .quad-header { border-color: #00B388; }
+        .q3 .quad-icon { background: #00B388; }
+        .q3 .qi i { color: #00B388; }
+        .q4 .quad-header { border-color: #E8A838; }
+        .q4 .quad-icon { background: #E8A838; }
+        .q4 .qi i { color: #E8A838; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-th-large" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> عنوان مصفوفة المقارنة الرباعية يكتب هنا</div>
+            <div class="header-num">3.51</div>
+        </div>
+        <div class="content">
+            <div class="quad q1">
+                <div class="quad-header"><div class="quad-icon"><i class="fas fa-bullseye"></i></div><div><div class="quad-title">عنوان الخيار الأول يكتب هنا</div><div class="quad-subtitle">وصف مختصر يكتب هنا</div></div></div>
+                <div class="quad-list">
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الأولى للخيار الأول يكتب هنا</div>
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الثانية للخيار الأول يكتب هنا</div>
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الثالثة للخيار الأول يكتب هنا</div>
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الرابعة للخيار الأول يكتب هنا</div>
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الخامسة للخيار الأول يكتب هنا</div>
+                </div>
+            </div>
+            <div class="quad q2">
+                <div class="quad-header"><div class="quad-icon"><i class="fas fa-lightbulb"></i></div><div><div class="quad-title">عنوان الخيار الثاني يكتب هنا</div><div class="quad-subtitle">وصف مختصر يكتب هنا</div></div></div>
+                <div class="quad-list">
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الأولى للخيار الثاني يكتب هنا</div>
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الثانية للخيار الثاني يكتب هنا</div>
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الثالثة للخيار الثاني يكتب هنا</div>
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الرابعة للخيار الثاني يكتب هنا</div>
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الخامسة للخيار الثاني يكتب هنا</div>
+                </div>
+            </div>
+            <div class="quad q3">
+                <div class="quad-header"><div class="quad-icon"><i class="fas fa-rocket"></i></div><div><div class="quad-title">عنوان الخيار الثالث يكتب هنا</div><div class="quad-subtitle">وصف مختصر يكتب هنا</div></div></div>
+                <div class="quad-list">
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الأولى للخيار الثالث يكتب هنا</div>
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الثانية للخيار الثالث يكتب هنا</div>
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الثالثة للخيار الثالث يكتب هنا</div>
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الرابعة للخيار الثالث يكتب هنا</div>
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الخامسة للخيار الثالث يكتب هنا</div>
+                </div>
+            </div>
+            <div class="quad q4">
+                <div class="quad-header"><div class="quad-icon"><i class="fas fa-star"></i></div><div><div class="quad-title">عنوان الخيار الرابع يكتب هنا</div><div class="quad-subtitle">وصف مختصر يكتب هنا</div></div></div>
+                <div class="quad-list">
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الأولى للخيار الرابع يكتب هنا</div>
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الثانية للخيار الرابع يكتب هنا</div>
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الثالثة للخيار الرابع يكتب هنا</div>
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الرابعة للخيار الرابع يكتب هنا</div>
+                    <div class="qi"><i class="fas fa-circle"></i> النقطة الخامسة للخيار الرابع يكتب هنا</div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

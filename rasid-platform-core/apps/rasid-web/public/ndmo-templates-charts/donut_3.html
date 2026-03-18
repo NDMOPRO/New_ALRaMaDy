@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { height: 628px; padding: 8px 16px 4px 16px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .donut-col { background: #F8FAFC; border: 1px solid #E2E8F0; border-top: 3px solid #2B5EA7; padding: 8px 10px; display: flex; flex-direction: column; }
+        .donut-col:nth-child(1) { border-top-color: #1B2A4A; }
+        .donut-col:nth-child(2) { border-top-color: #2B5EA7; }
+        .donut-col:nth-child(3) { border-top-color: #00B388; }
+        .dc-head { font-size: 12px; font-weight: 700; color: #1B2A4A; text-align: center; margin-bottom: 4px; }
+        .dc-sub { font-size: 9px; color: #64748B; text-align: center; margin-bottom: 6px; }
+        .donut-wrap { position: relative; flex: 1; min-height: 0; }
+        .donut-center { position: absolute; top: 42%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+        .dcv { font-size: 30px; font-weight: 800; color: #1B2A4A; line-height: 1; }
+        .dcl { font-size: 9px; color: #64748B; }
+        .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 4px; flex-shrink: 0; }
+        .sr-item { background: white; border: 1px solid #E2E8F0; padding: 4px 6px; text-align: center; }
+        .sr-label { font-size: 7px; color: #64748B; }
+        .sr-val { font-size: 14px; font-weight: 800; color: #1B2A4A; }
+        .footer { height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 22px; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-chart-pie" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> عنوان الرسم البياني الحلقي - متعدد (3 Charts) يكتب هنا</div>
+            <div class="header-num">3.35</div>
+        </div>
+        <div class="content">
+            <div class="donut-col">
+                <div class="dc-head">المؤشر الأول يكتب هنا</div>
+                <div class="dc-sub">وصف مختصر للمؤشر الأول يكتب هنا</div>
+                <div class="donut-wrap">
+                    <canvas id="d1"></canvas>
+                    <div class="donut-center"><div class="dcv">18.5K</div><div class="dcl">الإجمالي</div></div>
+                </div>
+                <div class="stats-row">
+                    <div class="sr-item"><div class="sr-label">الأعلى يكتب هنا</div><div class="sr-val">42%</div></div>
+                    <div class="sr-item"><div class="sr-label">التغير يكتب هنا</div><div class="sr-val" style="color:#00B388;">+5%</div></div>
+                </div>
+            </div>
+            <div class="donut-col">
+                <div class="dc-head">المؤشر الثاني يكتب هنا</div>
+                <div class="dc-sub">وصف مختصر للمؤشر الثاني يكتب هنا</div>
+                <div class="donut-wrap">
+                    <canvas id="d2"></canvas>
+                    <div class="donut-center"><div class="dcv">24.3K</div><div class="dcl">الإجمالي</div></div>
+                </div>
+                <div class="stats-row">
+                    <div class="sr-item"><div class="sr-label">الأعلى يكتب هنا</div><div class="sr-val">38%</div></div>
+                    <div class="sr-item"><div class="sr-label">التغير يكتب هنا</div><div class="sr-val" style="color:#00B388;">+12%</div></div>
+                </div>
+            </div>
+            <div class="donut-col">
+                <div class="dc-head">المؤشر الثالث يكتب هنا</div>
+                <div class="dc-sub">وصف مختصر للمؤشر الثالث يكتب هنا</div>
+                <div class="donut-wrap">
+                    <canvas id="d3"></canvas>
+                    <div class="donut-center"><div class="dcv">31.7K</div><div class="dcl">الإجمالي</div></div>
+                </div>
+                <div class="stats-row">
+                    <div class="sr-item"><div class="sr-label">الأعلى يكتب هنا</div><div class="sr-val">45%</div></div>
+                    <div class="sr-item"><div class="sr-label">التغير يكتب هنا</div><div class="sr-val" style="color:#C0392B;">-3%</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+    <script>
+        var c = ['#1B2A4A','#2B5EA7','#00B388','#E8A838','#CBD5E1'];
+        var l = ['الفئة أ يكتب هنا','الفئة ب يكتب هنا','الفئة ج يكتب هنا','الفئة د يكتب هنا','أخرى'];
+        var o = { responsive: true, maintainAspectRatio: false, cutout: '55%', plugins: { legend: { position: 'bottom', labels: { font: { family: 'Tajawal', size: 8 }, boxWidth: 8, padding: 4 } } } };
+        new Chart(document.getElementById('d1'), { type: 'doughnut', data: { labels: l, datasets: [{ data: [42,22,18,12,6], backgroundColor: c, borderWidth: 2, borderColor: '#FFF' }] }, options: o });
+        new Chart(document.getElementById('d2'), { type: 'doughnut', data: { labels: l, datasets: [{ data: [38,28,16,10,8], backgroundColor: c, borderWidth: 2, borderColor: '#FFF' }] }, options: o });
+        new Chart(document.getElementById('d3'), { type: 'doughnut', data: { labels: l, datasets: [{ data: [45,20,15,12,8], backgroundColor: c, borderWidth: 2, borderColor: '#FFF' }] }, options: o });
+    </script>
+</body>
+</html>

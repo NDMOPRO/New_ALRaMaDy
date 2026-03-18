@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل مجالات البيانات - Domain Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+        }
+        
+        /* Header */
+        .header-strip {
+            height: 8px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #00B388 50%, #E8A838 100%);
+        }
+        .header {
+            padding: 20px 40px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .title-block h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1B2A4A;
+            margin: 0 0 5px 0;
+        }
+        .title-block p {
+            font-size: 14px;
+            color: #64748b;
+            margin: 0;
+        }
+        .logo-box {
+            display: flex;
+            gap: 15px;
+            background: #f8fafc;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        .logo-box img {
+            height: 40px;
+            object-fit: contain;
+        }
+
+        /* Content */
+        .content {
+            padding: 10px 40px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+        }
+        .stat-card {
+            flex: 1;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+        .stat-info h3 { margin: 0; font-size: 24px; font-weight: 800; color: #1B2A4A; }
+        .stat-info p { margin: 0; font-size: 11px; color: #64748b; font-weight: 700; }
+
+        /* Domains Grid */
+        .domains-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 15px;
+            flex-grow: 1;
+        }
+        .domain-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            transition: transform 0.2s;
+        }
+        .domain-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 6px 6px 0 0;
+        }
+        .status-green::before { background: #00B388; }
+        .status-amber::before { background: #E8A838; }
+        .status-red::before { background: #ef4444; }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .dom-icon {
+            width: 32px;
+            height: 32px;
+            background: #f1f5f9;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #1B2A4A;
+        }
+        .dom-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #1B2A4A;
+            margin: 0;
+        }
+        .dom-owner {
+            font-size: 10px;
+            color: #64748b;
+            margin: 2px 0 0 0;
+        }
+        .criticality-badge {
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+        .crit-high { background: #fee2e2; color: #991b1b; }
+        .crit-med { background: #ffedd5; color: #9a3412; }
+        .crit-low { background: #dcfce7; color: #166534; }
+
+        /* Metrics inside card */
+        .card-metrics {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: auto;
+        }
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+        }
+        .m-label { color: #64748b; }
+        .m-value { font-weight: 700; color: #334155; }
+        
+        .progress-bg {
+            width: 100%;
+            height: 4px;
+            background: #f1f5f9;
+            border-radius: 2px;
+            margin-top: 2px;
+            overflow: hidden;
+        }
+        .progress-fill { height: 100%; border-radius: 2px; }
+
+        /* Footer */
+        .footer {
+            padding: 10px 40px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: auto;
+        }
+        .page-num {
+            color: #1B2A4A;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header-strip"></div>
+        
+        <div class="header">
+            <div class="title-block">
+                <h1>تحليل مجالات البيانات (Data Domain Analysis)</h1>
+                <p>تقييم شامل لمجالات البيانات الوطنية من حيث الجودة، الأمان، والأهمية الاستراتيجية</p>
+            </div>
+            <div class="logo-box">
+                <img src="assets/logo_ndmo.png" alt="NDMO">
+                <div style="width:1px; height:30px; background:#cbd5e1; margin:0 5px;"></div>
+                <img src="assets/logo_sdaia.png" alt="SDAIA">
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Stats -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:#1B2A4A;">📂</div>
+                    <div class="stat-info">
+                        <h3>8 مجالات</h3>
+                        <p>مجالات بيانات رئيسية</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:#ef4444;">🔥</div>
+                    <div class="stat-info">
+                        <h3>3 مجالات</h3>
+                        <p>ذات أولوية حرجة (Critical)</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:#00B388;">⭐</div>
+                    <div class="stat-info">
+                        <h3>82.5%</h3>
+                        <p>متوسط جودة البيانات</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:#E8A838;">🛡️</div>
+                    <div class="stat-info">
+                        <h3>95%</h3>
+                        <p>نسبة الامتثال الأمني</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid -->
+            <div class="domains-grid">
+                
+                <!-- Domain 1 -->
+                <div class="domain-card status-green">
+                    <div class="card-header">
+                        <div style="display:flex; gap:10px;">
+                            <div class="dom-icon">👥</div>
+                            <div>
+                                <h3 class="dom-title">الموارد البشرية (HR)</h3>
+                                <p class="dom-owner">المالك: وزارة الموارد البشرية</p>
+                            </div>
+                        </div>
+                        <span class="criticality-badge crit-high">عالي جداً</span>
+                    </div>
+                    <div class="card-metrics">
+                        <div class="metric-row">
+                            <span class="m-label">جودة البيانات</span>
+                            <span class="m-value">96%</span>
+                        </div>
+                        <div class="progress-bg"><div class="progress-fill" style="width:96%; background:#00B388;"></div></div>
+                        <div class="metric-row" style="margin-top:4px;">
+                            <span class="m-label">التصنيف الأمني</span>
+                            <span class="m-value" style="color:#9f1239; font-weight:800;">سري للغاية</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="m-label">حجم البيانات</span>
+                            <span class="m-value">15 TB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain 2 -->
+                <div class="domain-card status-green">
+                    <div class="card-header">
+                        <div style="display:flex; gap:10px;">
+                            <div class="dom-icon">💰</div>
+                            <div>
+                                <h3 class="dom-title">البيانات المالية</h3>
+                                <p class="dom-owner">المالك: وزارة المالية</p>
+                            </div>
+                        </div>
+                        <span class="criticality-badge crit-high">عالي جداً</span>
+                    </div>
+                    <div class="card-metrics">
+                        <div class="metric-row">
+                            <span class="m-label">جودة البيانات</span>
+                            <span class="m-value">98%</span>
+                        </div>
+                        <div class="progress-bg"><div class="progress-fill" style="width:98%; background:#00B388;"></div></div>
+                        <div class="metric-row" style="margin-top:4px;">
+                            <span class="m-label">التصنيف الأمني</span>
+                            <span class="m-value" style="color:#9f1239; font-weight:800;">سري للغاية</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="m-label">حجم البيانات</span>
+                            <span class="m-value">42 TB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain 3 -->
+                <div class="domain-card status-amber">
+                    <div class="card-header">
+                        <div style="display:flex; gap:10px;">
+                            <div class="dom-icon">🛍️</div>
+                            <div>
+                                <h3 class="dom-title">العملاء والمستفيدين</h3>
+                                <p class="dom-owner">المالك: المبيعات / الخدمات</p>
+                            </div>
+                        </div>
+                        <span class="criticality-badge crit-high">عالي</span>
+                    </div>
+                    <div class="card-metrics">
+                        <div class="metric-row">
+                            <span class="m-label">جودة البيانات</span>
+                            <span class="m-value">78%</span>
+                        </div>
+                        <div class="progress-bg"><div class="progress-fill" style="width:78%; background:#E8A838;"></div></div>
+                        <div class="metric-row" style="margin-top:4px;">
+                            <span class="m-label">التصنيف الأمني</span>
+                            <span class="m-value" style="color:#b45309; font-weight:800;">سري</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="m-label">حجم البيانات</span>
+                            <span class="m-value">120 TB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain 4 -->
+                <div class="domain-card status-red">
+                    <div class="card-header">
+                        <div style="display:flex; gap:10px;">
+                            <div class="dom-icon">🏭</div>
+                            <div>
+                                <h3 class="dom-title">سلاسل الإمداد</h3>
+                                <p class="dom-owner">المالك: العمليات</p>
+                            </div>
+                        </div>
+                        <span class="criticality-badge crit-med">متوسط</span>
+                    </div>
+                    <div class="card-metrics">
+                        <div class="metric-row">
+                            <span class="m-label">جودة البيانات</span>
+                            <span class="m-value">65%</span>
+                        </div>
+                        <div class="progress-bg"><div class="progress-fill" style="width:65%; background:#ef4444;"></div></div>
+                        <div class="metric-row" style="margin-top:4px;">
+                            <span class="m-label">التصنيف الأمني</span>
+                            <span class="m-value" style="color:#b45309; font-weight:800;">سري</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="m-label">حجم البيانات</span>
+                            <span class="m-value">8 TB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain 5 -->
+                <div class="domain-card status-amber">
+                    <div class="card-header">
+                        <div style="display:flex; gap:10px;">
+                            <div class="dom-icon">🏢</div>
+                            <div>
+                                <h3 class="dom-title">الأصول والمرافق</h3>
+                                <p class="dom-owner">المالك: الخدمات المشتركة</p>
+                            </div>
+                        </div>
+                        <span class="criticality-badge crit-low">منخفض</span>
+                    </div>
+                    <div class="card-metrics">
+                        <div class="metric-row">
+                            <span class="m-label">جودة البيانات</span>
+                            <span class="m-value">72%</span>
+                        </div>
+                        <div class="progress-bg"><div class="progress-fill" style="width:72%; background:#E8A838;"></div></div>
+                        <div class="metric-row" style="margin-top:4px;">
+                            <span class="m-label">التصنيف الأمني</span>
+                            <span class="m-value" style="color:#15803d; font-weight:800;">مقيد</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="m-label">حجم البيانات</span>
+                            <span class="m-value">4 TB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain 6 -->
+                <div class="domain-card status-green">
+                    <div class="card-header">
+                        <div style="display:flex; gap:10px;">
+                            <div class="dom-icon">⚖️</div>
+                            <div>
+                                <h3 class="dom-title">البيانات القانونية</h3>
+                                <p class="dom-owner">المالك: الشؤون القانونية</p>
+                            </div>
+                        </div>
+                        <span class="criticality-badge crit-med">متوسط</span>
+                    </div>
+                    <div class="card-metrics">
+                        <div class="metric-row">
+                            <span class="m-label">جودة البيانات</span>
+                            <span class="m-value">94%</span>
+                        </div>
+                        <div class="progress-bg"><div class="progress-fill" style="width:94%; background:#00B388;"></div></div>
+                        <div class="metric-row" style="margin-top:4px;">
+                            <span class="m-label">التصنيف الأمني</span>
+                            <span class="m-value" style="color:#9f1239; font-weight:800;">سري للغاية</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="m-label">حجم البيانات</span>
+                            <span class="m-value">2 TB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain 7 -->
+                <div class="domain-card status-green">
+                    <div class="card-header">
+                        <div style="display:flex; gap:10px;">
+                            <div class="dom-icon">📦</div>
+                            <div>
+                                <h3 class="dom-title">المنتجات والخدمات</h3>
+                                <p class="dom-owner">المالك: إدارة المنتجات</p>
+                            </div>
+                        </div>
+                        <span class="criticality-badge crit-med">متوسط</span>
+                    </div>
+                    <div class="card-metrics">
+                        <div class="metric-row">
+                            <span class="m-label">جودة البيانات</span>
+                            <span class="m-value">88%</span>
+                        </div>
+                        <div class="progress-bg"><div class="progress-fill" style="width:88%; background:#00B388;"></div></div>
+                        <div class="metric-row" style="margin-top:4px;">
+                            <span class="m-label">التصنيف الأمني</span>
+                            <span class="m-value" style="color:#15803d; font-weight:800;">عام</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="m-label">حجم البيانات</span>
+                            <span class="m-value">25 TB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain 8 -->
+                <div class="domain-card status-red">
+                    <div class="card-header">
+                        <div style="display:flex; gap:10px;">
+                            <div class="dom-icon">🌍</div>
+                            <div>
+                                <h3 class="dom-title">البيانات الجغرافية</h3>
+                                <p class="dom-owner">المالك: الشؤون الهندسية</p>
+                            </div>
+                        </div>
+                        <span class="criticality-badge crit-low">منخفض</span>
+                    </div>
+                    <div class="card-metrics">
+                        <div class="metric-row">
+                            <span class="m-label">جودة البيانات</span>
+                            <span class="m-value">55%</span>
+                        </div>
+                        <div class="progress-bg"><div class="progress-fill" style="width:55%; background:#ef4444;"></div></div>
+                        <div class="metric-row" style="margin-top:4px;">
+                            <span class="m-label">التصنيف الأمني</span>
+                            <span class="m-value" style="color:#15803d; font-weight:800;">عام</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="m-label">حجم البيانات</span>
+                            <span class="m-value">300 TB</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>المملكة العربية السعودية - مكتب إدارة البيانات الوطنية</div>
+            <div class="page-num">2.01</div>
+            <div>سري للغاية - للاستخدام الداخلي فقط</div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+            flex-shrink: 0;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 20px 40px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Core Principle Banner */
+        .core-banner {
+            background: #1B2A4A;
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-right: 6px solid #E8A838;
+        }
+        .cb-icon {
+            font-size: 32px; color: #E8A838;
+            width: 60px; height: 60px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .cb-content { flex: 1; }
+        .cb-title { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
+        .cb-desc { font-size: 13px; opacity: 0.9; }
+
+        /* Principles Grid */
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 15px;
+            flex: 1;
+        }
+
+        .p-card {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-top: 4px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        .pc-teal { border-color: #00B388; }
+        .pc-blue { border-color: #2B5EA7; }
+        .pc-gold { border-color: #E8A838; }
+
+        .pc-bg-icon {
+            position: absolute; bottom: -10px; left: -10px;
+            font-size: 80px; opacity: 0.05; color: #000;
+            transform: rotate(15deg);
+        }
+
+        .pc-header {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+        }
+        .pc-icon {
+            width: 32px; height: 32px;
+            border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 14px;
+        }
+        .pc-teal .pc-icon { background: #00B388; }
+        .pc-blue .pc-icon { background: #2B5EA7; }
+        .pc-gold .pc-icon { background: #E8A838; }
+
+        .pc-title { font-size: 14px; font-weight: 800; color: #1B2A4A; }
+        
+        .pc-desc {
+            font-size: 11px; color: #555; line-height: 1.4; margin-bottom: 10px; flex: 1;
+        }
+
+        .pc-practice {
+            background: #f9f9f9;
+            padding: 8px;
+            border-right: 2px solid #ccc;
+            font-size: 10px; color: #333;
+        }
+        .pc-teal .pc-practice { border-color: #00B388; background: rgba(0,179,136,0.05); }
+        .pc-blue .pc-practice { border-color: #2B5EA7; background: rgba(43,94,167,0.05); }
+        .pc-gold .pc-practice { border-color: #E8A838; background: rgba(232,168,56,0.05); }
+
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">المبادئ الحاكمة - القيم الأساسية لإدارة البيانات</div>
+            <div class="header-badge">17</div>
+        </div>
+
+        <div class="content-area">
+            <!-- Core Banner -->
+            <div class="core-banner">
+                <div class="cb-icon"><i class="fas fa-globe"></i></div>
+                <div class="cb-content">
+                    <div class="cb-title">البيانات أصل وطني (Data as a National Asset)</div>
+                    <div class="cb-desc">البيانات ليست ملكاً للجهة التي تجمعها، بل هي ثروة وطنية يجب إدارتها واستثمارها لخدمة المصلحة العامة للدولة والمجتمع.</div>
+                </div>
+            </div>
+
+            <!-- Principles Grid -->
+            <div class="principles-grid">
+                <!-- P1 -->
+                <div class="p-card pc-teal">
+                    <i class="fas fa-lock-open pc-bg-icon"></i>
+                    <div class="pc-header">
+                        <div class="pc-icon"><i class="fas fa-lock-open"></i></div>
+                        <div class="pc-title">الأصل هو الإتاحة</div>
+                    </div>
+                    <div class="pc-desc">يجب إتاحة البيانات العامة للجميع بصيغة مفتوحة، ما لم تقتضِ طبيعتها السرية أو الخصوصية غير ذلك.</div>
+                    <div class="pc-practice"><strong>التطبيق:</strong> نشر 50 مجموعة بيانات مفتوحة على البوابة الوطنية.</div>
+                </div>
+
+                <!-- P2 -->
+                <div class="p-card pc-blue">
+                    <i class="fas fa-shield-alt pc-bg-icon"></i>
+                    <div class="pc-header">
+                        <div class="pc-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div class="pc-title">الأمن والخصوصية أولاً</div>
+                    </div>
+                    <div class="pc-desc">حماية البيانات الشخصية والبيانات الحساسة هي أولوية قصوى في جميع مراحل دورة حياة البيانات.</div>
+                    <div class="pc-practice"><strong>التطبيق:</strong> تطبيق ضوابط الأمن السيبراني (ECC) وتشفير البيانات.</div>
+                </div>
+
+                <!-- P3 -->
+                <div class="p-card pc-gold">
+                    <i class="fas fa-check-double pc-bg-icon"></i>
+                    <div class="pc-header">
+                        <div class="pc-icon"><i class="fas fa-check-double"></i></div>
+                        <div class="pc-title">الجودة والموثوقية</div>
+                    </div>
+                    <div class="pc-desc">يجب أن تكون البيانات دقيقة، مكتملة، ومحدثة لضمان بناء قرارات سليمة وموثوقة عليها.</div>
+                    <div class="pc-practice"><strong>التطبيق:</strong> تنفيذ عمليات تنظيف دورية للبيانات ومعالجة الأخطاء.</div>
+                </div>
+
+                <!-- P4 -->
+                <div class="p-card pc-blue">
+                    <i class="fas fa-network-wired pc-bg-icon"></i>
+                    <div class="pc-header">
+                        <div class="pc-icon"><i class="fas fa-network-wired"></i></div>
+                        <div class="pc-title">التكامل والترابط</div>
+                    </div>
+                    <div class="pc-desc">البيانات يجب أن تكون قابلة للتبادل والمشاركة بين الجهات الحكومية لتعزيز الكفاءة ومنع الازدواجية.</div>
+                    <div class="pc-practice"><strong>التطبيق:</strong> الربط مع قناة التكامل الحكومية (GSB).</div>
+                </div>
+
+                <!-- P5 -->
+                <div class="p-card pc-gold">
+                    <i class="fas fa-balance-scale pc-bg-icon"></i>
+                    <div class="pc-header">
+                        <div class="pc-icon"><i class="fas fa-balance-scale"></i></div>
+                        <div class="pc-title">الاستخدام الأخلاقي</div>
+                    </div>
+                    <div class="pc-desc">استخدام البيانات والذكاء الاصطناعي يجب أن يتم بطريقة عادلة، شفافة، ومسؤولة تمنع التحيز.</div>
+                    <div class="pc-practice"><strong>التطبيق:</strong> مراجعة خوارزميات الذكاء الاصطناعي لضمان العدالة.</div>
+                </div>
+
+                <!-- P6 -->
+                <div class="p-card pc-teal">
+                    <i class="fas fa-chart-line pc-bg-icon"></i>
+                    <div class="pc-header">
+                        <div class="pc-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="pc-title">تعظيم القيمة</div>
+                    </div>
+                    <div class="pc-desc">التركيز على جمع وإدارة البيانات التي تحقق أعلى عائد اقتصادي واجتماعي وتدعم الابتكار.</div>
+                    <div class="pc-practice"><strong>التطبيق:</strong> تطوير منتجات بيانات تجارية تدعم الاقتصاد الرقمي.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">17</div>
+    </div>
+</body>
+</html>

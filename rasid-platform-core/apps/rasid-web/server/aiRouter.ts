@@ -10,21 +10,54 @@ import { ENV } from "./_core/env";
 import * as localDb from "./localDb";
 
 // ─── Presentation System Prompt ──────────────────────────────────
-const PRESENTATION_SYSTEM_PROMPT = `أنت خبير في إنشاء العروض التقديمية الاحترافية باللغة العربية.
-مهمتك إنشاء محتوى شرائح غني وحقيقي بتنسيق JSON.
-كل شريحة يجب أن تحتوي على:
-- title: عنوان الشريحة
-- layout: نوع التخطيط (title, content, kpi, chart, table, timeline, pillars, toc, executive-summary, closing)
-- content: المحتوى النصي الرئيسي
-- bulletPoints: نقاط رئيسية (مصفوفة نصوص)
-- subtitle: عنوان فرعي (اختياري)
-حسب نوع التخطيط، أضف:
-- kpi: kpiItems [{label, value, change, icon}]
-- chart: chartType, chartData, chartLabels, chartColors
+const PRESENTATION_SYSTEM_PROMPT = `أنت خبير عالمي رفيع المستوى في إنشاء العروض التقديمية الاحترافية بمستوى McKinsey و BCG و Deloitte.
+مهمتك إنشاء محتوى شرائح غني جداً جداً (Ultra Premium 300%) بتنسيق JSON.
+
+## ⚠️ قاعدة المحتوى الذهبية — إلزامية مطلقة:
+كل شريحة يجب أن تكون مليئة بالمحتوى الحقيقي الدسم — وليس مجرد عناوين أو جمل قصيرة.
+المحتوى يجب أن يكون كأنه مكتوب من خبير متخصص في الموضوع.
+لا يوجد شريحة فارغة أو ناقصة أو سطحية — كل شريحة تحفة معلوماتية.
+
+## قواعد المحتوى الإلزامية الصارمة:
+1. **content** (الفقرة النصية): يجب أن تكون 5-8 جمل كاملة مفصلة — تشرح الموضوع بعمق مع أمثلة واقعية وأرقام وسياق. ليس ملخصاً بل شرحاً وافياً.
+2. **bulletPoints** (النقاط): يجب أن تكون 5-8 نقاط، كل نقطة تتكون من جملتين على الأقل — الأولى تشرح المفهوم والثانية تعطي مثالاً أو رقماً أو تفصيلاً.
+3. **kpiItems**: يجب أن تحتوي 4-6 مؤشرات مع أرقام واقعية دقيقة ونسب تغيير حقيقية واتجاهات (trend: up/down/flat) ووحدات قياس.
+4. **tableHeaders + tableRows**: الجداول يجب أن تحتوي 6-10 صفوف على الأقل مع بيانات حقيقية متنوعة ومفصلة — كل خلية تحتوي معلومة حقيقية.
+5. **chartData + chartLabels**: الرسوم البيانية يجب أن تحتوي 6-8 نقاط بيانات مع تسميات واضحة وأرقام واقعية.
+6. **timelineItems**: الجدول الزمني يجب أن يحتوي 5-6 مراحل مع تواريخ دقيقة وعناوين وأوصاف مفصلة (3 جمل لكل مرحلة).
+7. **pillarItems**: الركائز يجب أن تحتوي 4-5 عناصر مع أيقونات Material Symbols وعناوين وأوصاف غنية (جملتين لكل ركيزة).
+8. **infographicItems**: الإنفوجرافيك يجب أن يحتوي 5-6 عناصر مع أيقونات وقيم رقمية وأوصاف تفصيلية.
+9. **subtitle**: عنوان فرعي توضيحي إلزامي لكل شريحة — جملة كاملة تلخص المحتوى.
+10. **title**: عنوان احترافي واضح ومحدد — ليس عاماً.
+
+## هيكل JSON لكل شريحة:
+{
+  "title": "عنوان احترافي محدد",
+  "subtitle": "جملة توضيحية كاملة",
+  "layout": "نوع التخطيط",
+  "content": "فقرة 5-8 جمل مفصلة مع أرقام وأمثلة",
+  "bulletPoints": ["نقطة مفصلة من جملتين", ...]
+}
+
+أنواع التخطيط: title, content, kpi, chart, table, timeline, pillars, toc, executive-summary, section-title, infographic, two-column, closing
+
+حسب نوع التخطيط، أضف الحقول المناسبة:
+- kpi: kpiItems [{label, value, trend: "up"|"down"|"flat", change}]
+- chart: chartData (أرقام), chartLabels (تسميات), chartColors (ألوان hex)
 - table: tableHeaders, tableRows
 - timeline: timelineItems [{year, title, description}]
-- pillars: pillarItems [{title, description, icon}]
-استخدم بيانات واقعية وأرقام حقيقية. أجب بالعربية دائماً.`;
+- pillars: pillarItems [{icon, title, description}]
+- infographic: infographicItems [{icon, label, value, description}]
+- two-column: leftContent + rightContent (كل منهما فقرة كاملة)
+
+أيقونات Material Symbols: security, hub, psychology, school, analytics, trending_up, groups, public, verified, speed, storage, cloud, shield, assessment, insights, monitoring, data_usage, query_stats, bar_chart, pie_chart, timeline, account_tree, settings, build, support, star, flag, rocket_launch, lightbulb, target, handshake, gavel, policy, fact_check, workspace_premium, military_tech, emoji_events
+
+## ⚠️ تحذير أخير:
+- استخدم بيانات واقعية وأرقام حقيقية دائماً
+- لا تختصر أبداً — المحتوى يجب أن يكون ضعف ما تعتقد أنه كافٍ
+- كل حقل يجب أن يكون مليئاً بالمعلومات — لا حقول فارغة أو قصيرة
+- أجب بالعربية فقط
+- الجودة أهم من السرعة — خذ وقتك في إنشاء محتوى استثنائي`;
 
 // ─── Helper Functions ──────────────────────────────────────────
 function formatTime(seconds: number): string {
@@ -1965,9 +1998,38 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
     }))
     .mutation(async ({ input }) => {
       const result = await openaiJSON<{ toc: { index: number; title: string; layout: string; description: string }[] }>(
-        `أنت خبير في تخطيط العروض التقديمية. مهمتك إنشاء فهرس محتويات لعرض تقديمي.\nأجب بـ JSON فقط بالتنسيق:\n{\n  "toc": [\n    { "index": 1, "title": "عنوان الشريحة", "layout": "title|content|kpi|chart|table|timeline|pillars|toc|executive-summary|closing", "description": "وصف مختصر" }\n  ]\n}`,
-        `أنشئ فهرس محتويات لعرض تقديمي عن: "${input.topic}"\nعدد الشرائح: ${input.slideCount}\nالنمط: ${input.style}\nاللغة: ${input.language === 'ar' ? 'العربية' : 'الإنجليزية'}\n${input.additionalInstructions ? `تعليمات إضافية: ${input.additionalInstructions}` : ''}\n\nيجب أن يتضمن: شريحة عنوان، فهرس، شرائح محتوى متنوعة (kpi, chart, table, timeline)، وشريحة ختامية.`,
-        { max_tokens: 2048, temperature: 0.7 }
+        `أنت خبير عالمي في تخطيط العروض التقديمية على مستوى McKinsey وBCG. مهمتك إنشاء فهرس محتويات احترافي لعرض تقديمي.
+
+أجب بـ JSON فقط بالتنسيق:
+{
+  "toc": [
+    { "index": 1, "title": "عنوان الشريحة", "layout": "نوع التخطيط", "description": "وصف تفصيلي للمحتوى المتوقع" }
+  ]
+}
+
+## الهيكل الإلزامي:
+1. الشريحة الأولى دائماً: layout = "title" (الغلاف)
+2. الشريحة الثانية دائماً: layout = "toc" (فهرس المحتويات)
+3. قبل كل قسم جديد: layout = "section-title" (فاصل القسم)
+4. الشريحة الأخيرة دائماً: layout = "closing" (الخاتمة)
+
+## أنواع التخطيط المتاحة:
+title, toc, section-title, executive-summary, content, two-column, kpi, chart, table, infographic, timeline, pillars, closing
+
+## قواعد التنوع:
+- استخدم 5+ أنواع مختلفة من التخطيطات
+- لا تكرر نفس النوع أكثر من مرتين متتاليتين
+- أضف section-title قبل كل محور رئيسي
+- الوصف يجب أن يكون تفصيلياً (2-3 جمل) يوضح المحتوى المتوقع`,
+        `أنشئ فهرس محتويات لعرض تقديمي عن: "${input.topic}"
+عدد الشرائح: ${input.slideCount}
+النمط: ${input.style}
+اللغة: ${input.language === 'ar' ? 'العربية' : 'الإنجليزية'}
+${input.additionalInstructions ? `تعليمات إضافية: ${input.additionalInstructions}` : ''}
+
+يجب أن يتضمن: غلاف، فهرس، فواصل أقسام، ملخص تنفيذي، شرائح محتوى متنوعة (kpi, chart, table, timeline, infographic, pillars, two-column)، وخاتمة.
+اجعل كل شريحة غنية بالمحتوى والبيانات. لا تختصر.`,
+        { max_tokens: 4096, temperature: 0.7 }
       );
       return { toc: result.toc || [], topic: input.topic };
     }),
@@ -1990,9 +2052,9 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
         ? `الشرائح السابقة:\n${input.previousSlides.map((s: any, i: number) => `${i + 1}. ${s.title} (${s.layout})`).join('\n')}`
         : '';
       const result = await openaiJSON<{ slide: Record<string, unknown> }>(
-        PRESENTATION_SYSTEM_PROMPT + `\n\nأنت تنشئ شريحة واحدة فقط (الشريحة ${input.slideIndex + 1} من ${input.totalSlides}).\nأجب بـ JSON بالتنسيق: { "slide": { ... } }`,
-        `الموضوع العام: "${input.topic}"\nالشريحة ${input.slideIndex + 1} من ${input.totalSlides}:\n- العنوان: ${input.slideTitle}\n- التخطيط: ${input.slideLayout}\n- الوصف: ${input.slideDescription}\nالنمط: ${input.style}\n${prevContext}\n\nأنشئ محتوى غني وحقيقي لهذه الشريحة فقط. استخدم بيانات واقعية وأرقام حقيقية.`,
-        { max_tokens: 2048, temperature: 0.8 }
+        PRESENTATION_SYSTEM_PROMPT + `\n\nأنت تنشئ شريحة واحدة فقط (الشريحة ${input.slideIndex + 1} من ${input.totalSlides}).\nأجب بـ JSON بالتنسيق: { "slide": { ... } }\n\nمهم: املأ كل حقل بمحتوى غني جداً. المحتوى النصي 3-5 جمل. النقاط 4-6 نقاط مفصلة. الجداول 5-8 صفوف. الرسوم 5-7 نقاط بيانات. لا تختصر أبداً.`,
+        `الموضوع العام: "${input.topic}"\nالشريحة ${input.slideIndex + 1} من ${input.totalSlides}:\n- العنوان: ${input.slideTitle}\n- التخطيط المطلوب: ${input.slideLayout}\n- الوصف: ${input.slideDescription}\nالنمط: ${input.style}\n${prevContext}\n\nأنشئ محتوى Ultra Premium لهذه الشريحة. استخدم بيانات واقعية وأرقام حقيقية وتفاصيل غنية. لا تختصر أبداً. كل حقل يجب أن يكون مليئاً بالمحتوى.`,
+        { max_tokens: 4096, temperature: 0.8 }
       );
       return { slide: result.slide || {}, slideIndex: input.slideIndex };
     }),
@@ -2330,7 +2392,7 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
       ];
 
       const visionResult = await callVision(visionMessages, {
-        model: 'gpt-4o-mini',
+        model: 'gpt-4.1-mini',
         temperature: 0.1,
         max_tokens: 16000,
       });
@@ -2371,7 +2433,7 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
         elements_detected: cdr.elements?.length || cdr.widgets?.length || cdr.slides?.length || cdr.sheets?.length || 0,
         colors_extracted: cdr.theme?.colors || cdr.colors || [],
         strict_mode: input.strictMode,
-        vision_model: 'gpt-4o-mini',
+        vision_model: 'gpt-4.1-mini',
         analysis_timestamp: new Date().toISOString(),
       };
 
@@ -2420,7 +2482,7 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
       ];
 
       const visionResult = await callVision(visionMessages, {
-        model: 'gpt-4o-mini',
+        model: 'gpt-4.1-mini',
         temperature: 0.1,
         max_tokens: 16000,
       });
@@ -2510,7 +2572,7 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
 
       let overview: any = { totalPages: 1, title: 'مستند', theme: {}, pageMap: [] };
       try {
-        const overviewResult = await callVision(overviewMessages, { model: 'gpt-4o-mini', temperature: 0.1, max_tokens: 4000 });
+        const overviewResult = await callVision(overviewMessages, { model: 'gpt-4.1-mini', temperature: 0.1, max_tokens: 4000 });
         const jsonMatch = overviewResult.content.match(/```json\s*([\s\S]*?)\s*```/) || overviewResult.content.match(/\{[\s\S]*\}/);
         if (jsonMatch) overview = JSON.parse(jsonMatch[1] || jsonMatch[0]);
       } catch { /* use defaults */ }
@@ -2555,7 +2617,7 @@ ${targetPrompt}`,
 
         try {
           const batchResult = await callVision(batchMessages, {
-            model: 'gpt-4o-mini',
+            model: 'gpt-4.1-mini',
             temperature: 0.1,
             max_tokens: 16000,
           });
@@ -2615,5 +2677,62 @@ ${targetPrompt}`,
         artifact,
         pageMap: overview.pageMap || [],
       };
+    }),
+
+  // ─── Speech-to-Text (Whisper) ────────────────────────────────
+  speechToText: publicProcedure
+    .input(z.object({ audioBase64: z.string(), mimeType: z.string().default('audio/webm') }))
+    .mutation(async ({ input }) => {
+      const apiKey = ENV.openaiApiKey;
+      if (!apiKey) throw new Error('OPENAI_API_KEY is not configured for STT');
+      const OPENAI_BASE = process.env.OPENAI_BASE_URL || process.env.OPENAI_API_BASE || 'https://api.openai.com/v1';
+      // Convert base64 to buffer
+      const buffer = Buffer.from(input.audioBase64, 'base64');
+      const blob = new Blob([buffer], { type: input.mimeType });
+      const formData = new FormData();
+      formData.append('file', blob, 'audio.webm');
+      formData.append('model', 'whisper-1');
+      formData.append('language', 'ar');
+      formData.append('response_format', 'json');
+      const response = await fetch(`${OPENAI_BASE}/audio/transcriptions`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${apiKey}` },
+        body: formData,
+      });
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(`STT error ${response.status}: ${err}`);
+      }
+      const data = await response.json() as { text: string };
+      return { text: data.text || '' };
+    }),
+
+  // ─── Text-to-Speech ─────────────────────────────────────────
+  textToSpeech: publicProcedure
+    .input(z.object({ text: z.string().max(4096), voice: z.string().default('alloy') }))
+    .mutation(async ({ input }) => {
+      const apiKey = ENV.openaiApiKey;
+      if (!apiKey) throw new Error('OPENAI_API_KEY is not configured for TTS');
+      const OPENAI_BASE = process.env.OPENAI_BASE_URL || process.env.OPENAI_API_BASE || 'https://api.openai.com/v1';
+      const response = await fetch(`${OPENAI_BASE}/audio/speech`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'tts-1',
+          input: input.text,
+          voice: input.voice,
+          response_format: 'mp3',
+        }),
+      });
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(`TTS error ${response.status}: ${err}`);
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      const base64 = Buffer.from(arrayBuffer).toString('base64');
+      return { audioBase64: base64, mimeType: 'audio/mpeg' };
     }),
 });

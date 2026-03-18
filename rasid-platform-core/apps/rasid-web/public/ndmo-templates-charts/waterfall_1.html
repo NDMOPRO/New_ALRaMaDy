@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 8px 14px 4px 14px; display: flex; flex-direction: column; gap: 4px; }
+        .track-headers { display: grid; grid-template-columns: 80px 1fr 1fr 1fr; gap: 4px; flex-shrink: 0; }
+        .th-time { background: #1B2A4A; color: white; font-size: 10px; font-weight: 700; padding: 6px; text-align: center; display: flex; align-items: center; justify-content: center; }
+        .th-track { padding: 6px 8px; color: white; font-size: 12px; font-weight: 800; text-align: center; }
+        .th-1 { background: #2B5EA7; }
+        .th-2 { background: #00B388; }
+        .th-3 { background: #E8A838; }
+        .sessions-area { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+        .session-row { display: grid; grid-template-columns: 80px 1fr 1fr 1fr; gap: 4px; }
+        .sr-time { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 6px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .sr-time-val { font-size: 12px; font-weight: 800; color: #1B2A4A; }
+        .sr-time-dur { font-size: 8px; color: #64748B; }
+        .sr-cell { border: 1px solid #E2E8F0; padding: 6px 8px; }
+        .sr-cell-1 { border-top: 2px solid #2B5EA7; }
+        .sr-cell-2 { border-top: 2px solid #00B388; }
+        .sr-cell-3 { border-top: 2px solid #E8A838; }
+        .sc-title { font-size: 11px; font-weight: 700; color: #1B2A4A; }
+        .sc-speaker { font-size: 9px; color: #2B5EA7; font-weight: 600; margin-top: 1px; }
+        .sc-desc { font-size: 9px; color: #64748B; margin-top: 1px; }
+        .break-row { display: grid; grid-template-columns: 80px 1fr; gap: 4px; }
+        .break-cell { background: #EFF6FF; border: 1px solid #DBEAFE; padding: 6px; text-align: center; font-size: 11px; font-weight: 700; color: #2B5EA7; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-chalkboard-teacher" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> أجندة ورشة العمل / المؤتمر يكتب هنا</div>
+            <div class="header-num">3.59</div>
+        </div>
+        <div class="content">
+            <div class="track-headers">
+                <div class="th-time"><i class="fas fa-clock"></i> الوقت</div>
+                <div class="th-track th-1"><i class="fas fa-database" style="margin-left:4px;"></i> المسار الأول يكتب هنا</div>
+                <div class="th-track th-2"><i class="fas fa-shield-alt" style="margin-left:4px;"></i> المسار الثاني يكتب هنا</div>
+                <div class="th-track th-3"><i class="fas fa-chart-line" style="margin-left:4px;"></i> المسار الثالث يكتب هنا</div>
+            </div>
+            <div class="sessions-area">
+                <div class="session-row">
+                    <div class="sr-time"><div class="sr-time-val">09:00</div><div class="sr-time-dur">45 دقيقة</div></div>
+                    <div class="sr-cell sr-cell-1"><div class="sc-title">عنوان الجلسة الأولى يكتب هنا</div><div class="sc-speaker"><i class="fas fa-user" style="font-size:8px;margin-left:2px;"></i> اسم المتحدث يكتب هنا</div><div class="sc-desc">وصف مختصر للجلسة يكتب هنا</div></div>
+                    <div class="sr-cell sr-cell-2"><div class="sc-title">عنوان الجلسة الأولى يكتب هنا</div><div class="sc-speaker"><i class="fas fa-user" style="font-size:8px;margin-left:2px;"></i> اسم المتحدث يكتب هنا</div><div class="sc-desc">وصف مختصر للجلسة يكتب هنا</div></div>
+                    <div class="sr-cell sr-cell-3"><div class="sc-title">عنوان الجلسة الأولى يكتب هنا</div><div class="sc-speaker"><i class="fas fa-user" style="font-size:8px;margin-left:2px;"></i> اسم المتحدث يكتب هنا</div><div class="sc-desc">وصف مختصر للجلسة يكتب هنا</div></div>
+                </div>
+                <div class="session-row">
+                    <div class="sr-time"><div class="sr-time-val">09:45</div><div class="sr-time-dur">45 دقيقة</div></div>
+                    <div class="sr-cell sr-cell-1"><div class="sc-title">عنوان الجلسة الثانية يكتب هنا</div><div class="sc-speaker"><i class="fas fa-user" style="font-size:8px;margin-left:2px;"></i> اسم المتحدث يكتب هنا</div><div class="sc-desc">وصف مختصر للجلسة يكتب هنا</div></div>
+                    <div class="sr-cell sr-cell-2"><div class="sc-title">عنوان الجلسة الثانية يكتب هنا</div><div class="sc-speaker"><i class="fas fa-user" style="font-size:8px;margin-left:2px;"></i> اسم المتحدث يكتب هنا</div><div class="sc-desc">وصف مختصر للجلسة يكتب هنا</div></div>
+                    <div class="sr-cell sr-cell-3"><div class="sc-title">عنوان الجلسة الثانية يكتب هنا</div><div class="sc-speaker"><i class="fas fa-user" style="font-size:8px;margin-left:2px;"></i> اسم المتحدث يكتب هنا</div><div class="sc-desc">وصف مختصر للجلسة يكتب هنا</div></div>
+                </div>
+                <div class="break-row">
+                    <div class="sr-time"><div class="sr-time-val">10:30</div><div class="sr-time-dur">15 دقيقة</div></div>
+                    <div class="break-cell"><i class="fas fa-coffee"></i> استراحة قهوة وتواصل يكتب هنا</div>
+                </div>
+                <div class="session-row">
+                    <div class="sr-time"><div class="sr-time-val">10:45</div><div class="sr-time-dur">45 دقيقة</div></div>
+                    <div class="sr-cell sr-cell-1"><div class="sc-title">عنوان الجلسة الثالثة يكتب هنا</div><div class="sc-speaker"><i class="fas fa-user" style="font-size:8px;margin-left:2px;"></i> اسم المتحدث يكتب هنا</div><div class="sc-desc">وصف مختصر للجلسة يكتب هنا</div></div>
+                    <div class="sr-cell sr-cell-2"><div class="sc-title">عنوان الجلسة الثالثة يكتب هنا</div><div class="sc-speaker"><i class="fas fa-user" style="font-size:8px;margin-left:2px;"></i> اسم المتحدث يكتب هنا</div><div class="sc-desc">وصف مختصر للجلسة يكتب هنا</div></div>
+                    <div class="sr-cell sr-cell-3"><div class="sc-title">عنوان الجلسة الثالثة يكتب هنا</div><div class="sc-speaker"><i class="fas fa-user" style="font-size:8px;margin-left:2px;"></i> اسم المتحدث يكتب هنا</div><div class="sc-desc">وصف مختصر للجلسة يكتب هنا</div></div>
+                </div>
+                <div class="session-row">
+                    <div class="sr-time"><div class="sr-time-val">11:30</div><div class="sr-time-dur">45 دقيقة</div></div>
+                    <div class="sr-cell sr-cell-1"><div class="sc-title">عنوان الجلسة الرابعة يكتب هنا</div><div class="sc-speaker"><i class="fas fa-user" style="font-size:8px;margin-left:2px;"></i> اسم المتحدث يكتب هنا</div><div class="sc-desc">وصف مختصر للجلسة يكتب هنا</div></div>
+                    <div class="sr-cell sr-cell-2"><div class="sc-title">عنوان الجلسة الرابعة يكتب هنا</div><div class="sc-speaker"><i class="fas fa-user" style="font-size:8px;margin-left:2px;"></i> اسم المتحدث يكتب هنا</div><div class="sc-desc">وصف مختصر للجلسة يكتب هنا</div></div>
+                    <div class="sr-cell sr-cell-3"><div class="sc-title">عنوان الجلسة الرابعة يكتب هنا</div><div class="sc-speaker"><i class="fas fa-user" style="font-size:8px;margin-left:2px;"></i> اسم المتحدث يكتب هنا</div><div class="sc-desc">وصف مختصر للجلسة يكتب هنا</div></div>
+                </div>
+                <div class="break-row">
+                    <div class="sr-time"><div class="sr-time-val">12:15</div><div class="sr-time-dur">45 دقيقة</div></div>
+                    <div class="break-cell"><i class="fas fa-utensils"></i> استراحة غداء يكتب هنا</div>
+                </div>
+                <div class="session-row">
+                    <div class="sr-time"><div class="sr-time-val">13:00</div><div class="sr-time-dur">60 دقيقة</div></div>
+                    <div class="sr-cell sr-cell-1"><div class="sc-title">عنوان الجلسة الخامسة يكتب هنا</div><div class="sc-speaker"><i class="fas fa-user" style="font-size:8px;margin-left:2px;"></i> اسم المتحدث يكتب هنا</div><div class="sc-desc">وصف مختصر للجلسة يكتب هنا</div></div>
+                    <div class="sr-cell sr-cell-2"><div class="sc-title">عنوان الجلسة الخامسة يكتب هنا</div><div class="sc-speaker"><i class="fas fa-user" style="font-size:8px;margin-left:2px;"></i> اسم المتحدث يكتب هنا</div><div class="sc-desc">وصف مختصر للجلسة يكتب هنا</div></div>
+                    <div class="sr-cell sr-cell-3"><div class="sc-title">عنوان الجلسة الخامسة يكتب هنا</div><div class="sc-speaker"><i class="fas fa-user" style="font-size:8px;margin-left:2px;"></i> اسم المتحدث يكتب هنا</div><div class="sc-desc">وصف مختصر للجلسة يكتب هنا</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

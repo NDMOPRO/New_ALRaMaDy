@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بطاقة أداء قطاع</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            background-color: #ffffff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Header & Footer */
+        .header-accent {
+            height: 6px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #00B388 50%, #E8A838 100%);
+            width: 100%;
+        }
+        .header {
+            padding: 25px 40px 10px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .logo-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo-img {
+            height: 45px;
+            object-fit: contain;
+        }
+        .slide-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1B2A4A;
+            margin: 0;
+            line-height: 1.2;
+        }
+        .slide-subtitle {
+            font-size: 14px;
+            color: #6B7280;
+            margin-top: 5px;
+        }
+        
+        /* Main Content Grid */
+        .content-area {
+            flex-grow: 1;
+            padding: 20px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Top KPI Cards */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            height: 90px;
+        }
+        .kpi-card {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-right: 4px solid #1B2A4A;
+            padding: 12px 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .kpi-label {
+            font-size: 12px;
+            color: #64748B;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .kpi-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1B2A4A;
+        }
+        .kpi-trend {
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .trend-up { color: #00B388; }
+        .trend-down { color: #EF4444; }
+
+        /* Scorecard Table */
+        .scorecard-container {
+            flex-grow: 1;
+            border: 1px solid #E2E8F0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        th {
+            background-color: #1B2A4A;
+            color: #ffffff;
+            padding: 10px;
+            text-align: right;
+            font-weight: 700;
+            font-size: 11px;
+        }
+        td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #E2E8F0;
+            color: #334155;
+            vertical-align: middle;
+        }
+        tr:nth-child(even) {
+            background-color: #F8FAFC;
+        }
+        tr:hover {
+            background-color: #F1F5F9;
+        }
+        
+        /* Table Visuals */
+        .rank-badge {
+            width: 24px;
+            height: 24px;
+            background-color: #E2E8F0;
+            color: #1B2A4A;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 11px;
+        }
+        .rank-1 { background-color: #E8A838; color: #fff; }
+        .rank-2 { background-color: #94A3B8; color: #fff; }
+        .rank-3 { background-color: #B45309; color: #fff; } /* Bronze-ish */
+
+        .progress-bg {
+            width: 100%;
+            height: 8px;
+            background-color: #E2E8F0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+        }
+        .score-text {
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 8px;
+            min-width: 30px;
+            display: inline-block;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot-green { background-color: #00B388; }
+        .dot-yellow { background-color: #E8A838; }
+        .dot-red { background-color: #EF4444; }
+        .dot-blue { background-color: #2B5EA7; }
+
+        /* Bottom Charts Area */
+        .bottom-charts {
+            height: 140px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .chart-box {
+            border: 1px solid #E2E8F0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chart-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1B2A4A;
+            margin-bottom: 5px;
+            border-bottom: 2px solid #E8A838;
+            padding-bottom: 3px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 10px 40px;
+            background-color: #F8FAFC;
+            border-top: 1px solid #E2E8F0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: #64748B;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header-accent"></div>
+        
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <h1 class="slide-title">بطاقة الأداء القطاعي المقارن</h1>
+                <p class="slide-subtitle">تحليل مقارن لمستويات نضج إدارة البيانات عبر القطاعات الوطنية الرئيسية - الربع الرابع 2025</p>
+            </div>
+            <div class="logo-container">
+                <img src="../assets/logo_sdaia.png" class="logo-img" alt="SDAIA">
+                <div style="width: 1px; height: 30px; background: #CBD5E1;"></div>
+                <img src="../assets/logo_ndmo.png" class="logo-img" alt="NDMO">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content-area">
+            
+            <!-- Top KPIs -->
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-label">المتوسط الوطني العام</div>
+                    <div class="kpi-value">76.4%</div>
+                    <div class="kpi-trend trend-up">▲ 4.2% مقارنة بالعام الماضي</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">القطاع الأعلى أداءً</div>
+                    <div class="kpi-value" style="font-size: 22px;">الخدمات اللوجستية</div>
+                    <div class="kpi-trend trend-up">92.1% نسبة الامتثال</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">القطاع الأكثر تحسناً</div>
+                    <div class="kpi-value" style="font-size: 22px;">التعليم والتدريب</div>
+                    <div class="kpi-trend trend-up">▲ 12.5% قفزة في النضج</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">عدد الجهات المقيمة</div>
+                    <div class="kpi-value">142</div>
+                    <div class="kpi-trend" style="color: #2B5EA7;">جهة حكومية وشبه حكومية</div>
+                </div>
+            </div>
+
+            <!-- Main Scorecard Table -->
+            <div class="scorecard-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 15%;">القطاع</th>
+                            <th style="width: 25%;">النتيجة الإجمالية</th>
+                            <th style="width: 10%;">الحوكمة</th>
+                            <th style="width: 10%;">جودة البيانات</th>
+                            <th style="width: 10%;">الإتاحة</th>
+                            <th style="width: 10%;">المواهب</th>
+                            <th style="width: 15%;">أولوية التحسين</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><div class="rank-badge rank-1">1</div></td>
+                            <td style="font-weight: 700;">الخدمات اللوجستية والنقل</td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <span class="score-text">92%</span>
+                                    <div class="progress-bg"><div class="progress-bar" style="width: 92%; background-color: #00B388;"></div></div>
+                                </div>
+                            </td>
+                            <td style="text-align: center;"><span class="status-dot dot-green"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-green"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-green"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-green"></span></td>
+                            <td style="font-size: 10px; color: #64748B;">الحفاظ على المستوى</td>
+                        </tr>
+                        <tr>
+                            <td><div class="rank-badge rank-2">2</div></td>
+                            <td style="font-weight: 700;">المالية والاقتصاد</td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <span class="score-text">88%</span>
+                                    <div class="progress-bg"><div class="progress-bar" style="width: 88%; background-color: #00B388;"></div></div>
+                                </div>
+                            </td>
+                            <td style="text-align: center;"><span class="status-dot dot-green"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-green"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-yellow"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-green"></span></td>
+                            <td style="font-size: 10px; color: #64748B;">تعزيز مشاركة البيانات</td>
+                        </tr>
+                        <tr>
+                            <td><div class="rank-badge rank-3">3</div></td>
+                            <td style="font-weight: 700;">الصحة</td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <span class="score-text">85%</span>
+                                    <div class="progress-bg"><div class="progress-bar" style="width: 85%; background-color: #2B5EA7;"></div></div>
+                                </div>
+                            </td>
+                            <td style="text-align: center;"><span class="status-dot dot-green"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-yellow"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-green"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-green"></span></td>
+                            <td style="font-size: 10px; color: #64748B;">تحسين جودة السجلات</td>
+                        </tr>
+                        <tr>
+                            <td><div class="rank-badge">4</div></td>
+                            <td style="font-weight: 700;">الطاقة والصناعة</td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <span class="score-text">79%</span>
+                                    <div class="progress-bg"><div class="progress-bar" style="width: 79%; background-color: #2B5EA7;"></div></div>
+                                </div>
+                            </td>
+                            <td style="text-align: center;"><span class="status-dot dot-green"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-green"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-yellow"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-yellow"></span></td>
+                            <td style="font-size: 10px; color: #64748B;">بناء القدرات البشرية</td>
+                        </tr>
+                        <tr>
+                            <td><div class="rank-badge">5</div></td>
+                            <td style="font-weight: 700;">التعليم</td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <span class="score-text">72%</span>
+                                    <div class="progress-bg"><div class="progress-bar" style="width: 72%; background-color: #E8A838;"></div></div>
+                                </div>
+                            </td>
+                            <td style="text-align: center;"><span class="status-dot dot-yellow"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-yellow"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-green"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-yellow"></span></td>
+                            <td style="font-size: 10px; color: #64748B;">تأسيس مكاتب البيانات</td>
+                        </tr>
+                        <tr>
+                            <td><div class="rank-badge">6</div></td>
+                            <td style="font-weight: 700;">العدل والشؤون الإسلامية</td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <span class="score-text">68%</span>
+                                    <div class="progress-bg"><div class="progress-bar" style="width: 68%; background-color: #E8A838;"></div></div>
+                                </div>
+                            </td>
+                            <td style="text-align: center;"><span class="status-dot dot-yellow"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-red"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-yellow"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-yellow"></span></td>
+                            <td style="font-size: 10px; color: #64748B;">معالجة البيانات التاريخية</td>
+                        </tr>
+                        <tr>
+                            <td><div class="rank-badge">7</div></td>
+                            <td style="font-weight: 700;">الشؤون البلدية والقروية</td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <span class="score-text">64%</span>
+                                    <div class="progress-bg"><div class="progress-bar" style="width: 64%; background-color: #EF4444;"></div></div>
+                                </div>
+                            </td>
+                            <td style="text-align: center;"><span class="status-dot dot-red"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-yellow"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-red"></span></td>
+                            <td style="text-align: center;"><span class="status-dot dot-yellow"></span></td>
+                            <td style="font-size: 10px; color: #64748B;">استكمال سياسات التصنيف</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Bottom Analysis -->
+            <div class="bottom-charts">
+                <div class="chart-box">
+                    <div class="chart-title">توزيع مستويات النضج (عدد الجهات)</div>
+                    <div style="display: flex; align-items: flex-end; justify-content: space-around; height: 100%; padding-top: 10px;">
+                        <div style="text-align: center;">
+                            <div style="height: 40px; width: 40px; background: #EF4444; margin: 0 auto;"></div>
+                            <div style="font-size: 10px; margin-top: 5px;">مبتدئ (15)</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="height: 60px; width: 40px; background: #E8A838; margin: 0 auto;"></div>
+                            <div style="font-size: 10px; margin-top: 5px;">متطور (42)</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="height: 80px; width: 40px; background: #2B5EA7; margin: 0 auto;"></div>
+                            <div style="font-size: 10px; margin-top: 5px;">متمكن (55)</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="height: 50px; width: 40px; background: #00B388; margin: 0 auto;"></div>
+                            <div style="font-size: 10px; margin-top: 5px;">قيادي (30)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-title">تحليل الفجوات حسب المجال</div>
+                    <div style="display: flex; flex-direction: column; justify-content: space-around; height: 100%;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 10px; width: 80px;">الحوكمة</span>
+                            <div style="flex-grow: 1; height: 6px; background: #E2E8F0; border-radius: 3px;"><div style="width: 85%; height: 100%; background: #1B2A4A; border-radius: 3px;"></div></div>
+                            <span style="font-size: 10px;">85%</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 10px; width: 80px;">العمليات</span>
+                            <div style="flex-grow: 1; height: 6px; background: #E2E8F0; border-radius: 3px;"><div style="width: 65%; height: 100%; background: #1B2A4A; border-radius: 3px;"></div></div>
+                            <span style="font-size: 10px;">65%</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 10px; width: 80px;">التقنية</span>
+                            <div style="flex-grow: 1; height: 6px; background: #E2E8F0; border-radius: 3px;"><div style="width: 78%; height: 100%; background: #1B2A4A; border-radius: 3px;"></div></div>
+                            <span style="font-size: 10px;">78%</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 10px; width: 80px;">الأفراد</span>
+                            <div style="flex-grow: 1; height: 6px; background: #E2E8F0; border-radius: 3px;"><div style="width: 60%; height: 100%; background: #1B2A4A; border-radius: 3px;"></div></div>
+                            <span style="font-size: 10px;">60%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>مكتب إدارة البيانات الوطنية | NDMO</div>
+            <div>سري للغاية - للاستخدام الداخلي فقط</div>
+            <div>28</div>
+        </div>
+    </div>
+</body>
+</html>

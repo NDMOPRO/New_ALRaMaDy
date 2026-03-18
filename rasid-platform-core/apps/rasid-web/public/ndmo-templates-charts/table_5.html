@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 16px 4px 16px; display: flex; flex-direction: column; gap: 6px; }
+        .legend-row { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
+        .legend-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: #64748B; }
+        .legend-box { width: 14px; height: 14px; }
+        .table-wrap { flex: 1; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        thead th { background: #1B2A4A; color: white; font-size: 11px; font-weight: 700; padding: 8px 6px; text-align: center; }
+        thead th:first-child { text-align: right; min-width: 160px; }
+        thead th:last-child { min-width: 60px; }
+        tbody td { font-size: 11px; color: #1B2A4A; padding: 6px; border-bottom: 1px solid #E2E8F0; text-align: center; }
+        tbody td:first-child { text-align: right; font-weight: 700; }
+        tbody tr:nth-child(even) { background: #F8FAFC; }
+        .rate-5 { background: #00B388; color: white; font-weight: 800; font-size: 12px; }
+        .rate-4 { background: #7DD3C0; color: #1B2A4A; font-weight: 800; font-size: 12px; }
+        .rate-3 { background: #E8A838; color: white; font-weight: 800; font-size: 12px; }
+        .rate-2 { background: #F5C77E; color: #1B2A4A; font-weight: 800; font-size: 12px; }
+        .rate-1 { background: #C0392B; color: white; font-weight: 800; font-size: 12px; }
+        .avg-high { color: #00B388; font-weight: 800; font-size: 13px; }
+        .avg-mid { color: #E8A838; font-weight: 800; font-size: 13px; }
+        .avg-low { color: #C0392B; font-weight: 800; font-size: 13px; }
+        tfoot td { background: #EFF6FF; font-size: 11px; font-weight: 800; color: #2B5EA7; padding: 8px 6px; border-top: 2px solid #2B5EA7; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-star-half-alt" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> عنوان مصفوفة التقييم والتصنيف يكتب هنا</div>
+            <div class="header-num">3.47</div>
+        </div>
+        <div class="content">
+            <div class="legend-row">
+                <div class="legend-item"><div class="legend-box rate-5" style="display:flex;align-items:center;justify-content:center;font-size:8px;">5</div> ممتاز يكتب هنا</div>
+                <div class="legend-item"><div class="legend-box rate-4" style="display:flex;align-items:center;justify-content:center;font-size:8px;">4</div> جيد جداً يكتب هنا</div>
+                <div class="legend-item"><div class="legend-box rate-3" style="display:flex;align-items:center;justify-content:center;font-size:8px;">3</div> متوسط يكتب هنا</div>
+                <div class="legend-item"><div class="legend-box rate-2" style="display:flex;align-items:center;justify-content:center;font-size:8px;">2</div> ضعيف يكتب هنا</div>
+                <div class="legend-item"><div class="legend-box rate-1" style="display:flex;align-items:center;justify-content:center;font-size:8px;">1</div> حرج يكتب هنا</div>
+                <div style="margin-right:auto;font-size:10px;color:#64748B;"><i class="fas fa-info-circle" style="color:#2B5EA7;"></i> مقياس التقييم: 1 (أدنى) - 5 (أعلى)</div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>العنصر / الجهة يكتب هنا</th><th>المعيار الأول يكتب هنا</th><th>المعيار الثاني يكتب هنا</th><th>المعيار الثالث يكتب هنا</th><th>المعيار الرابع يكتب هنا</th><th>المعيار الخامس يكتب هنا</th><th>المعيار السادس يكتب هنا</th><th>المتوسط</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><i class="fas fa-building" style="font-size:9px;color:#2B5EA7;margin-left:4px;"></i> اسم العنصر الأول يكتب هنا</td><td class="rate-5">5</td><td class="rate-4">4</td><td class="rate-5">5</td><td class="rate-4">4</td><td class="rate-5">5</td><td class="rate-4">4</td><td class="avg-high">4.5</td></tr>
+                        <tr><td><i class="fas fa-building" style="font-size:9px;color:#2B5EA7;margin-left:4px;"></i> اسم العنصر الثاني يكتب هنا</td><td class="rate-4">4</td><td class="rate-5">5</td><td class="rate-4">4</td><td class="rate-3">3</td><td class="rate-4">4</td><td class="rate-5">5</td><td class="avg-high">4.2</td></tr>
+                        <tr><td><i class="fas fa-building" style="font-size:9px;color:#2B5EA7;margin-left:4px;"></i> اسم العنصر الثالث يكتب هنا</td><td class="rate-3">3</td><td class="rate-4">4</td><td class="rate-3">3</td><td class="rate-4">4</td><td class="rate-3">3</td><td class="rate-4">4</td><td class="avg-mid">3.5</td></tr>
+                        <tr><td><i class="fas fa-building" style="font-size:9px;color:#2B5EA7;margin-left:4px;"></i> اسم العنصر الرابع يكتب هنا</td><td class="rate-4">4</td><td class="rate-3">3</td><td class="rate-5">5</td><td class="rate-4">4</td><td class="rate-4">4</td><td class="rate-3">3</td><td class="avg-high">3.8</td></tr>
+                        <tr><td><i class="fas fa-building" style="font-size:9px;color:#2B5EA7;margin-left:4px;"></i> اسم العنصر الخامس يكتب هنا</td><td class="rate-2">2</td><td class="rate-3">3</td><td class="rate-2">2</td><td class="rate-3">3</td><td class="rate-2">2</td><td class="rate-3">3</td><td class="avg-mid">2.5</td></tr>
+                        <tr><td><i class="fas fa-building" style="font-size:9px;color:#2B5EA7;margin-left:4px;"></i> اسم العنصر السادس يكتب هنا</td><td class="rate-5">5</td><td class="rate-5">5</td><td class="rate-4">4</td><td class="rate-5">5</td><td class="rate-5">5</td><td class="rate-4">4</td><td class="avg-high">4.7</td></tr>
+                        <tr><td><i class="fas fa-building" style="font-size:9px;color:#2B5EA7;margin-left:4px;"></i> اسم العنصر السابع يكتب هنا</td><td class="rate-1">1</td><td class="rate-2">2</td><td class="rate-1">1</td><td class="rate-2">2</td><td class="rate-1">1</td><td class="rate-2">2</td><td class="avg-low">1.5</td></tr>
+                        <tr><td><i class="fas fa-building" style="font-size:9px;color:#2B5EA7;margin-left:4px;"></i> اسم العنصر الثامن يكتب هنا</td><td class="rate-3">3</td><td class="rate-3">3</td><td class="rate-4">4</td><td class="rate-3">3</td><td class="rate-3">3</td><td class="rate-4">4</td><td class="avg-mid">3.3</td></tr>
+                        <tr><td><i class="fas fa-building" style="font-size:9px;color:#2B5EA7;margin-left:4px;"></i> اسم العنصر التاسع يكتب هنا</td><td class="rate-4">4</td><td class="rate-4">4</td><td class="rate-5">5</td><td class="rate-4">4</td><td class="rate-4">4</td><td class="rate-5">5</td><td class="avg-high">4.3</td></tr>
+                        <tr><td><i class="fas fa-building" style="font-size:9px;color:#2B5EA7;margin-left:4px;"></i> اسم العنصر العاشر يكتب هنا</td><td class="rate-2">2</td><td class="rate-1">1</td><td class="rate-2">2</td><td class="rate-1">1</td><td class="rate-2">2</td><td class="rate-1">1</td><td class="avg-low">1.5</td></tr>
+                    </tbody>
+                    <tfoot>
+                        <tr><td>المتوسط العام يكتب هنا</td><td>3.3</td><td>3.4</td><td>3.5</td><td>3.3</td><td>3.3</td><td>3.5</td><td style="font-size:14px;">3.4</td></tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

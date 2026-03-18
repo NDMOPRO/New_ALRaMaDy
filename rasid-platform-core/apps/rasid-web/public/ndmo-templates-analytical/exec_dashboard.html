@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; background: #FFFFFF; position: relative; display: flex; flex-direction: column; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 12px 20px 8px 20px; display: flex; flex-direction: column; gap: 10px; }
+
+        /* KPI Row */
+        .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .kpi-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-top: 3px solid #2B5EA7; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+        .kpi-card:nth-child(1) { border-top-color: #1B2A4A; }
+        .kpi-card:nth-child(2) { border-top-color: #2B5EA7; }
+        .kpi-card:nth-child(3) { border-top-color: #00B388; }
+        .kpi-card:nth-child(4) { border-top-color: #E8A838; }
+        .kpi-card:nth-child(5) { border-top-color: #1B2A4A; }
+        .kpi-label { font-size: 10px; color: #64748B; font-weight: 500; }
+        .kpi-value-row { display: flex; align-items: baseline; justify-content: space-between; }
+        .kpi-value { font-size: 28px; font-weight: 800; color: #1B2A4A; line-height: 1; }
+        .kpi-unit { font-size: 11px; color: #94A3B8; font-weight: 500; }
+        .kpi-trend { display: flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 700; }
+        .kpi-trend.up { color: #00B388; }
+        .kpi-trend.down { color: #E53E3E; }
+        .kpi-trend.flat { color: #E8A838; }
+        .kpi-spark { height: 24px; display: flex; align-items: flex-end; gap: 2px; }
+        .kpi-spark .bar { width: 6px; background: #2B5EA7; opacity: 0.4; }
+        .kpi-spark .bar:last-child { opacity: 1; }
+        .kpi-target { font-size: 9px; color: #94A3B8; display: flex; justify-content: space-between; }
+
+        /* Charts Row */
+        .charts-row { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 10px; flex: 1; }
+        .chart-box { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px 12px; display: flex; flex-direction: column; }
+        .chart-title { font-size: 12px; font-weight: 700; color: #1B2A4A; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .chart-title i { color: #2B5EA7; font-size: 11px; }
+        .chart-body { flex: 1; position: relative; }
+
+        /* Status Bar */
+        .status-bar { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+        .status-item { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 6px 8px; text-align: center; border-right: 3px solid #2B5EA7; }
+        .status-item:nth-child(odd) { border-right-color: #1B2A4A; }
+        .status-item:nth-child(even) { border-right-color: #00B388; }
+        .si-label { font-size: 9px; color: #64748B; font-weight: 500; }
+        .si-val { font-size: 16px; font-weight: 800; color: #1B2A4A; }
+        .si-sub { font-size: 8px; color: #00B388; font-weight: 700; }
+
+        /* Footer */
+        .footer { height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 22px; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-tachometer-alt" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> لوحة المؤشرات التنفيذية - مركز القيادة</div>
+            <div class="header-num">2.1</div>
+        </div>
+
+        <div class="content">
+            <!-- KPI Row -->
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-label">إجمالي الجهات المسجلة</div>
+                    <div class="kpi-value-row">
+                        <div class="kpi-value">247</div>
+                        <div class="kpi-trend up"><i class="fas fa-arrow-up"></i> 12%</div>
+                    </div>
+                    <div class="kpi-spark">
+                        <div class="bar" style="height:40%"></div><div class="bar" style="height:55%"></div><div class="bar" style="height:45%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:50%"></div><div class="bar" style="height:70%"></div><div class="bar" style="height:65%"></div><div class="bar" style="height:80%"></div><div class="bar" style="height:75%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:85%"></div><div class="bar" style="height:100%"></div>
+                    </div>
+                    <div class="kpi-target"><span>المستهدف: 300</span><span>الإنجاز: 82%</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">نسبة الامتثال الكلي</div>
+                    <div class="kpi-value-row">
+                        <div class="kpi-value">78<span class="kpi-unit">%</span></div>
+                        <div class="kpi-trend up"><i class="fas fa-arrow-up"></i> 5.2%</div>
+                    </div>
+                    <div class="kpi-spark">
+                        <div class="bar" style="height:30%;background:#00B388"></div><div class="bar" style="height:35%;background:#00B388"></div><div class="bar" style="height:40%;background:#00B388"></div><div class="bar" style="height:50%;background:#00B388"></div><div class="bar" style="height:55%;background:#00B388"></div><div class="bar" style="height:52%;background:#00B388"></div><div class="bar" style="height:60%;background:#00B388"></div><div class="bar" style="height:65%;background:#00B388"></div><div class="bar" style="height:70%;background:#00B388"></div><div class="bar" style="height:72%;background:#00B388"></div><div class="bar" style="height:75%;background:#00B388"></div><div class="bar" style="height:78%;background:#00B388"></div>
+                    </div>
+                    <div class="kpi-target"><span>المستهدف: 90%</span><span>الفجوة: 12%</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">مستوى النضج المؤسسي</div>
+                    <div class="kpi-value-row">
+                        <div class="kpi-value">3.4<span class="kpi-unit">/5</span></div>
+                        <div class="kpi-trend up"><i class="fas fa-arrow-up"></i> 0.6</div>
+                    </div>
+                    <div class="kpi-spark">
+                        <div class="bar" style="height:20%;background:#E8A838"></div><div class="bar" style="height:25%;background:#E8A838"></div><div class="bar" style="height:30%;background:#E8A838"></div><div class="bar" style="height:35%;background:#E8A838"></div><div class="bar" style="height:40%;background:#E8A838"></div><div class="bar" style="height:45%;background:#E8A838"></div><div class="bar" style="height:50%;background:#E8A838"></div><div class="bar" style="height:55%;background:#E8A838"></div><div class="bar" style="height:58%;background:#E8A838"></div><div class="bar" style="height:62%;background:#E8A838"></div><div class="bar" style="height:65%;background:#E8A838"></div><div class="bar" style="height:68%;background:#E8A838"></div>
+                    </div>
+                    <div class="kpi-target"><span>المستهدف: 4.0</span><span>الفجوة: 0.6</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">المبادرات النشطة</div>
+                    <div class="kpi-value-row">
+                        <div class="kpi-value">34</div>
+                        <div class="kpi-trend flat"><i class="fas fa-minus"></i> 0%</div>
+                    </div>
+                    <div class="kpi-spark">
+                        <div class="bar" style="height:60%;background:#1B2A4A"></div><div class="bar" style="height:65%;background:#1B2A4A"></div><div class="bar" style="height:70%;background:#1B2A4A"></div><div class="bar" style="height:68%;background:#1B2A4A"></div><div class="bar" style="height:72%;background:#1B2A4A"></div><div class="bar" style="height:75%;background:#1B2A4A"></div><div class="bar" style="height:70%;background:#1B2A4A"></div><div class="bar" style="height:68%;background:#1B2A4A"></div><div class="bar" style="height:72%;background:#1B2A4A"></div><div class="bar" style="height:70%;background:#1B2A4A"></div><div class="bar" style="height:68%;background:#1B2A4A"></div><div class="bar" style="height:68%;background:#1B2A4A"></div>
+                    </div>
+                    <div class="kpi-target"><span>مكتملة: 18</span><span>جارية: 16</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">جودة البيانات الكلية</div>
+                    <div class="kpi-value-row">
+                        <div class="kpi-value">84<span class="kpi-unit">%</span></div>
+                        <div class="kpi-trend up"><i class="fas fa-arrow-up"></i> 3.1%</div>
+                    </div>
+                    <div class="kpi-spark">
+                        <div class="bar" style="height:50%;background:#2B5EA7"></div><div class="bar" style="height:55%;background:#2B5EA7"></div><div class="bar" style="height:58%;background:#2B5EA7"></div><div class="bar" style="height:62%;background:#2B5EA7"></div><div class="bar" style="height:65%;background:#2B5EA7"></div><div class="bar" style="height:68%;background:#2B5EA7"></div><div class="bar" style="height:72%;background:#2B5EA7"></div><div class="bar" style="height:75%;background:#2B5EA7"></div><div class="bar" style="height:78%;background:#2B5EA7"></div><div class="bar" style="height:80%;background:#2B5EA7"></div><div class="bar" style="height:82%;background:#2B5EA7"></div><div class="bar" style="height:84%;background:#2B5EA7"></div>
+                    </div>
+                    <div class="kpi-target"><span>المستهدف: 95%</span><span>الفجوة: 11%</span></div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <div class="chart-box">
+                    <div class="chart-title"><i class="fas fa-chart-bar"></i> أداء القطاعات الحكومية - نسبة الامتثال</div>
+                    <div class="chart-body"><canvas id="sectorChart"></canvas></div>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-title"><i class="fas fa-chart-pie"></i> توزيع حالة المبادرات</div>
+                    <div class="chart-body"><canvas id="initiativeChart"></canvas></div>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-title"><i class="fas fa-chart-line"></i> اتجاه النضج الربعي</div>
+                    <div class="chart-body"><canvas id="trendChart"></canvas></div>
+                </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="status-item"><div class="si-label">الطلبات الواردة</div><div class="si-val">1,247</div><div class="si-sub">+89 هذا الشهر</div></div>
+                <div class="status-item"><div class="si-label">الطلبات المعالجة</div><div class="si-val">1,108</div><div class="si-sub">88.9%</div></div>
+                <div class="status-item"><div class="si-label">المخالفات المرصودة</div><div class="si-val">23</div><div class="si-sub" style="color:#E53E3E">-4 عن السابق</div></div>
+                <div class="status-item"><div class="si-label">التقارير المنجزة</div><div class="si-val">156</div><div class="si-sub">+12 هذا الربع</div></div>
+                <div class="status-item"><div class="si-label">الجهات الممتثلة</div><div class="si-val">193</div><div class="si-sub">78.1%</div></div>
+                <div class="status-item"><div class="si-label">مجالات البيانات</div><div class="si-val">18</div><div class="si-sub">مغطاة بالكامل</div></div>
+                <div class="status-item"><div class="si-label">الضوابط المفعلة</div><div class="si-val">142</div><div class="si-sub">من أصل 168</div></div>
+                <div class="status-item"><div class="si-label">متوسط الاستجابة</div><div class="si-val">2.3</div><div class="si-sub">يوم عمل</div></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch2/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch2/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي - الشرائح التحليلية | سري</div>
+        </div>
+    </div>
+
+    <script>
+        // Sector Performance Chart
+        new Chart(document.getElementById('sectorChart'), {
+            type: 'bar',
+            data: {
+                labels: ['الاتصالات', 'المالية', 'الصحة', 'التعليم', 'النقل', 'الطاقة', 'البيئة', 'العدل', 'التجارة', 'الإسكان'],
+                datasets: [{
+                    label: 'الامتثال الحالي',
+                    data: [92, 88, 85, 82, 78, 75, 72, 68, 65, 60],
+                    backgroundColor: '#2B5EA7',
+                    barPercentage: 0.6
+                }, {
+                    label: 'المستهدف',
+                    data: [95, 95, 90, 90, 85, 85, 85, 80, 80, 75],
+                    backgroundColor: 'rgba(43,94,167,0.15)',
+                    barPercentage: 0.6
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: { legend: { display: true, position: 'top', labels: { font: { family: 'Tajawal', size: 9 }, boxWidth: 10 } } },
+                scales: {
+                    x: { max: 100, grid: { color: '#F1F5F9' }, ticks: { font: { family: 'Tajawal', size: 9 }, callback: v => v + '%' } },
+                    y: { grid: { display: false }, ticks: { font: { family: 'Tajawal', size: 10 } } }
+                }
+            }
+        });
+
+        // Initiative Status Donut
+        new Chart(document.getElementById('initiativeChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['مكتملة', 'جارية', 'متأخرة', 'لم تبدأ'],
+                datasets: [{
+                    data: [18, 10, 4, 2],
+                    backgroundColor: ['#00B388', '#2B5EA7', '#E8A838', '#CBD5E1'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { family: 'Tajawal', size: 9 }, boxWidth: 8, padding: 6 } }
+                }
+            }
+        });
+
+        // Maturity Trend Line
+        new Chart(document.getElementById('trendChart'), {
+            type: 'line',
+            data: {
+                labels: ['Q1-24', 'Q2-24', 'Q3-24', 'Q4-24', 'Q1-25', 'Q2-25'],
+                datasets: [{
+                    label: 'النضج الفعلي',
+                    data: [2.1, 2.4, 2.8, 3.0, 3.2, 3.4],
+                    borderColor: '#1B2A4A',
+                    backgroundColor: 'rgba(27,42,74,0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 3,
+                    borderWidth: 2
+                }, {
+                    label: 'المستهدف',
+                    data: [2.5, 2.8, 3.0, 3.2, 3.5, 4.0],
+                    borderColor: '#E8A838',
+                    borderDash: [5, 3],
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 2,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom', labels: { font: { family: 'Tajawal', size: 9 }, boxWidth: 10, padding: 6 } } },
+                scales: {
+                    y: { min: 1, max: 5, grid: { color: '#F1F5F9' }, ticks: { font: { family: 'Tajawal', size: 9 } } },
+                    x: { grid: { display: false }, ticks: { font: { family: 'Tajawal', size: 9 } } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

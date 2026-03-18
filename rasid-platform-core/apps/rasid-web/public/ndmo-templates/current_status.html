@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 20px 40px 10px 40px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        .overall-score-panel { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 16px; display: flex; align-items: center; justify-content: space-between; border-right: 6px solid #2B5EA7; }
+        .osp-left { display: flex; align-items: center; gap: 20px; }
+        .osp-gauge { width: 100px; height: 50px; background: #eee; border-radius: 100px 100px 0 0; position: relative; overflow: hidden; }
+        .osp-fill { width: 100%; height: 100%; background: conic-gradient(from 180deg at 50% 100%, #E85B7A 0deg, #E8A838 60deg, #00B388 120deg, #eee 120deg); transform: rotate(0deg); }
+        .osp-needle { width: 4px; height: 45px; background: #333; position: absolute; bottom: 0; left: 48px; transform-origin: bottom center; transform: rotate(-45deg); z-index: 2; border-radius: 2px; }
+        .osp-val { font-size: 36px; font-weight: 800; color: #1B2A4A; line-height: 1; }
+        .osp-label { font-size: 14px; color: #666; font-weight: 700; }
+        
+        .osp-right { display: flex; gap: 30px; }
+        .osp-stat { text-align: center; }
+        .os-val { font-size: 20px; font-weight: 800; color: #2B5EA7; }
+        .os-lbl { font-size: 11px; color: #888; }
+
+        .domains-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; flex: 1; }
+        
+        .domain-card { background: white; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; flex-direction: column; position: relative; }
+        .dc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        .dc-title { font-size: 15px; font-weight: 800; color: #1B2A4A; display: flex; align-items: center; gap: 8px; }
+        .dc-badge { padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; color: white; }
+        .bg-red { background: #E85B7A; }
+        .bg-orange { background: #E8A838; }
+        .bg-green { background: #00B388; }
+
+        .meter-container { height: 12px; background: #f0f0f0; border-radius: 6px; margin-bottom: 12px; position: relative; overflow: hidden; }
+        .meter-fill { height: 100%; border-radius: 6px; transition: width 1s; }
+        .meter-marker { position: absolute; top: 0; bottom: 0; width: 2px; background: #fff; z-index: 2; }
+        
+        .kpi-list { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .kpi-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+        .kr-name { color: #555; }
+        .kr-val { font-weight: 800; color: #333; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الوضع الراهن - لوحة قياس النضج المؤسسي للبيانات</div>
+            <div class="header-badge">32</div>
+        </div>
+
+        <div class="content-area">
+            <div class="overall-score-panel">
+                <div class="osp-left">
+                    <div class="osp-gauge">
+                        <div class="osp-fill"></div>
+                        <div class="osp-needle"></div>
+                    </div>
+                    <div>
+                        <div class="osp-val">2.4 / 5.0</div>
+                        <div class="osp-label">مستوى النضج العام (أولي - مدار)</div>
+                    </div>
+                </div>
+                <div class="osp-right">
+                    <div class="osp-stat"><div class="os-val">6</div><div class="os-lbl">نطاقات مقاسة</div></div>
+                    <div class="osp-stat"><div class="os-val">24</div><div class="os-lbl">مؤشر فرعي</div></div>
+                    <div class="osp-stat"><div class="os-val">Q3</div><div class="os-lbl">آخر تحديث</div></div>
+                </div>
+            </div>
+
+            <div class="domains-grid">
+                <!-- Domain 1: Governance -->
+                <div class="domain-card">
+                    <div class="dc-header">
+                        <div class="dc-title"><i class="fas fa-gavel" style="color:#2B5EA7"></i> حوكمة البيانات</div>
+                        <div class="dc-badge bg-orange">مستوى 2.8</div>
+                    </div>
+                    <div class="meter-container">
+                        <div class="meter-fill" style="width:56%;background:#E8A838"></div>
+                        <div class="meter-marker" style="left:20%"></div><div class="meter-marker" style="left:40%"></div><div class="meter-marker" style="left:60%"></div><div class="meter-marker" style="left:80%"></div>
+                    </div>
+                    <div class="kpi-list">
+                        <div class="kpi-row"><span class="kr-name">وجود السياسات</span><span class="kr-val">80%</span></div>
+                        <div class="kpi-row"><span class="kr-name">تفعيل الأدوار</span><span class="kr-val">45%</span></div>
+                        <div class="kpi-row"><span class="kr-name">لجان الإشراف</span><span class="kr-val">60%</span></div>
+                    </div>
+                </div>
+
+                <!-- Domain 2: Quality -->
+                <div class="domain-card">
+                    <div class="dc-header">
+                        <div class="dc-title"><i class="fas fa-check-double" style="color:#2B5EA7"></i> جودة البيانات</div>
+                        <div class="dc-badge bg-red">مستوى 1.5</div>
+                    </div>
+                    <div class="meter-container">
+                        <div class="meter-fill" style="width:30%;background:#E85B7A"></div>
+                        <div class="meter-marker" style="left:20%"></div><div class="meter-marker" style="left:40%"></div><div class="meter-marker" style="left:60%"></div><div class="meter-marker" style="left:80%"></div>
+                    </div>
+                    <div class="kpi-list">
+                        <div class="kpi-row"><span class="kr-name">قواعد الجودة</span><span class="kr-val">20%</span></div>
+                        <div class="kpi-row"><span class="kr-name">التنميط (Profiling)</span><span class="kr-val">15%</span></div>
+                        <div class="kpi-row"><span class="kr-name">معالجة الأخطاء</span><span class="kr-val">10%</span></div>
+                    </div>
+                </div>
+
+                <!-- Domain 3: Security -->
+                <div class="domain-card">
+                    <div class="dc-header">
+                        <div class="dc-title"><i class="fas fa-shield-alt" style="color:#2B5EA7"></i> أمن وحماية البيانات</div>
+                        <div class="dc-badge bg-green">مستوى 4.1</div>
+                    </div>
+                    <div class="meter-container">
+                        <div class="meter-fill" style="width:82%;background:#00B388"></div>
+                        <div class="meter-marker" style="left:20%"></div><div class="meter-marker" style="left:40%"></div><div class="meter-marker" style="left:60%"></div><div class="meter-marker" style="left:80%"></div>
+                    </div>
+                    <div class="kpi-list">
+                        <div class="kpi-row"><span class="kr-name">تصنيف البيانات</span><span class="kr-val">90%</span></div>
+                        <div class="kpi-row"><span class="kr-name">إدارة الوصول</span><span class="kr-val">85%</span></div>
+                        <div class="kpi-row"><span class="kr-name">التشفير</span><span class="kr-val">95%</span></div>
+                    </div>
+                </div>
+
+                <!-- Domain 4: Architecture -->
+                <div class="domain-card">
+                    <div class="dc-header">
+                        <div class="dc-title"><i class="fas fa-sitemap" style="color:#2B5EA7"></i> معمارية البيانات</div>
+                        <div class="dc-badge bg-orange">مستوى 2.2</div>
+                    </div>
+                    <div class="meter-container">
+                        <div class="meter-fill" style="width:44%;background:#E8A838"></div>
+                        <div class="meter-marker" style="left:20%"></div><div class="meter-marker" style="left:40%"></div><div class="meter-marker" style="left:60%"></div><div class="meter-marker" style="left:80%"></div>
+                    </div>
+                    <div class="kpi-list">
+                        <div class="kpi-row"><span class="kr-name">نمذجة البيانات</span><span class="kr-val">40%</span></div>
+                        <div class="kpi-row"><span class="kr-name">قاموس البيانات</span><span class="kr-val">50%</span></div>
+                        <div class="kpi-row"><span class="kr-name">تدفق البيانات</span><span class="kr-val">30%</span></div>
+                    </div>
+                </div>
+
+                <!-- Domain 5: Open Data -->
+                <div class="domain-card">
+                    <div class="dc-header">
+                        <div class="dc-title"><i class="fas fa-folder-open" style="color:#2B5EA7"></i> البيانات المفتوحة</div>
+                        <div class="dc-badge bg-green">مستوى 3.5</div>
+                    </div>
+                    <div class="meter-container">
+                        <div class="meter-fill" style="width:70%;background:#00B388"></div>
+                        <div class="meter-marker" style="left:20%"></div><div class="meter-marker" style="left:40%"></div><div class="meter-marker" style="left:60%"></div><div class="meter-marker" style="left:80%"></div>
+                    </div>
+                    <div class="kpi-list">
+                        <div class="kpi-row"><span class="kr-name">خطة النشر</span><span class="kr-val">100%</span></div>
+                        <div class="kpi-row"><span class="kr-name">عدد المجموعات</span><span class="kr-val">65%</span></div>
+                        <div class="kpi-row"><span class="kr-name">الالتزام بالصيغ</span><span class="kr-val">80%</span></div>
+                    </div>
+                </div>
+
+                <!-- Domain 6: Analytics -->
+                <div class="domain-card">
+                    <div class="dc-header">
+                        <div class="dc-title"><i class="fas fa-chart-line" style="color:#2B5EA7"></i> التحليل والذكاء</div>
+                        <div class="dc-badge bg-red">مستوى 1.8</div>
+                    </div>
+                    <div class="meter-container">
+                        <div class="meter-fill" style="width:36%;background:#E85B7A"></div>
+                        <div class="meter-marker" style="left:20%"></div><div class="meter-marker" style="left:40%"></div><div class="meter-marker" style="left:60%"></div><div class="meter-marker" style="left:80%"></div>
+                    </div>
+                    <div class="kpi-list">
+                        <div class="kpi-row"><span class="kr-name">ذكاء الأعمال</span><span class="kr-val">45%</span></div>
+                        <div class="kpi-row"><span class="kr-name">التحليل التنبؤي</span><span class="kr-val">10%</span></div>
+                        <div class="kpi-row"><span class="kr-name">اتخاذ القرار</span><span class="kr-val">25%</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">32</div>
+    </div>
+</body>
+</html>

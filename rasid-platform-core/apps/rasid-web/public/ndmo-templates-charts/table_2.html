@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 8px 16px 4px 16px; display: flex; flex-direction: column; gap: 6px; }
+        .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; flex-shrink: 0; }
+        .kpi-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-top: 3px solid #2B5EA7; padding: 6px 8px; text-align: center; }
+        .kpi-card:nth-child(1) { border-top-color: #1B2A4A; }
+        .kpi-card:nth-child(2) { border-top-color: #00B388; }
+        .kpi-card:nth-child(3) { border-top-color: #E8A838; }
+        .kpi-card:nth-child(4) { border-top-color: #C0392B; }
+        .kpi-label { font-size: 10px; color: #64748B; }
+        .kpi-value { font-size: 22px; font-weight: 800; color: #1B2A4A; line-height: 1.2; }
+        .kpi-sub { font-size: 9px; font-weight: 700; }
+        .table-title { font-size: 13px; font-weight: 700; color: #1B2A4A; display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .table-title i { color: #2B5EA7; font-size: 12px; }
+        .table-wrap { flex: 1; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        thead th { background: #2B5EA7; color: white; font-size: 11px; font-weight: 700; padding: 7px 8px; text-align: right; }
+        thead th:first-child { text-align: center; width: 30px; }
+        tbody td { font-size: 11px; color: #1B2A4A; padding: 6px 8px; border-bottom: 1px solid #E2E8F0; text-align: right; }
+        tbody td:first-child { text-align: center; font-weight: 700; color: #2B5EA7; }
+        tbody tr:nth-child(odd) { background: #FFFFFF; }
+        tbody tr:nth-child(even) { background: #EFF6FF; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-th-list" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> عنوان جدول البيانات - مع تظليل صفوف يكتب هنا</div>
+            <div class="header-num">3.44</div>
+        </div>
+        <div class="content">
+            <div class="kpi-row">
+                <div class="kpi-card"><div class="kpi-label">إجمالي السجلات يكتب هنا</div><div class="kpi-value">1,248</div><div class="kpi-sub" style="color:#00B388;"><i class="fas fa-arrow-up"></i> +12%</div></div>
+                <div class="kpi-card"><div class="kpi-label">المعتمد يكتب هنا</div><div class="kpi-value">892</div><div class="kpi-sub" style="color:#00B388;">71.5%</div></div>
+                <div class="kpi-card"><div class="kpi-label">قيد المراجعة يكتب هنا</div><div class="kpi-value">245</div><div class="kpi-sub" style="color:#E8A838;">19.6%</div></div>
+                <div class="kpi-card"><div class="kpi-label">مرفوض يكتب هنا</div><div class="kpi-value">111</div><div class="kpi-sub" style="color:#C0392B;">8.9%</div></div>
+            </div>
+            <div class="table-title"><i class="fas fa-table"></i> عنوان الجدول التفصيلي يكتب هنا</div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>#</th><th>اسم العنصر يكتب هنا</th><th>الفئة يكتب هنا</th><th>القيمة يكتب هنا</th><th>التاريخ يكتب هنا</th><th>المسؤول يكتب هنا</th><th>الحالة يكتب هنا</th></tr></thead>
+                    <tbody>
+                        <tr><td>1</td><td>اسم العنصر الأول يكتب هنا</td><td>الفئة أ</td><td>24,500</td><td>2025/01/15</td><td>اسم المسؤول يكتب هنا</td><td style="color:#00B388;font-weight:700;">معتمد</td></tr>
+                        <tr><td>2</td><td>اسم العنصر الثاني يكتب هنا</td><td>الفئة ب</td><td>18,200</td><td>2025/02/20</td><td>اسم المسؤول يكتب هنا</td><td style="color:#00B388;font-weight:700;">معتمد</td></tr>
+                        <tr><td>3</td><td>اسم العنصر الثالث يكتب هنا</td><td>الفئة أ</td><td>15,800</td><td>2025/03/10</td><td>اسم المسؤول يكتب هنا</td><td style="color:#E8A838;font-weight:700;">قيد المراجعة</td></tr>
+                        <tr><td>4</td><td>اسم العنصر الرابع يكتب هنا</td><td>الفئة ج</td><td>32,100</td><td>2025/03/25</td><td>اسم المسؤول يكتب هنا</td><td style="color:#00B388;font-weight:700;">معتمد</td></tr>
+                        <tr><td>5</td><td>اسم العنصر الخامس يكتب هنا</td><td>الفئة ب</td><td>9,400</td><td>2025/04/05</td><td>اسم المسؤول يكتب هنا</td><td style="color:#C0392B;font-weight:700;">مرفوض</td></tr>
+                        <tr><td>6</td><td>اسم العنصر السادس يكتب هنا</td><td>الفئة أ</td><td>27,600</td><td>2025/04/18</td><td>اسم المسؤول يكتب هنا</td><td style="color:#00B388;font-weight:700;">معتمد</td></tr>
+                        <tr><td>7</td><td>اسم العنصر السابع يكتب هنا</td><td>الفئة ج</td><td>11,300</td><td>2025/05/02</td><td>اسم المسؤول يكتب هنا</td><td style="color:#E8A838;font-weight:700;">قيد المراجعة</td></tr>
+                        <tr><td>8</td><td>اسم العنصر الثامن يكتب هنا</td><td>الفئة ب</td><td>21,900</td><td>2025/05/15</td><td>اسم المسؤول يكتب هنا</td><td style="color:#00B388;font-weight:700;">معتمد</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

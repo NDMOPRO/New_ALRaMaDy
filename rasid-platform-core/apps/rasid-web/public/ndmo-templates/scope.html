@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+            flex-shrink: 0;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 20px 40px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Dimensions Row */
+        .dimensions-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            height: 100px;
+        }
+        .dim-card {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 3px solid #ccc;
+        }
+        .dc-teal { border-color: #00B388; }
+        .dc-blue { border-color: #2B5EA7; }
+        .dc-gold { border-color: #E8A838; }
+        .dc-purple { border-color: #8B7EC8; }
+
+        .dim-icon {
+            width: 40px; height: 40px;
+            background: #f5f5f5;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #1B2A4A; font-size: 18px;
+        }
+        .dim-content { flex: 1; }
+        .dim-label { font-size: 11px; color: #666; margin-bottom: 4px; }
+        .dim-val { font-size: 14px; font-weight: 800; color: #1B2A4A; }
+
+        /* Scope Matrix */
+        .scope-matrix {
+            flex: 1;
+            display: flex;
+            gap: 20px;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .scope-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sc-header {
+            padding: 15px;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .sc-in .sc-header { background: #00B388; }
+        .sc-out .sc-header { background: #666; }
+
+        .scope-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .scope-item {
+            background: #f9f9f9;
+            padding: 12px 15px;
+            border-right: 3px solid transparent;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .sc-in .scope-item { border-color: #00B388; background: rgba(0,179,136,0.03); }
+        .sc-out .scope-item { border-color: #999; }
+
+        .si-icon {
+            margin-top: 2px;
+            font-size: 14px;
+        }
+        .sc-in .si-icon { color: #00B388; }
+        .sc-out .si-icon { color: #999; }
+
+        .si-content { flex: 1; }
+        .si-title { font-size: 13px; font-weight: 700; color: #333; margin-bottom: 4px; }
+        .si-desc { font-size: 11px; color: #666; line-height: 1.4; }
+
+        /* Bottom Note */
+        .scope-note {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 10px 15px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">نطاق العرض - الحدود والمحددات</div>
+            <div class="header-badge">12</div>
+        </div>
+
+        <div class="content-area">
+            <!-- Dimensions -->
+            <div class="dimensions-row">
+                <div class="dim-card dc-teal">
+                    <div class="dim-icon"><i class="fas fa-calendar-alt"></i></div>
+                    <div class="dim-content">
+                        <div class="dim-label">النطاق الزمني</div>
+                        <div class="dim-val">2026 - 2027</div>
+                    </div>
+                </div>
+                <div class="dim-card dc-blue">
+                    <div class="dim-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="dim-content">
+                        <div class="dim-label">النطاق الجغرافي</div>
+                        <div class="dim-val">كافة مناطق المملكة</div>
+                    </div>
+                </div>
+                <div class="dim-card dc-gold">
+                    <div class="dim-icon"><i class="fas fa-building"></i></div>
+                    <div class="dim-content">
+                        <div class="dim-label">الجهات المستهدفة</div>
+                        <div class="dim-val">40 جهة حكومية</div>
+                    </div>
+                </div>
+                <div class="dim-card dc-purple">
+                    <div class="dim-icon"><i class="fas fa-database"></i></div>
+                    <div class="dim-content">
+                        <div class="dim-label">نطاق البيانات</div>
+                        <div class="dim-val">البيانات المفتوحة والمشتركة</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scope Matrix -->
+            <div class="scope-matrix">
+                <!-- In Scope -->
+                <div class="scope-col sc-in">
+                    <div class="sc-header">
+                        <span>داخل النطاق (In Scope)</span>
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="scope-list">
+                        <div class="scope-item">
+                            <div class="si-icon"><i class="fas fa-check"></i></div>
+                            <div class="si-content">
+                                <div class="si-title">البيانات الوصفية (Metadata)</div>
+                                <div class="si-desc">جمع وتوثيق البيانات الوصفية لجميع الأصول المعلوماتية لدى الجهات المستهدفة.</div>
+                            </div>
+                        </div>
+                        <div class="scope-item">
+                            <div class="si-icon"><i class="fas fa-check"></i></div>
+                            <div class="si-content">
+                                <div class="si-title">سياسات الحوكمة</div>
+                                <div class="si-desc">مراجعة وتحديث سياسات تصنيف البيانات ومشاركتها وحمايتها.</div>
+                            </div>
+                        </div>
+                        <div class="scope-item">
+                            <div class="si-icon"><i class="fas fa-check"></i></div>
+                            <div class="si-content">
+                                <div class="si-title">الربط التقني</div>
+                                <div class="si-desc">تطوير واجهات برمجة التطبيقات (APIs) للربط مع منصة "نوط" الوطنية.</div>
+                            </div>
+                        </div>
+                        <div class="scope-item">
+                            <div class="si-icon"><i class="fas fa-check"></i></div>
+                            <div class="si-content">
+                                <div class="si-title">بناء القدرات</div>
+                                <div class="si-desc">تدريب 200 موظف مختص على معايير إدارة البيانات الوطنية.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Out of Scope -->
+                <div class="scope-col sc-out">
+                    <div class="sc-header">
+                        <span>خارج النطاق (Out of Scope)</span>
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="scope-list">
+                        <div class="scope-item">
+                            <div class="si-icon"><i class="fas fa-times"></i></div>
+                            <div class="si-content">
+                                <div class="si-title">البيانات السرية للغاية</div>
+                                <div class="si-desc">البيانات المصنفة كـ "سري للغاية" لا تدخل ضمن نطاق مشروع المشاركة الحالي.</div>
+                            </div>
+                        </div>
+                        <div class="scope-item">
+                            <div class="si-icon"><i class="fas fa-times"></i></div>
+                            <div class="si-content">
+                                <div class="si-title">الأنظمة التشغيلية</div>
+                                <div class="si-desc">تطوير أو استبدال الأنظمة التشغيلية الداخلية للجهات ليس ضمن النطاق.</div>
+                            </div>
+                        </div>
+                        <div class="scope-item">
+                            <div class="si-icon"><i class="fas fa-times"></i></div>
+                            <div class="si-content">
+                                <div class="si-title">القطاع الخاص</div>
+                                <div class="si-desc">البيانات المملوكة لشركات القطاع الخاص غير مشمولة في هذه المرحلة.</div>
+                            </div>
+                        </div>
+                        <div class="scope-item">
+                            <div class="si-icon"><i class="fas fa-times"></i></div>
+                            <div class="si-content">
+                                <div class="si-title">الأرشفة الورقية</div>
+                                <div class="si-desc">أتمتة أو أرشفة الوثائق الورقية التاريخية خارج نطاق المشروع.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scope-note">
+                <i class="fas fa-info-circle"></i>
+                <span>ملاحظة: أي تغيير في النطاق المعتمد يتطلب موافقة اللجنة التوجيهية للمشروع وفق نموذج "طلب التغيير" المعتمد.</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">12</div>
+    </div>
+</body>
+</html>

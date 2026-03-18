@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 20px 4px 20px; display: flex; gap: 16px; }
+        .levels-area { flex: 1; display: flex; flex-direction: column; gap: 4px; justify-content: center; }
+        .level-row { display: flex; align-items: stretch; gap: 0; }
+        .lv-num { width: 50px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: 800; flex-shrink: 0; }
+        .ln-5 { background: #1B2A4A; }
+        .ln-4 { background: #2B5EA7; }
+        .ln-3 { background: #00B388; }
+        .ln-2 { background: #E8A838; }
+        .ln-1 { background: #C0392B; }
+        .lv-content { flex: 1; padding: 8px 12px; border: 1px solid #E2E8F0; border-right: none; display: flex; flex-direction: column; }
+        .lv-title { font-size: 13px; font-weight: 800; color: #1B2A4A; }
+        .lv-desc { font-size: 10px; color: #64748B; margin-top: 1px; }
+        .lv-criteria { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+        .lv-crit { font-size: 9px; padding: 1px 6px; background: #F8FAFC; border: 1px solid #E2E8F0; color: #334155; }
+        .lv-indicator { width: 60px; display: flex; align-items: center; justify-content: center; border: 1px solid #E2E8F0; border-right: none; }
+        .lv-check { font-size: 16px; }
+        .active-level { background: #ECFDF5; }
+        .active-level .lv-title { color: #00B388; }
+        .current-badge { font-size: 8px; background: #00B388; color: white; padding: 1px 6px; font-weight: 700; margin-right: 6px; }
+        .side-panel { width: 300px; display: flex; flex-direction: column; gap: 6px; justify-content: center; }
+        .sp-card { border: 1px solid #E2E8F0; padding: 10px; }
+        .sp-title { font-size: 12px; font-weight: 800; color: #1B2A4A; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+        .sp-title i { color: #2B5EA7; font-size: 10px; }
+        .sp-metric { display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px; }
+        .sp-val { font-size: 28px; font-weight: 800; color: #1B2A4A; }
+        .sp-label { font-size: 10px; color: #64748B; }
+        .sp-bar { height: 6px; background: #E2E8F0; width: 100%; }
+        .sp-fill { height: 100%; }
+        .sp-list { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
+        .sp-item { font-size: 10px; color: #334155; display: flex; align-items: center; gap: 4px; }
+        .sp-item i { font-size: 7px; color: #2B5EA7; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-signal" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> عنوان نموذج النضج / مستويات التطور يكتب هنا</div>
+            <div class="header-num">3.62</div>
+        </div>
+        <div class="content">
+            <div class="levels-area">
+                <div class="level-row"><div class="lv-num ln-5">5</div><div class="lv-content"><div class="lv-title">المستوى الخامس - عنوان المستوى يكتب هنا</div><div class="lv-desc">وصف تفصيلي للمستوى الخامس يكتب هنا</div><div class="lv-criteria"><span class="lv-crit">معيار يكتب هنا</span><span class="lv-crit">معيار يكتب هنا</span><span class="lv-crit">معيار يكتب هنا</span></div></div><div class="lv-indicator"><div class="lv-check" style="color:#CBD5E1;"><i class="fas fa-circle"></i></div></div></div>
+                <div class="level-row"><div class="lv-num ln-4">4</div><div class="lv-content"><div class="lv-title">المستوى الرابع - عنوان المستوى يكتب هنا</div><div class="lv-desc">وصف تفصيلي للمستوى الرابع يكتب هنا</div><div class="lv-criteria"><span class="lv-crit">معيار يكتب هنا</span><span class="lv-crit">معيار يكتب هنا</span><span class="lv-crit">معيار يكتب هنا</span></div></div><div class="lv-indicator"><div class="lv-check" style="color:#CBD5E1;"><i class="fas fa-circle"></i></div></div></div>
+                <div class="level-row active-level"><div class="lv-num ln-3">3</div><div class="lv-content active-level"><div class="lv-title"><span class="current-badge">الحالي</span> المستوى الثالث - عنوان المستوى يكتب هنا</div><div class="lv-desc">وصف تفصيلي للمستوى الثالث يكتب هنا</div><div class="lv-criteria"><span class="lv-crit">معيار يكتب هنا</span><span class="lv-crit">معيار يكتب هنا</span><span class="lv-crit">معيار يكتب هنا</span></div></div><div class="lv-indicator active-level"><div class="lv-check" style="color:#00B388;"><i class="fas fa-check-circle"></i></div></div></div>
+                <div class="level-row"><div class="lv-num ln-2">2</div><div class="lv-content"><div class="lv-title">المستوى الثاني - عنوان المستوى يكتب هنا</div><div class="lv-desc">وصف تفصيلي للمستوى الثاني يكتب هنا</div><div class="lv-criteria"><span class="lv-crit">معيار يكتب هنا</span><span class="lv-crit">معيار يكتب هنا</span><span class="lv-crit">معيار يكتب هنا</span></div></div><div class="lv-indicator"><div class="lv-check" style="color:#00B388;"><i class="fas fa-check-circle"></i></div></div></div>
+                <div class="level-row"><div class="lv-num ln-1">1</div><div class="lv-content"><div class="lv-title">المستوى الأول - عنوان المستوى يكتب هنا</div><div class="lv-desc">وصف تفصيلي للمستوى الأول يكتب هنا</div><div class="lv-criteria"><span class="lv-crit">معيار يكتب هنا</span><span class="lv-crit">معيار يكتب هنا</span><span class="lv-crit">معيار يكتب هنا</span></div></div><div class="lv-indicator"><div class="lv-check" style="color:#00B388;"><i class="fas fa-check-circle"></i></div></div></div>
+            </div>
+            <div class="side-panel">
+                <div class="sp-card"><div class="sp-title"><i class="fas fa-chart-line"></i> المستوى الحالي يكتب هنا</div><div class="sp-metric"><div class="sp-val" style="color:#00B388;">3</div><div class="sp-label">من 5 يكتب هنا</div></div><div class="sp-bar"><div class="sp-fill" style="width:60%;background:#00B388;"></div></div></div>
+                <div class="sp-card"><div class="sp-title"><i class="fas fa-bullseye"></i> المستوى المستهدف يكتب هنا</div><div class="sp-metric"><div class="sp-val" style="color:#2B5EA7;">5</div><div class="sp-label">من 5 يكتب هنا</div></div><div class="sp-bar"><div class="sp-fill" style="width:100%;background:#2B5EA7;"></div></div></div>
+                <div class="sp-card"><div class="sp-title"><i class="fas fa-tasks"></i> خطوات التحسين يكتب هنا</div><div class="sp-list"><div class="sp-item"><i class="fas fa-circle"></i> خطوة التحسين الأولى يكتب هنا</div><div class="sp-item"><i class="fas fa-circle"></i> خطوة التحسين الثانية يكتب هنا</div><div class="sp-item"><i class="fas fa-circle"></i> خطوة التحسين الثالثة يكتب هنا</div><div class="sp-item"><i class="fas fa-circle"></i> خطوة التحسين الرابعة يكتب هنا</div></div></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

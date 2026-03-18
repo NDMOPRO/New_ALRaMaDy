@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 16px 40px 10px 40px; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+
+        .summary-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; height: 80px; }
+        .sc-item { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 12px; display: flex; align-items: center; gap: 12px; border-right: 4px solid #ccc; }
+        .sc-item.red { border-color: #E85B7A; }
+        .sc-item.orange { border-color: #E8A838; }
+        .sc-item.blue { border-color: #2B5EA7; }
+        .sc-item.green { border-color: #00B388; }
+        .sc-icon { font-size: 24px; color: #ccc; }
+        .sc-data { display: flex; flex-direction: column; }
+        .sc-val { font-size: 24px; font-weight: 800; color: #1B2A4A; line-height: 1; }
+        .sc-lbl { font-size: 11px; color: #666; font-weight: 700; }
+
+        .table-container { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.06); flex: 1; display: flex; flex-direction: column; }
+        .tc-head { padding: 12px 16px; border-bottom: 2px solid #1B2A4A; display: flex; justify-content: space-between; align-items: center; }
+        .tc-title { font-size: 15px; font-weight: 800; color: #1B2A4A; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f0f0f0; font-size: 11px; font-weight: 800; color: #1B2A4A; padding: 10px 12px; text-align: right; border-bottom: 1px solid #ddd; }
+        td { font-size: 11px; padding: 8px 12px; border-bottom: 1px solid #f5f5f5; color: #333; vertical-align: top; }
+        tr:nth-child(even) td { background: #fafafa; }
+
+        .gap-id { font-weight: 800; color: #2B5EA7; }
+        .risk-badge { padding: 3px 8px; font-size: 10px; font-weight: 700; color: white; border-radius: 2px; display: inline-block; text-align: center; min-width: 60px; }
+        .rb-high { background: #E85B7A; }
+        .rb-med { background: #E8A838; }
+        .rb-low { background: #00B388; }
+        
+        .progress-cell { width: 120px; }
+        .prog-bar { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; margin-top: 4px; }
+        .prog-fill { height: 100%; background: #2B5EA7; }
+        .prog-text { font-size: 10px; color: #666; margin-top: 2px; display: flex; justify-content: space-between; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">فجوات الامتثال - تحليل الفجوات والمخاطر المرتبطة</div>
+            <div class="header-badge">30</div>
+        </div>
+
+        <div class="content-area">
+            <div class="summary-cards">
+                <div class="sc-item red">
+                    <div class="sc-icon" style="color:#E85B7A"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="sc-data"><div class="sc-val">5</div><div class="sc-lbl">فجوات حرجة</div></div>
+                </div>
+                <div class="sc-item orange">
+                    <div class="sc-icon" style="color:#E8A838"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="sc-data"><div class="sc-val">12</div><div class="sc-lbl">فجوات متوسطة</div></div>
+                </div>
+                <div class="sc-item blue">
+                    <div class="sc-icon" style="color:#2B5EA7"><i class="fas fa-info-circle"></i></div>
+                    <div class="sc-data"><div class="sc-val">8</div><div class="sc-lbl">ملاحظات تحسين</div></div>
+                </div>
+                <div class="sc-item green">
+                    <div class="sc-icon" style="color:#00B388"><i class="fas fa-check-circle"></i></div>
+                    <div class="sc-data"><div class="sc-val">45%</div><div class="sc-lbl">نسبة المعالجة</div></div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="tc-head">
+                    <div class="tc-title"><i class="fas fa-clipboard-list" style="margin-left:8px;color:#2B5EA7"></i>سجل الفجوات التفصيلي</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>رمز الفجوة</th><th>وصف الفجوة</th><th>المجال</th><th>الأثر المتوقع</th><th>مستوى المخاطرة</th><th>خطة المعالجة</th><th>التقدم</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="gap-id">GAP-001</td>
+                            <td>عدم وجود سجل مركزي لأصول البيانات الحساسة</td>
+                            <td>تصنيف البيانات</td>
+                            <td>فقدان السيطرة على البيانات السرية وتسريبها</td>
+                            <td><span class="risk-badge rb-high">حرج</span></td>
+                            <td>بناء سجل الأصول الوطني وتفعيله</td>
+                            <td class="progress-cell"><div class="prog-bar"><div class="prog-fill" style="width:30%"></div></div><div class="prog-text"><span>30%</span><span>Q3-2026</span></div></td>
+                        </tr>
+                        <tr>
+                            <td class="gap-id">GAP-002</td>
+                            <td>ضعف تطبيق ضوابط إتلاف الوسائط التخزينية</td>
+                            <td>أمن البيانات</td>
+                            <td>استرجاع بيانات محذوفة من قبل أطراف غير مصرح لها</td>
+                            <td><span class="risk-badge rb-high">حرج</span></td>
+                            <td>التعاقد مع مزود خدمة إتلاف معتمد</td>
+                            <td class="progress-cell"><div class="prog-bar"><div class="prog-fill" style="width:10%"></div></div><div class="prog-text"><span>10%</span><span>Q2-2026</span></div></td>
+                        </tr>
+                        <tr>
+                            <td class="gap-id">GAP-003</td>
+                            <td>غياب التوثيق لإجراءات جودة البيانات</td>
+                            <td>جودة البيانات</td>
+                            <td>تضارب المعايير وضعف الثقة في التقارير</td>
+                            <td><span class="risk-badge rb-med">متوسط</span></td>
+                            <td>إعداد دليل إجراءات الجودة وتعميمه</td>
+                            <td class="progress-cell"><div class="prog-bar"><div class="prog-fill" style="width:65%"></div></div><div class="prog-text"><span>65%</span><span>Q4-2026</span></div></td>
+                        </tr>
+                        <tr>
+                            <td class="gap-id">GAP-004</td>
+                            <td>عدم تحديث البيانات الوصفية بشكل دوري</td>
+                            <td>البيانات الوصفية</td>
+                            <td>صعوبة اكتشاف البيانات وتقليل الاستفادة منها</td>
+                            <td><span class="risk-badge rb-med">متوسط</span></td>
+                            <td>أتمتة عملية سحب البيانات الوصفية</td>
+                            <td class="progress-cell"><div class="prog-bar"><div class="prog-fill" style="width:40%"></div></div><div class="prog-text"><span>40%</span><span>Q1-2027</span></div></td>
+                        </tr>
+                        <tr>
+                            <td class="gap-id">GAP-005</td>
+                            <td>نقص الكوادر المؤهلة في مكتب البيانات</td>
+                            <td>الموارد البشرية</td>
+                            <td>تأخر تنفيذ المبادرات الاستراتيجية</td>
+                            <td><span class="risk-badge rb-high">حرج</span></td>
+                            <td>خطة توظيف وتدريب مكثفة</td>
+                            <td class="progress-cell"><div class="prog-bar"><div class="prog-fill" style="width:20%"></div></div><div class="prog-text"><span>20%</span><span>Q3-2026</span></div></td>
+                        </tr>
+                        <tr>
+                            <td class="gap-id">GAP-006</td>
+                            <td>عدم وجود سياسة واضحة لمشاركة البيانات</td>
+                            <td>مشاركة البيانات</td>
+                            <td>تأخر التكامل بين الجهات وتعطل الخدمات</td>
+                            <td><span class="risk-badge rb-med">متوسط</span></td>
+                            <td>صياغة واعتماد سياسة المشاركة</td>
+                            <td class="progress-cell"><div class="prog-bar"><div class="prog-fill" style="width:85%"></div></div><div class="prog-text"><span>85%</span><span>Q2-2026</span></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">30</div>
+    </div>
+</body>
+</html>

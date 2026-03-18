@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل المشهد الحالي - Current Landscape</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header-strip {
+            height: 8px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #00B388 50%, #E8A838 100%);
+        }
+        .header-content {
+            padding: 15px 40px 10px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+            background: #fff;
+        }
+        .logo-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .logo-img {
+            height: 40px;
+            object-fit: contain;
+        }
+        .slide-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1B2A4A;
+            margin: 0;
+        }
+        .slide-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+
+        /* Content */
+        .content-wrapper {
+            padding: 20px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex: 1;
+        }
+
+        /* Top Health Bar */
+        .health-bar {
+            display: flex;
+            gap: 15px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px 15px;
+            align-items: center;
+        }
+        .health-score {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-left: 15px;
+            border-left: 1px solid #cbd5e1;
+            min-width: 100px;
+        }
+        .score-val { font-size: 24px; font-weight: 800; color: #ef4444; }
+        .score-lbl { font-size: 10px; color: #64748b; font-weight: 700; }
+        
+        .health-summary {
+            flex: 1;
+            font-size: 12px;
+            color: #334155;
+            line-height: 1.5;
+        }
+        .health-summary strong { color: #1B2A4A; }
+
+        /* Dimensions Grid */
+        .dim-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            flex: 1;
+        }
+        .dim-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .dim-header {
+            background: #1B2A4A;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dim-title { font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+        .dim-score { background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+        
+        .dim-body {
+            padding: 10px;
+            background: #fff;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Stat Box inside card */
+        .inner-stat {
+            background: #f1f5f9;
+            border-radius: 4px;
+            padding: 8px;
+            text-align: center;
+        }
+        .is-val { font-size: 18px; font-weight: 800; color: #1B2A4A; display: block; }
+        .is-lbl { font-size: 9px; color: #64748b; display: block; }
+
+        /* Issues List */
+        .issues-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .issue-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            font-size: 10px;
+            color: #334155;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .issue-item:last-child { border-bottom: none; }
+        .severity-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+        .sev-high { background: #ef4444; box-shadow: 0 0 0 2px #fee2e2; }
+        .sev-med { background: #f59e0b; box-shadow: 0 0 0 2px #fef3c7; }
+
+        /* Bottom Impact Section */
+        .impact-section {
+            margin-top: 5px;
+            border: 1px solid #fee2e2;
+            background: #fff1f2;
+            border-radius: 6px;
+            padding: 10px 15px;
+        }
+        .impact-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: #9f1239;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .impact-box {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .ib-icon {
+            width: 24px;
+            height: 24px;
+            background: #be123c;
+            color: white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .ib-text h4 { margin: 0; font-size: 11px; color: #881337; font-weight: 700; }
+        .ib-text p { margin: 0; font-size: 10px; color: #9f1239; }
+
+        /* Footer */
+        .footer {
+            padding: 10px 40px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: #6b7280;
+            background-color: #f9fafb;
+            margin-top: auto;
+        }
+        .page-number { font-weight: 700; color: #1B2A4A; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Header -->
+        <div class="header-strip"></div>
+        <div class="header-content">
+            <div>
+                <h1 class="slide-title">تحليل المشهد الحالي (Current Landscape)</h1>
+                <p class="slide-subtitle">تقييم شامل لنضج إدارة البيانات عبر الأبعاد الأربعة (PPTD) وتحديد نقاط الألم</p>
+            </div>
+            <div class="logo-container">
+                <img src="assets/logo_sdaia.png" class="logo-img" alt="SDAIA">
+                <img src="assets/logo_ndmo.png" class="logo-img" alt="NDMO">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content-wrapper">
+            
+            <!-- Health Bar -->
+            <div class="health-bar">
+                <div class="health-score">
+                    <span class="score-val">1.8</span>
+                    <span class="score-lbl">من 5.0 (منخفض)</span>
+                </div>
+                <div class="health-summary">
+                    <strong>ملخص الحالة الراهنة:</strong> تعاني المنظومة من <strong>تجزئة البيانات (Fragmentation)</strong> وغياب الحوكمة المركزية، مما يؤدي إلى تكرار الجهود وضعف جودة البيانات. الاعتماد الكبير على العمليات اليدوية يشكل عائقاً أمام التوسع والابتكار.
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <div style="text-align:center;">
+                        <span style="display:block; font-size:14px; font-weight:800; color:#ef4444;">14</span>
+                        <span style="display:block; font-size:9px; color:#64748b;">مخاطر حرجة</span>
+                    </div>
+                    <div style="text-align:center;">
+                        <span style="display:block; font-size:14px; font-weight:800; color:#f59e0b;">28</span>
+                        <span style="display:block; font-size:9px; color:#64748b;">نقاط ضعف</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dimensions Grid -->
+            <div class="dim-grid">
+                
+                <!-- People -->
+                <div class="dim-card">
+                    <div class="dim-header">
+                        <div class="dim-title"><span>👥</span> الأفراد (People)</div>
+                        <div class="dim-score">1.5/5</div>
+                    </div>
+                    <div class="dim-body">
+                        <div class="inner-stat">
+                            <span class="is-val">22%</span>
+                            <span class="is-lbl">معدل الإلمام بالبيانات (Literacy)</span>
+                        </div>
+                        <div class="issues-list">
+                            <div class="issue-item">
+                                <div class="severity-dot sev-high"></div>
+                                <div>غياب مكتب إدارة بيانات (DMO) مخصص في الهيكل التنظيمي.</div>
+                            </div>
+                            <div class="issue-item">
+                                <div class="severity-dot sev-high"></div>
+                                <div>نقص حاد في الكفاءات المتخصصة (Data Scientists/Engineers).</div>
+                            </div>
+                            <div class="issue-item">
+                                <div class="severity-dot sev-med"></div>
+                                <div>عدم وضوح الأدوار والمسؤوليات (RACI) لملكية البيانات.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Process -->
+                <div class="dim-card">
+                    <div class="dim-header">
+                        <div class="dim-title"><span>⚙️</span> العمليات (Process)</div>
+                        <div class="dim-score">1.8/5</div>
+                    </div>
+                    <div class="dim-body">
+                        <div class="inner-stat">
+                            <span class="is-val">85%</span>
+                            <span class="is-lbl">عمليات يدوية (Manual Ops)</span>
+                        </div>
+                        <div class="issues-list">
+                            <div class="issue-item">
+                                <div class="severity-dot sev-high"></div>
+                                <div>تبادل البيانات يتم عبر البريد الإلكتروني والوسائط الخارجية.</div>
+                            </div>
+                            <div class="issue-item">
+                                <div class="severity-dot sev-high"></div>
+                                <div>غياب إجراءات موثقة لضمان جودة البيانات (QA/QC).</div>
+                            </div>
+                            <div class="issue-item">
+                                <div class="severity-dot sev-med"></div>
+                                <div>طول دورة حياة طلب البيانات (Data Request Cycle > 2 weeks).</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technology -->
+                <div class="dim-card">
+                    <div class="dim-header">
+                        <div class="dim-title"><span>💻</span> التقنية (Technology)</div>
+                        <div class="dim-score">2.1/5</div>
+                    </div>
+                    <div class="dim-body">
+                        <div class="inner-stat">
+                            <span class="is-val">60%</span>
+                            <span class="is-lbl">أنظمة قديمة (Legacy)</span>
+                        </div>
+                        <div class="issues-list">
+                            <div class="issue-item">
+                                <div class="severity-dot sev-high"></div>
+                                <div>تعدد مصادر الحقيقة (Silos) وعدم وجود مستودع مركزي.</div>
+                            </div>
+                            <div class="issue-item">
+                                <div class="severity-dot sev-med"></div>
+                                <div>ضعف التكامل الآلي (API Integration) بين الأنظمة.</div>
+                            </div>
+                            <div class="issue-item">
+                                <div class="severity-dot sev-med"></div>
+                                <div>أدوات التحليل تقتصر على Excel ولا توجد منصات BI متقدمة.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data -->
+                <div class="dim-card">
+                    <div class="dim-header">
+                        <div class="dim-title"><span>🗂️</span> البيانات (Data)</div>
+                        <div class="dim-score">1.9/5</div>
+                    </div>
+                    <div class="dim-body">
+                        <div class="inner-stat">
+                            <span class="is-val">45%</span>
+                            <span class="is-lbl">سجلات مكررة (Duplication)</span>
+                        </div>
+                        <div class="issues-list">
+                            <div class="issue-item">
+                                <div class="severity-dot sev-high"></div>
+                                <div>انخفاض دقة البيانات الأساسية (Master Data) مثل العناوين.</div>
+                            </div>
+                            <div class="issue-item">
+                                <div class="severity-dot sev-high"></div>
+                                <div>غياب تصنيف البيانات (Classification) وفق المعايير الوطنية.</div>
+                            </div>
+                            <div class="issue-item">
+                                <div class="severity-dot sev-med"></div>
+                                <div>عدم توفر قاموس بيانات (Data Dictionary) موحد.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Impact Section -->
+            <div class="impact-section">
+                <div class="impact-title">⚠️ الأثر المترتب على الأعمال (Business Impact)</div>
+                <div class="impact-grid">
+                    <div class="impact-box">
+                        <div class="ib-icon">💰</div>
+                        <div class="ib-text">
+                            <h4>أثر مالي</h4>
+                            <p>هدر الميزانية في تنظيف البيانات وتكاليف التخزين المكرر.</p>
+                        </div>
+                    </div>
+                    <div class="impact-box">
+                        <div class="ib-icon">⚡</div>
+                        <div class="ib-text">
+                            <h4>أثر تشغيلي</h4>
+                            <p>تأخر اتخاذ القرارات بسبب عدم توفر بيانات موثوقة.</p>
+                        </div>
+                    </div>
+                    <div class="impact-box">
+                        <div class="ib-icon">⚖️</div>
+                        <div class="ib-text">
+                            <h4>أثر قانوني</h4>
+                            <p>مخاطر عدم الامتثال لسياسات NDMO وحماية البيانات الشخصية.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>مكتب إدارة البيانات الوطنية | NDMO</div>
+            <div class="page-number">2.05</div>
+            <div>سري للغاية - للاستخدام الداخلي فقط</div>
+        </div>
+    </div>
+</body>
+</html>

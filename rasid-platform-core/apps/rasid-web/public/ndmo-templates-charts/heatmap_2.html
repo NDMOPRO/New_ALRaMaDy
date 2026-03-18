@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 20px 4px 20px; display: flex; gap: 16px; align-items: center; }
+        .hub-center { width: 200px; display: flex; flex-direction: column; align-items: center; text-align: center; flex-shrink: 0; }
+        .hub-circle { width: 140px; height: 140px; background: #1B2A4A; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
+        .hub-icon { font-size: 28px; margin-bottom: 4px; }
+        .hub-title { font-size: 14px; font-weight: 800; }
+        .hub-desc { font-size: 9px; opacity: 0.7; }
+        .hub-stats { display: flex; gap: 8px; margin-top: 10px; }
+        .hs-item { text-align: center; }
+        .hs-val { font-size: 16px; font-weight: 800; color: #1B2A4A; }
+        .hs-label { font-size: 8px; color: #64748B; }
+        .spokes-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px; }
+        .spoke-card { border: 1px solid #E2E8F0; padding: 10px; display: flex; flex-direction: column; border-top: 3px solid; }
+        .sk-1 { border-top-color: #1B2A4A; }
+        .sk-2 { border-top-color: #2B5EA7; }
+        .sk-3 { border-top-color: #00B388; }
+        .sk-4 { border-top-color: #E8A838; }
+        .sk-5 { border-top-color: #8E44AD; }
+        .sk-6 { border-top-color: #C0392B; }
+        .sk-header { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+        .sk-icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; flex-shrink: 0; }
+        .si-1 { background: #1B2A4A; }
+        .si-2 { background: #2B5EA7; }
+        .si-3 { background: #00B388; }
+        .si-4 { background: #E8A838; }
+        .si-5 { background: #8E44AD; }
+        .si-6 { background: #C0392B; }
+        .sk-title { font-size: 12px; font-weight: 700; color: #1B2A4A; }
+        .sk-list { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+        .sk-item { font-size: 10px; color: #334155; display: flex; align-items: flex-start; gap: 4px; }
+        .sk-item i { font-size: 6px; color: #2B5EA7; margin-top: 5px; flex-shrink: 0; }
+        .sk-metric { display: flex; align-items: baseline; gap: 4px; margin-top: auto; padding-top: 6px; border-top: 1px solid #F1F5F9; }
+        .sk-metric-val { font-size: 18px; font-weight: 800; color: #1B2A4A; }
+        .sk-metric-label { font-size: 9px; color: #64748B; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-project-diagram" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> عنوان المحور المركزي والعناصر المرتبطة يكتب هنا</div>
+            <div class="header-num">3.58</div>
+        </div>
+        <div class="content">
+            <div class="hub-center">
+                <div class="hub-circle"><div class="hub-icon"><i class="fas fa-globe"></i></div><div class="hub-title">العنوان المركزي يكتب هنا</div><div class="hub-desc">وصف مختصر يكتب هنا</div></div>
+                <div class="hub-stats"><div class="hs-item"><div class="hs-val">6</div><div class="hs-label">العناصر يكتب هنا</div></div><div class="hs-item"><div class="hs-val">24</div><div class="hs-label">المهام يكتب هنا</div></div><div class="hs-item"><div class="hs-val">85%</div><div class="hs-label">الإنجاز يكتب هنا</div></div></div>
+            </div>
+            <div class="spokes-grid">
+                <div class="spoke-card sk-1"><div class="sk-header"><div class="sk-icon si-1"><i class="fas fa-database"></i></div><div class="sk-title">عنوان العنصر الأول يكتب هنا</div></div><div class="sk-list"><div class="sk-item"><i class="fas fa-circle"></i> النقطة الأولى يكتب هنا</div><div class="sk-item"><i class="fas fa-circle"></i> النقطة الثانية يكتب هنا</div><div class="sk-item"><i class="fas fa-circle"></i> النقطة الثالثة يكتب هنا</div></div><div class="sk-metric"><div class="sk-metric-val">92%</div><div class="sk-metric-label">نسبة الإنجاز يكتب هنا</div></div></div>
+                <div class="spoke-card sk-2"><div class="sk-header"><div class="sk-icon si-2"><i class="fas fa-shield-alt"></i></div><div class="sk-title">عنوان العنصر الثاني يكتب هنا</div></div><div class="sk-list"><div class="sk-item"><i class="fas fa-circle"></i> النقطة الأولى يكتب هنا</div><div class="sk-item"><i class="fas fa-circle"></i> النقطة الثانية يكتب هنا</div><div class="sk-item"><i class="fas fa-circle"></i> النقطة الثالثة يكتب هنا</div></div><div class="sk-metric"><div class="sk-metric-val">78%</div><div class="sk-metric-label">نسبة الإنجاز يكتب هنا</div></div></div>
+                <div class="spoke-card sk-3"><div class="sk-header"><div class="sk-icon si-3"><i class="fas fa-cogs"></i></div><div class="sk-title">عنوان العنصر الثالث يكتب هنا</div></div><div class="sk-list"><div class="sk-item"><i class="fas fa-circle"></i> النقطة الأولى يكتب هنا</div><div class="sk-item"><i class="fas fa-circle"></i> النقطة الثانية يكتب هنا</div><div class="sk-item"><i class="fas fa-circle"></i> النقطة الثالثة يكتب هنا</div></div><div class="sk-metric"><div class="sk-metric-val">88%</div><div class="sk-metric-label">نسبة الإنجاز يكتب هنا</div></div></div>
+                <div class="spoke-card sk-4"><div class="sk-header"><div class="sk-icon si-4"><i class="fas fa-users"></i></div><div class="sk-title">عنوان العنصر الرابع يكتب هنا</div></div><div class="sk-list"><div class="sk-item"><i class="fas fa-circle"></i> النقطة الأولى يكتب هنا</div><div class="sk-item"><i class="fas fa-circle"></i> النقطة الثانية يكتب هنا</div><div class="sk-item"><i class="fas fa-circle"></i> النقطة الثالثة يكتب هنا</div></div><div class="sk-metric"><div class="sk-metric-val">65%</div><div class="sk-metric-label">نسبة الإنجاز يكتب هنا</div></div></div>
+                <div class="spoke-card sk-5"><div class="sk-header"><div class="sk-icon si-5"><i class="fas fa-chart-line"></i></div><div class="sk-title">عنوان العنصر الخامس يكتب هنا</div></div><div class="sk-list"><div class="sk-item"><i class="fas fa-circle"></i> النقطة الأولى يكتب هنا</div><div class="sk-item"><i class="fas fa-circle"></i> النقطة الثانية يكتب هنا</div><div class="sk-item"><i class="fas fa-circle"></i> النقطة الثالثة يكتب هنا</div></div><div class="sk-metric"><div class="sk-metric-val">95%</div><div class="sk-metric-label">نسبة الإنجاز يكتب هنا</div></div></div>
+                <div class="spoke-card sk-6"><div class="sk-header"><div class="sk-icon si-6"><i class="fas fa-bolt"></i></div><div class="sk-title">عنوان العنصر السادس يكتب هنا</div></div><div class="sk-list"><div class="sk-item"><i class="fas fa-circle"></i> النقطة الأولى يكتب هنا</div><div class="sk-item"><i class="fas fa-circle"></i> النقطة الثانية يكتب هنا</div><div class="sk-item"><i class="fas fa-circle"></i> النقطة الثالثة يكتب هنا</div></div><div class="sk-metric"><div class="sk-metric-val">72%</div><div class="sk-metric-label">نسبة الإنجاز يكتب هنا</div></div></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

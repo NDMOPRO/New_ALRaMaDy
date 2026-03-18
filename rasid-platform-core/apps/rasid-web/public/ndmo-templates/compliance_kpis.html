@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 30px 40px 10px 40px; flex: 1; display: flex; gap: 30px; }
+
+        /* Left Panel: Summary */
+        .summary-panel { width: 300px; display: flex; flex-direction: column; gap: 16px; }
+        .sp-card { background: white; padding: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); text-align: center; }
+        .sp-val { font-size: 36px; font-weight: 800; color: #1B2A4A; margin-bottom: 4px; }
+        .sp-lbl { font-size: 13px; color: #666; font-weight: 700; }
+        .sp-bar { height: 6px; background: #eee; border-radius: 3px; margin-top: 10px; overflow: hidden; }
+        .sp-fill { height: 100%; background: #00B388; width: 85%; }
+
+        /* Right Panel: Heatmap */
+        .heatmap-panel { flex: 1; background: white; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 24px; display: flex; flex-direction: column; }
+        .hp-title { font-size: 16px; font-weight: 800; color: #1B2A4A; margin-bottom: 20px; display: flex; justify-content: space-between; }
+        
+        .heatmap-grid { display: grid; grid-template-columns: 120px repeat(5, 1fr); gap: 4px; }
+        
+        .hm-header { font-weight: 700; font-size: 12px; color: #666; text-align: center; padding-bottom: 8px; }
+        .hm-row-lbl { font-weight: 700; font-size: 12px; color: #333; display: flex; align-items: center; }
+        
+        .hm-cell { height: 50px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: white; border-radius: 2px; position: relative; transition: transform 0.2s; }
+        .hm-cell:hover { transform: scale(1.05); z-index: 2; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        
+        .c-low { background: #00B388; } /* Low Risk / High Compliance */
+        .c-med { background: #E8A838; } /* Med Risk */
+        .c-high { background: #E85B7A; } /* High Risk */
+        .c-crit { background: #C62828; } /* Critical */
+        
+        .hm-legend { display: flex; gap: 16px; margin-top: 20px; justify-content: flex-end; font-size: 11px; color: #666; }
+        .leg-item { display: flex; align-items: center; gap: 6px; }
+        .leg-box { width: 12px; height: 12px; border-radius: 2px; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">لوحة الامتثال - مصفوفة المخاطر والالتزام</div>
+            <div class="header-badge">45</div>
+        </div>
+
+        <div class="content-area">
+            <div class="summary-panel">
+                <div class="sp-card">
+                    <div class="sp-val" style="color:#00B388">92%</div>
+                    <div class="sp-lbl">معدل الامتثال العام</div>
+                    <div class="sp-bar"><div class="sp-fill" style="width:92%"></div></div>
+                </div>
+                <div class="sp-card">
+                    <div class="sp-val" style="color:#E8A838">8</div>
+                    <div class="sp-lbl">مخاطر متوسطة</div>
+                    <div class="sp-bar"><div class="sp-fill" style="width:40%; background:#E8A838"></div></div>
+                </div>
+                <div class="sp-card">
+                    <div class="sp-val" style="color:#E85B7A">2</div>
+                    <div class="sp-lbl">مخاطر عالية</div>
+                    <div class="sp-bar"><div class="sp-fill" style="width:15%; background:#E85B7A"></div></div>
+                </div>
+                <div class="sp-card" style="margin-top:auto; background:#f9f9f9; border:1px dashed #ccc">
+                    <div style="font-size:12px; color:#555; line-height:1.6">
+                        <strong>توصية:</strong><br>
+                        التركيز على معالجة فجوات "أمن البيانات" في الربع القادم لرفع النسبة إلى 95%.
+                    </div>
+                </div>
+            </div>
+
+            <div class="heatmap-panel">
+                <div class="hp-title">
+                    <div>خارطة المخاطر (Risk Heatmap)</div>
+                    <div style="font-size:12px; font-weight:400; color:#666">تحديث: مارس 2024</div>
+                </div>
+                
+                <div class="heatmap-grid">
+                    <!-- Headers -->
+                    <div></div>
+                    <div class="hm-header">إدارة البيانات</div>
+                    <div class="hm-header">الخصوصية</div>
+                    <div class="hm-header">الأمن السيبراني</div>
+                    <div class="hm-header">الجودة</div>
+                    <div class="hm-header">المشاركة</div>
+
+                    <!-- Row 1: Strategy -->
+                    <div class="hm-row-lbl">الاستراتيجية</div>
+                    <div class="hm-cell c-low">95%</div>
+                    <div class="hm-cell c-low">98%</div>
+                    <div class="hm-cell c-med">85%</div>
+                    <div class="hm-cell c-low">92%</div>
+                    <div class="hm-cell c-low">90%</div>
+
+                    <!-- Row 2: People -->
+                    <div class="hm-row-lbl">الأفراد</div>
+                    <div class="hm-cell c-med">82%</div>
+                    <div class="hm-cell c-low">94%</div>
+                    <div class="hm-cell c-med">80%</div>
+                    <div class="hm-cell c-med">78%</div>
+                    <div class="hm-cell c-low">91%</div>
+
+                    <!-- Row 3: Process -->
+                    <div class="hm-row-lbl">العمليات</div>
+                    <div class="hm-cell c-low">96%</div>
+                    <div class="hm-cell c-med">88%</div>
+                    <div class="hm-cell c-high">65%</div>
+                    <div class="hm-cell c-low">93%</div>
+                    <div class="hm-cell c-med">84%</div>
+
+                    <!-- Row 4: Technology -->
+                    <div class="hm-row-lbl">التقنية</div>
+                    <div class="hm-cell c-low">99%</div>
+                    <div class="hm-cell c-low">95%</div>
+                    <div class="hm-cell c-crit">55%</div>
+                    <div class="hm-cell c-med">82%</div>
+                    <div class="hm-cell c-low">97%</div>
+
+                    <!-- Row 5: Culture -->
+                    <div class="hm-row-lbl">الثقافة</div>
+                    <div class="hm-cell c-med">75%</div>
+                    <div class="hm-cell c-med">79%</div>
+                    <div class="hm-cell c-med">81%</div>
+                    <div class="hm-cell c-high">60%</div>
+                    <div class="hm-cell c-med">77%</div>
+                </div>
+
+                <div class="hm-legend">
+                    <div class="leg-item"><div class="leg-box c-low"></div> ممتثل (>90%)</div>
+                    <div class="leg-item"><div class="leg-box c-med"></div> جزئي (75-90%)</div>
+                    <div class="leg-item"><div class="leg-box c-high"></div> مخاطرة (60-75%)</div>
+                    <div class="leg-item"><div class="leg-box c-crit"></div> حرج (<60%)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">45</div>
+    </div>
+</body>
+</html>

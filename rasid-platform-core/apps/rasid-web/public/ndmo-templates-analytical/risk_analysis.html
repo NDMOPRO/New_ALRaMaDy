@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل المخاطر</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1B2A4A; /* Royal Dark Blue */
+            --accent-color: #00B388; /* Teal */
+            --highlight-color: #E8A838; /* Gold */
+            --danger-color: #C0392B; /* Red */
+            --white: #FFFFFF;
+            --light-bg: #F8F9FA;
+            --border-color: #E0E0E0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: var(--white);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Royal Blue Header */
+        .header {
+            background-color: var(--primary-color);
+            height: 85px;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            position: relative;
+            z-index: 10;
+            border-bottom: 4px solid var(--highlight-color);
+        }
+
+        .header-title {
+            color: var(--white);
+            font-size: 28px;
+            font-weight: 800;
+            margin-left: 20px;
+        }
+
+        .header-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            font-weight: 500;
+            margin-right: auto;
+        }
+
+        .logo-container {
+            background-color: rgba(255,255,255,0.1);
+            padding: 5px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            height: 40px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        /* Content Area: Risk Dashboard */
+        .content {
+            flex: 1;
+            padding: 30px 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 20px;
+            background-color: var(--light-bg);
+        }
+
+        /* Risk Matrix (Top Left) */
+        .risk-matrix-container {
+            grid-column: 1 / 2;
+            grid-row: 1 / 3;
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .section-title {
+            width: 100%;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .risk-grid {
+            display: grid;
+            grid-template-columns: 30px repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr) 30px;
+            gap: 2px;
+            width: 100%;
+            aspect-ratio: 1/1;
+            max-width: 400px;
+        }
+
+        .axis-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #666;
+        }
+
+        .y-axis { writing-mode: vertical-rl; transform: rotate(180deg); }
+        
+        .risk-cell {
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: rgba(0,0,0,0.4);
+            font-size: 14px;
+            position: relative;
+        }
+
+        .risk-bubble {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 2;
+        }
+
+        /* Matrix Colors */
+        .bg-low { background-color: #A9DFBF; } /* Green */
+        .bg-med { background-color: #F9E79F; } /* Yellow */
+        .bg-high { background-color: #E59866; } /* Orange */
+        .bg-crit { background-color: #E74C3C; } /* Red */
+
+        /* Top Risks List (Right Column) */
+        .top-risks {
+            grid-column: 2 / 3;
+            grid-row: 1 / 3;
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .risk-item {
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-right: 4px solid #ccc;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .risk-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .risk-id {
+            font-weight: 800;
+            color: var(--primary-color);
+            font-size: 14px;
+        }
+
+        .risk-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .badge-crit { background-color: var(--danger-color); }
+        .badge-high { background-color: #E67E22; }
+        .badge-med { background-color: #F1C40F; color: #333; }
+
+        .risk-desc {
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .mitigation-box {
+            background-color: white;
+            border: 1px solid #eee;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .mitigation-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 4px;
+        }
+
+        .mitigation-text {
+            font-size: 10px;
+            color: #666;
+        }
+
+        /* Footer */
+        .footer {
+            height: 40px;
+            background-color: var(--white);
+            border-top: 1px solid #E0E0E0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 10px;
+            color: #888;
+        }
+
+        .footer-text {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .page-number {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">عنوان الشريحة الرئيسي يكتب هنا</div>
+            <div class="header-subtitle">وصف مختصر لمحتوى الشريحة يكتب في هذا المكان</div>
+            <div class="logo-container">
+                <img src="assets/logo_ndmo.png" class="logo-img" alt="NDMO">
+                <img src="assets/logo_sdaia.png" class="logo-img" alt="SDAIA">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Risk Matrix -->
+            <div class="risk-matrix-container">
+                <div class="section-title">مصفوفة المخاطر (Risk Matrix)</div>
+                <div class="risk-grid">
+                    <!-- Y Axis Label -->
+                    <div class="axis-label y-axis" style="grid-row: 1 / 6;">الاحتمالية (Probability)</div>
+                    
+                    <!-- Row 5 (Very High Prob) -->
+                    <div class="risk-cell bg-med"></div>
+                    <div class="risk-cell bg-high"></div>
+                    <div class="risk-cell bg-crit"><div class="risk-bubble" style="top: 20%; left: 30%;">R1</div></div>
+                    <div class="risk-cell bg-crit"></div>
+                    <div class="risk-cell bg-crit"></div>
+
+                    <!-- Row 4 (High Prob) -->
+                    <div class="risk-cell bg-low"></div>
+                    <div class="risk-cell bg-med"></div>
+                    <div class="risk-cell bg-high"><div class="risk-bubble">R3</div></div>
+                    <div class="risk-cell bg-crit"></div>
+                    <div class="risk-cell bg-crit"></div>
+
+                    <!-- Row 3 (Med Prob) -->
+                    <div class="risk-cell bg-low"></div>
+                    <div class="risk-cell bg-med"></div>
+                    <div class="risk-cell bg-high"></div>
+                    <div class="risk-cell bg-high"><div class="risk-bubble">R2</div></div>
+                    <div class="risk-cell bg-crit"></div>
+
+                    <!-- Row 2 (Low Prob) -->
+                    <div class="risk-cell bg-low"></div>
+                    <div class="risk-cell bg-low"></div>
+                    <div class="risk-cell bg-med"></div>
+                    <div class="risk-cell bg-med"></div>
+                    <div class="risk-cell bg-high"></div>
+
+                    <!-- Row 1 (Very Low Prob) -->
+                    <div class="risk-cell bg-low"></div>
+                    <div class="risk-cell bg-low"></div>
+                    <div class="risk-cell bg-low"></div>
+                    <div class="risk-cell bg-med"></div>
+                    <div class="risk-cell bg-med"></div>
+
+                    <!-- X Axis Labels -->
+                    <div></div> <!-- Corner -->
+                    <div class="axis-label">1</div>
+                    <div class="axis-label">2</div>
+                    <div class="axis-label">3</div>
+                    <div class="axis-label">4</div>
+                    <div class="axis-label">5</div>
+                    
+                    <!-- X Axis Main Label -->
+                    <div></div>
+                    <div class="axis-label" style="grid-column: 2 / 7;">الأثر (Impact)</div>
+                </div>
+            </div>
+
+            <!-- Top Risks List -->
+            <div class="top-risks">
+                <div class="section-title">أبرز المخاطر وخطط المعالجة</div>
+                
+                <!-- Risk Item 1 -->
+                <div class="risk-item" style="border-right-color: var(--danger-color);">
+                    <div class="risk-header">
+                        <span class="risk-id">R1: عنوان الخطر الأول يكتب هنا</span>
+                        <span class="risk-badge badge-crit">حرج جداً</span>
+                    </div>
+                    <div class="risk-desc">وصف تفصيلي لطبيعة الخطر وتأثيره المحتمل على سير العمل أو المشروع يكتب هنا بشكل واضح ومختصر.</div>
+                    <div class="mitigation-box">
+                        <div class="mitigation-title">خطة المعالجة المقترحة:</div>
+                        <div class="mitigation-text">الإجراءات التصحيحية أو الوقائية التي سيتم اتخاذها للتعامل مع هذا الخطر تكتب هنا.</div>
+                    </div>
+                </div>
+
+                <!-- Risk Item 2 -->
+                <div class="risk-item" style="border-right-color: #E67E22;">
+                    <div class="risk-header">
+                        <span class="risk-id">R2: عنوان الخطر الثاني يكتب هنا</span>
+                        <span class="risk-badge badge-high">عالي</span>
+                    </div>
+                    <div class="risk-desc">وصف تفصيلي لطبيعة الخطر وتأثيره المحتمل على سير العمل أو المشروع يكتب هنا بشكل واضح ومختصر.</div>
+                    <div class="mitigation-box">
+                        <div class="mitigation-title">خطة المعالجة المقترحة:</div>
+                        <div class="mitigation-text">الإجراءات التصحيحية أو الوقائية التي سيتم اتخاذها للتعامل مع هذا الخطر تكتب هنا.</div>
+                    </div>
+                </div>
+
+                <!-- Risk Item 3 -->
+                <div class="risk-item" style="border-right-color: #F1C40F;">
+                    <div class="risk-header">
+                        <span class="risk-id">R3: عنوان الخطر الثالث يكتب هنا</span>
+                        <span class="risk-badge badge-med">متوسط</span>
+                    </div>
+                    <div class="risk-desc">وصف تفصيلي لطبيعة الخطر وتأثيره المحتمل على سير العمل أو المشروع يكتب هنا بشكل واضح ومختصر.</div>
+                    <div class="mitigation-box">
+                        <div class="mitigation-title">خطة المعالجة المقترحة:</div>
+                        <div class="mitigation-text">الإجراءات التصحيحية أو الوقائية التي سيتم اتخاذها للتعامل مع هذا الخطر تكتب هنا.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالادارة العامة لادارة البيانات</div>
+            <div class="page-number">41</div>
+        </div>
+    </div>
+</body>
+</html>

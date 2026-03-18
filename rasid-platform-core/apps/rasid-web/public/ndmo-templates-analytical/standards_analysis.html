@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل المعايير - Standards Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+        }
+        
+        /* Header */
+        .header-strip {
+            height: 8px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #00B388 50%, #E8A838 100%);
+        }
+        .header {
+            padding: 20px 40px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .title-block h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1B2A4A;
+            margin: 0 0 5px 0;
+        }
+        .title-block p {
+            font-size: 14px;
+            color: #64748b;
+            margin: 0;
+        }
+        .logo-box {
+            display: flex;
+            gap: 15px;
+            background: #f8fafc;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        .logo-box img {
+            height: 40px;
+            object-fit: contain;
+        }
+
+        /* Content */
+        .content {
+            padding: 10px 40px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* KPI Row */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        .kpi-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .kpi-val { font-size: 24px; font-weight: 800; color: #1B2A4A; }
+        .kpi-lbl { font-size: 11px; color: #64748b; font-weight: 700; }
+        .kpi-sub { font-size: 10px; color: #00B388; font-weight: 600; }
+        .kpi-sub.neg { color: #ef4444; }
+
+        /* Matrix Table */
+        .table-container {
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+            flex-grow: 1;
+            background: white;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        thead th {
+            background: #1B2A4A;
+            color: white;
+            padding: 12px 15px;
+            text-align: right;
+            font-weight: 700;
+            border-bottom: 3px solid #E8A838;
+        }
+        tbody td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
+        }
+        tbody tr:nth-child(even) { background: #f8fafc; }
+        tbody tr:hover { background: #f1f5f9; }
+
+        /* Badges & Indicators */
+        .code-badge {
+            background: #e2e8f0;
+            color: #475569;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: 700;
+            font-size: 10px;
+        }
+        .priority-badge {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .p-high { background: #fee2e2; color: #991b1b; }
+        .p-med { background: #ffedd5; color: #9a3412; }
+        .p-low { background: #dcfce7; color: #166534; }
+
+        /* Harvey Balls */
+        .harvey-ball {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 1px solid #1B2A4A;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+        .hb-0 { background: white; }
+        .hb-25 { background: conic-gradient(#1B2A4A 0% 25%, white 25% 100%); }
+        .hb-50 { background: conic-gradient(#1B2A4A 0% 50%, white 50% 100%); }
+        .hb-75 { background: conic-gradient(#1B2A4A 0% 75%, white 75% 100%); }
+        .hb-100 { background: #1B2A4A; }
+
+        /* Legend */
+        .legend-box {
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 10px 15px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            font-size: 10px;
+            color: #64748b;
+        }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+
+        /* Footer */
+        .footer {
+            padding: 10px 40px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: auto;
+        }
+        .page-num { color: #1B2A4A; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header-strip"></div>
+        
+        <div class="header">
+            <div class="title-block">
+                <h1>تحليل المعايير (Standards Analysis)</h1>
+                <p>مصفوفة الامتثال للمعايير والضوابط الوطنية وتحديد الفجوات</p>
+            </div>
+            <div class="logo-box">
+                <img src="assets/logo_ndmo.png" alt="NDMO">
+                <div style="width:1px; height:30px; background:#cbd5e1; margin:0 5px;"></div>
+                <img src="assets/logo_sdaia.png" alt="SDAIA">
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- KPIs -->
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div>
+                        <div class="kpi-val">78%</div>
+                        <div class="kpi-lbl">نسبة الامتثال العام</div>
+                    </div>
+                    <div class="kpi-sub">▲ 5% تحسن</div>
+                </div>
+                <div class="kpi-card">
+                    <div>
+                        <div class="kpi-val">4/12</div>
+                        <div class="kpi-lbl">معايير مكتملة تماماً</div>
+                    </div>
+                    <div class="kpi-sub">33% من الإجمالي</div>
+                </div>
+                <div class="kpi-card">
+                    <div>
+                        <div class="kpi-val">5</div>
+                        <div class="kpi-lbl">فجوات حرجة</div>
+                    </div>
+                    <div class="kpi-sub neg">▼ تتطلب معالجة</div>
+                </div>
+                <div class="kpi-card">
+                    <div>
+                        <div class="kpi-val">Q3-26</div>
+                        <div class="kpi-lbl">موعد الامتثال المستهدف</div>
+                    </div>
+                    <div class="kpi-sub">باقي 6 أشهر</div>
+                </div>
+            </div>
+
+            <!-- Matrix -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="10%">الرمز</th>
+                            <th width="25%">المعيار (Standard)</th>
+                            <th width="10%">الأولوية</th>
+                            <th width="15%">الامتثال</th>
+                            <th width="25%">الفجوة الرئيسية (Key Gap)</th>
+                            <th width="15%">المالك</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="code-badge">NDMO-S-001</span></td>
+                            <td><strong>تصنيف البيانات</strong><br><span style="font-size:9px; color:#64748b;">Data Classification</span></td>
+                            <td><span class="priority-badge p-high">عالية</span></td>
+                            <td><div class="harvey-ball hb-100"></div> <span style="font-weight:700;">100%</span></td>
+                            <td><span style="color:#166534;">لا يوجد فجوات (مكتمل)</span></td>
+                            <td>مكتب البيانات</td>
+                        </tr>
+                        <tr>
+                            <td><span class="code-badge">NDMO-S-002</span></td>
+                            <td><strong>مشاركة البيانات</strong><br><span style="font-size:9px; color:#64748b;">Data Sharing</span></td>
+                            <td><span class="priority-badge p-high">عالية</span></td>
+                            <td><div class="harvey-ball hb-75"></div> <span style="font-weight:700;">75%</span></td>
+                            <td>عدم أتمتة اتفاقيات المشاركة (DSAs)</td>
+                            <td>تقنية المعلومات</td>
+                        </tr>
+                        <tr>
+                            <td><span class="code-badge">NDMO-S-003</span></td>
+                            <td><strong>حرية المعلومات</strong><br><span style="font-size:9px; color:#64748b;">Freedom of Info</span></td>
+                            <td><span class="priority-badge p-med">متوسطة</span></td>
+                            <td><div class="harvey-ball hb-100"></div> <span style="font-weight:700;">100%</span></td>
+                            <td><span style="color:#166534;">لا يوجد فجوات (مكتمل)</span></td>
+                            <td>الشؤون القانونية</td>
+                        </tr>
+                        <tr>
+                            <td><span class="code-badge">NDMO-S-004</span></td>
+                            <td><strong>البيانات المفتوحة</strong><br><span style="font-size:9px; color:#64748b;">Open Data</span></td>
+                            <td><span class="priority-badge p-med">متوسطة</span></td>
+                            <td><div class="harvey-ball hb-50"></div> <span style="font-weight:700;">50%</span></td>
+                            <td>نقص في نشر مجموعات البيانات عالية القيمة</td>
+                            <td>مكتب البيانات</td>
+                        </tr>
+                        <tr>
+                            <td><span class="code-badge">PDPL</span></td>
+                            <td><strong>حماية البيانات الشخصية</strong><br><span style="font-size:9px; color:#64748b;">Personal Data Protection</span></td>
+                            <td><span class="priority-badge p-high">عالية جداً</span></td>
+                            <td><div class="harvey-ball hb-25"></div> <span style="font-weight:700;">25%</span></td>
+                            <td>عدم وجود نظام لإدارة الموافقات (Consent)</td>
+                            <td>الأمن السيبراني</td>
+                        </tr>
+                        <tr>
+                            <td><span class="code-badge">NCA-ECC</span></td>
+                            <td><strong>الضوابط الأساسية للأمن</strong><br><span style="font-size:9px; color:#64748b;">Essential Cybersecurity</span></td>
+                            <td><span class="priority-badge p-high">عالية</span></td>
+                            <td><div class="harvey-ball hb-75"></div> <span style="font-weight:700;">75%</span></td>
+                            <td>تشفير البيانات أثناء النقل (In-transit)</td>
+                            <td>الأمن السيبراني</td>
+                        </tr>
+                        <tr>
+                            <td><span class="code-badge">ISO-8000</span></td>
+                            <td><strong>جودة البيانات</strong><br><span style="font-size:9px; color:#64748b;">Data Quality</span></td>
+                            <td><span class="priority-badge p-low">منخفضة</span></td>
+                            <td><div class="harvey-ball hb-0"></div> <span style="font-weight:700;">0%</span></td>
+                            <td>لم يتم البدء في المشروع بعد</td>
+                            <td>مكتب البيانات</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="legend-box">
+                    <strong>مفتاح الرموز:</strong>
+                    <div class="legend-item"><div class="harvey-ball hb-100"></div> مكتمل (100%)</div>
+                    <div class="legend-item"><div class="harvey-ball hb-75"></div> متقدم (75%)</div>
+                    <div class="legend-item"><div class="harvey-ball hb-50"></div> جزئي (50%)</div>
+                    <div class="legend-item"><div class="harvey-ball hb-25"></div> أولي (25%)</div>
+                    <div class="legend-item"><div class="harvey-ball hb-0"></div> لم يبدأ (0%)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>المملكة العربية السعودية - مكتب إدارة البيانات الوطنية</div>
+            <div class="page-num">2.08</div>
+            <div>سري للغاية - للاستخدام الداخلي فقط</div>
+        </div>
+    </div>
+</body>
+</html>

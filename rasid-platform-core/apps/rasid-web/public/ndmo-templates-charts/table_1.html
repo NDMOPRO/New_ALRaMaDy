@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 10px 16px 4px 16px; display: flex; flex-direction: column; gap: 6px; }
+        .table-title { font-size: 13px; font-weight: 700; color: #1B2A4A; display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .table-title i { color: #2B5EA7; font-size: 12px; }
+        .table-wrap { flex: 1; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        thead th { background: #1B2A4A; color: white; font-size: 11px; font-weight: 700; padding: 8px 10px; text-align: right; white-space: nowrap; }
+        thead th:first-child { text-align: center; width: 30px; }
+        tbody td { font-size: 11px; color: #1B2A4A; padding: 7px 10px; border-bottom: 1px solid #E2E8F0; text-align: right; }
+        tbody td:first-child { text-align: center; font-weight: 700; color: #64748B; }
+        tbody tr:nth-child(even) { background: #F8FAFC; }
+        .summary-row { background: #1B2A4A; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; flex-shrink: 0; }
+        .sr-item { padding: 6px 12px; text-align: center; }
+        .sr-label { font-size: 10px; color: rgba(255,255,255,0.6); }
+        .sr-val { font-size: 16px; font-weight: 800; color: white; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-table" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> عنوان جدول البيانات - بسيط ونظيف يكتب هنا</div>
+            <div class="header-num">3.43</div>
+        </div>
+        <div class="content">
+            <div class="table-title"><i class="fas fa-table"></i> عنوان الجدول الفرعي يكتب هنا</div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>#</th><th>العنصر / الفئة يكتب هنا</th><th>القيمة الأولى يكتب هنا</th><th>القيمة الثانية يكتب هنا</th><th>النسبة يكتب هنا</th><th>التغير يكتب هنا</th><th>الحالة يكتب هنا</th><th>ملاحظات يكتب هنا</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>اسم العنصر الأول يكتب هنا</td><td>12,450</td><td>14,200</td><td>87.7%</td><td style="color:#00B388;font-weight:700;">+14%</td><td style="color:#00B388;font-weight:700;">مكتمل</td><td>ملاحظة نصية يكتب هنا</td></tr>
+                        <tr><td>2</td><td>اسم العنصر الثاني يكتب هنا</td><td>8,320</td><td>10,000</td><td>83.2%</td><td style="color:#00B388;font-weight:700;">+8%</td><td style="color:#00B388;font-weight:700;">مكتمل</td><td>ملاحظة نصية يكتب هنا</td></tr>
+                        <tr><td>3</td><td>اسم العنصر الثالث يكتب هنا</td><td>6,150</td><td>8,500</td><td>72.4%</td><td style="color:#E8A838;font-weight:700;">+3%</td><td style="color:#E8A838;font-weight:700;">قيد التنفيذ</td><td>ملاحظة نصية يكتب هنا</td></tr>
+                        <tr><td>4</td><td>اسم العنصر الرابع يكتب هنا</td><td>4,800</td><td>7,200</td><td>66.7%</td><td style="color:#E8A838;font-weight:700;">+5%</td><td style="color:#E8A838;font-weight:700;">قيد التنفيذ</td><td>ملاحظة نصية يكتب هنا</td></tr>
+                        <tr><td>5</td><td>اسم العنصر الخامس يكتب هنا</td><td>3,200</td><td>6,000</td><td>53.3%</td><td style="color:#C0392B;font-weight:700;">-2%</td><td style="color:#C0392B;font-weight:700;">متأخر</td><td>ملاحظة نصية يكتب هنا</td></tr>
+                        <tr><td>6</td><td>اسم العنصر السادس يكتب هنا</td><td>9,700</td><td>10,500</td><td>92.4%</td><td style="color:#00B388;font-weight:700;">+12%</td><td style="color:#00B388;font-weight:700;">مكتمل</td><td>ملاحظة نصية يكتب هنا</td></tr>
+                        <tr><td>7</td><td>اسم العنصر السابع يكتب هنا</td><td>5,400</td><td>7,800</td><td>69.2%</td><td style="color:#E8A838;font-weight:700;">+1%</td><td style="color:#E8A838;font-weight:700;">قيد التنفيذ</td><td>ملاحظة نصية يكتب هنا</td></tr>
+                        <tr><td>8</td><td>اسم العنصر الثامن يكتب هنا</td><td>7,100</td><td>8,000</td><td>88.8%</td><td style="color:#00B388;font-weight:700;">+10%</td><td style="color:#00B388;font-weight:700;">مكتمل</td><td>ملاحظة نصية يكتب هنا</td></tr>
+                        <tr><td>9</td><td>اسم العنصر التاسع يكتب هنا</td><td>2,800</td><td>5,500</td><td>50.9%</td><td style="color:#C0392B;font-weight:700;">-4%</td><td style="color:#C0392B;font-weight:700;">متأخر</td><td>ملاحظة نصية يكتب هنا</td></tr>
+                        <tr><td>10</td><td>اسم العنصر العاشر يكتب هنا</td><td>11,200</td><td>12,000</td><td>93.3%</td><td style="color:#00B388;font-weight:700;">+15%</td><td style="color:#00B388;font-weight:700;">مكتمل</td><td>ملاحظة نصية يكتب هنا</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="summary-row">
+                <div class="sr-item"><div class="sr-label">إجمالي العناصر يكتب هنا</div><div class="sr-val">10</div></div>
+                <div class="sr-item"><div class="sr-label">المكتمل يكتب هنا</div><div class="sr-val" style="color:#00B388;">5</div></div>
+                <div class="sr-item"><div class="sr-label">قيد التنفيذ يكتب هنا</div><div class="sr-val" style="color:#E8A838;">3</div></div>
+                <div class="sr-item"><div class="sr-label">المتأخر يكتب هنا</div><div class="sr-val" style="color:#C0392B;">2</div></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

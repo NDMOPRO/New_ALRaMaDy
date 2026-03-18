@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 52px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 22px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        
+        .content { flex: 1; padding: 15px 20px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 40px 1fr 1fr; gap: 15px; position: relative; }
+        
+        /* Central Vision Bar */
+        .vision-bar { grid-column: 1 / -1; background: #1B2A4A; color: white; display: flex; align-items: center; justify-content: center; border-radius: 0; font-size: 14px; font-weight: 700; gap: 10px; }
+        .vision-icon { color: #E8A838; }
+
+        /* Quadrants */
+        .quadrant { border: 1px solid #E2E8F0; background: #F8FAFC; display: flex; flex-direction: column; position: relative; }
+        .q-header { padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; color: white; }
+        .q-title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .q-score { font-size: 16px; font-weight: 800; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 2px; }
+        
+        /* Quadrant Colors */
+        .q-financial .q-header { background: #2B5EA7; } /* Blue */
+        .q-stakeholder .q-header { background: #00B388; } /* Teal */
+        .q-process .q-header { background: #E8A838; color: #1B2A4A; } /* Gold */
+        .q-learning .q-header { background: #1B2A4A; } /* Dark Blue */
+        .q-process .q-score { background: rgba(0,0,0,0.1); }
+
+        /* Metrics Table */
+        .metrics-table { width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 0; flex: 1; }
+        .metrics-table th { background: #F1F5F9; color: #475569; padding: 6px; text-align: right; font-weight: 600; border-bottom: 1px solid #E2E8F0; }
+        .metrics-table td { padding: 6px; border-bottom: 1px solid #E2E8F0; color: #334155; vertical-align: middle; }
+        .metrics-table tr:last-child td { border-bottom: none; }
+        
+        .status-badge { padding: 2px 6px; border-radius: 2px; font-size: 9px; font-weight: 700; display: inline-block; min-width: 50px; text-align: center; }
+        .st-green { background: #DCFCE7; color: #166534; }
+        .st-yellow { background: #FEF9C3; color: #854D0E; }
+        .st-red { background: #FEE2E2; color: #991B1B; }
+
+        .trend-icon { font-size: 10px; margin-left: 4px; }
+        .tr-up { color: #00B388; }
+        .tr-down { color: #E53E3E; }
+        .tr-flat { color: #E8A838; }
+
+        /* Central Connector (Visual only) */
+        .connector-h { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; background: white; border: 2px solid #CBD5E1; border-radius: 50%; z-index: 10; display: flex; align-items: center; justify-content: center; color: #64748B; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        .footer { height: 32px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 18px; }
+        .footer-sep { width: 1px; height: 14px; background: #CBD5E1; }
+        .footer-text { font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-balance-scale" style="margin-left:8px;opacity:0.7;font-size:16px;"></i> بطاقة الأداء المتوازن (Balanced Scorecard)</div>
+            <div class="header-num">2.7</div>
+        </div>
+
+        <div class="content">
+            <div class="vision-bar">
+                <i class="fas fa-bullseye vision-icon"></i>
+                الرؤية الاستراتيجية: تمكين اقتصاد قائم على البيانات من خلال حوكمة فعالة وبنية تحتية متطورة
+            </div>
+
+            <!-- Q1: Financial / Value -->
+            <div class="quadrant q-financial">
+                <div class="q-header">
+                    <div class="q-title"><i class="fas fa-chart-line"></i> المحور المالي / القيمة</div>
+                    <div class="q-score">88%</div>
+                </div>
+                <table class="metrics-table">
+                    <thead>
+                        <tr><th>الهدف الاستراتيجي</th><th>المؤشر (KPI)</th><th>المستهدف</th><th>الفعلي</th><th>الحالة</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>تعظيم العائد الاقتصادي</td>
+                            <td>قيمة البيانات المفتوحة (مليون)</td>
+                            <td>500</td>
+                            <td>480</td>
+                            <td><span class="status-badge st-green">ممتاز</span></td>
+                        </tr>
+                        <tr>
+                            <td>تحسين كفاءة الإنفاق</td>
+                            <td>وفر التكاليف التشغيلية</td>
+                            <td>15%</td>
+                            <td>12%</td>
+                            <td><span class="status-badge st-yellow">جيد</span></td>
+                        </tr>
+                        <tr>
+                            <td>تنمية الإيرادات</td>
+                            <td>إيرادات منتجات البيانات</td>
+                            <td>50</td>
+                            <td>55</td>
+                            <td><span class="status-badge st-green">ممتاز</span></td>
+                        </tr>
+                        <tr>
+                            <td>الاستدامة المالية</td>
+                            <td>نسبة تغطية التكاليف</td>
+                            <td>80%</td>
+                            <td>75%</td>
+                            <td><span class="status-badge st-yellow">جيد</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Q2: Stakeholders -->
+            <div class="quadrant q-stakeholder">
+                <div class="q-header">
+                    <div class="q-title"><i class="fas fa-users"></i> محور أصحاب المصلحة</div>
+                    <div class="q-score">92%</div>
+                </div>
+                <table class="metrics-table">
+                    <thead>
+                        <tr><th>الهدف الاستراتيجي</th><th>المؤشر (KPI)</th><th>المستهدف</th><th>الفعلي</th><th>الحالة</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>تحسين تجربة المستفيد</td>
+                            <td>رضا المستفيدين</td>
+                            <td>90%</td>
+                            <td>92%</td>
+                            <td><span class="status-badge st-green">ممتاز</span></td>
+                        </tr>
+                        <tr>
+                            <td>تعزيز الشفافية</td>
+                            <td>مؤشر نشر البيانات</td>
+                            <td>100%</td>
+                            <td>98%</td>
+                            <td><span class="status-badge st-green">ممتاز</span></td>
+                        </tr>
+                        <tr>
+                            <td>زيادة المشاركة</td>
+                            <td>عدد الجهات المرتبطة</td>
+                            <td>60</td>
+                            <td>58</td>
+                            <td><span class="status-badge st-green">ممتاز</span></td>
+                        </tr>
+                        <tr>
+                            <td>الاستجابة للطلبات</td>
+                            <td>متوسط زمن الاستجابة</td>
+                            <td>2 يوم</td>
+                            <td>1.8 يوم</td>
+                            <td><span class="status-badge st-green">ممتاز</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Q3: Internal Processes -->
+            <div class="quadrant q-process">
+                <div class="q-header">
+                    <div class="q-title"><i class="fas fa-cogs"></i> محور العمليات الداخلية</div>
+                    <div class="q-score">76%</div>
+                </div>
+                <table class="metrics-table">
+                    <thead>
+                        <tr><th>الهدف الاستراتيجي</th><th>المؤشر (KPI)</th><th>المستهدف</th><th>الفعلي</th><th>الحالة</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ضمان جودة البيانات</td>
+                            <td>مؤشر جودة البيانات</td>
+                            <td>95%</td>
+                            <td>84%</td>
+                            <td><span class="status-badge st-red">منخفض</span></td>
+                        </tr>
+                        <tr>
+                            <td>تعزيز الامتثال</td>
+                            <td>نسبة الامتثال للضوابط</td>
+                            <td>90%</td>
+                            <td>78%</td>
+                            <td><span class="status-badge st-yellow">متوسط</span></td>
+                        </tr>
+                        <tr>
+                            <td>أتمتة العمليات</td>
+                            <td>نسبة العمليات المؤتمتة</td>
+                            <td>70%</td>
+                            <td>65%</td>
+                            <td><span class="status-badge st-yellow">جيد</span></td>
+                        </tr>
+                        <tr>
+                            <td>إدارة المخاطر</td>
+                            <td>المخاطر المعالجة</td>
+                            <td>100%</td>
+                            <td>90%</td>
+                            <td><span class="status-badge st-green">ممتاز</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Q4: Learning & Growth -->
+            <div class="quadrant q-learning">
+                <div class="q-header">
+                    <div class="q-title"><i class="fas fa-graduation-cap"></i> محور التعلم والنمو</div>
+                    <div class="q-score">85%</div>
+                </div>
+                <table class="metrics-table">
+                    <thead>
+                        <tr><th>الهدف الاستراتيجي</th><th>المؤشر (KPI)</th><th>المستهدف</th><th>الفعلي</th><th>الحالة</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>بناء القدرات البشرية</td>
+                            <td>عدد المتدربين</td>
+                            <td>500</td>
+                            <td>450</td>
+                            <td><span class="status-badge st-yellow">جيد</span></td>
+                        </tr>
+                        <tr>
+                            <td>تطوير البنية التقنية</td>
+                            <td>جاهزية المنصات</td>
+                            <td>99%</td>
+                            <td>99.5%</td>
+                            <td><span class="status-badge st-green">ممتاز</span></td>
+                        </tr>
+                        <tr>
+                            <td>تعزيز ثقافة البيانات</td>
+                            <td>مؤشر الوعي بالبيانات</td>
+                            <td>80%</td>
+                            <td>72%</td>
+                            <td><span class="status-badge st-yellow">متوسط</span></td>
+                        </tr>
+                        <tr>
+                            <td>الابتكار والتطوير</td>
+                            <td>عدد حالات الاستخدام</td>
+                            <td>10</td>
+                            <td>12</td>
+                            <td><span class="status-badge st-green">ممتاز</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="connector-h"><i class="fas fa-sync-alt"></i></div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:1px 6px;"><img src="/home/ubuntu/ndmo_batch2/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:1px 6px;"><img src="/home/ubuntu/ndmo_batch2/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي - الشرائح التحليلية | سري</div>
+        </div>
+    </div>
+</body>
+</html>

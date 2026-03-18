@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 30px 40px 10px 40px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        /* Status Bar */
+        .status-bar { display: flex; gap: 16px; margin-bottom: 10px; }
+        .status-card { flex: 1; background: white; padding: 16px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: space-between; border-top: 4px solid transparent; }
+        .sc-green { border-color: #00B388; }
+        .sc-red { border-color: #E85B7A; }
+        
+        .sc-info { display: flex; flex-direction: column; }
+        .sc-lbl { font-size: 12px; color: #666; font-weight: 700; }
+        .sc-val { font-size: 18px; font-weight: 800; color: #1B2A4A; }
+        .sc-icon { font-size: 24px; opacity: 0.2; }
+        .sc-green .sc-icon { color: #00B388; }
+        .sc-red .sc-icon { color: #E85B7A; }
+
+        /* Monitoring Table */
+        .monitor-panel { flex: 1; background: white; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 20px; display: flex; flex-direction: column; }
+        .mp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .mp-title { font-size: 16px; font-weight: 800; color: #1B2A4A; }
+        .mp-live { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #E85B7A; font-weight: 700; animation: blink 2s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .mon-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .mon-table th { text-align: right; padding: 12px; color: #666; font-weight: 700; border-bottom: 2px solid #eee; }
+        .mon-table td { padding: 12px; border-bottom: 1px solid #f5f5f5; color: #333; }
+        .mon-table tr:last-child td { border-bottom: none; }
+        
+        .st-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; }
+        .sb-ok { background: #E6F4EA; color: #00B388; }
+        .sb-warn { background: #FFF8E1; color: #E8A838; }
+        .sb-err { background: #FCE4EC; color: #E85B7A; }
+
+        .sys-code { font-family: monospace; color: #2B5EA7; background: #f0f4f8; padding: 2px 6px; border-radius: 3px; font-size: 12px; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الرصد التشغيلي - مراقبة الأنظمة والتدفقات</div>
+            <div class="header-badge">44</div>
+        </div>
+
+        <div class="content-area">
+            <div class="status-bar">
+                <div class="status-card sc-green">
+                    <div class="sc-info">
+                        <div class="sc-lbl">جاهزية الأنظمة</div>
+                        <div class="sc-val">99.9%</div>
+                    </div>
+                    <div class="sc-icon"><i class="fas fa-server"></i></div>
+                </div>
+                <div class="status-card sc-green">
+                    <div class="sc-info">
+                        <div class="sc-lbl">تدفق البيانات</div>
+                        <div class="sc-val">مستقر</div>
+                    </div>
+                    <div class="sc-icon"><i class="fas fa-exchange-alt"></i></div>
+                </div>
+                <div class="status-card sc-red">
+                    <div class="sc-info">
+                        <div class="sc-lbl">تنبيهات نشطة</div>
+                        <div class="sc-val">2</div>
+                    </div>
+                    <div class="sc-icon"><i class="fas fa-bell"></i></div>
+                </div>
+                <div class="status-card sc-green">
+                    <div class="sc-info">
+                        <div class="sc-lbl">زمن الاستجابة</div>
+                        <div class="sc-val">45ms</div>
+                    </div>
+                    <div class="sc-icon"><i class="fas fa-tachometer-alt"></i></div>
+                </div>
+            </div>
+
+            <div class="monitor-panel">
+                <div class="mp-header">
+                    <div class="mp-title">سجل العمليات الحية (Live Operations Log)</div>
+                    <div class="mp-live"><i class="fas fa-circle"></i> مباشر</div>
+                </div>
+                <table class="mon-table">
+                    <thead>
+                        <tr>
+                            <th>الوقت</th>
+                            <th>النظام</th>
+                            <th>العملية</th>
+                            <th>الحالة</th>
+                            <th>التفاصيل</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>10:42:15</td>
+                            <td><span class="sys-code">NDMO-CORE-01</span></td>
+                            <td>مزامنة السجلات الوطنية</td>
+                            <td><span class="st-badge sb-ok">نجاح</span></td>
+                            <td>تم تحديث 1.5 مليون سجل بنجاح.</td>
+                        </tr>
+                        <tr>
+                            <td>10:40:22</td>
+                            <td><span class="sys-code">NDMO-API-GW</span></td>
+                            <td>التحقق من صحة البيانات</td>
+                            <td><span class="st-badge sb-warn">تحذير</span></td>
+                            <td>بطء في الاستجابة (Latency > 200ms).</td>
+                        </tr>
+                        <tr>
+                            <td>10:38:05</td>
+                            <td><span class="sys-code">NDMO-SEC-03</span></td>
+                            <td>محاولة وصول غير مصرح</td>
+                            <td><span class="st-badge sb-err">حرج</span></td>
+                            <td>تم حظر IP مشبوه تلقائياً.</td>
+                        </tr>
+                        <tr>
+                            <td>10:35:00</td>
+                            <td><span class="sys-code">NDMO-BKUP-02</span></td>
+                            <td>النسخ الاحتياطي الدوري</td>
+                            <td><span class="st-badge sb-ok">نجاح</span></td>
+                            <td>اكتمل النسخ الاحتياطي لقاعدة البيانات الرئيسية.</td>
+                        </tr>
+                        <tr>
+                            <td>10:30:11</td>
+                            <td><span class="sys-code">NDMO-ETL-05</span></td>
+                            <td>معالجة البيانات الضخمة</td>
+                            <td><span class="st-badge sb-ok">نجاح</span></td>
+                            <td>تمت معالجة 500GB من البيانات الواردة.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">44</div>
+    </div>
+</body>
+</html>

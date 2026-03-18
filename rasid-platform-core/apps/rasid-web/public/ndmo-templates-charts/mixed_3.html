@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; margin: 0; }
+        .slide-container { width: 1280px; min-height: 720px; max-height: 720px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+        .top-line { height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #1B2A4A, #E8A838); flex-shrink: 0; }
+        .header { height: 56px; background: #1B2A4A; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; flex-shrink: 0; }
+        .header-title { color: white; font-size: 24px; font-weight: 700; }
+        .header-num { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 700; }
+        .content { flex: 1; padding: 16px 20px 4px 20px; display: flex; flex-direction: column; gap: 12px; justify-content: center; }
+        .phase-label { font-size: 12px; font-weight: 800; color: #2B5EA7; display: flex; align-items: center; gap: 6px; }
+        .phase-label::after { content: ''; flex: 1; height: 1px; background: #E2E8F0; }
+        .steps-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .step { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 8px; position: relative; }
+        .step-circle { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; flex-shrink: 0; }
+        .sc-1 { background: #1B2A4A; }
+        .sc-2 { background: #2B5EA7; }
+        .sc-3 { background: #00B388; }
+        .sc-4 { background: #E8A838; }
+        .sc-5 { background: #8E44AD; }
+        .sc-6 { background: #C0392B; }
+        .sc-7 { background: #1B6B5A; }
+        .sc-8 { background: #2B5EA7; }
+        .step-num { font-size: 10px; font-weight: 800; color: #64748B; margin-top: 6px; }
+        .step-title { font-size: 12px; font-weight: 700; color: #1B2A4A; margin-top: 3px; }
+        .step-desc { font-size: 10px; color: #64748B; margin-top: 2px; line-height: 1.4; }
+        .step-tags { display: flex; gap: 3px; flex-wrap: wrap; justify-content: center; margin-top: 4px; }
+        .step-tag { font-size: 8px; padding: 1px 6px; background: #EFF6FF; color: #2B5EA7; }
+        .connector { display: flex; align-items: center; justify-content: center; color: #CBD5E1; font-size: 18px; margin-top: 24px; }
+        .summary-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; background: #F8FAFC; border: 1px solid #E2E8F0; flex-shrink: 0; }
+        .ss-item { padding: 8px; text-align: center; border-left: 1px solid #E2E8F0; }
+        .ss-item:last-child { border-left: none; }
+        .ss-label { font-size: 9px; color: #64748B; }
+        .ss-val { font-size: 16px; font-weight: 800; color: #1B2A4A; }
+        .footer { height: 36px; display: flex; align-items: center; flex-direction: row-reverse; justify-content: space-between; padding: 0 20px; border-top: 1px solid #E2E8F0; flex-shrink: 0; }
+        .footer-logos { display: flex; align-items: center; gap: 10px; }
+        .footer-logos img { height: 24px; width: auto; object-fit: contain; }
+        .footer-sep { width: 1px; height: 16px; background: #CBD5E1; }
+        .footer-text { font-size: 10px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-line"></div>
+        <div class="header">
+            <div class="header-title"><i class="fas fa-stream" style="margin-left:8px;opacity:0.7;font-size:18px;"></i> عنوان مراحل العملية / إنفوجرافيك يكتب هنا</div>
+            <div class="header-num">3.55</div>
+        </div>
+        <div class="content">
+            <div class="phase-label"><i class="fas fa-play-circle"></i> المرحلة الأولى: التخطيط والتحليل يكتب هنا</div>
+            <div class="steps-row">
+                <div class="step"><div class="step-circle sc-1"><i class="fas fa-search"></i></div><div class="step-num">الخطوة 01</div><div class="step-title">عنوان الخطوة الأولى يكتب هنا</div><div class="step-desc">وصف مختصر للخطوة يكتب هنا مع التفاصيل المطلوبة</div><div class="step-tags"><span class="step-tag">وسم يكتب هنا</span><span class="step-tag">وسم يكتب هنا</span></div></div>
+                <div class="step"><div class="step-circle sc-2"><i class="fas fa-clipboard-list"></i></div><div class="step-num">الخطوة 02</div><div class="step-title">عنوان الخطوة الثانية يكتب هنا</div><div class="step-desc">وصف مختصر للخطوة يكتب هنا مع التفاصيل المطلوبة</div><div class="step-tags"><span class="step-tag">وسم يكتب هنا</span><span class="step-tag">وسم يكتب هنا</span></div></div>
+                <div class="step"><div class="step-circle sc-3"><i class="fas fa-pencil-ruler"></i></div><div class="step-num">الخطوة 03</div><div class="step-title">عنوان الخطوة الثالثة يكتب هنا</div><div class="step-desc">وصف مختصر للخطوة يكتب هنا مع التفاصيل المطلوبة</div><div class="step-tags"><span class="step-tag">وسم يكتب هنا</span><span class="step-tag">وسم يكتب هنا</span></div></div>
+                <div class="step"><div class="step-circle sc-4"><i class="fas fa-check-double"></i></div><div class="step-num">الخطوة 04</div><div class="step-title">عنوان الخطوة الرابعة يكتب هنا</div><div class="step-desc">وصف مختصر للخطوة يكتب هنا مع التفاصيل المطلوبة</div><div class="step-tags"><span class="step-tag">وسم يكتب هنا</span><span class="step-tag">وسم يكتب هنا</span></div></div>
+            </div>
+            <div class="phase-label"><i class="fas fa-forward"></i> المرحلة الثانية: التنفيذ والمتابعة يكتب هنا</div>
+            <div class="steps-row">
+                <div class="step"><div class="step-circle sc-5"><i class="fas fa-cogs"></i></div><div class="step-num">الخطوة 05</div><div class="step-title">عنوان الخطوة الخامسة يكتب هنا</div><div class="step-desc">وصف مختصر للخطوة يكتب هنا مع التفاصيل المطلوبة</div><div class="step-tags"><span class="step-tag">وسم يكتب هنا</span><span class="step-tag">وسم يكتب هنا</span></div></div>
+                <div class="step"><div class="step-circle sc-6"><i class="fas fa-rocket"></i></div><div class="step-num">الخطوة 06</div><div class="step-title">عنوان الخطوة السادسة يكتب هنا</div><div class="step-desc">وصف مختصر للخطوة يكتب هنا مع التفاصيل المطلوبة</div><div class="step-tags"><span class="step-tag">وسم يكتب هنا</span><span class="step-tag">وسم يكتب هنا</span></div></div>
+                <div class="step"><div class="step-circle sc-7"><i class="fas fa-chart-line"></i></div><div class="step-num">الخطوة 07</div><div class="step-title">عنوان الخطوة السابعة يكتب هنا</div><div class="step-desc">وصف مختصر للخطوة يكتب هنا مع التفاصيل المطلوبة</div><div class="step-tags"><span class="step-tag">وسم يكتب هنا</span><span class="step-tag">وسم يكتب هنا</span></div></div>
+                <div class="step"><div class="step-circle sc-8"><i class="fas fa-flag-checkered"></i></div><div class="step-num">الخطوة 08</div><div class="step-title">عنوان الخطوة الثامنة يكتب هنا</div><div class="step-desc">وصف مختصر للخطوة يكتب هنا مع التفاصيل المطلوبة</div><div class="step-tags"><span class="step-tag">وسم يكتب هنا</span><span class="step-tag">وسم يكتب هنا</span></div></div>
+            </div>
+            <div class="summary-strip">
+                <div class="ss-item"><div class="ss-label">إجمالي الخطوات يكتب هنا</div><div class="ss-val">8</div></div>
+                <div class="ss-item"><div class="ss-label">المدة المتوقعة يكتب هنا</div><div class="ss-val">12 أسبوع</div></div>
+                <div class="ss-item"><div class="ss-label">الموارد المطلوبة يكتب هنا</div><div class="ss-val">15 شخص</div></div>
+                <div class="ss-item"><div class="ss-label">نسبة الإنجاز يكتب هنا</div><div class="ss-val" style="color:#00B388;">50%</div></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-logos">
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/ndmo_logo.png" alt="NDMO"></div>
+                <div class="footer-sep"></div>
+                <div style="background:white;padding:2px 6px;"><img src="/home/ubuntu/ndmo_batch3_60slides/assets/sdaia_logo.png" alt="SDAIA"></div>
+            </div>
+            <div class="footer-text">النموذج المرجعي الرسمي الخاص بالإدارة العامة لإدارة البيانات</div>
+        </div>
+    </div>
+</body>
+</html>

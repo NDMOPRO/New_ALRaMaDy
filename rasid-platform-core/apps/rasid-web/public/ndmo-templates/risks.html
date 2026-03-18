@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 30px 40px 6px 40px; flex: 1; display: flex; gap: 30px; }
+
+        .matrix-panel { flex: 1; background: white; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; flex-direction: column; align-items: center; position: relative; }
+        .mp-title { font-size: 16px; font-weight: 800; color: #1B2A4A; margin-bottom: 20px; width: 100%; text-align: center; }
+        
+        .risk-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 4px; width: 360px; height: 360px; position: relative; }
+        .rg-cell { display: flex; align-items: center; justify-content: center; font-weight: 800; color: rgba(0,0,0,0.4); font-size: 14px; position: relative; transition: all 0.3s; }
+        .bg-low { background: #E6F4EA; }
+        .bg-med { background: #FFF8E1; }
+        .bg-high { background: #FCE4EC; }
+        
+        .risk-dot { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 12px; position: absolute; box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 2; border: 2px solid white; }
+        .rd-red { background: #E85B7A; }
+        .rd-orange { background: #E8A838; }
+        .rd-green { background: #00B388; }
+
+        .axis-label { position: absolute; font-size: 12px; font-weight: 700; color: #666; }
+        .al-y { transform: rotate(-90deg); left: -40px; top: 50%; }
+        /* Adjusted vertical offset to remove overflow without changing font sizes or title padding */
+        .al-x { bottom: -9px; left: 50%; transform: translateX(-50%); }
+
+        .list-panel { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+        .risk-card { background: white; padding: 16px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; gap: 16px; border-right: 4px solid transparent; }
+        .rc-red { border-color: #E85B7A; }
+        .rc-orange { border-color: #E8A838; }
+        .rc-green { border-color: #00B388; }
+
+        .rc-badge { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 12px; flex-shrink: 0; }
+        .rc-content { flex: 1; }
+        .rc-head { display: flex; justify-content: space-between; margin-bottom: 6px; }
+        .rc-title { font-size: 14px; font-weight: 800; color: #333; }
+        .rc-score { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #eee; }
+        .rc-desc { font-size: 12px; color: #666; line-height: 1.4; margin-bottom: 8px; }
+        .rc-mitigation { font-size: 11px; color: #2B5EA7; background: #EBF3FB; padding: 6px 10px; border-radius: 4px; display: inline-block; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">المخاطر المحتملة - مصفوفة تقييم المخاطر (Risk Matrix)</div>
+            <div class="header-badge">37</div>
+        </div>
+
+        <div class="content-area">
+            <div class="matrix-panel">
+                <div class="mp-title">خريطة توزيع المخاطر</div>
+                <div class="axis-label al-y">الاحتمالية (Probability)</div>
+                <div class="axis-label al-x">الأثر (Impact)</div>
+                
+                <div class="risk-grid">
+                    <!-- Row 1 (High Prob) -->
+                    <div class="rg-cell bg-med"></div>
+                    <div class="rg-cell bg-high"></div>
+                    <div class="rg-cell bg-high">
+                        <div class="risk-dot rd-red">R1</div>
+                    </div>
+                    
+                    <!-- Row 2 (Med Prob) -->
+                    <div class="rg-cell bg-low"></div>
+                    <div class="rg-cell bg-med">
+                        <div class="risk-dot rd-orange">R2</div>
+                    </div>
+                    <div class="rg-cell bg-high"></div>
+                    
+                    <!-- Row 3 (Low Prob) -->
+                    <div class="rg-cell bg-low">
+                        <div class="risk-dot rd-green">R3</div>
+                    </div>
+                    <div class="rg-cell bg-low"></div>
+                    <div class="rg-cell bg-med"></div>
+                </div>
+            </div>
+
+            <div class="list-panel">
+                <!-- Risk 1 -->
+                <div class="risk-card rc-red">
+                    <div class="rc-badge rd-red">R1</div>
+                    <div class="rc-content">
+                        <div class="rc-head">
+                            <div class="rc-title">تسرب البيانات الحساسة</div>
+                            <div class="rc-score" style="color:#E85B7A">عالي جداً</div>
+                        </div>
+                        <div class="rc-desc">مخاطر اختراق أو تسريب بيانات سرية نتيجة ضعف ضوابط الوصول أو هجمات سيبرانية.</div>
+                        <div class="rc-mitigation"><i class="fas fa-shield-alt"></i> الإجراء: تطبيق DLP وتشفير البيانات وتفعيل المصادقة الثنائية.</div>
+                    </div>
+                </div>
+
+                <!-- Risk 2 -->
+                <div class="risk-card rc-orange">
+                    <div class="rc-badge rd-orange">R2</div>
+                    <div class="rc-content">
+                        <div class="rc-head">
+                            <div class="rc-title">مقاومة التغيير المؤسسي</div>
+                            <div class="rc-score" style="color:#E8A838">متوسط</div>
+                        </div>
+                        <div class="rc-desc">عدم تقبل الموظفين للإجراءات الجديدة وتأخر تبني ثقافة البيانات.</div>
+                        <div class="rc-mitigation"><i class="fas fa-users"></i> الإجراء: خطة إدارة تغيير شاملة وورش عمل توعوية مكثفة.</div>
+                    </div>
+                </div>
+
+                <!-- Risk 3 -->
+                <div class="risk-card rc-green">
+                    <div class="rc-badge rd-green">R3</div>
+                    <div class="rc-content">
+                        <div class="rc-head">
+                            <div class="rc-title">تأخر الموردين</div>
+                            <div class="rc-score" style="color:#00B388">منخفض</div>
+                        </div>
+                        <div class="rc-desc">تأخر تسليم التراخيص أو الأجهزة من قبل الموردين الخارجيين.</div>
+                        <div class="rc-mitigation"><i class="fas fa-clock"></i> الإجراء: وضع شروط جزائية صارمة وتنويع مصادر التوريد.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">37</div>
+    </div>
+</body>
+</html>

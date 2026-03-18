@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .slide-container { width: 1280px; min-height: 720px; background: #ECEAF2; position: relative; display: flex; flex-direction: column; }
+        .top-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838); z-index: 10; }
+        .header-bar { width: 100%; height: 64px; background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; flex-shrink: 0; }
+        .header-title { font-size: 28px; font-weight: 700; }
+        .header-badge { width: 40px; height: 40px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+
+        .content-area { padding: 16px 40px 10px 40px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+        /* Flow Steps */
+        .flow-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; height: 120px; }
+        .flow-step { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 8px 8px; position: relative; }
+        .flow-step::after { content: '←'; position: absolute; left: -14px; top: 50%; transform: translateY(-50%); color: #ccc; font-size: 18px; font-weight: 800; }
+        .flow-step:last-child::after { display: none; }
+        .fs-num { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 800; margin-bottom: 8px; }
+        .fs-title { font-size: 13px; font-weight: 800; color: #1B2A4A; margin-bottom: 4px; }
+        .fs-desc { font-size: 11px; color: #666; line-height: 1.3; }
+        .fs-sla { font-size: 10px; font-weight: 700; color: white; padding: 2px 8px; margin-top: 6px; }
+
+        /* Main Split */
+        .main-split { display: flex; gap: 14px; flex: 1; }
+
+        /* Decision Table */
+        .table-panel { flex: 1.4; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; flex-direction: column; }
+        .tp-header { padding: 12px 16px; font-size: 15px; font-weight: 800; color: #1B2A4A; border-bottom: 2px solid #1B2A4A; display: flex; justify-content: space-between; align-items: center; }
+        .tp-header span:last-child { font-size: 11px; color: #666; font-weight: 500; }
+        .dt-table { width: 100%; border-collapse: collapse; flex: 1; }
+        .dt-table th { background: #1B2A4A; color: white; font-size: 11px; font-weight: 700; padding: 8px 10px; text-align: right; }
+        .dt-table td { font-size: 11px; padding: 6px 10px; border-bottom: 1px solid #f0f0f0; color: #333; }
+        .dt-table tr:nth-child(even) td { background: #fafafa; }
+        .priority-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; display: inline-block; }
+        .pb-critical { background: rgba(232,91,122,0.15); color: #E85B7A; }
+        .pb-high { background: rgba(232,168,56,0.15); color: #E8A838; }
+        .pb-medium { background: rgba(43,94,167,0.15); color: #2B5EA7; }
+        .pb-low { background: rgba(0,179,136,0.15); color: #00B388; }
+
+        /* Right Panel */
+        .side-panel { width: 340px; display: flex; flex-direction: column; gap: 12px; }
+        .approval-card { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.06); flex: 1; display: flex; flex-direction: column; }
+        .ac-header { padding: 12px 16px; font-size: 14px; font-weight: 800; color: #1B2A4A; border-bottom: 2px solid #2B5EA7; }
+        .ac-body { padding: 12px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .ac-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid #f5f5f5; }
+        .ac-row:last-child { border: none; }
+        .ac-level { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+        .ac-info { flex: 1; }
+        .ac-name { font-size: 12px; font-weight: 700; color: #333; }
+        .ac-scope { font-size: 10px; color: #888; }
+        .ac-limit { font-size: 11px; font-weight: 800; color: #1B2A4A; text-align: left; }
+
+        .rules-card { background: #1B2A4A; color: white; padding: 16px; }
+        .rc-title { font-size: 13px; font-weight: 800; color: #E8A838; margin-bottom: 10px; }
+        .rc-rule { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+        .rc-icon { color: #E8A838; font-size: 12px; margin-top: 3px; flex-shrink: 0; }
+        .rc-text { font-size: 11px; color: rgba(255,255,255,0.85); line-height: 1.4; }
+
+        .footer { position: absolute; bottom: 18px; left: 40px; display: flex; align-items: center; gap: 12px; }
+        .logo-box { background: rgba(255,255,255,0.92); padding: 4px 8px; display: flex; align-items: center; }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">دورة اتخاذ القرار - من الرفع حتى الاعتماد والمتابعة</div>
+            <div class="header-badge">25</div>
+        </div>
+
+        <div class="content-area">
+            <div class="flow-row">
+                <div class="flow-step" style="border-top:4px solid #1B2A4A"><div class="fs-num" style="background:#1B2A4A">01</div><div class="fs-title">تقديم الطلب</div><div class="fs-desc">رفع الطلب عبر المنصة مع المستندات الداعمة</div><div class="fs-sla" style="background:#00B388">SLA: يوم واحد</div></div>
+                <div class="flow-step" style="border-top:4px solid #2B5EA7"><div class="fs-num" style="background:#2B5EA7">02</div><div class="fs-title">الفرز والتصنيف</div><div class="fs-desc">تصنيف الطلب حسب النوع والأولوية والجهة المختصة</div><div class="fs-sla" style="background:#2B5EA7">SLA: يومان</div></div>
+                <div class="flow-step" style="border-top:4px solid #00B388"><div class="fs-num" style="background:#00B388">03</div><div class="fs-title">الدراسة الفنية</div><div class="fs-desc">تحليل الأثر والجدوى والمخاطر المرتبطة بالقرار</div><div class="fs-sla" style="background:#E8A838">SLA: 5 أيام</div></div>
+                <div class="flow-step" style="border-top:4px solid #E8A838"><div class="fs-num" style="background:#E8A838">04</div><div class="fs-title">المراجعة والتوصية</div><div class="fs-desc">مراجعة اللجنة المختصة وإصدار التوصية</div><div class="fs-sla" style="background:#E8A838">SLA: 3 أيام</div></div>
+                <div class="flow-step" style="border-top:4px solid #8B7EC8"><div class="fs-num" style="background:#8B7EC8">05</div><div class="fs-title">الاعتماد</div><div class="fs-desc">موافقة صاحب الصلاحية حسب مصفوفة التفويض</div><div class="fs-sla" style="background:#8B7EC8">SLA: يومان</div></div>
+                <div class="flow-step" style="border-top:4px solid #E85B7A"><div class="fs-num" style="background:#E85B7A">06</div><div class="fs-title">التنفيذ والمتابعة</div><div class="fs-desc">تنفيذ القرار ومتابعة الأثر وإغلاق الطلب</div><div class="fs-sla" style="background:#E85B7A">SLA: حسب النوع</div></div>
+            </div>
+
+            <div class="main-split">
+                <div class="table-panel">
+                    <div class="tp-header"><span><i class="fas fa-table" style="margin-left:8px;color:#2B5EA7"></i>مصفوفة أنواع القرارات ومستويات الاعتماد</span><span>آخر تحديث: 2026/03/01</span></div>
+                    <table class="dt-table">
+                        <thead>
+                            <tr><th>نوع القرار</th><th>الأولوية</th><th>جهة الاعتماد</th><th>SLA</th><th>التصعيد</th><th>الحالة</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>اعتماد سياسة وطنية جديدة</td><td><span class="priority-badge pb-critical">حرج</span></td><td>اللجنة التنفيذية العليا</td><td>30 يوم</td><td>رئيس الهيئة</td><td style="color:#00B388;font-weight:700">فعّال</td></tr>
+                            <tr><td>تعديل ضابط قائم</td><td><span class="priority-badge pb-high">عالي</span></td><td>لجنة الامتثال</td><td>15 يوم</td><td>CDO</td><td style="color:#00B388;font-weight:700">فعّال</td></tr>
+                            <tr><td>طلب وصول لبيانات سرية</td><td><span class="priority-badge pb-high">عالي</span></td><td>لجنة أمن البيانات</td><td>5 أيام</td><td>CISO</td><td style="color:#00B388;font-weight:700">فعّال</td></tr>
+                            <tr><td>اعتماد مشروع بيانات جديد</td><td><span class="priority-badge pb-medium">متوسط</span></td><td>لجنة التوجيه</td><td>10 أيام</td><td>CDO</td><td style="color:#00B388;font-weight:700">فعّال</td></tr>
+                            <tr><td>تغيير تصنيف مجموعة بيانات</td><td><span class="priority-badge pb-medium">متوسط</span></td><td>مسؤول المجال البياني</td><td>7 أيام</td><td>لجنة الجودة</td><td style="color:#E8A838;font-weight:700">مراجعة</td></tr>
+                            <tr><td>إضافة مصدر بيانات جديد</td><td><span class="priority-badge pb-low">منخفض</span></td><td>مدير المشروع</td><td>3 أيام</td><td>لجنة التوجيه</td><td style="color:#00B388;font-weight:700">فعّال</td></tr>
+                            <tr><td>تحديث البيانات الوصفية</td><td><span class="priority-badge pb-low">منخفض</span></td><td>أمين البيانات</td><td>يوم واحد</td><td>مسؤول المجال</td><td style="color:#00B388;font-weight:700">فعّال</td></tr>
+                            <tr><td>استثناء من سياسة قائمة</td><td><span class="priority-badge pb-critical">حرج</span></td><td>اللجنة التنفيذية العليا</td><td>20 يوم</td><td>رئيس الهيئة</td><td style="color:#2B5EA7;font-weight:700">جديد</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="side-panel">
+                    <div class="approval-card">
+                        <div class="ac-header"><i class="fas fa-layer-group" style="margin-left:8px;color:#2B5EA7"></i>مستويات صلاحية الاعتماد</div>
+                        <div class="ac-body">
+                            <div class="ac-row"><div class="ac-level" style="background:#1B2A4A">L1</div><div class="ac-info"><div class="ac-name">رئيس الهيئة</div><div class="ac-scope">السياسات الوطنية والاستثناءات</div></div><div class="ac-limit">غير محدود</div></div>
+                            <div class="ac-row"><div class="ac-level" style="background:#2B5EA7">L2</div><div class="ac-info"><div class="ac-name">مدير عام البيانات CDO</div><div class="ac-scope">المشاريع والمبادرات الاستراتيجية</div></div><div class="ac-limit">≤ 5M ر.س</div></div>
+                            <div class="ac-row"><div class="ac-level" style="background:#00B388">L3</div><div class="ac-info"><div class="ac-name">مدراء الإدارات</div><div class="ac-scope">القرارات التشغيلية والفنية</div></div><div class="ac-limit">≤ 500K ر.س</div></div>
+                            <div class="ac-row"><div class="ac-level" style="background:#E8A838">L4</div><div class="ac-info"><div class="ac-name">مدراء المشاريع</div><div class="ac-scope">القرارات اليومية ضمن النطاق</div></div><div class="ac-limit">≤ 50K ر.س</div></div>
+                            <div class="ac-row"><div class="ac-level" style="background:#8B7EC8">L5</div><div class="ac-info"><div class="ac-name">أمناء البيانات</div><div class="ac-scope">تحديثات البيانات الوصفية</div></div><div class="ac-limit">لا مالي</div></div>
+                        </div>
+                    </div>
+
+                    <div class="rules-card">
+                        <div class="rc-title"><i class="fas fa-exclamation-circle" style="margin-left:6px"></i> قواعد التصعيد التلقائي</div>
+                        <div class="rc-rule"><div class="rc-icon"><i class="fas fa-clock"></i></div><div class="rc-text">تجاوز SLA بـ 24 ساعة → إشعار تلقائي للمستوى الأعلى</div></div>
+                        <div class="rc-rule"><div class="rc-icon"><i class="fas fa-redo"></i></div><div class="rc-text">رفض مرتين متتاليتين → تصعيد إلزامي للجنة التوجيه</div></div>
+                        <div class="rc-rule"><div class="rc-icon"><i class="fas fa-bolt"></i></div><div class="rc-text">قرار طارئ → مسار سريع (Fast Track) خلال 24 ساعة</div></div>
+                        <div class="rc-rule"><div class="rc-icon"><i class="fas fa-lock"></i></div><div class="rc-text">بيانات سرية → موافقة مزدوجة (CISO + CDO) إلزامية</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">25</div>
+    </div>
+</body>
+</html>

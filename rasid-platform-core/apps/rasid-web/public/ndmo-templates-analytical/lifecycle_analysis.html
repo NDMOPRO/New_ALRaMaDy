@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل دورة حياة البيانات - Data Lifecycle Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+        }
+        
+        /* Header */
+        .header-strip {
+            height: 8px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #00B388 50%, #E8A838 100%);
+        }
+        .header {
+            padding: 20px 40px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .title-block h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1B2A4A;
+            margin: 0 0 5px 0;
+        }
+        .title-block p {
+            font-size: 14px;
+            color: #64748b;
+            margin: 0;
+        }
+        .logo-box {
+            display: flex;
+            gap: 15px;
+            background: #f8fafc;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        .logo-box img {
+            height: 40px;
+            object-fit: contain;
+        }
+
+        /* Content */
+        .content {
+            padding: 10px 40px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Lifecycle Grid */
+        .lifecycle-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            height: 100%;
+        }
+
+        .stage-col {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            height: 100%;
+        }
+
+        /* Stage Header (Chevron) */
+        .stage-header {
+            background: #1B2A4A;
+            color: white;
+            padding: 12px 5px;
+            text-align: center;
+            position: relative;
+            margin-bottom: 5px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            clip-path: polygon(0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%, 15% 50%);
+            /* Fallback for clip-path if needed, but modern browsers support it well. 
+               For RTL, the arrow points left. 
+               0% 0% (Top Right), 85% 0% (Top Left start), 100% 50% (Tip), 85% 100% (Bottom Left start), 0% 100% (Bottom Right), 15% 50% (Notch)
+               Wait, RTL: 
+               Top Right: 0,0
+               Top Left: 100,0 -> Arrow tip is at 0 (Left)
+            */
+            /* Let's use simple rectangular boxes with CSS arrow effect to be safe and cleaner */
+            clip-path: none;
+            background: #1B2A4A;
+            border-radius: 4px;
+        }
+        
+        .stage-num {
+            position: absolute;
+            top: -8px;
+            right: 50%;
+            transform: translateX(50%);
+            width: 20px;
+            height: 20px;
+            background: #E8A838;
+            color: #1B2A4A;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+
+        /* KPI Box */
+        .kpi-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+        }
+        .kpi-val {
+            font-size: 22px;
+            font-weight: 800;
+            color: #00B388;
+            display: block;
+        }
+        .kpi-lbl {
+            font-size: 10px;
+            color: #64748b;
+            display: block;
+        }
+        .trend-up { color: #00B388; font-size: 10px; font-weight: 700; }
+        .trend-down { color: #ef4444; font-size: 10px; font-weight: 700; }
+
+        /* Metrics List */
+        .metrics-list {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px;
+            flex-grow: 1;
+        }
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .metric-item:last-child { border-bottom: none; }
+        .m-name { color: #475569; }
+        .m-val { font-weight: 700; color: #1B2A4A; }
+
+        /* Risk Box */
+        .risk-box {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 10px;
+        }
+        .risk-title {
+            color: #9f1239;
+            font-weight: 800;
+            margin-bottom: 3px;
+            display: block;
+        }
+        .risk-desc {
+            color: #be123c;
+            line-height: 1.3;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            background: #f1f5f9;
+            border-radius: 4px;
+            padding: 6px;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+        .status-green { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+        .status-amber { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+        .status-red { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+
+        /* Footer */
+        .footer {
+            padding: 10px 40px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: auto;
+        }
+        .page-num {
+            color: #1B2A4A;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header-strip"></div>
+        
+        <div class="header">
+            <div class="title-block">
+                <h1>تحليل دورة حياة البيانات (Data Lifecycle Analysis)</h1>
+                <p>مؤشرات الأداء والمخاطر عبر مراحل دورة حياة البيانات من الإنشاء إلى الإتلاف</p>
+            </div>
+            <div class="logo-box">
+                <img src="assets/logo_ndmo.png" alt="NDMO">
+                <div style="width:1px; height:30px; background:#cbd5e1; margin:0 5px;"></div>
+                <img src="assets/logo_sdaia.png" alt="SDAIA">
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="lifecycle-grid">
+                
+                <!-- Stage 1: Creation -->
+                <div class="stage-col">
+                    <div class="stage-header">
+                        <div class="stage-num">1</div>
+                        الإنشاء والجمع<br>Creation
+                    </div>
+                    <div class="kpi-box">
+                        <span class="kpi-val">98.5%</span>
+                        <span class="kpi-lbl">دقة الإدخال</span>
+                        <span class="trend-up">▲ 2.1%</span>
+                    </div>
+                    <div class="metrics-list">
+                        <div class="metric-item">
+                            <span class="m-name">مصادر البيانات</span>
+                            <span class="m-val">14</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="m-name">حجم التدفق</span>
+                            <span class="m-val">2TB/يوم</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="m-name">التصنيف الآلي</span>
+                            <span class="m-val">65%</span>
+                        </div>
+                    </div>
+                    <div class="risk-box">
+                        <span class="risk-title">المخاطر:</span>
+                        <span class="risk-desc">تعدد مصادر الإدخال اليدوي يزيد من احتمالية الخطأ البشري.</span>
+                    </div>
+                    <div class="status-bar status-green">متحكم به</div>
+                </div>
+
+                <!-- Stage 2: Storage -->
+                <div class="stage-col">
+                    <div class="stage-header">
+                        <div class="stage-num">2</div>
+                        المعالجة والتخزين<br>Storage
+                    </div>
+                    <div class="kpi-box">
+                        <span class="kpi-val">450TB</span>
+                        <span class="kpi-lbl">إجمالي التخزين</span>
+                        <span class="trend-up">▲ 15%</span>
+                    </div>
+                    <div class="metrics-list">
+                        <div class="metric-item">
+                            <span class="m-name">التكلفة/GB</span>
+                            <span class="m-val">0.04 SAR</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="m-name">التكرار</span>
+                            <span class="m-val">18%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="m-name">التشفير</span>
+                            <span class="m-val">100%</span>
+                        </div>
+                    </div>
+                    <div class="risk-box">
+                        <span class="risk-title">المخاطر:</span>
+                        <span class="risk-desc">ارتفاع تكاليف التخزين السحابي للبيانات غير النشطة.</span>
+                    </div>
+                    <div class="status-bar status-green">متحكم به</div>
+                </div>
+
+                <!-- Stage 3: Usage -->
+                <div class="stage-col">
+                    <div class="stage-header">
+                        <div class="stage-num">3</div>
+                        الاستخدام والتحليل<br>Usage
+                    </div>
+                    <div class="kpi-box">
+                        <span class="kpi-val">1,250</span>
+                        <span class="kpi-lbl">مستخدم نشط</span>
+                        <span class="trend-up">▲ 8%</span>
+                    </div>
+                    <div class="metrics-list">
+                        <div class="metric-item">
+                            <span class="m-name">التقارير</span>
+                            <span class="m-val">85</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="m-name">نماذج AI</span>
+                            <span class="m-val">12</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="m-name">رضا المستفيد</span>
+                            <span class="m-val">4.2/5</span>
+                        </div>
+                    </div>
+                    <div class="risk-box">
+                        <span class="risk-title">المخاطر:</span>
+                        <span class="risk-desc">استخدام بيانات غير محدثة في اتخاذ قرارات استراتيجية.</span>
+                    </div>
+                    <div class="status-bar status-amber">يحتاج تحسين</div>
+                </div>
+
+                <!-- Stage 4: Sharing -->
+                <div class="stage-col">
+                    <div class="stage-header">
+                        <div class="stage-num">4</div>
+                        المشاركة والنشر<br>Sharing
+                    </div>
+                    <div class="kpi-box">
+                        <span class="kpi-val">45</span>
+                        <span class="kpi-lbl">جهة مرتبطة</span>
+                        <span class="trend-up">▲ 5</span>
+                    </div>
+                    <div class="metrics-list">
+                        <div class="metric-item">
+                            <span class="m-name">APIs</span>
+                            <span class="m-val">128</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="m-name">زمن الاستجابة</span>
+                            <span class="m-val">200ms</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="m-name">البيانات المفتوحة</span>
+                            <span class="m-val">32 Dataset</span>
+                        </div>
+                    </div>
+                    <div class="risk-box">
+                        <span class="risk-title">المخاطر:</span>
+                        <span class="risk-desc">مشاركة بيانات حساسة عن طريق الخطأ عبر قنوات غير آمنة.</span>
+                    </div>
+                    <div class="status-bar status-green">متحكم به</div>
+                </div>
+
+                <!-- Stage 5: Archiving -->
+                <div class="stage-col">
+                    <div class="stage-header">
+                        <div class="stage-num">5</div>
+                        الأرشفة<br>Archiving
+                    </div>
+                    <div class="kpi-box">
+                        <span class="kpi-val">5PB</span>
+                        <span class="kpi-lbl">أرشيف بارد</span>
+                        <span class="trend-up">▲ 20%</span>
+                    </div>
+                    <div class="metrics-list">
+                        <div class="metric-item">
+                            <span class="m-name">الامتثال للمدد</span>
+                            <span class="m-val">100%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="m-name">زمن الاسترجاع</span>
+                            <span class="m-val">4 ساعات</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="m-name">التكلفة</span>
+                            <span class="m-val">منخفضة</span>
+                        </div>
+                    </div>
+                    <div class="risk-box">
+                        <span class="risk-title">المخاطر:</span>
+                        <span class="risk-desc">صعوبة استرجاع البيانات القديمة بسبب تقادم الأنظمة.</span>
+                    </div>
+                    <div class="status-bar status-amber">مراقبة</div>
+                </div>
+
+                <!-- Stage 6: Destruction -->
+                <div class="stage-col">
+                    <div class="stage-header">
+                        <div class="stage-num">6</div>
+                        الإتلاف<br>Destruction
+                    </div>
+                    <div class="kpi-box">
+                        <span class="kpi-val">100%</span>
+                        <span class="kpi-lbl">شهادات إتلاف</span>
+                        <span class="trend-up">-</span>
+                    </div>
+                    <div class="metrics-list">
+                        <div class="metric-item">
+                            <span class="m-name">حوادث تسرب</span>
+                            <span class="m-val">0</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="m-name">الأصول المتلفة</span>
+                            <span class="m-val">150 HDD</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="m-name">التدقيق</span>
+                            <span class="m-val">ربع سنوي</span>
+                        </div>
+                    </div>
+                    <div class="risk-box">
+                        <span class="risk-title">المخاطر:</span>
+                        <span class="risk-desc">عدم المسح الكامل للبيانات من الوسائط قبل التخلص منها.</span>
+                    </div>
+                    <div class="status-bar status-green">متحكم به</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>المملكة العربية السعودية - مكتب إدارة البيانات الوطنية</div>
+            <div class="page-num">2.04</div>
+            <div>سري للغاية - للاستخدام الداخلي فقط</div>
+        </div>
+    </div>
+</body>
+</html>

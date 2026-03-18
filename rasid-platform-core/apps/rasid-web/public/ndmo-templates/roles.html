@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #ECEAF2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(to left, #00B388, #2B5EA7, #E8A838);
+            z-index: 10;
+        }
+        .header-bar {
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, #1B2A4A 0%, #243656 100%);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+            flex-shrink: 0;
+        }
+        .header-title { font-size: 22px; font-weight: 700; }
+        .header-badge {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .content-area {
+            padding: 20px 40px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Top Section: Role Cards */
+        .roles-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            height: 180px;
+        }
+        .role-card {
+            background: white;
+            border-top: 4px solid #ccc;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .rc-gold { border-color: #E8A838; }
+        .rc-teal { border-color: #00B388; }
+        .rc-blue { border-color: #2B5EA7; }
+        .rc-navy { border-color: #1B2A4A; }
+
+        .rc-header { display: flex; align-items: center; gap: 10px; }
+        .rc-icon {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: #f5f5f5;
+            display: flex; align-items: center; justify-content: center;
+            color: #333; font-size: 16px;
+        }
+        .rc-gold .rc-icon { color: #E8A838; background: #fff8e6; }
+        .rc-teal .rc-icon { color: #00B388; background: #e6f7f2; }
+        .rc-blue .rc-icon { color: #2B5EA7; background: #eef4fb; }
+        .rc-navy .rc-icon { color: #1B2A4A; background: #e8eaf0; }
+
+        .rc-title { font-size: 14px; font-weight: 800; color: #1B2A4A; }
+        .rc-desc { font-size: 11px; color: #666; line-height: 1.4; flex: 1; }
+        .rc-scope {
+            font-size: 10px; font-weight: 700;
+            padding: 4px 8px; background: #f9f9f9; border-radius: 4px;
+            display: flex; justify-content: space-between;
+        }
+
+        /* Bottom Section: RACI Matrix */
+        .matrix-container {
+            flex: 1;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .matrix-title {
+            font-size: 14px; font-weight: 800; color: #1B2A4A; margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .matrix-legend {
+            display: flex; gap: 15px; font-size: 10px; color: #666;
+        }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .li-badge {
+            width: 16px; height: 16px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 9px;
+        }
+
+        .raci-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .raci-table th {
+            background: #1B2A4A; color: white;
+            padding: 10px; font-size: 11px; font-weight: 700;
+            text-align: center;
+        }
+        .raci-table th:first-child { text-align: right; width: 40%; }
+        
+        .raci-table td {
+            padding: 8px 10px; font-size: 11px; color: #333;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+        .raci-table tr:nth-child(even) { background: #f9f9f9; }
+        .raci-table tr:last-child td { border-bottom: none; }
+
+        .raci-badge {
+            width: 20px; height: 20px; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 10px;
+        }
+        .rb-r { background: #E85B7A; } /* Responsible */
+        .rb-a { background: #00B388; } /* Accountable */
+        .rb-c { background: #2B5EA7; } /* Consulted */
+        .rb-i { background: #888; }    /* Informed */
+
+        .footer {
+            position: absolute; bottom: 18px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-box {
+            background: rgba(255,255,255,0.92);
+            padding: 4px 8px;
+            display: flex; align-items: center;
+        }
+        .logo-box img { height: 28px; }
+        .sep { width: 1px; height: 22px; background: #ccc; }
+        .page-num { position: absolute; bottom: 18px; right: 40px; font-weight: 700; color: #1B2A4A; font-size: 14px; opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="top-accent"></div>
+        <div class="header-bar">
+            <div class="header-title">الأدوار والمسؤوليات - مصفوفة (RACI)</div>
+            <div class="header-badge">20</div>
+        </div>
+
+        <div class="content-area">
+            <!-- Role Cards -->
+            <div class="roles-row">
+                <div class="role-card rc-gold">
+                    <div class="rc-header">
+                        <div class="rc-icon"><i class="fas fa-user-tie"></i></div>
+                        <div class="rc-title">مالك البيانات (Owner)</div>
+                    </div>
+                    <div class="rc-desc">مسؤول تنفيذي من قطاع الأعمال يمتلك الصلاحية والمساءلة النهائية عن البيانات وتصنيفها.</div>
+                    <div class="rc-scope"><span>النطاق:</span> <span>قطاع الأعمال</span></div>
+                </div>
+                <div class="role-card rc-teal">
+                    <div class="rc-header">
+                        <div class="rc-icon"><i class="fas fa-user-check"></i></div>
+                        <div class="rc-title">مشرف البيانات (Steward)</div>
+                    </div>
+                    <div class="rc-desc">خبير موضوعي مسؤول عن تعريف البيانات وضمان جودتها وتطبيق السياسات عليها.</div>
+                    <div class="rc-scope"><span>النطاق:</span> <span>الجودة والتعريف</span></div>
+                </div>
+                <div class="role-card rc-blue">
+                    <div class="rc-header">
+                        <div class="rc-icon"><i class="fas fa-user-shield"></i></div>
+                        <div class="rc-title">قيم البيانات (Custodian)</div>
+                    </div>
+                    <div class="rc-desc">مسؤول تقني عن حفظ البيانات وتخزينها وحمايتها وضمان توفرها وأمنها.</div>
+                    <div class="rc-scope"><span>النطاق:</span> <span>تقنية المعلومات</span></div>
+                </div>
+                <div class="role-card rc-navy">
+                    <div class="rc-header">
+                        <div class="rc-icon"><i class="fas fa-users"></i></div>
+                        <div class="rc-title">مكتب البيانات (DMO)</div>
+                    </div>
+                    <div class="rc-desc">الجهة المركزية المسؤولة عن وضع الاستراتيجية والسياسات ومراقبة الامتثال.</div>
+                    <div class="rc-scope"><span>النطاق:</span> <span>الحوكمة المؤسسية</span></div>
+                </div>
+            </div>
+
+            <!-- RACI Matrix -->
+            <div class="matrix-container">
+                <div class="matrix-title">
+                    <span>مصفوفة المسؤوليات التفصيلية (RACI Matrix)</span>
+                    <div class="matrix-legend">
+                        <div class="legend-item"><div class="li-badge rb-a">A</div> المساءل (Accountable)</div>
+                        <div class="legend-item"><div class="li-badge rb-r">R</div> المسؤول (Responsible)</div>
+                        <div class="legend-item"><div class="li-badge rb-c">C</div> المستشار (Consulted)</div>
+                        <div class="legend-item"><div class="li-badge rb-i">I</div> المبلغ (Informed)</div>
+                    </div>
+                </div>
+                <table class="raci-table">
+                    <thead>
+                        <tr>
+                            <th>النشاط / المهمة</th>
+                            <th>مالك البيانات</th>
+                            <th>مشرف البيانات</th>
+                            <th>قيم البيانات</th>
+                            <th>مكتب البيانات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>تحديد استراتيجية البيانات وسياسات الحوكمة</td>
+                            <td><span class="raci-badge rb-c">C</span></td>
+                            <td><span class="raci-badge rb-i">I</span></td>
+                            <td><span class="raci-badge rb-c">C</span></td>
+                            <td><span class="raci-badge rb-a">A</span></td>
+                        </tr>
+                        <tr>
+                            <td>تصنيف البيانات وتحديد مستوى سريتها</td>
+                            <td><span class="raci-badge rb-a">A</span></td>
+                            <td><span class="raci-badge rb-r">R</span></td>
+                            <td><span class="raci-badge rb-i">I</span></td>
+                            <td><span class="raci-badge rb-c">C</span></td>
+                        </tr>
+                        <tr>
+                            <td>تعريف مصطلحات البيانات وقواعد الجودة</td>
+                            <td><span class="raci-badge rb-c">C</span></td>
+                            <td><span class="raci-badge rb-a">A</span></td>
+                            <td><span class="raci-badge rb-i">I</span></td>
+                            <td><span class="raci-badge rb-c">C</span></td>
+                        </tr>
+                        <tr>
+                            <td>منح صلاحيات الوصول للمستخدمين</td>
+                            <td><span class="raci-badge rb-a">A</span></td>
+                            <td><span class="raci-badge rb-r">R</span></td>
+                            <td><span class="raci-badge rb-r">R</span></td>
+                            <td><span class="raci-badge rb-i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>تنفيذ النسخ الاحتياطي وحماية البيانات</td>
+                            <td><span class="raci-badge rb-i">I</span></td>
+                            <td><span class="raci-badge rb-i">I</span></td>
+                            <td><span class="raci-badge rb-a">A</span></td>
+                            <td><span class="raci-badge rb-i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>مراقبة الامتثال للسياسات والمعايير</td>
+                            <td><span class="raci-badge rb-r">R</span></td>
+                            <td><span class="raci-badge rb-r">R</span></td>
+                            <td><span class="raci-badge rb-r">R</span></td>
+                            <td><span class="raci-badge rb-a">A</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/ndmo_logo.png" alt="NDMO"></div>
+            <div class="sep"></div>
+            <div class="logo-box"><img src="/home/ubuntu/ndmo_ref_v5/assets/sdaia_logo.png" alt="SDAIA"></div>
+        </div>
+        <div class="page-num">20</div>
+    </div>
+</body>
+</html>
