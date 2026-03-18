@@ -1298,6 +1298,12 @@ html.theme-switching * {
     padding-top: calc(0.5rem + env(safe-area-inset-top));
   }
 }
+/* Mobile: account for fixed MobileBottomNav height (~72px + safe area) */
+@media (max-width: 767px) {
+  .mobile-safe-bottom {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
 
 /* ── Extra Small: Portrait phones (< 480px) ── */
 @media (max-width: 479px) {

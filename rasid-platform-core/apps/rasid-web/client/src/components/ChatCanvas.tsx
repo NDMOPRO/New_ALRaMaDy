@@ -972,7 +972,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
       
       {/* Header */}
       <div
-        className="h-10 sm:h-11 flex items-center justify-between px-3 sm:px-4 shrink-0 relative"
+        className="h-9 sm:h-10 md:h-11 flex items-center justify-between px-2 sm:px-3 md:px-4 shrink-0 relative"
         style={{ borderBottom: '1px solid var(--border)' }}
       >
         <div className="flex items-center gap-2">
@@ -1012,7 +1012,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
       <div className="flex-1 overflow-y-auto">
         {/* ═══ Empty Welcome Screen ═══ */}
         {isEmpty && (
-          <div className="flex flex-col items-center justify-center h-full px-4 sm:px-6 relative overflow-hidden">
+          <div className="flex flex-col items-center justify-center h-full px-3 sm:px-4 md:px-6 relative overflow-hidden">
             {/* Ambient background effects */}
             <div className="absolute inset-0 pointer-events-none">
               <div
@@ -1044,14 +1044,14 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
               <img
                 src={character}
                 alt="راصد الذكي"
-                className="w-24 h-24 sm:w-32 sm:h-32 object-contain animate-float-slow relative z-10 drop-shadow-lg"
+                className="w-18 h-18 sm:w-24 sm:h-24 md:w-32 md:h-32 object-contain animate-float-slow relative z-10 drop-shadow-lg"
               />
               <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-16 sm:w-20 h-3 bg-foreground/[0.04] rounded-full blur-md animate-pulse-soft" />
             </div>
 
             {/* Title */}
             <h2
-              className={`text-[18px] sm:text-[22px] font-extrabold text-foreground mb-1.5 transition-all duration-700 delay-200 ${welcomeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              className={`text-[15px] sm:text-[18px] md:text-[22px] font-extrabold text-foreground mb-1.5 transition-all duration-700 delay-200 ${welcomeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             >
               أنت تأمر <span className="text-gold relative">
                 وأنا أطامر
@@ -1059,18 +1059,18 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
               </span>
             </h2>
             <p
-              className={`text-[11px] sm:text-[13px] text-muted-foreground text-center max-w-[380px] mb-5 sm:mb-7 transition-all duration-700 delay-300 ${welcomeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              className={`text-[10px] sm:text-[11px] md:text-[13px] text-muted-foreground text-center max-w-[280px] sm:max-w-[380px] mb-3 sm:mb-5 md:mb-7 transition-all duration-700 delay-300 ${welcomeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             >
               اكتب طلبك بلغتك الطبيعية — راصد يفهم ويُنفذ مباشرة
             </p>
 
             {/* Quick actions */}
-            <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 max-w-[480px]">
+            <div className="flex flex-wrap justify-center gap-1 sm:gap-1.5 md:gap-2 max-w-[300px] sm:max-w-[400px] md:max-w-[480px]">
               {QUICK_ACTIONS.map((action, i) => (
                 <button
                   key={action.id}
                   onClick={() => doSend(action.label)}
-                  className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl border border-border bg-card hover:bg-accent hover:border-primary/20 hover:shadow-lg transition-all duration-300 active:scale-[0.96] text-[10px] sm:text-[11px] font-medium text-foreground btn-hover-lift group ${welcomeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}
+                  className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 md:px-3.5 py-1.5 sm:py-2 md:py-2.5 rounded-xl border border-border bg-card hover:bg-accent hover:border-primary/20 hover:shadow-lg transition-all duration-300 active:scale-[0.96] text-[9px] sm:text-[10px] md:text-[11px] font-medium text-foreground btn-hover-lift group ${welcomeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}
                   style={{ transitionDelay: `${400 + i * 60}ms` }}
                 >
                   <MaterialIcon icon={action.icon} size={15} className="text-primary transition-transform duration-200 group-hover:scale-110" />
@@ -1080,7 +1080,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             </div>
 
             {/* Keyboard hint */}
-            <div className={`mt-6 sm:mt-8 flex items-center gap-2 transition-all duration-700 delay-[800ms] ${welcomeVisible ? 'opacity-60 translate-y-0' : 'opacity-0 translate-y-2'}`}>
+            <div className={`mt-4 sm:mt-6 md:mt-8 hidden sm:flex items-center gap-2 transition-all duration-700 delay-[800ms] ${welcomeVisible ? 'opacity-60 translate-y-0' : 'opacity-0 translate-y-2'}`}>
               <MaterialIcon icon="keyboard" size={14} className="text-muted-foreground/40" />
               <span className="text-[9px] text-muted-foreground/40">Enter للإرسال — Shift+Enter لسطر جديد</span>
             </div>
@@ -1089,7 +1089,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
         {/* ═══ Chat Messages ═══ */}
         {!isEmpty && (
-          <div className="flex flex-col gap-3 p-3 sm:p-4">
+          <div className="flex flex-col gap-2 sm:gap-3 p-2 sm:p-3 md:p-4">
             {messages.map((msg, i) => (
               <div
                 key={msg.id}
@@ -1107,9 +1107,9 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                     </div>
                   </div>
                 )}
-                <div className={`max-w-[85%] sm:max-w-[80%]`}>
+                <div className={`max-w-[88%] sm:max-w-[85%] md:max-w-[80%]`}>
                   <div
-                    className={`px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-2xl text-[12px] sm:text-[13px] leading-relaxed shadow-sm ${
+                    className={`px-2.5 py-2 sm:px-3.5 sm:py-2.5 md:px-4 md:py-3 rounded-2xl text-[11px] sm:text-[12px] md:text-[13px] leading-relaxed shadow-sm ${
                       msg.role === 'user'
                         ? 'bg-primary text-primary-foreground rounded-br-md shadow-primary/10'
                         : 'bg-accent/60 text-foreground rounded-bl-md border border-border/30'
@@ -1234,18 +1234,18 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
       {/* ═══ TOC APPROVAL PANEL ═══ */}
       {pendingTOC && (
-        <div className="px-2 md:px-4 pb-2 animate-slide-up">
+        <div className="px-1.5 sm:px-2 md:px-4 pb-2 animate-slide-up">
           <div className="rounded-2xl border border-primary/20 bg-card overflow-hidden shadow-lg">
-            <div className="flex items-center justify-between px-3 py-2 border-b border-border/30 bg-primary/5">
-              <div className="flex items-center gap-2">
-                <MaterialIcon icon="list_alt" size={16} className="text-primary" />
-                <span className="text-[12px] font-bold text-foreground">فهرس المحتويات — {pendingTOC.toc.length} شريحة</span>
+            <div className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 border-b border-border/30 bg-primary/5">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <MaterialIcon icon="list_alt" size={14} className="text-primary" />
+                <span className="text-[11px] sm:text-[12px] font-bold text-foreground">فهرس المحتويات — {pendingTOC.toc.length} شريحة</span>
               </div>
               <button onClick={() => setPendingTOC(null)} className="w-7 h-7 rounded-lg hover:bg-accent flex items-center justify-center">
                 <MaterialIcon icon="close" size={14} className="text-muted-foreground" />
               </button>
             </div>
-            <div className="max-h-[40vh] overflow-y-auto p-3">
+            <div className="max-h-[35vh] sm:max-h-[40vh] overflow-y-auto p-2 sm:p-3">
               <div className="flex flex-col gap-1.5">
                 {pendingTOC.toc.map((item, i) => (
                   <div key={i} className="flex items-start gap-2 p-2 rounded-lg bg-muted/20 border border-border/20 hover:border-primary/20 transition-all">
@@ -1261,13 +1261,13 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                 ))}
               </div>
             </div>
-            <div className="flex items-center justify-between px-3 py-2 border-t border-border/30 bg-muted/10">
-              <span className="text-[10px] text-muted-foreground">راجع الفهرس ثم اضغط ابدأ التوليد</span>
-              <div className="flex gap-1.5">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 px-2 sm:px-3 py-2 border-t border-border/30 bg-muted/10">
+              <span className="text-[9px] sm:text-[10px] text-muted-foreground">راجع الفهرس ثم اضغط ابدأ التوليد</span>
+              <div className="flex gap-1.5 w-full sm:w-auto">
                 <button onClick={() => setPendingTOC(null)} className="px-3 py-1.5 rounded-lg border border-border text-[10px] font-medium text-muted-foreground hover:bg-accent transition-all">
                   إلغاء
                 </button>
-                <button onClick={approveTOC} className="px-4 py-1.5 rounded-lg bg-primary text-white text-[10px] font-bold hover:bg-primary/90 transition-all active:scale-95 flex items-center gap-1">
+                <button onClick={approveTOC} className="flex-1 sm:flex-none px-3 sm:px-4 py-1.5 rounded-lg bg-primary text-white text-[10px] font-bold hover:bg-primary/90 transition-all active:scale-95 flex items-center justify-center gap-1">
                   <MaterialIcon icon="play_arrow" size={14} />
                   ابدأ التوليد
                 </button>
@@ -1279,13 +1279,13 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
       {/* ═══ Slide Viewer — COMPACT VERTICAL + PROGRESSIVE + AI EDIT + SLIDESHOW ═══ */}
       {showSlideViewer && (slideHtmls.length > 0 || isGeneratingSlides) && (
-        <div className="px-2 md:px-4 pb-2">
+        <div className="px-1.5 sm:px-2 md:px-4 pb-2">
           <div className="rounded-2xl border border-border/40 bg-card overflow-hidden shadow-lg">
-            {/* Toolbar */}
-            <div className="flex items-center justify-between px-3 py-2 border-b border-border/30 bg-muted/30 sticky top-0 z-10">
-              <div className="flex items-center gap-2">
-                <MaterialIcon icon="slideshow" size={16} className="text-primary" />
-                <span className="text-[12px] font-bold text-foreground">
+            {/* Header */}
+            <div className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 border-b border-border/30 bg-muted/30 sticky top-0 z-10">
+              <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                <MaterialIcon icon="slideshow" size={14} className="text-primary shrink-0" />
+                <span className="text-[10px] sm:text-[12px] font-bold text-foreground truncate">
                   {isGeneratingSlides
                     ? `جاري التوليد... ${generationProgress.current}/${generationProgress.total}`
                     : `عرض تقديمي — ${generatedSlides.length} شريحة`
@@ -1297,7 +1297,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                   </div>
                 )}
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
                 {/* Theme switcher */}
                 <select
                   value={slideThemeId}
@@ -1305,7 +1305,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                     setSlideThemeId(e.target.value);
                     setSlideHtmls(generateHtmlPresentation(generatedSlides, e.target.value));
                   }}
-                  className="text-[10px] bg-card border border-border rounded-lg px-2 py-1 outline-none"
+                  className="text-[9px] sm:text-[10px] bg-card border border-border rounded-lg px-1 sm:px-2 py-1 outline-none max-w-[80px] sm:max-w-none"
                 >
                   {Object.entries(THEMES).map(([id, t]) => (
                     <option key={id} value={id}>{t.name}</option>
@@ -1323,7 +1323,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             </div>
 
             {/* ─── ALL SLIDES VERTICALLY — ONE PER ROW ─── */}
-            <div ref={slidesContainerRef} className="flex flex-col gap-3 p-3 md:p-4 max-h-[65vh] overflow-y-auto">
+            <div ref={slidesContainerRef} className="flex flex-col gap-2 sm:gap-3 p-1.5 sm:p-3 md:p-4 max-h-[50vh] sm:max-h-[65vh] overflow-y-auto">
               {slideHtmls.map((html, i) => (
                 <div
                   key={`vslide-${i}`}
@@ -1339,7 +1339,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                   <div className="flex items-center justify-between px-2.5 py-1 bg-muted/20 border-b border-border/20 rounded-t-xl">
                     <div className="flex items-center gap-1.5">
                       <span className="text-[9px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">{i + 1}</span>
-                      <span className="text-[10px] font-medium text-foreground truncate max-w-[180px]">{generatedSlides[i]?.title || `شريحة ${i + 1}`}</span>
+                      <span className="text-[9px] sm:text-[10px] font-medium text-foreground truncate max-w-[120px] sm:max-w-[180px] md:max-w-[280px]">{generatedSlides[i]?.title || `شريحة ${i + 1}`}</span>
                       <span className="text-[8px] text-muted-foreground px-1 py-0.5 bg-accent/50 rounded">{generatedSlides[i]?.layout}</span>
                     </div>
                     <div className="flex items-center gap-0.5">
@@ -1348,7 +1348,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                         setEditingSlide(editingSlide === i ? null : i);
                         setAiEditInstruction('');
                         setEditField({ field: 'title', value: generatedSlides[i]?.title || '' });
-                      }} className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-md border border-border hover:border-primary/30 hover:bg-primary/[0.03] text-[8px] font-medium transition-all active:scale-95">
+                      }} className="flex items-center gap-0.5 px-1 sm:px-1.5 py-0.5 rounded-md border border-border hover:border-primary/30 hover:bg-primary/[0.03] text-[7px] sm:text-[8px] font-medium transition-all active:scale-95">
                         <MaterialIcon icon="edit" size={10} className="text-primary" />
                         تعديل
                       </button>
@@ -1393,7 +1393,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
                   {/* Edit panel — MANUAL + AI EDIT */}
                   {editingSlide === i && (
-                    <div className="border-t border-border/30 p-2.5 bg-card rounded-b-xl animate-fade-in">
+                    <div className="border-t border-border/30 p-1.5 sm:p-2.5 bg-card rounded-b-xl animate-fade-in">
                       <div className="flex flex-col gap-2">
                         <div className="flex items-center justify-between">
                           <span className="text-[10px] font-bold text-foreground">تعديل الشريحة {i + 1}</span>
@@ -1436,12 +1436,12 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                             <MaterialIcon icon="auto_awesome" size={11} className="text-primary" />
                             <span className="text-[9px] font-bold text-primary">تعديل بالذكاء الاصطناعي</span>
                           </div>
-                          <div className="flex gap-1">
+                          <div className="flex flex-col sm:flex-row gap-1">
                             <input
                               value={aiEditInstruction}
                               onChange={e => setAiEditInstruction(e.target.value)}
                               onKeyDown={e => { if (e.key === 'Enter') handleAIEdit(i, aiEditInstruction); }}
-                              placeholder="مثل: أضف إحصائيات أكثر / غير العنوان / اجعلها إنفوجرافيك"
+                              placeholder="مثل: أضف إحصائيات أكثر / غير العنوان"
                               className="flex-1 text-[10px] bg-muted/30 border border-border rounded-lg px-2 py-1.5 outline-none focus:border-primary/40"
                             />
                             <button
@@ -1491,18 +1491,18 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           ref={(el) => el?.focus()}
         >
           {/* Slideshow toolbar */}
-          <div className="flex items-center justify-between px-4 py-2 bg-black/80 text-white">
-            <span className="text-[12px] font-bold">{generatedSlides[slideshowIndex]?.title || `شريحة ${slideshowIndex + 1}`}</span>
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] text-gray-400">{slideshowIndex + 1} / {slideHtmls.length}</span>
-              <button onClick={() => setSlideshowMode(false)} className="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center">
-                <MaterialIcon icon="close" size={18} className="text-white" />
+          <div className="flex items-center justify-between px-2 sm:px-4 py-1.5 sm:py-2 bg-black/80 text-white">
+            <span className="text-[9px] sm:text-[10px] md:text-[12px] font-bold truncate max-w-[40vw] sm:max-w-[50vw]">{generatedSlides[slideshowIndex]?.title || `شريحة ${slideshowIndex + 1}`}</span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <span className="text-[10px] sm:text-[11px] text-gray-400">{slideshowIndex + 1} / {slideHtmls.length}</span>
+              <button onClick={() => setSlideshowMode(false)} className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg hover:bg-white/10 flex items-center justify-center">
+                <MaterialIcon icon="close" size={16} className="text-white" />
               </button>
             </div>
           </div>
           {/* Slide — proper 16:9 aspect ratio */}
-          <div className="flex-1 flex items-center justify-center p-2 sm:p-4">
-            <div className="relative w-full" style={{ maxWidth: '90vw', maxHeight: '80vh', aspectRatio: '16/9' }}>
+          <div className="flex-1 flex items-center justify-center p-0.5 sm:p-2 md:p-4">
+            <div className="relative w-full" style={{ maxWidth: '100vw', maxHeight: '70vh', aspectRatio: '16/9' }}>
               <iframe
                 srcDoc={slideHtmls[slideshowIndex]}
                 className="border-0 rounded-lg shadow-2xl absolute inset-0 w-full h-full"
@@ -1512,16 +1512,14 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             </div>
           </div>
           {/* Navigation */}
-          <div className="flex items-center justify-center gap-4 py-3 bg-black/80">
-            <button onClick={() => setSlideshowIndex(prev => Math.max(prev - 1, 0))} disabled={slideshowIndex === 0} className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center disabled:opacity-30">
+          <div className="flex items-center justify-center gap-3 sm:gap-4 py-1.5 sm:py-2 md:py-3 bg-black/80">
+            <button onClick={() => setSlideshowIndex(prev => Math.max(prev - 1, 0))} disabled={slideshowIndex === 0} className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center disabled:opacity-30 active:scale-95 transition-all">
               <MaterialIcon icon="chevron_right" size={22} className="text-white" />
             </button>
-            <div className="flex gap-1">
-              {slideHtmls.map((_, i) => (
-                <button key={i} onClick={() => setSlideshowIndex(i)} className={`w-2 h-2 rounded-full transition-all ${i === slideshowIndex ? 'bg-primary w-4' : 'bg-white/30 hover:bg-white/50'}`} />
-              ))}
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] sm:text-[12px] text-white font-bold">{slideshowIndex + 1} / {slideHtmls.length}</span>
             </div>
-            <button onClick={() => setSlideshowIndex(prev => Math.min(prev + 1, slideHtmls.length - 1))} disabled={slideshowIndex === slideHtmls.length - 1} className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center disabled:opacity-30">
+            <button onClick={() => setSlideshowIndex(prev => Math.min(prev + 1, slideHtmls.length - 1))} disabled={slideshowIndex === slideHtmls.length - 1} className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center disabled:opacity-30 active:scale-95 transition-all">
               <MaterialIcon icon="chevron_left" size={22} className="text-white" />
             </button>
           </div>
@@ -1530,21 +1528,21 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
       {/* ═══ Professional Creation Wizard ═══ */}
       {pendingIntent && (
-        <div className="px-2.5 md:px-4 pb-1 animate-slide-up">
-          <div className="rounded-2xl border border-primary/15 bg-gradient-to-b from-primary/[0.02] to-transparent p-3 sm:p-4 flex flex-col gap-3 shadow-sm">
+        <div className="px-1.5 sm:px-2.5 md:px-4 pb-1 animate-slide-up">
+          <div className="rounded-2xl border border-primary/15 bg-gradient-to-b from-primary/[0.02] to-transparent p-2 sm:p-3 md:p-4 flex flex-col gap-2 sm:gap-3 shadow-sm">
             {/* Header with steps + close */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
                   <MaterialIcon icon={pendingIntent.type === 'presentation' ? 'slideshow' : pendingIntent.type === 'report' ? 'description' : 'dashboard'} size={16} className="text-primary" />
                 </div>
-                <div>
-                  <span className="text-[12px] font-bold text-foreground">
+                <div className="min-w-0">
+                  <span className="text-[11px] sm:text-[12px] font-bold text-foreground">
                     {pendingIntent.type === 'presentation' ? 'عرض تقديمي جديد' : pendingIntent.type === 'report' ? 'تقرير جديد' : 'لوحة مؤشرات جديدة'}
                   </span>
                   <div className="flex gap-0.5 mt-0.5">
                     {[0,1,2,3,4,5,6,7].map(s => (
-                      <div key={s} className={`h-[3px] rounded-full transition-all duration-300 ${s < pendingIntent.step ? 'w-4 bg-primary' : s === pendingIntent.step ? 'w-6 bg-primary animate-pulse' : 'w-2 bg-border'}`} />
+                      <div key={s} className={`h-[2px] sm:h-[3px] rounded-full transition-all duration-300 ${s < pendingIntent.step ? 'w-3 sm:w-4 bg-primary' : s === pendingIntent.step ? 'w-4 sm:w-6 bg-primary animate-pulse' : 'w-1.5 sm:w-2 bg-border'}`} />
                     ))}
                   </div>
                 </div>
@@ -1557,7 +1555,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             {/* Step 0: Topic */}
             {pendingIntent.step === 0 && (
               <div className="flex flex-col gap-2">
-                <span className="text-[13px] font-semibold text-foreground">ما الموضوع؟</span>
+                <span className="text-[12px] sm:text-[13px] font-semibold text-foreground">ما الموضوع؟</span>
                 <div className="flex gap-2">
                   <input
                     autoFocus
@@ -1565,10 +1563,10 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                     onChange={e => setInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter' && input.trim()) handleIntentTopicSubmit(); }}
                     placeholder="اكتب موضوع العرض..."
-                    className="flex-1 text-[13px] bg-card border border-border/60 rounded-xl px-3.5 py-2.5 outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/10 transition-all"
+                    className="flex-1 text-[12px] sm:text-[13px] bg-card border border-border/60 rounded-xl px-2.5 sm:px-3.5 py-2 sm:py-2.5 outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/10 transition-all"
                   />
                   <button onClick={handleIntentTopicSubmit} disabled={!input.trim()}
-                    className="px-4 py-2.5 rounded-xl bg-primary text-white text-[12px] font-bold disabled:opacity-30 hover:bg-primary/90 transition-all active:scale-95 shadow-sm">
+                    className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-primary text-white text-[11px] sm:text-[12px] font-bold disabled:opacity-30 hover:bg-primary/90 transition-all active:scale-95 shadow-sm">
                     التالي <MaterialIcon icon="arrow_back" size={14} className="inline-block mr-1" />
                   </button>
                 </div>
@@ -1578,8 +1576,8 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             {/* Step 1: Style */}
             {pendingIntent.step === 1 && (
               <div className="flex flex-col gap-2">
-                <span className="text-[13px] font-semibold text-foreground">نمط العرض</span>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                <span className="text-[12px] sm:text-[13px] font-semibold text-foreground">نمط العرض</span>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 sm:gap-1.5">
                   {[
                     { id: 'professional', label: 'احترافي', desc: 'رسمي ومتزن', icon: 'business_center' },
                     { id: 'infographic', label: 'إنفوجرافيك', desc: 'بصري وغني', icon: 'palette' },
@@ -1589,13 +1587,13 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                     { id: 'data-heavy', label: 'تحليلي', desc: 'كثيف بالبيانات', icon: 'analytics' },
                   ].map(s => (
                     <button key={s.id} onClick={() => handleIntentChip(s.id)}
-                      className="flex items-start gap-2 p-2.5 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] transition-all active:scale-[0.97] text-right">
-                      <div className="w-8 h-8 rounded-lg bg-primary/8 flex items-center justify-center shrink-0 mt-0.5">
-                        <MaterialIcon icon={s.icon} size={16} className="text-primary" />
+                      className="flex items-start gap-1.5 sm:gap-2 p-2 sm:p-2.5 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] transition-all active:scale-[0.97] text-right">
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/8 flex items-center justify-center shrink-0 mt-0.5">
+                        <MaterialIcon icon={s.icon} size={14} className="text-primary" />
                       </div>
                       <div>
-                        <div className="text-[11px] font-bold text-foreground">{s.label}</div>
-                        <div className="text-[9px] text-muted-foreground">{s.desc}</div>
+                        <div className="text-[10px] sm:text-[11px] font-bold text-foreground">{s.label}</div>
+                        <div className="text-[8px] sm:text-[9px] text-muted-foreground">{s.desc}</div>
                       </div>
                     </button>
                   ))}
@@ -1606,20 +1604,20 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             {/* Step 2: Content Source */}
             {pendingIntent.step === 2 && (
               <div className="flex flex-col gap-2">
-                <span className="text-[13px] font-semibold text-foreground">مصدر المحتوى</span>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+                <span className="text-[12px] sm:text-[13px] font-semibold text-foreground">مصدر المحتوى</span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-1.5">
                   {[
                     { id: 'ai', label: 'الذكاء الاصطناعي', desc: 'يولّد المحتوى تلقائيًا', icon: 'smart_toy' },
                     { id: 'user', label: 'محتوى خاص', desc: 'ألصق أو اكتب محتواك', icon: 'edit_note' },
                     { id: 'library', label: 'من المكتبة', desc: 'اختر من القوالب الجاهزة', icon: 'folder_open' },
                   ].map(s => (
                     <button key={s.id} onClick={() => handleIntentChip(s.id)}
-                      className="flex items-center gap-2.5 p-3 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] transition-all active:scale-[0.97]">
-                      <div className="w-9 h-9 rounded-lg bg-primary/8 flex items-center justify-center shrink-0">
-                        <MaterialIcon icon={s.icon} size={18} className="text-primary" />
+                      className="flex items-center gap-2 sm:gap-2.5 p-2.5 sm:p-3 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] transition-all active:scale-[0.97]">
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-primary/8 flex items-center justify-center shrink-0">
+                        <MaterialIcon icon={s.icon} size={16} className="text-primary" />
                       </div>
                       <div className="text-right">
-                        <div className="text-[12px] font-bold text-foreground">{s.label}</div>
+                        <div className="text-[11px] sm:text-[12px] font-bold text-foreground">{s.label}</div>
                         <div className="text-[10px] text-muted-foreground">{s.desc}</div>
                       </div>
                     </button>
@@ -1631,8 +1629,8 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             {/* Step 3: Count */}
             {pendingIntent.step === 3 && (
               <div className="flex flex-col gap-2">
-                <span className="text-[13px] font-semibold text-foreground">{pendingIntent.type === 'presentation' ? 'عدد الشرائح' : 'عدد الأقسام'}</span>
-                <div className="flex flex-wrap gap-1.5">
+                <span className="text-[12px] sm:text-[13px] font-semibold text-foreground">{pendingIntent.type === 'presentation' ? 'عدد الشرائح' : 'عدد الأقسام'}</span>
+                <div className="flex flex-wrap gap-1 sm:gap-1.5">
                   {[
                     { n: '5', label: '5 — مختصر' },
                     { n: '8', label: '8 — متوسط' },
@@ -1642,7 +1640,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                     { n: '20', label: '20 — كامل' },
                   ].map(c => (
                     <button key={c.n} onClick={() => handleIntentChip(c.n)}
-                      className="px-3.5 py-2.5 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] text-[11px] font-bold transition-all active:scale-95">
+                      className="px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] text-[10px] sm:text-[11px] font-bold transition-all active:scale-95">
                       {c.label}
                     </button>
                   ))}
@@ -1653,8 +1651,8 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             {/* Step 4: Brand */}
             {pendingIntent.step === 4 && (
               <div className="flex flex-col gap-2">
-                <span className="text-[13px] font-semibold text-foreground">الهوية البصرية</span>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                <span className="text-[12px] sm:text-[13px] font-semibold text-foreground">الهوية البصرية</span>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 sm:gap-1.5">
                   {[
                     { id: 'ndmo', label: 'NDMO', desc: 'مكتب إدارة البيانات', colors: ['#0f2744','#d4af37','#1a73e8'] },
                     { id: 'sdaia', label: 'سدايا', desc: 'هيئة البيانات والذكاء', colors: ['#1a73e8','#374151','#0CAB8F'] },
@@ -1664,12 +1662,12 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                     { id: 'custom', label: 'مخصص', desc: 'اختر ألوانك', colors: ['#0f766e','#be185d','#7c3aed'] },
                   ].map(b => (
                     <button key={b.id} onClick={() => handleIntentChip(b.id)}
-                      className="flex flex-col gap-1.5 p-2.5 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] transition-all active:scale-[0.97]">
-                      <div className="flex gap-1">
-                        {b.colors.map((c,i) => <div key={i} className="w-4 h-4 rounded-full" style={{background:c}} />)}
+                      className="flex flex-col gap-1 sm:gap-1.5 p-2 sm:p-2.5 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] transition-all active:scale-[0.97]">
+                      <div className="flex gap-0.5 sm:gap-1">
+                        {b.colors.map((c,i) => <div key={i} className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full" style={{background:c}} />)}
                       </div>
-                      <div className="text-[11px] font-bold text-foreground">{b.label}</div>
-                      <div className="text-[9px] text-muted-foreground">{b.desc}</div>
+                      <div className="text-[10px] sm:text-[11px] font-bold text-foreground">{b.label}</div>
+                      <div className="text-[8px] sm:text-[9px] text-muted-foreground">{b.desc}</div>
                     </button>
                   ))}
                 </div>
@@ -1679,8 +1677,8 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             {/* Step 5: Image Style — Banana Pro / Icons Only / None */}
             {pendingIntent.step === 5 && (
               <div className="flex flex-col gap-2">
-                <span className="text-[13px] font-semibold text-foreground">نمط الصور</span>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+                <span className="text-[12px] sm:text-[13px] font-semibold text-foreground">نمط الصور</span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-1.5">
                   {[
                     { id: 'banana-pro', label: 'Banana Pro', desc: 'صور احترافية بالذكاء الاصطناعي لكل شريحة', icon: 'auto_awesome', badge: 'PRO' },
                     { id: 'icons-only', label: 'أيقونات فقط', desc: 'تصميم نظيف بأيقونات Material', icon: 'category', badge: '' },
@@ -1692,14 +1690,14 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                           ? 'border-amber-400/60 bg-gradient-to-br from-amber-50 to-amber-100/30 hover:border-amber-500 hover:shadow-md hover:shadow-amber-100' 
                           : 'border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03]'
                       }`}>
-                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
+                      <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center shrink-0 ${
                         s.id === 'banana-pro' ? 'bg-gradient-to-br from-amber-400 to-amber-600' : 'bg-primary/8'
                       }`}>
                         <MaterialIcon icon={s.icon} size={18} className={s.id === 'banana-pro' ? 'text-white' : 'text-primary'} />
                       </div>
                       <div className="text-right flex-1">
                         <div className="flex items-center gap-1.5">
-                          <div className="text-[12px] font-bold text-foreground">{s.label}</div>
+                          <div className="text-[11px] sm:text-[12px] font-bold text-foreground">{s.label}</div>
                           {s.badge && <span className="text-[8px] font-black px-1.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-amber-600 text-white">{s.badge}</span>}
                         </div>
                         <div className="text-[10px] text-muted-foreground">{s.desc}</div>
@@ -1713,15 +1711,15 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             {/* Step 6: Language */}
             {pendingIntent.step === 6 && (
               <div className="flex flex-col gap-2">
-                <span className="text-[13px] font-semibold text-foreground">اللغة</span>
-                <div className="flex flex-wrap gap-1.5">
+                <span className="text-[12px] sm:text-[13px] font-semibold text-foreground">اللغة</span>
+                <div className="flex flex-wrap gap-1 sm:gap-1.5">
                   {[
                     { id: 'ar', label: 'العربية', flag: '\u{1F1F8}\u{1F1E6}' },
                     { id: 'en', label: 'English', flag: '\u{1F1FA}\u{1F1F8}' },
                     { id: 'both', label: 'ثنائي اللغة', flag: '\u{1F310}' },
                   ].map(l => (
                     <button key={l.id} onClick={() => handleIntentChip(l.id)}
-                      className="flex items-center gap-2 px-4 py-3 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] text-[12px] font-bold transition-all active:scale-95">
+                      className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] text-[11px] sm:text-[12px] font-bold transition-all active:scale-95">
                       <span className="text-[16px]">{l.flag}</span>
                       {l.label}
                     </button>
@@ -1733,8 +1731,8 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             {/* Step 7: Confirm */}
             {pendingIntent.step === 7 && (
               <div className="flex flex-col gap-2.5">
-                <span className="text-[13px] font-semibold text-foreground">ملخص الطلب</span>
-                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
+                <span className="text-[12px] sm:text-[13px] font-semibold text-foreground">ملخص الطلب</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-[10px] sm:text-[11px]">
                   <span className="text-muted-foreground">الموضوع:</span><span className="font-bold text-foreground">{pendingIntent.topic}</span>
                   <span className="text-muted-foreground">النمط:</span><span className="font-bold text-foreground">{{'professional':'احترافي','infographic':'إنفوجرافيك','executive':'قيادي','creative':'إبداعي','minimal':'بسيط','data-heavy':'تحليلي'}[pendingIntent.style] || pendingIntent.style}</span>
                   <span className="text-muted-foreground">المحتوى:</span><span className="font-bold text-foreground">{{'ai':'ذكاء اصطناعي','user':'محتوى خاص','library':'من المكتبة'}[pendingIntent.contentSource] || pendingIntent.contentSource}</span>
@@ -1744,7 +1742,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                   <span className="text-muted-foreground">اللغة:</span><span className="font-bold text-foreground">{{'ar':'العربية','en':'English','both':'ثنائي'}[pendingIntent.language] || pendingIntent.language}</span>
                 </div>
                 <button onClick={() => handleIntentChip('execute')}
-                  className="w-full py-3 rounded-xl bg-primary text-white text-[13px] font-bold hover:bg-primary/90 transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-2">
+                  className="w-full py-2.5 sm:py-3 rounded-xl bg-primary text-white text-[12px] sm:text-[13px] font-bold hover:bg-primary/90 transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-2">
                   <MaterialIcon icon="rocket_launch" size={18} />
                   ابدأ الإنشاء
                 </button>
@@ -1753,13 +1751,13 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
 
             {/* Selections summary */}
             {pendingIntent.step > 0 && pendingIntent.step < 7 && (
-              <div className="flex flex-wrap gap-1 pt-0.5 border-t border-border/20 mt-0.5 pt-1.5">
-                {pendingIntent.topic && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{pendingIntent.topic}</span>}
-                {pendingIntent.step > 1 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'professional':'احترافي','infographic':'إنفوجرافيك','executive':'قيادي','creative':'إبداعي','minimal':'بسيط','data-heavy':'تحليلي'}[pendingIntent.style]}</span>}
-                {pendingIntent.step > 2 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'ai':'AI','user':'محتوى خاص','library':'مكتبة'}[pendingIntent.contentSource]}</span>}
-                {pendingIntent.step > 3 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{pendingIntent.slideCount} شريحة</span>}
-                {pendingIntent.step > 4 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'ndmo':'NDMO','sdaia':'سدايا','modern':'عصري','minimal':'بسيط','creative':'إبداعي','custom':'مخصص'}[pendingIntent.brandId]}</span>}
-                {pendingIntent.step > 5 && <span className={`text-[9px] px-2 py-0.5 rounded-full font-medium ${pendingIntent.imageStyle === 'banana-pro' ? 'bg-amber-100 text-amber-700' : 'bg-primary/10 text-primary'}`}>{{'banana-pro':'Banana Pro ✨','icons-only':'أيقونات','none':'بدون صور'}[pendingIntent.imageStyle]}</span>}
+              <div className="flex flex-wrap gap-0.5 sm:gap-1 pt-0.5 border-t border-border/20 mt-0.5 pt-1.5">
+                {pendingIntent.topic && <span className="text-[8px] sm:text-[9px] px-1.5 sm:px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium truncate max-w-[120px] sm:max-w-none">{pendingIntent.topic}</span>}
+                {pendingIntent.step > 1 && <span className="text-[8px] sm:text-[9px] px-1.5 sm:px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'professional':'احترافي','infographic':'إنفوجرافيك','executive':'قيادي','creative':'إبداعي','minimal':'بسيط','data-heavy':'تحليلي'}[pendingIntent.style]}</span>}
+                {pendingIntent.step > 2 && <span className="text-[8px] sm:text-[9px] px-1.5 sm:px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'ai':'AI','user':'محتوى خاص','library':'مكتبة'}[pendingIntent.contentSource]}</span>}
+                {pendingIntent.step > 3 && <span className="text-[8px] sm:text-[9px] px-1.5 sm:px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{pendingIntent.slideCount} شريحة</span>}
+                {pendingIntent.step > 4 && <span className="text-[8px] sm:text-[9px] px-1.5 sm:px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'ndmo':'NDMO','sdaia':'سدايا','modern':'عصري','minimal':'بسيط','creative':'إبداعي','custom':'مخصص'}[pendingIntent.brandId]}</span>}
+                {pendingIntent.step > 5 && <span className={`text-[8px] sm:text-[9px] px-1.5 sm:px-2 py-0.5 rounded-full font-medium ${pendingIntent.imageStyle === 'banana-pro' ? 'bg-amber-100 text-amber-700' : 'bg-primary/10 text-primary'}`}>{{'banana-pro':'Banana Pro ✨','icons-only':'أيقونات','none':'بدون صور'}[pendingIntent.imageStyle]}</span>}
 
               </div>
             )}
@@ -1768,7 +1766,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
       )}
 
       {/* Input Bar */}
-      <div className="px-1.5 sm:px-2.5 md:px-4 pb-1.5 sm:pb-2.5 md:pb-3 pt-1.5 sm:pt-2 shrink-0 mobile-safe-bottom">
+      <div className="px-1 sm:px-2.5 md:px-4 pb-1 sm:pb-2.5 md:pb-3 pt-1 sm:pt-2 shrink-0 mobile-safe-bottom">
         <div className={`relative flex items-end gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 border-2 transition-all duration-300 ${
           inputFocused
             ? 'border-primary/30 shadow-[0_0_20px_-4px_var(--glow)]'
@@ -1817,7 +1815,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             onBlur={() => setInputFocused(false)}
             placeholder="اكتب طلبك هنا... راصد يفهم ويُنفذ مباشرة"
             rows={1}
-            className={`flex-1 bg-transparent text-[13px] sm:text-[14px] outline-none resize-none min-h-[32px] max-h-[120px] py-1.5 leading-relaxed ${theme === 'dark' ? 'text-gray-800 placeholder:text-gray-400' : 'text-foreground placeholder:text-muted-foreground/50'}`}
+            className={`flex-1 bg-transparent text-[12px] sm:text-[13px] md:text-[14px] outline-none resize-none min-h-[28px] sm:min-h-[32px] max-h-[80px] sm:max-h-[120px] py-1 sm:py-1.5 leading-relaxed ${theme === 'dark' ? 'text-gray-800 placeholder:text-gray-400' : 'text-foreground placeholder:text-muted-foreground/50'}`}
             style={{ height: 'auto' }}
             onInput={(e) => {
               const target = e.target as HTMLTextAreaElement;
