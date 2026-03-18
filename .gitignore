@@ -14,3 +14,4 @@ rasid_core_seed/
 rasid-platform-core/.runtime/
 rasid-platform-core/packages/*/output/
 rasid-platform-core/packages/*/artifacts/
+.env

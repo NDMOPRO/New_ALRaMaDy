@@ -4,8 +4,27 @@
  */
 import { z } from "zod";
 import { publicProcedure, router } from "./_core/trpc";
-import { callAI, callVision, isAIAvailable, SYSTEM_PROMPTS, type ChatMessage, type VisionMessage } from "./openai";
+import { callAI, callVision, isAIAvailable, SYSTEM_PROMPTS, type ChatMessage, type VisionMessage, openaiChat, openaiText, openaiJSON, openaiStream, validateOpenAIKey } from "./openai";
+import { nanoBananaGenerate, nanoBananaGetTask, nanoBananaPollResult, nanoBananaGetCredits, validateNanoBananaKey } from "./nanobanana";
 import { ENV } from "./_core/env";
+import * as localDb from "./localDb";
+
+// ─── Presentation System Prompt ──────────────────────────────────
+const PRESENTATION_SYSTEM_PROMPT = `أنت خبير في إنشاء العروض التقديمية الاحترافية باللغة العربية.
+مهمتك إنشاء محتوى شرائح غني وحقيقي بتنسيق JSON.
+كل شريحة يجب أن تحتوي على:
+- title: عنوان الشريحة
+- layout: نوع التخطيط (title, content, kpi, chart, table, timeline, pillars, toc, executive-summary, closing)
+- content: المحتوى النصي الرئيسي
+- bulletPoints: نقاط رئيسية (مصفوفة نصوص)
+- subtitle: عنوان فرعي (اختياري)
+حسب نوع التخطيط، أضف:
+- kpi: kpiItems [{label, value, change, icon}]
+- chart: chartType, chartData, chartLabels, chartColors
+- table: tableHeaders, tableRows
+- timeline: timelineItems [{year, title, description}]
+- pillars: pillarItems [{title, description, icon}]
+استخدم بيانات واقعية وأرقام حقيقية. أجب بالعربية دائماً.`;
 
 // ─── Helper Functions ──────────────────────────────────────────
 function formatTime(seconds: number): string {
@@ -1843,28 +1862,30 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
       style: z.enum(['realistic', 'illustration', 'abstract', 'infographic', 'icon']).default('illustration'),
       width: z.number().default(1024),
       height: z.number().default(1024),
+      type: z.enum(['TEXTTOIAMGE', 'IMAGETOIAMGE']).default('TEXTTOIAMGE'),
+      numImages: z.number().min(1).max(4).default(1),
+      imageSize: z.enum(['1:1', '9:16', '16:9', '3:4', '4:3', '3:2', '2:3', '5:4', '4:5', '21:9']).default('16:9'),
+      imageUrls: z.array(z.string()).optional(),
     }))
     .mutation(async ({ input }) => {
-      // Try Banana Pro first, fall back to DALL-E
+      // Use NanoBanana Pro API (real integration)
       const bananaKey = ENV.bananaApiKey;
       if (bananaKey) {
         try {
-          const response = await fetch('https://api.banana.dev/v1/images/generate', {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${bananaKey}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              prompt: `${input.prompt}, ${input.style} style, professional, high quality, Arabic design elements`,
-              model: 'sdxl',
-              width: input.width,
-              height: input.height,
-              num_inference_steps: 30,
-            }),
+          const taskId = await nanoBananaGenerate({
+            prompt: `${input.prompt}, ${input.style} style, professional, high quality, Arabic design elements`,
+            type: input.type,
+            numImages: input.numImages,
+            imageSize: input.imageSize,
+            imageUrls: input.imageUrls,
           });
-          if (response.ok) {
-            const data = await response.json();
-            return { url: data.images?.[0]?.url || data.url || '', source: 'banana-pro' };
-          }
-        } catch {}
+          // Poll for result
+          const result = await nanoBananaPollResult(taskId, 120000);
+          return { url: result.response?.resultImageUrl || '', source: 'nanobanana-pro', taskId };
+        } catch (err: any) {
+          console.error('[NanoBanana] Error:', err.message);
+          // Fallback to DALL-E
+        }
       }
       // Fallback to DALL-E
       const apiKey = ENV.openaiApiKey;
@@ -1883,6 +1904,127 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
       const data = await response.json();
       return { url: data.data?.[0]?.url || '', source: 'dall-e-3' };
     }),
+
+  // ─── NanoBanana: Submit image generation task (async) ───
+  generateImageAsync: publicProcedure
+    .input(z.object({
+      prompt: z.string().min(1),
+      type: z.enum(['TEXTTOIAMGE', 'IMAGETOIAMGE']).default('TEXTTOIAMGE'),
+      numImages: z.number().min(1).max(4).default(1),
+      imageSize: z.enum(['1:1', '9:16', '16:9', '3:4', '4:3', '3:2', '2:3', '5:4', '4:5', '21:9']).default('16:9'),
+      imageUrls: z.array(z.string()).optional(),
+    }))
+    .mutation(async ({ input }) => {
+      const taskId = await nanoBananaGenerate(input);
+      return { taskId };
+    }),
+
+  // ─── NanoBanana: Get task status ───
+  getImageTask: publicProcedure
+    .input(z.object({ taskId: z.string() }))
+    .query(async ({ input }) => {
+      const task = await nanoBananaGetTask(input.taskId);
+      return {
+        taskId: task.taskId,
+        status: task.successFlag === 0 ? 'generating' : task.successFlag === 1 ? 'success' : 'failed',
+        imageUrl: task.response?.resultImageUrl || null,
+        originUrl: task.response?.originImageUrl || null,
+        error: task.errorMessage || null,
+      };
+    }),
+
+  // ─── NanoBanana: Wait for image (blocking poll) ───
+  waitForImage: publicProcedure
+    .input(z.object({
+      taskId: z.string(),
+      maxWaitMs: z.number().default(120000),
+    }))
+    .mutation(async ({ input }) => {
+      const result = await nanoBananaPollResult(input.taskId, input.maxWaitMs);
+      return {
+        taskId: result.taskId,
+        imageUrl: result.response?.resultImageUrl || null,
+        originUrl: result.response?.originImageUrl || null,
+      };
+    }),
+
+  // ─── NanoBanana: Get credits ───
+  getCredits: publicProcedure.query(async () => {
+    const credits = await nanoBananaGetCredits();
+    return { credits };
+  }),
+
+  // ─── AI: Generate TOC for presentation ───
+  generateTOC: publicProcedure
+    .input(z.object({
+      topic: z.string().min(1),
+      slideCount: z.number().min(3).max(30).default(8),
+      style: z.string().default('professional'),
+      language: z.string().default('ar'),
+      additionalInstructions: z.string().optional(),
+    }))
+    .mutation(async ({ input }) => {
+      const result = await openaiJSON<{ toc: { index: number; title: string; layout: string; description: string }[] }>(
+        `أنت خبير في تخطيط العروض التقديمية. مهمتك إنشاء فهرس محتويات لعرض تقديمي.\nأجب بـ JSON فقط بالتنسيق:\n{\n  "toc": [\n    { "index": 1, "title": "عنوان الشريحة", "layout": "title|content|kpi|chart|table|timeline|pillars|toc|executive-summary|closing", "description": "وصف مختصر" }\n  ]\n}`,
+        `أنشئ فهرس محتويات لعرض تقديمي عن: "${input.topic}"\nعدد الشرائح: ${input.slideCount}\nالنمط: ${input.style}\nاللغة: ${input.language === 'ar' ? 'العربية' : 'الإنجليزية'}\n${input.additionalInstructions ? `تعليمات إضافية: ${input.additionalInstructions}` : ''}\n\nيجب أن يتضمن: شريحة عنوان، فهرس، شرائح محتوى متنوعة (kpi, chart, table, timeline)، وشريحة ختامية.`,
+        { max_tokens: 2048, temperature: 0.7 }
+      );
+      return { toc: result.toc || [], topic: input.topic };
+    }),
+
+  // ─── AI: Generate single slide from TOC ───
+  generateSingleSlide: publicProcedure
+    .input(z.object({
+      topic: z.string(),
+      slideIndex: z.number(),
+      slideTitle: z.string(),
+      slideLayout: z.string(),
+      slideDescription: z.string(),
+      totalSlides: z.number(),
+      style: z.string().default('professional'),
+      language: z.string().default('ar'),
+      previousSlides: z.array(z.object({ title: z.string(), layout: z.string() })).optional().default([]),
+    }))
+    .mutation(async ({ input }) => {
+      const prevContext = input.previousSlides.length > 0
+        ? `الشرائح السابقة:\n${input.previousSlides.map((s: any, i: number) => `${i + 1}. ${s.title} (${s.layout})`).join('\n')}`
+        : '';
+      const result = await openaiJSON<{ slide: Record<string, unknown> }>(
+        PRESENTATION_SYSTEM_PROMPT + `\n\nأنت تنشئ شريحة واحدة فقط (الشريحة ${input.slideIndex + 1} من ${input.totalSlides}).\nأجب بـ JSON بالتنسيق: { "slide": { ... } }`,
+        `الموضوع العام: "${input.topic}"\nالشريحة ${input.slideIndex + 1} من ${input.totalSlides}:\n- العنوان: ${input.slideTitle}\n- التخطيط: ${input.slideLayout}\n- الوصف: ${input.slideDescription}\nالنمط: ${input.style}\n${prevContext}\n\nأنشئ محتوى غني وحقيقي لهذه الشريحة فقط. استخدم بيانات واقعية وأرقام حقيقية.`,
+        { max_tokens: 2048, temperature: 0.8 }
+      );
+      return { slide: result.slide || {}, slideIndex: input.slideIndex };
+    }),
+
+  // ─── AI: Edit single slide ───
+  editSlideAI: publicProcedure
+    .input(z.object({
+      currentSlide: z.record(z.string(), z.unknown()),
+      instruction: z.string().min(1),
+      slideIndex: z.number(),
+    }))
+    .mutation(async ({ input }) => {
+      const result = await openaiJSON<{ slide: Record<string, unknown> }>(
+        PRESENTATION_SYSTEM_PROMPT + `\n\nالمستخدم يريد تعديل شريحة موجودة. أعد إنشاء الشريحة بالكامل مع تطبيق التعديلات المطلوبة.\nأجب بـ JSON بالتنسيق: { "slide": { ... } }`,
+        `الشريحة الحالية:\n${JSON.stringify(input.currentSlide, null, 2)}\n\nالتعديل المطلوب: ${input.instruction}\n\nأعد إنشاء الشريحة مع تطبيق التعديل. حافظ على نفس التخطيط إلا إذا طلب المستخدم تغييره.`,
+        { max_tokens: 2048, temperature: 0.7 }
+      );
+      return { slide: result.slide || {}, slideIndex: input.slideIndex };
+    }),
+
+  // ─── AI Service Status ───
+  aiStatus: publicProcedure.query(async () => {
+    const [openaiValid, bananaValid] = await Promise.allSettled([
+      validateOpenAIKey(),
+      validateNanoBananaKey(),
+    ]);
+    return {
+      openai: openaiValid.status === 'fulfilled' ? openaiValid.value : false,
+      nanobanana: bananaValid.status === 'fulfilled' ? bananaValid.value : false,
+      timestamp: new Date().toISOString(),
+    };
+  }),
 
   // ─── Parse PPTX Template ──────────────────────────────────────
   parseTemplate: publicProcedure
@@ -2188,7 +2330,7 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
       ];
 
       const visionResult = await callVision(visionMessages, {
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         temperature: 0.1,
         max_tokens: 16000,
       });
@@ -2229,7 +2371,7 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
         elements_detected: cdr.elements?.length || cdr.widgets?.length || cdr.slides?.length || cdr.sheets?.length || 0,
         colors_extracted: cdr.theme?.colors || cdr.colors || [],
         strict_mode: input.strictMode,
-        vision_model: 'gpt-4o',
+        vision_model: 'gpt-4o-mini',
         analysis_timestamp: new Date().toISOString(),
       };
 
@@ -2278,7 +2420,7 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
       ];
 
       const visionResult = await callVision(visionMessages, {
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         temperature: 0.1,
         max_tokens: 16000,
       });
@@ -2368,7 +2510,7 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
 
       let overview: any = { totalPages: 1, title: 'مستند', theme: {}, pageMap: [] };
       try {
-        const overviewResult = await callVision(overviewMessages, { model: 'gpt-4o', temperature: 0.1, max_tokens: 4000 });
+        const overviewResult = await callVision(overviewMessages, { model: 'gpt-4o-mini', temperature: 0.1, max_tokens: 4000 });
         const jsonMatch = overviewResult.content.match(/```json\s*([\s\S]*?)\s*```/) || overviewResult.content.match(/\{[\s\S]*\}/);
         if (jsonMatch) overview = JSON.parse(jsonMatch[1] || jsonMatch[0]);
       } catch { /* use defaults */ }
@@ -2413,7 +2555,7 @@ ${targetPrompt}`,
 
         try {
           const batchResult = await callVision(batchMessages, {
-            model: 'gpt-4o',
+            model: 'gpt-4o-mini',
             temperature: 0.1,
             max_tokens: 16000,
           });

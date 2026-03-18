@@ -132,6 +132,32 @@ export const DASHBOARD_ACTIONS = [
   { id: 'analyze', label: 'تحليل مباشر', icon: 'analytics' },
 ] as const;
 
+// ===== BACKGROUNDS =====
+export const BACKGROUNDS = {
+  pattern: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+',
+} as const;
+
+// ===== PRESENTATION STYLES =====
+export const PRESENTATION_STYLES = [
+  { id: 'professional', label: 'احترافي', icon: 'business_center' },
+  { id: 'academic', label: 'أكاديمي', icon: 'school' },
+  { id: 'creative', label: 'إبداعي', icon: 'palette' },
+  { id: 'minimal', label: 'بسيط', icon: 'crop_square' },
+  { id: 'data-driven', label: 'بيانات', icon: 'bar_chart' },
+] as const;
+
+// ===== SLIDE COUNTS =====
+export const SLIDE_COUNTS = [5, 8, 10, 12, 15, 20] as const;
+
+// ===== BRAND THEMES =====
+export const BRAND_THEMES = [
+  { id: 'ndmo', label: 'مكتب إدارة البيانات', primary: '#d4af37' },
+  { id: 'sdaia', label: 'سدايا', primary: '#1a73e8' },
+  { id: 'modern', label: 'عصري', primary: '#6366f1' },
+  { id: 'minimal', label: 'بسيط', primary: '#1f2937' },
+  { id: 'creative', label: 'إبداعي', primary: '#ec4899' },
+] as const;
+
 // ===== DATA ITEM CONTEXT MENU =====
 export const DATA_ITEM_MENU: Array<{ id: string; label: string; icon: string; danger?: boolean }> = [
   { id: 'rename', label: 'إعادة تسمية', icon: 'edit' },

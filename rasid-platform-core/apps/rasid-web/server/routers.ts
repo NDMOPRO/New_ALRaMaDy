@@ -456,6 +456,117 @@ export const appRouter = router({
         if (shared.password && shared.password !== input.password) return { error: 'كلمة المرور غير صحيحة' };
         return shared;
       }),
+
+    // ═══ Enhanced Presentation Operations (from package) ═══
+    createEnhanced: protectedProcedure
+      .input(z.object({
+        title: z.string(),
+        topic: z.string().optional(),
+        themeId: z.number().optional(),
+        slideCount: z.number().optional(),
+        style: z.string().optional(),
+        contentSource: z.string().optional(),
+        usedBananaPro: z.boolean().optional(),
+        toc: z.string().optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const id = await localDb.createPresentationEnhanced({ userId, ...input });
+        return { id, title: input.title };
+      }),
+
+    updateEnhanced: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        title: z.string().optional(),
+        topic: z.string().optional(),
+        themeId: z.number().optional(),
+        slideCount: z.number().optional(),
+        status: z.string().optional(),
+        style: z.string().optional(),
+        contentSource: z.string().optional(),
+        usedBananaPro: z.boolean().optional(),
+        toc: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await localDb.updatePresentationEnhanced(id, data);
+        return { success: true };
+      }),
+
+    getByIdDirect: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        return localDb.getPresentationByIdNoUser(input.id);
+      }),
+
+    // ═══ Slide Operations (separate table) ═══
+    getSlides: publicProcedure
+      .input(z.object({ presentationId: z.number() }))
+      .query(async ({ input }) => {
+        return localDb.getSlidesByPresentation(input.presentationId);
+      }),
+
+    getSlide: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        return localDb.getSlideById(input.id);
+      }),
+
+    saveSlide: protectedProcedure
+      .input(z.object({
+        presentationId: z.number(),
+        slideIndex: z.number(),
+        title: z.string(),
+        layout: z.string().optional(),
+        data: z.string(),
+        htmlCode: z.string().optional(),
+        isEdited: z.boolean().optional(),
+        source: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const id = await localDb.createSlide(input);
+        return { id };
+      }),
+
+    updateSlide: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        title: z.string().optional(),
+        layout: z.string().optional(),
+        data: z.string().optional(),
+        htmlCode: z.string().optional(),
+        isEdited: z.boolean().optional(),
+        source: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await localDb.updateSlideRecord(id, data);
+        return { success: true };
+      }),
+
+    deleteSlide: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await localDb.deleteSlideRecord(input.id);
+        return { success: true };
+      }),
+
+    deleteAllSlides: protectedProcedure
+      .input(z.object({ presentationId: z.number() }))
+      .mutation(async ({ input }) => {
+        await localDb.deleteSlidesByPresentation(input.presentationId);
+        return { success: true };
+      }),
+
+    deleteWithSlides: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        await localDb.deleteSlidesByPresentation(input.id);
+        await localDb.deletePresentation(input.id, userId);
+        return { success: true };
+      }),
   }),
 
   // ═══════════════════════════════════════════════════════════════
@@ -781,6 +892,180 @@ export const appRouter = router({
       const userId = (ctx as any).user?.id || 1;
       return localDb.getLibraryItems(userId);
     }),
+  }),
+
+  // ═══════════════════════════════════════════════════════════════
+  // THEMES — System + User-created themes
+  // ═══════════════════════════════════════════════════════════════
+  themes: router({
+    list: protectedProcedure.query(async ({ ctx }) => {
+      const userId = (ctx as any).user?.id || 1;
+      return localDb.getAllThemesForUser(userId);
+    }),
+
+    systemThemes: publicProcedure.query(async () => {
+      return localDb.getSystemThemes();
+    }),
+
+    get: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        return localDb.getThemeById(input.id);
+      }),
+
+    create: protectedProcedure
+      .input(z.object({
+        name: z.string(),
+        description: z.string().optional(),
+        type: z.string().optional(),
+        isTemplate: z.boolean().optional(),
+        colors: z.string(),
+        typography: z.string(),
+        logoUrl: z.string().optional(),
+        backgroundUrl: z.string().optional(),
+        customCss: z.string().optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const id = await localDb.createTheme({ userId, ...input });
+        return { id };
+      }),
+
+    update: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        name: z.string().optional(),
+        description: z.string().optional(),
+        colors: z.string().optional(),
+        typography: z.string().optional(),
+        logoUrl: z.string().optional(),
+        backgroundUrl: z.string().optional(),
+        customCss: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await localDb.updateTheme(id, data);
+        return { success: true };
+      }),
+
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await localDb.deleteTheme(input.id);
+        return { success: true };
+      }),
+
+    // Template Elements
+    elements: router({
+      list: publicProcedure
+        .input(z.object({ themeId: z.number(), category: z.string().optional() }))
+        .query(async ({ input }) => {
+          return localDb.getElementsByTheme(input.themeId, input.category);
+        }),
+
+      get: publicProcedure
+        .input(z.object({ id: z.number() }))
+        .query(async ({ input }) => {
+          return localDb.getElementById(input.id);
+        }),
+
+      create: protectedProcedure
+        .input(z.object({
+          themeId: z.number(),
+          name: z.string(),
+          category: z.string(),
+          subCategory: z.string().optional(),
+          htmlCode: z.string(),
+          thumbnailUrl: z.string().optional(),
+          config: z.string().optional(),
+          tags: z.string().optional(),
+          sortOrder: z.number().optional(),
+        }))
+        .mutation(async ({ input, ctx }) => {
+          const userId = (ctx as any).user?.id || 1;
+          const id = await localDb.createElement({ userId, ...input });
+          return { id };
+        }),
+
+      update: protectedProcedure
+        .input(z.object({
+          id: z.number(),
+          name: z.string().optional(),
+          category: z.string().optional(),
+          htmlCode: z.string().optional(),
+          config: z.string().optional(),
+          tags: z.string().optional(),
+          sortOrder: z.number().optional(),
+        }))
+        .mutation(async ({ input }) => {
+          const { id, ...data } = input;
+          await localDb.updateElement(id, data);
+          return { success: true };
+        }),
+
+      delete: protectedProcedure
+        .input(z.object({ id: z.number() }))
+        .mutation(async ({ input }) => {
+          await localDb.deleteElement(input.id);
+          return { success: true };
+        }),
+
+      search: publicProcedure
+        .input(z.object({ themeId: z.number(), query: z.string() }))
+        .query(async ({ input }) => {
+          return localDb.searchElements(input.themeId, input.query);
+        }),
+
+      count: publicProcedure
+        .input(z.object({ themeId: z.number() }))
+        .query(async ({ input }) => {
+          return localDb.getElementCountByTheme(input.themeId);
+        }),
+    }),
+  }),
+
+  // ═══════════════════════════════════════════════════════════════
+  // USER FILES — Upload and manage user files
+  // ═══════════════════════════════════════════════════════════════
+  userFiles: router({
+    list: protectedProcedure.query(async ({ ctx }) => {
+      const userId = (ctx as any).user?.id || 1;
+      return localDb.getUserFilesNew(userId);
+    }),
+
+    upload: protectedProcedure
+      .input(z.object({
+        fileName: z.string().min(1),
+        mimeType: z.string().min(1),
+        base64Data: z.string().min(1),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const userId = (ctx as any).user?.id || 1;
+        const buffer = Buffer.from(input.base64Data, 'base64');
+        const fileSize = buffer.length;
+        if (fileSize > 16 * 1024 * 1024) throw new Error('File too large (max 16MB)');
+
+        // Save to local uploads directory
+        const fs = await import('fs');
+        const path = await import('path');
+        const uploadsDir = path.join(process.cwd(), 'uploads', `user-${userId}`);
+        if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+        const ext = input.fileName.split('.').pop() || 'bin';
+        const fileKey = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const filePath = path.join(uploadsDir, fileKey);
+        fs.writeFileSync(filePath, buffer);
+
+        const url = `/uploads/user-${userId}/${fileKey}`;
+        const id = await localDb.createUserFile({ userId, fileName: input.fileName, mimeType: input.mimeType, fileSize, fileKey, url });
+        return { id, url, fileName: input.fileName };
+      }),
+
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await localDb.deleteUserFile(input.id);
+        return { success: true };
+      }),
   }),
 });
 

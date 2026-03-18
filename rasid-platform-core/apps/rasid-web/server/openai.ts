@@ -6,6 +6,8 @@
 import { ENV } from "./_core/env";
 import { invokeLLM, type Message, type InvokeResult } from "./_core/llm";
 
+const OPENAI_BASE = "https://api.openai.com/v1";
+
 // ─── Types ───────────────────────────────────────────────────────
 export interface ChatMessage {
   role: "system" | "user" | "assistant";
@@ -50,7 +52,7 @@ async function callOpenAI(
     payload.response_format = options.response_format;
   }
 
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  const response = await fetch(`${OPENAI_BASE}/chat/completions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -125,13 +127,13 @@ export async function callVision(
   }
 
   const payload = {
-    model: options?.model || "gpt-4o",
+    model: options?.model || "gpt-4o-mini",
     messages,
     temperature: options?.temperature ?? 0.2,
     max_tokens: options?.max_tokens ?? 4096,
   };
 
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  const response = await fetch(`${OPENAI_BASE}/chat/completions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -248,3 +250,205 @@ export const SYSTEM_PROMPTS = {
 3. التوصيات الرئيسية
 أجب باللغة العربية بشكل مختصر ومركز.`,
 };
+
+// ═══════════════════════════════════════════════════════════
+// Direct OpenAI helpers — used by AI router & Presentations router
+// ═══════════════════════════════════════════════════════════
+
+export interface OpenAIMessage {
+  role: "system" | "user" | "assistant";
+  content: string;
+}
+
+export interface OpenAIChatOptions {
+  messages: OpenAIMessage[];
+  model?: string;
+  temperature?: number;
+  max_tokens?: number;
+  response_format?: {
+    type: "json_object" | "text";
+  };
+}
+
+export interface OpenAIChatResponse {
+  id: string;
+  choices: {
+    index: number;
+    message: {
+      role: string;
+      content: string;
+    };
+    finish_reason: string;
+  }[];
+  usage: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
+}
+
+/**
+ * Call OpenAI Chat Completions API directly (low-level)
+ */
+export async function openaiChat(
+  options: OpenAIChatOptions
+): Promise<OpenAIChatResponse> {
+  const apiKey = ENV.openaiApiKey;
+  if (!apiKey) throw new Error("OPENAI_API_KEY is not configured");
+
+  const {
+    messages,
+    model = "gpt-4o-mini",
+    temperature = 0.7,
+    max_tokens = 4096,
+    response_format,
+  } = options;
+
+  const body: Record<string, unknown> = {
+    model,
+    messages,
+    temperature,
+    max_tokens,
+  };
+
+  if (response_format) {
+    body.response_format = response_format;
+  }
+
+  const response = await fetch(`${OPENAI_BASE}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `OpenAI API error: ${response.status} ${response.statusText} — ${errorText}`
+    );
+  }
+
+  return (await response.json()) as OpenAIChatResponse;
+}
+
+/**
+ * Simple helper: get a text response from OpenAI
+ */
+export async function openaiText(
+  systemPrompt: string,
+  userPrompt: string,
+  options?: Partial<OpenAIChatOptions>
+): Promise<string> {
+  const result = await openaiChat({
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ],
+    ...options,
+  });
+
+  return result.choices[0]?.message?.content || "";
+}
+
+/**
+ * Get structured JSON response from OpenAI
+ */
+export async function openaiJSON<T = unknown>(
+  systemPrompt: string,
+  userPrompt: string,
+  options?: Partial<OpenAIChatOptions>
+): Promise<T> {
+  const result = await openaiChat({
+    messages: [
+      {
+        role: "system",
+        content: systemPrompt + "\n\nYou MUST respond with valid JSON only.",
+      },
+      { role: "user", content: userPrompt },
+    ],
+    response_format: { type: "json_object" },
+    ...options,
+  });
+
+  const content = result.choices[0]?.message?.content || "{}";
+  return JSON.parse(content) as T;
+}
+
+/**
+ * Stream OpenAI response (returns ReadableStream)
+ */
+export async function openaiStream(
+  options: OpenAIChatOptions
+): Promise<ReadableStream<Uint8Array>> {
+  const apiKey = ENV.openaiApiKey;
+  if (!apiKey) throw new Error("OPENAI_API_KEY is not configured");
+
+  const {
+    messages,
+    model = "gpt-4o-mini",
+    temperature = 0.7,
+    max_tokens = 4096,
+  } = options;
+
+  const response = await fetch(`${OPENAI_BASE}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      temperature,
+      max_tokens,
+      stream: true,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `OpenAI API error: ${response.status} ${response.statusText} — ${errorText}`
+    );
+  }
+
+  return response.body!;
+}
+
+/**
+ * Validate that the OpenAI API key works
+ */
+export async function validateOpenAIKey(): Promise<boolean> {
+  try {
+    const apiKey = ENV.openaiApiKey;
+    if (!apiKey) return false;
+    // Try direct OpenAI API first, then proxy
+    const endpoints = [
+      { url: "https://api.openai.com/v1/chat/completions", model: "gpt-4o-mini" },
+      { url: `${OPENAI_BASE}/chat/completions`, model: "gpt-4.1-nano" },
+    ];
+    for (const ep of endpoints) {
+      try {
+        const response = await fetch(ep.url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model: ep.model,
+            messages: [{ role: "user", content: "hi" }],
+            max_tokens: 1,
+          }),
+        });
+        if (response.ok) return true;
+      } catch { /* try next */ }
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}

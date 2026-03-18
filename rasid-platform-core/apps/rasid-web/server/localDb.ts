@@ -134,6 +134,61 @@ export async function getDb(): Promise<SqlJsDatabase> {
       tags TEXT DEFAULT '[]', createdBy INTEGER,
       createdAt TEXT NOT NULL DEFAULT (datetime('now'))
     )`,
+    // ═══ New tables for package integration ═══
+    `CREATE TABLE IF NOT EXISTS themes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER,
+      name TEXT NOT NULL,
+      description TEXT,
+      type TEXT NOT NULL DEFAULT 'user',
+      isTemplate INTEGER NOT NULL DEFAULT 0,
+      colors TEXT NOT NULL DEFAULT '{}',
+      typography TEXT NOT NULL DEFAULT '{}',
+      logoUrl TEXT,
+      backgroundUrl TEXT,
+      customCss TEXT,
+      createdAt TEXT NOT NULL DEFAULT (datetime('now')),
+      updatedAt TEXT NOT NULL DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS template_elements (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      themeId INTEGER NOT NULL,
+      userId INTEGER,
+      name TEXT NOT NULL,
+      category TEXT NOT NULL DEFAULT 'custom',
+      subCategory TEXT,
+      htmlCode TEXT NOT NULL,
+      thumbnailUrl TEXT,
+      config TEXT,
+      tags TEXT,
+      sortOrder INTEGER NOT NULL DEFAULT 0,
+      createdAt TEXT NOT NULL DEFAULT (datetime('now')),
+      updatedAt TEXT NOT NULL DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS presentation_slides (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      presentationId INTEGER NOT NULL,
+      slideIndex INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      layout TEXT NOT NULL DEFAULT 'content',
+      data TEXT NOT NULL DEFAULT '{}',
+      htmlCode TEXT,
+      isEdited INTEGER NOT NULL DEFAULT 0,
+      source TEXT NOT NULL DEFAULT 'ai',
+      createdAt TEXT NOT NULL DEFAULT (datetime('now')),
+      updatedAt TEXT NOT NULL DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS user_files (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER NOT NULL,
+      fileName TEXT NOT NULL,
+      mimeType TEXT NOT NULL,
+      fileSize INTEGER NOT NULL DEFAULT 0,
+      fileKey TEXT NOT NULL DEFAULT '',
+      url TEXT NOT NULL DEFAULT '',
+      extractedText TEXT,
+      createdAt TEXT NOT NULL DEFAULT (datetime('now'))
+    )`,
   ];
 
   tables.forEach(sql => db!.run(sql));
@@ -373,4 +428,163 @@ export async function seedAdminAccount() {
       ["mruhaily", hash, "محمد الرحيلي — عقل راصد الذكي", "prog.muhammed@gmail.com", "+966553445533", "admin", "إدارة المنصة", "active", perms]);
   }
   console.log("[Seed] Admin account ready: mruhaily");
+}
+
+
+// ═══════════════════════════════════════════════════════════
+// Themes — System + User-created
+// ═══════════════════════════════════════════════════════════
+export async function getSystemThemes() { return query("SELECT * FROM themes WHERE type='system' ORDER BY id ASC"); }
+export async function getUserThemes(userId: number) { return query("SELECT * FROM themes WHERE userId=? ORDER BY createdAt DESC", [userId]); }
+export async function getAllThemesForUser(userId: number) {
+  const sys = await getSystemThemes();
+  const usr = await getUserThemes(userId);
+  return [...sys, ...usr];
+}
+export async function getThemeById(id: number) { return (await query("SELECT * FROM themes WHERE id=?", [id]))[0] || null; }
+export async function createTheme(data: { userId?: number | null; name: string; description?: string | null; type?: string; isTemplate?: boolean; colors: string; typography: string; logoUrl?: string | null; backgroundUrl?: string | null; customCss?: string | null }) {
+  await run("INSERT INTO themes (userId,name,description,type,isTemplate,colors,typography,logoUrl,backgroundUrl,customCss) VALUES (?,?,?,?,?,?,?,?,?,?)",
+    [data.userId || null, data.name, data.description || null, data.type || 'user', data.isTemplate ? 1 : 0, data.colors, data.typography, data.logoUrl || null, data.backgroundUrl || null, data.customCss || null]);
+  return getLastId();
+}
+export async function updateTheme(id: number, data: Record<string, any>) {
+  const sets: string[] = []; const vals: any[] = [];
+  for (const [k, v] of Object.entries(data)) { if (v !== undefined) { sets.push(`${k}=?`); vals.push(typeof v === 'object' && v !== null ? JSON.stringify(v) : v); } }
+  if (sets.length === 0) return;
+  sets.push("updatedAt=datetime('now')"); vals.push(id);
+  await run(`UPDATE themes SET ${sets.join(',')} WHERE id=?`, vals);
+}
+export async function deleteTheme(id: number) { await run("DELETE FROM themes WHERE id=?", [id]); }
+export async function seedSystemThemes() {
+  const existing = await getSystemThemes();
+  if (existing.length > 0) return;
+  await run("INSERT INTO themes (name,description,type,isTemplate,colors,typography) VALUES (?,?,?,?,?,?)",
+    ["هوية مكتب إدارة البيانات الوطنية (NDMO)", "الهوية الرسمية لمكتب إدارة البيانات الوطنية", "system", 0,
+      JSON.stringify({ primary: "#006838", secondary: "#00a651", accent: "#d4af37", background: "#ffffff", text: "#1a1a2e", heading: "#006838", border: "#e0e0e0" }),
+      JSON.stringify({ headingFont: "Tajawal", bodyFont: "Tajawal", headingSize: "2.5rem", bodySize: "1rem", rtl: true })]);
+  await run("INSERT INTO themes (name,description,type,isTemplate,colors,typography) VALUES (?,?,?,?,?,?)",
+    ["هوية الهيئة السعودية للبيانات والذكاء الاصطناعي (SDAIA)", "الهوية الرسمية لهيئة SDAIA", "system", 0,
+      JSON.stringify({ primary: "#0d1b3e", secondary: "#1a3a6b", accent: "#00b4d8", background: "#f8f9fa", text: "#1a1a2e", heading: "#0d1b3e", border: "#dee2e6" }),
+      JSON.stringify({ headingFont: "Tajawal", bodyFont: "Tajawal", headingSize: "2.5rem", bodySize: "1rem", rtl: true })]);
+  saveDb();
+  console.log("[Seed] System themes created");
+}
+
+// ═══════════════════════════════════════════════════════════
+// Template Elements — Library of reusable elements per theme
+// ═══════════════════════════════════════════════════════════
+export async function getElementsByTheme(themeId: number, category?: string) {
+  if (category) return query("SELECT * FROM template_elements WHERE themeId=? AND category=? ORDER BY sortOrder ASC", [themeId, category]);
+  return query("SELECT * FROM template_elements WHERE themeId=? ORDER BY category ASC, sortOrder ASC", [themeId]);
+}
+export async function getElementById(id: number) { return (await query("SELECT * FROM template_elements WHERE id=?", [id]))[0] || null; }
+export async function createElement(data: { themeId: number; userId?: number | null; name: string; category: string; subCategory?: string | null; htmlCode: string; thumbnailUrl?: string | null; config?: string | null; tags?: string | null; sortOrder?: number }) {
+  await run("INSERT INTO template_elements (themeId,userId,name,category,subCategory,htmlCode,thumbnailUrl,config,tags,sortOrder) VALUES (?,?,?,?,?,?,?,?,?,?)",
+    [data.themeId, data.userId || null, data.name, data.category, data.subCategory || null, data.htmlCode, data.thumbnailUrl || null, data.config || null, data.tags || null, data.sortOrder || 0]);
+  return getLastId();
+}
+export async function updateElement(id: number, data: Record<string, any>) {
+  const sets: string[] = []; const vals: any[] = [];
+  for (const [k, v] of Object.entries(data)) { if (v !== undefined) { sets.push(`${k}=?`); vals.push(typeof v === 'object' && v !== null ? JSON.stringify(v) : v); } }
+  if (sets.length === 0) return;
+  sets.push("updatedAt=datetime('now')"); vals.push(id);
+  await run(`UPDATE template_elements SET ${sets.join(',')} WHERE id=?`, vals);
+}
+export async function deleteElement(id: number) { await run("DELETE FROM template_elements WHERE id=?", [id]); }
+export async function searchElements(themeId: number, q: string) {
+  return query("SELECT * FROM template_elements WHERE themeId=? AND name LIKE ? ORDER BY sortOrder ASC", [themeId, `%${q}%`]);
+}
+export async function getElementCountByTheme(themeId: number) {
+  const rows = await query("SELECT COUNT(*) as count FROM template_elements WHERE themeId=?", [themeId]);
+  return Number(rows[0]?.count || 0);
+}
+
+// ═══════════════════════════════════════════════════════════
+// Presentation Slides — Individual slides (separate table)
+// ═══════════════════════════════════════════════════════════
+export async function getSlidesByPresentation(presentationId: number) {
+  return query("SELECT * FROM presentation_slides WHERE presentationId=? ORDER BY slideIndex ASC", [presentationId]);
+}
+export async function getSlideById(slideId: number) {
+  return (await query("SELECT * FROM presentation_slides WHERE id=?", [slideId]))[0] || null;
+}
+export async function createSlide(data: { presentationId: number; slideIndex: number; title: string; layout?: string; data: string; htmlCode?: string | null; isEdited?: boolean; source?: string }) {
+  await run("INSERT INTO presentation_slides (presentationId,slideIndex,title,layout,data,htmlCode,isEdited,source) VALUES (?,?,?,?,?,?,?,?)",
+    [data.presentationId, data.slideIndex, data.title, data.layout || 'content', data.data, data.htmlCode || null, data.isEdited ? 1 : 0, data.source || 'ai']);
+  return getLastId();
+}
+export async function updateSlideRecord(slideId: number, data: Record<string, any>) {
+  const sets: string[] = []; const vals: any[] = [];
+  for (const [k, v] of Object.entries(data)) {
+    if (v !== undefined) {
+      if (k === 'isEdited') { sets.push(`${k}=?`); vals.push(v ? 1 : 0); }
+      else { sets.push(`${k}=?`); vals.push(typeof v === 'object' && v !== null ? JSON.stringify(v) : v); }
+    }
+  }
+  if (sets.length === 0) return;
+  sets.push("updatedAt=datetime('now')"); vals.push(slideId);
+  await run(`UPDATE presentation_slides SET ${sets.join(',')} WHERE id=?`, vals);
+}
+export async function deleteSlideRecord(slideId: number) { await run("DELETE FROM presentation_slides WHERE id=?", [slideId]); }
+export async function deleteSlidesByPresentation(presentationId: number) { await run("DELETE FROM presentation_slides WHERE presentationId=?", [presentationId]); }
+
+// ═══════════════════════════════════════════════════════════
+// User Files — Uploaded content
+// ═══════════════════════════════════════════════════════════
+export async function getUserFilesNew(userId: number) { return query("SELECT * FROM user_files WHERE userId=? ORDER BY createdAt DESC", [userId]); }
+export async function createUserFile(data: { userId: number; fileName: string; mimeType: string; fileSize: number; fileKey: string; url: string; extractedText?: string | null }) {
+  await run("INSERT INTO user_files (userId,fileName,mimeType,fileSize,fileKey,url,extractedText) VALUES (?,?,?,?,?,?,?)",
+    [data.userId, data.fileName, data.mimeType, data.fileSize, data.fileKey, data.url, data.extractedText || null]);
+  return getLastId();
+}
+export async function deleteUserFile(id: number) { await run("DELETE FROM user_files WHERE id=?", [id]); }
+
+// ═══════════════════════════════════════════════════════════
+// Enhanced Presentations — with topic, themeId, slideCount, toc, style
+// ═══════════════════════════════════════════════════════════
+export async function updatePresentationEnhanced(id: number, data: Record<string, any>) {
+  // First add columns if they don't exist (safe migration)
+  const database = await getDb();
+  const addCol = (col: string, def: string) => {
+    try { database.run(`ALTER TABLE presentations ADD COLUMN ${col} ${def}`); saveDb(); } catch {}
+  };
+  addCol('topic', 'TEXT');
+  addCol('themeId', 'INTEGER');
+  addCol('slideCount', 'INTEGER DEFAULT 0');
+  addCol('toc', 'TEXT');
+  addCol('style', 'TEXT');
+  addCol('contentSource', "TEXT DEFAULT 'ai'");
+  addCol('usedBananaPro', 'INTEGER DEFAULT 0');
+
+  const sets: string[] = []; const vals: any[] = [];
+  for (const [k, v] of Object.entries(data)) {
+    if (v !== undefined) {
+      if (k === 'usedBananaPro') { sets.push(`${k}=?`); vals.push(v ? 1 : 0); }
+      else { sets.push(`${k}=?`); vals.push(typeof v === 'object' && v !== null ? JSON.stringify(v) : v); }
+    }
+  }
+  if (sets.length === 0) return;
+  sets.push("updatedAt=datetime('now')"); vals.push(id);
+  await run(`UPDATE presentations SET ${sets.join(',')} WHERE id=?`, vals);
+}
+export async function createPresentationEnhanced(data: { userId: number; title: string; topic?: string | null; themeId?: number | null; slideCount?: number; status?: string; style?: string; contentSource?: string; usedBananaPro?: boolean; toc?: string | null }) {
+  // Ensure columns exist
+  const database = await getDb();
+  const addCol = (col: string, def: string) => {
+    try { database.run(`ALTER TABLE presentations ADD COLUMN ${col} ${def}`); saveDb(); } catch {}
+  };
+  addCol('topic', 'TEXT');
+  addCol('themeId', 'INTEGER');
+  addCol('slideCount', 'INTEGER DEFAULT 0');
+  addCol('toc', 'TEXT');
+  addCol('style', 'TEXT');
+  addCol('contentSource', "TEXT DEFAULT 'ai'");
+  addCol('usedBananaPro', 'INTEGER DEFAULT 0');
+
+  await run("INSERT INTO presentations (userId,title,topic,themeId,slideCount,status,style,contentSource,usedBananaPro,toc) VALUES (?,?,?,?,?,?,?,?,?,?)",
+    [data.userId, data.title, data.topic || null, data.themeId || null, data.slideCount || 0, data.status || 'draft', data.style || 'professional', data.contentSource || 'ai', data.usedBananaPro ? 1 : 0, data.toc || null]);
+  return getLastId();
+}
+export async function getPresentationByIdNoUser(id: number) {
+  return (await query("SELECT * FROM presentations WHERE id=?", [id]))[0] || null;
 }
