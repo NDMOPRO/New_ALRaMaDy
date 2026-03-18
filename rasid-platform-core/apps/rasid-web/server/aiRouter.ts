@@ -5,7 +5,7 @@
 import { z } from "zod";
 import { publicProcedure, router } from "./_core/trpc";
 import { callAI, callVision, isAIAvailable, SYSTEM_PROMPTS, type ChatMessage, type VisionMessage, openaiChat, openaiText, openaiJSON, openaiStream, validateOpenAIKey } from "./openai";
-import { nanoBananaGenerate, nanoBananaGetTask, nanoBananaPollResult, nanoBananaGetCredits, validateNanoBananaKey } from "./nanobanana";
+import { nanoBananaGenerate, nanoBananaGeneratePro, nanoBananaGetTask, nanoBananaPollResult, nanoBananaGetCredits, validateNanoBananaKey, generateImageAndWait } from "./nanobanana";
 import { ENV } from "./_core/env";
 import * as localDb from "./localDb";
 
@@ -1889,7 +1889,7 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
       return { analysis: result.content, suggestions: [], formulas: [], issues: [], source: result.source };
     }),
 
-  // ─── Generate Image (Banana Pro / DALL-E) ──────────────────────
+  // ─── Generate Image (Banana Pro / Standard / DALL-E) ──────────────────────
   generateImage: publicProcedure
     .input(z.object({
       prompt: z.string(),
@@ -1900,22 +1900,19 @@ ${input.language ? `اللغة: ${input.language}` : 'اللغة: العربية
       numImages: z.number().min(1).max(4).default(1),
       imageSize: z.enum(['1:1', '9:16', '16:9', '3:4', '4:3', '3:2', '2:3', '5:4', '4:5', '21:9']).default('16:9'),
       imageUrls: z.array(z.string()).optional(),
+      usePro: z.boolean().default(true),
     }))
     .mutation(async ({ input }) => {
-      // Use NanoBanana Pro API (real integration)
       const bananaKey = ENV.bananaApiKey;
       if (bananaKey) {
         try {
-          const taskId = await nanoBananaGenerate({
-            prompt: `${input.prompt}, ${input.style} style, professional, high quality, Arabic design elements`,
-            type: input.type,
-            numImages: input.numImages,
-            imageSize: input.imageSize,
-            imageUrls: input.imageUrls,
+          const fullPrompt = `${input.prompt}, ${input.style} style, professional, high quality, Arabic design elements`;
+          const imageUrl = await generateImageAndWait(fullPrompt, {
+            aspectRatio: input.imageSize,
+            usePro: input.usePro,
+            maxWaitMs: 120000,
           });
-          // Poll for result
-          const result = await nanoBananaPollResult(taskId, 120000);
-          return { url: result.response?.resultImageUrl || '', source: 'nanobanana-pro', taskId };
+          return { url: imageUrl, source: input.usePro ? 'nanobanana-pro' : 'nanobanana' };
         } catch (err: any) {
           console.error('[NanoBanana] Error:', err.message);
           // Fallback to DALL-E
@@ -2061,18 +2058,17 @@ ${input.additionalInstructions ? `تعليمات إضافية: ${input.additiona
 
       // ═══ BANANA PRO: Generate professional background image for this slide ═══
       const bananaKey = ENV.bananaApiKey;
-      if (bananaKey && input.slideLayout !== 'title' && input.slideLayout !== 'closing') {
+      if (bananaKey && input.slideLayout !== 'title' && input.slideLayout !== 'closing' && input.slideLayout !== 'toc' && input.slideLayout !== 'section-title') {
         try {
           const imagePrompt = `Professional infographic slide background for: ${input.slideTitle}. Topic: ${input.topic}. Style: ultra premium corporate presentation, royal dark blue (#1B2A4A) dominant color, clean white background, modern geometric shapes, subtle gradients, NDMO Saudi government style. NO text, NO words, abstract professional design elements only.`;
-          const taskId = await nanoBananaGenerate({
-            prompt: imagePrompt,
-            type: 'TEXTTOIAMGE',
-            numImages: 1,
-            imageSize: '16:9',
+          const imageUrl = await generateImageAndWait(imagePrompt, {
+            aspectRatio: '16:9',
+            resolution: '2K',
+            usePro: true,
+            maxWaitMs: 90000,
           });
-          const imgResult = await nanoBananaPollResult(taskId, 60000);
-          if (imgResult.response?.resultImageUrl) {
-            (slideResult as any).backgroundImage = imgResult.response.resultImageUrl;
+          if (imageUrl) {
+            (slideResult as any).backgroundImage = imageUrl;
             (slideResult as any).imageSource = 'nanobanana-pro';
           }
         } catch (err: any) {

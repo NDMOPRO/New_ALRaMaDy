@@ -1349,15 +1349,24 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                     </div>
                   </div>
 
-                  {/* Slide iframe — THUMBNAIL SIZE */}
-                  <div className="bg-neutral-900 flex items-center justify-center p-1">
-                    <div className="w-full" style={{ maxWidth: 280 }}>
+                  {/* Slide iframe — THUMBNAIL with click to open slideshow */}
+                  <div
+                    className="bg-neutral-900 flex items-center justify-center p-1 cursor-pointer group/slide relative"
+                    onClick={() => { setSlideshowIndex(i); setSlideshowMode(true); }}
+                  >
+                    <div className="w-full relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
                       <iframe
                         srcDoc={html}
-                        className="border-0 shadow-md rounded-sm w-full pointer-events-none"
-                        style={{ aspectRatio: '16/9', background: '#fff', transform: 'scale(1)', transformOrigin: 'top center' }}
+                        className="border-0 shadow-md rounded-sm pointer-events-none absolute top-0 left-0"
+                        style={{ width: '1280px', height: '720px', transform: 'scale(0.22)', transformOrigin: 'top left', background: '#fff' }}
                         title={`شريحة ${i + 1}`}
                       />
+                    </div>
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-black/0 group-hover/slide:bg-black/20 transition-all flex items-center justify-center">
+                      <div className="opacity-0 group-hover/slide:opacity-100 transition-all w-10 h-10 rounded-full bg-white/80 flex items-center justify-center shadow-lg">
+                        <MaterialIcon icon="play_arrow" size={20} className="text-primary" />
+                      </div>
                     </div>
                   </div>
 
@@ -1470,14 +1479,16 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
               </button>
             </div>
           </div>
-          {/* Slide */}
-          <div className="flex-1 flex items-center justify-center p-4">
-            <iframe
-              srcDoc={slideHtmls[slideshowIndex]}
-              className="border-0 rounded-lg shadow-2xl"
-              style={{ width: '90vw', height: '80vh', maxWidth: 1200, background: '#fff' }}
-              title={`عرض ${slideshowIndex + 1}`}
-            />
+          {/* Slide — proper 16:9 aspect ratio */}
+          <div className="flex-1 flex items-center justify-center p-2 sm:p-4">
+            <div className="relative w-full" style={{ maxWidth: '90vw', maxHeight: '80vh', aspectRatio: '16/9' }}>
+              <iframe
+                srcDoc={slideHtmls[slideshowIndex]}
+                className="border-0 rounded-lg shadow-2xl absolute inset-0 w-full h-full"
+                style={{ background: '#fff' }}
+                title={`عرض ${slideshowIndex + 1}`}
+              />
+            </div>
           </div>
           {/* Navigation */}
           <div className="flex items-center justify-center gap-4 py-3 bg-black/80">
