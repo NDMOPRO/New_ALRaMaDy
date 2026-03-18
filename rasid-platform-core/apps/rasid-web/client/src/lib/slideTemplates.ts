@@ -71,6 +71,8 @@ export interface SlideData {
   kpiItems?: Array<{ label: string; value: string; trend?: 'up' | 'down' | 'flat'; change?: string }>;
   pillarItems?: Array<{ icon: string; title: string; description: string }>;
   style?: { backgroundColor?: string; titleColor?: string; textColor?: string };
+  backgroundImage?: string;
+  imageSource?: string;
 }
 
 // ─── NDMO Asset Paths (public folder) ───

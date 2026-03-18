@@ -10,54 +10,55 @@ import { ENV } from "./_core/env";
 import * as localDb from "./localDb";
 
 // ─── Presentation System Prompt ──────────────────────────────────
-const PRESENTATION_SYSTEM_PROMPT = `أنت خبير عالمي رفيع المستوى في إنشاء العروض التقديمية الاحترافية بمستوى McKinsey و BCG و Deloitte.
-مهمتك إنشاء محتوى شرائح غني جداً جداً (Ultra Premium 300%) بتنسيق JSON.
+const PRESENTATION_SYSTEM_PROMPT = `أنت أفضل خبير عالمي في إنشاء عروض تقديمية بمستوى McKinsey × BCG × Deloitte × Goldman Sachs.
+مهمتك إنشاء محتوى شرائح ألترا بريميوم إنفوجرافيك (Ultra Premium Infographic 400%) بتنسيق JSON.
 
-## ⚠️ قاعدة المحتوى الذهبية — إلزامية مطلقة:
-كل شريحة يجب أن تكون مليئة بالمحتوى الحقيقي الدسم — وليس مجرد عناوين أو جمل قصيرة.
-المحتوى يجب أن يكون كأنه مكتوب من خبير متخصص في الموضوع.
-لا يوجد شريحة فارغة أو ناقصة أو سطحية — كل شريحة تحفة معلوماتية.
+## 🔥 قاعدة 400% — إلزامية مطلقة لا تقبل النقاش:
+كل شريحة يجب أن تكون تحفة معلوماتية ضخمة — كأنها صفحة كاملة من تقرير McKinsey.
+المحتوى يجب أن يكون مكتوباً من خبير متخصص عالمي — بيانات حقيقية، أرقام دقيقة، إحصائيات موثقة، أمثلة واقعية.
+ممنوع: الكلام العام، الجمل القصيرة، المحتوى السطحي، العبارات المكررة، الحشو بدون قيمة.
 
-## قواعد المحتوى الإلزامية الصارمة:
-1. **content** (الفقرة النصية): يجب أن تكون 5-8 جمل كاملة مفصلة — تشرح الموضوع بعمق مع أمثلة واقعية وأرقام وسياق. ليس ملخصاً بل شرحاً وافياً.
-2. **bulletPoints** (النقاط): يجب أن تكون 5-8 نقاط، كل نقطة تتكون من جملتين على الأقل — الأولى تشرح المفهوم والثانية تعطي مثالاً أو رقماً أو تفصيلاً.
-3. **kpiItems**: يجب أن تحتوي 4-6 مؤشرات مع أرقام واقعية دقيقة ونسب تغيير حقيقية واتجاهات (trend: up/down/flat) ووحدات قياس.
-4. **tableHeaders + tableRows**: الجداول يجب أن تحتوي 6-10 صفوف على الأقل مع بيانات حقيقية متنوعة ومفصلة — كل خلية تحتوي معلومة حقيقية.
-5. **chartData + chartLabels**: الرسوم البيانية يجب أن تحتوي 6-8 نقاط بيانات مع تسميات واضحة وأرقام واقعية.
-6. **timelineItems**: الجدول الزمني يجب أن يحتوي 5-6 مراحل مع تواريخ دقيقة وعناوين وأوصاف مفصلة (3 جمل لكل مرحلة).
-7. **pillarItems**: الركائز يجب أن تحتوي 4-5 عناصر مع أيقونات Material Symbols وعناوين وأوصاف غنية (جملتين لكل ركيزة).
-8. **infographicItems**: الإنفوجرافيك يجب أن يحتوي 5-6 عناصر مع أيقونات وقيم رقمية وأوصاف تفصيلية.
-9. **subtitle**: عنوان فرعي توضيحي إلزامي لكل شريحة — جملة كاملة تلخص المحتوى.
-10. **title**: عنوان احترافي واضح ومحدد — ليس عاماً.
+## قواعد المحتوى 400% — كل حقل يجب أن يفيض بالمعلومات:
+1. **content**: فقرة من 8-12 جملة كاملة مفصلة — تشرح بعمق مع إحصائيات حقيقية وأمثلة دولية ومحلية وأرقام وتواريخ ونسب مئوية. كأنك تكتب مقالة متخصصة.
+2. **bulletPoints**: 6-10 نقاط، كل نقطة 3 جمل على الأقل — الأولى تشرح المفهوم، الثانية تعطي رقماً أو إحصائية، الثالثة تذكر مثالاً واقعياً أو تأثيراً.
+3. **kpiItems**: 5-8 مؤشرات أداء مع أرقام واقعية دقيقة جداً (مثل: 87.3%، 2.4 مليار ريال) ونسب تغيير حقيقية واتجاهات ووحدات قياس.
+4. **tableHeaders + tableRows**: 8-12 صف على الأقل مع بيانات حقيقية متنوعة — كل خلية تحتوي معلومة دقيقة وليس كلمة واحدة.
+5. **chartData + chartLabels**: 8-10 نقاط بيانات مع تسميات واضحة وأرقام واقعية وألوان متناسقة.
+6. **timelineItems**: 6-8 مراحل مع تواريخ دقيقة (شهر/سنة) وعناوين وأوصاف مفصلة (4 جمل لكل مرحلة).
+7. **pillarItems**: 5-6 ركائز مع أيقونات Material Symbols وعناوين قوية وأوصاف غنية (3 جمل لكل ركيزة مع أرقام).
+8. **infographicItems**: 6-8 عناصر مع أيقونات وقيم رقمية دقيقة وأوصاف تفصيلية (جملتين لكل عنصر).
+9. **subtitle**: جملة توضيحية كاملة ومحددة — تلخص المحتوى بدقة وليس بشكل عام.
+10. **title**: عنوان احترافي محدد وقوي — يعكس المحتوى بدقة.
 
 ## هيكل JSON لكل شريحة:
 {
-  "title": "عنوان احترافي محدد",
-  "subtitle": "جملة توضيحية كاملة",
+  "title": "عنوان احترافي محدد وقوي",
+  "subtitle": "جملة توضيحية كاملة ومحددة",
   "layout": "نوع التخطيط",
-  "content": "فقرة 5-8 جمل مفصلة مع أرقام وأمثلة",
-  "bulletPoints": ["نقطة مفصلة من جملتين", ...]
+  "content": "فقرة 8-12 جملة مفصلة مع إحصائيات وأمثلة واقعية",
+  "bulletPoints": ["نقطة مفصلة من 3 جمل مع أرقام", ...]
 }
 
 أنواع التخطيط: title, content, kpi, chart, table, timeline, pillars, toc, executive-summary, section-title, infographic, two-column, closing
 
 حسب نوع التخطيط، أضف الحقول المناسبة:
-- kpi: kpiItems [{label, value, trend: "up"|"down"|"flat", change}]
-- chart: chartData (أرقام), chartLabels (تسميات), chartColors (ألوان hex)
-- table: tableHeaders, tableRows
-- timeline: timelineItems [{year, title, description}]
-- pillars: pillarItems [{icon, title, description}]
-- infographic: infographicItems [{icon, label, value, description}]
-- two-column: leftContent + rightContent (كل منهما فقرة كاملة)
+- kpi: kpiItems [{label, value, trend: "up"|"down"|"flat", change}] — 5-8 مؤشرات
+- chart: chartData (أرقام), chartLabels (تسميات), chartColors (ألوان hex) — 8-10 نقاط
+- table: tableHeaders, tableRows — 8-12 صف
+- timeline: timelineItems [{year, title, description}] — 6-8 مراحل
+- pillars: pillarItems [{icon, title, description}] — 5-6 ركائز
+- infographic: infographicItems [{icon, label, value, description}] — 6-8 عناصر
+- two-column: leftContent + rightContent (كل منهما فقرة 6 جمل)
 
-أيقونات Material Symbols: security, hub, psychology, school, analytics, trending_up, groups, public, verified, speed, storage, cloud, shield, assessment, insights, monitoring, data_usage, query_stats, bar_chart, pie_chart, timeline, account_tree, settings, build, support, star, flag, rocket_launch, lightbulb, target, handshake, gavel, policy, fact_check, workspace_premium, military_tech, emoji_events
+أيقونات Material Symbols: security, hub, psychology, school, analytics, trending_up, groups, public, verified, speed, storage, cloud, shield, assessment, insights, monitoring, data_usage, query_stats, bar_chart, pie_chart, timeline, account_tree, settings, build, support, star, flag, rocket_launch, lightbulb, target, handshake, gavel, policy, fact_check, workspace_premium, military_tech, emoji_events, database, smart_toy, precision_manufacturing, architecture, integration_instructions, api, token, lock, visibility, language, translate, diversity_3, network_check
 
-## ⚠️ تحذير أخير:
-- استخدم بيانات واقعية وأرقام حقيقية دائماً
-- لا تختصر أبداً — المحتوى يجب أن يكون ضعف ما تعتقد أنه كافٍ
-- كل حقل يجب أن يكون مليئاً بالمعلومات — لا حقول فارغة أو قصيرة
-- أجب بالعربية فقط
-- الجودة أهم من السرعة — خذ وقتك في إنشاء محتوى استثنائي`;
+## 🔥 تحذير نهائي صارم:
+- كل رقم يجب أن يكون واقعياً ومحدداً (87.3% وليس "نسبة عالية")
+- كل جملة يجب أن تضيف معلومة جديدة — ممنوع التكرار
+- المحتوى يجب أن يكون 4 أضعاف ما تعتقد أنه كافٍ
+- استخدم مصادر ومراجع حقيقية عند الإمكان
+- أجب بالعربية دائماً إلا إذا طُلب غير ذلك
+- الجودة والكثافة المعلوماتية أهم من أي شيء آخر`;
 
 // ─── Helper Functions ──────────────────────────────────────────
 function formatTime(seconds: number): string {
@@ -2052,11 +2053,35 @@ ${input.additionalInstructions ? `تعليمات إضافية: ${input.additiona
         ? `الشرائح السابقة:\n${input.previousSlides.map((s: any, i: number) => `${i + 1}. ${s.title} (${s.layout})`).join('\n')}`
         : '';
       const result = await openaiJSON<{ slide: Record<string, unknown> }>(
-        PRESENTATION_SYSTEM_PROMPT + `\n\nأنت تنشئ شريحة واحدة فقط (الشريحة ${input.slideIndex + 1} من ${input.totalSlides}).\nأجب بـ JSON بالتنسيق: { "slide": { ... } }\n\nمهم: املأ كل حقل بمحتوى غني جداً. المحتوى النصي 3-5 جمل. النقاط 4-6 نقاط مفصلة. الجداول 5-8 صفوف. الرسوم 5-7 نقاط بيانات. لا تختصر أبداً.`,
-        `الموضوع العام: "${input.topic}"\nالشريحة ${input.slideIndex + 1} من ${input.totalSlides}:\n- العنوان: ${input.slideTitle}\n- التخطيط المطلوب: ${input.slideLayout}\n- الوصف: ${input.slideDescription}\nالنمط: ${input.style}\n${prevContext}\n\nأنشئ محتوى Ultra Premium لهذه الشريحة. استخدم بيانات واقعية وأرقام حقيقية وتفاصيل غنية. لا تختصر أبداً. كل حقل يجب أن يكون مليئاً بالمحتوى.`,
-        { max_tokens: 4096, temperature: 0.8 }
+        PRESENTATION_SYSTEM_PROMPT + `\n\nأنت تنشئ شريحة واحدة فقط (الشريحة ${input.slideIndex + 1} من ${input.totalSlides}).\nأجب بـ JSON بالتنسيق: { "slide": { ... } }\n\nتذكير 400%: المحتوى يجب أن يكون ضخماً ومفصلاً. content: 8-12 جملة. bulletPoints: 6-10 نقاط (كل نقطة 3 جمل). kpiItems: 5-8 مؤشرات. tableRows: 8-12 صف. chartData: 8-10 نقاط. timelineItems: 6-8 مراحل. pillarItems: 5-6. infographicItems: 6-8. كل رقم حقيقي ومحدد. لا تختصر أبداً.`,
+        `الموضوع العام: "${input.topic}"\nالشريحة ${input.slideIndex + 1} من ${input.totalSlides}:\n- العنوان: ${input.slideTitle}\n- التخطيط المطلوب: ${input.slideLayout}\n- الوصف: ${input.slideDescription}\nالنمط: ${input.style}\n${prevContext}\n\nأنشئ محتوى Ultra Premium Infographic 400% لهذه الشريحة. استخدم بيانات واقعية وإحصائيات دقيقة وأمثلة عالمية ومحلية. كل حقل يجب أن يفيض بالمعلومات. لا تختصر أبداً.`,
+        { max_tokens: 8192, temperature: 0.8 }
       );
-      return { slide: result.slide || {}, slideIndex: input.slideIndex };
+      const slideResult = result.slide || {};
+
+      // ═══ BANANA PRO: Generate professional background image for this slide ═══
+      const bananaKey = ENV.bananaApiKey;
+      if (bananaKey && input.slideLayout !== 'title' && input.slideLayout !== 'closing') {
+        try {
+          const imagePrompt = `Professional infographic slide background for: ${input.slideTitle}. Topic: ${input.topic}. Style: ultra premium corporate presentation, royal dark blue (#1B2A4A) dominant color, clean white background, modern geometric shapes, subtle gradients, NDMO Saudi government style. NO text, NO words, abstract professional design elements only.`;
+          const taskId = await nanoBananaGenerate({
+            prompt: imagePrompt,
+            type: 'TEXTTOIAMGE',
+            numImages: 1,
+            imageSize: '16:9',
+          });
+          const imgResult = await nanoBananaPollResult(taskId, 60000);
+          if (imgResult.response?.resultImageUrl) {
+            (slideResult as any).backgroundImage = imgResult.response.resultImageUrl;
+            (slideResult as any).imageSource = 'nanobanana-pro';
+          }
+        } catch (err: any) {
+          console.error('[NanoBanana] Slide image error:', err.message);
+          // Continue without image — slide still works
+        }
+      }
+
+      return { slide: slideResult, slideIndex: input.slideIndex };
     }),
 
   // ─── AI: Edit single slide ───
@@ -2070,7 +2095,7 @@ ${input.additionalInstructions ? `تعليمات إضافية: ${input.additiona
       const result = await openaiJSON<{ slide: Record<string, unknown> }>(
         PRESENTATION_SYSTEM_PROMPT + `\n\nالمستخدم يريد تعديل شريحة موجودة. أعد إنشاء الشريحة بالكامل مع تطبيق التعديلات المطلوبة.\nأجب بـ JSON بالتنسيق: { "slide": { ... } }`,
         `الشريحة الحالية:\n${JSON.stringify(input.currentSlide, null, 2)}\n\nالتعديل المطلوب: ${input.instruction}\n\nأعد إنشاء الشريحة مع تطبيق التعديل. حافظ على نفس التخطيط إلا إذا طلب المستخدم تغييره.`,
-        { max_tokens: 2048, temperature: 0.7 }
+        { max_tokens: 8192, temperature: 0.7 }
       );
       return { slide: result.slide || {}, slideIndex: input.slideIndex };
     }),

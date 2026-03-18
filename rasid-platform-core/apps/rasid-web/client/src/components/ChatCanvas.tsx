@@ -71,11 +71,22 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
     else if (pi.step === 1) { pi.style = value; pi.step = 2; }
     else if (pi.step === 2) { pi.contentSource = value; pi.step = 3; }
     else if (pi.step === 3) { pi.slideCount = parseInt(value) || 8; pi.step = 4; }
-    else if (pi.step === 4) { pi.brandId = value; pi.step = 5; }
-    else if (pi.step === 5) { pi.imageStyle = value; pi.step = 6; }
-    else if (pi.step === 6) { pi.language = value; pi.step = 7; }
-    else if (pi.step === 7) {
-      // EXECUTE
+    else if (pi.step === 4) { pi.brandId = value; pi.imageStyle = 'ai-generated'; pi.step = 5;
+      // Auto-skip language step if language already detected from Arabic text
+      if (pi.language === 'ar' || pi.language === 'en') { pi.step = 6; }
+    }
+    else if (pi.step === 5) { pi.language = value; pi.step = 6; }
+    else if (pi.step === 6) {
+      // EXECUTE — save wizard choices to ref BEFORE clearing pendingIntent
+      wizardChoicesRef.current = {
+        topic: pi.topic,
+        style: pi.style,
+        contentSource: pi.contentSource,
+        slideCount: pi.slideCount,
+        brandId: pi.brandId,
+        language: pi.language,
+        imageStyle: pi.imageStyle,
+      };
       setPendingIntent(null);
       const typeLabel = pi.type === 'presentation' ? 'عرض' : pi.type === 'report' ? 'تقرير' : 'لوحة مؤشرات';
       doSendRef.current(`أنشئ ${typeLabel} عن ${pi.topic}`);
@@ -96,6 +107,9 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
   // AI mutations via tRPC
   const chatMutation = trpc.ai.chat.useMutation();
   const generateSlidesMutation = trpc.ai.generatePresentation.useMutation();
+  const generateTOCMutation = trpc.ai.generateTOC.useMutation();
+  const generateSingleSlideMutation = trpc.ai.generateSingleSlide.useMutation();
+  const editSlideAIMutation = trpc.ai.editSlideAI.useMutation();
   const generateReportMutation = trpc.ai.generateReport.useMutation();
   const analyzeDashboardMutation = trpc.ai.analyzeDashboard.useMutation();
   const translateMutation = trpc.ai.translate.useMutation();
@@ -119,6 +133,27 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
   const [editingSlide, setEditingSlide] = useState<number | null>(null);
   const [editField, setEditField] = useState<{ field: string; value: string }>({ field: '', value: '' });
   const [showSlideViewer, setShowSlideViewer] = useState(false);
+  // TOC approval state
+  const [pendingTOC, setPendingTOC] = useState<{ toc: { index: number; title: string; layout: string; description: string }[]; topic: string } | null>(null);
+  // Progressive generation state
+  const [isGeneratingSlides, setIsGeneratingSlides] = useState(false);
+  const [generationProgress, setGenerationProgress] = useState({ current: 0, total: 0 });
+  // Slideshow mode
+  const [slideshowMode, setSlideshowMode] = useState(false);
+  const [slideshowIndex, setSlideshowIndex] = useState(0);
+  // Ref to store wizard choices before clearing pendingIntent
+  const wizardChoicesRef = useRef<{
+    topic: string; style: string; contentSource: string; slideCount: number;
+    brandId: string; language: string; imageStyle: string;
+  } | null>(null);
+  // Ref for auto-scroll to latest slide
+  const slidesContainerRef = useRef<HTMLDivElement>(null);
+  // AI edit instruction
+  const [aiEditInstruction, setAiEditInstruction] = useState('');
+  const [aiEditLoading, setAiEditLoading] = useState(false);
+  // Code-first animation: each slide shows code first, then renders
+  const [slidePhases, setSlidePhases] = useState<Record<number, 'code' | 'rendering' | 'done'>>({});
+  const [slideCodeSnippets, setSlideCodeSnippets] = useState<Record<number, string>>({});
 
   const character = theme === 'dark' ? CHARACTERS.char3_dark : CHARACTERS.char1_waving;
   const [welcomeVisible, setWelcomeVisible] = useState(false);
@@ -252,77 +287,85 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
     try {
       const { intent, topic } = detectIntent(userText);
 
-      // ═══ PRESENTATION ENGINE ═══
+      // ═══ PRESENTATION ENGINE — ALWAYS WIZARD + TOC + PROGRESSIVE ═══
       if (intent === 'presentation') {
-        if (!topic || topic.length < 3) {
+        // Auto-detect language from user text
+        const hasArabic = /[\u0600-\u06FF]/.test(userText);
+        const detectedLang = hasArabic ? 'ar' : 'en';
+        // If no wizard choices saved, ALWAYS open wizard (pre-fill topic if detected)
+        if (!wizardChoicesRef.current) {
           setIsTyping(false);
           setPendingIntent({
-            type: 'presentation', step: 0, topic: '', style: 'professional', contentSource: 'ai',
-            slideCount: 8, brandId: 'ndmo', language: 'ar', imageStyle: 'icons-only', colorScheme: '', fontFamily: '', templateId: '',
+            type: 'presentation',
+            step: (topic && topic.length >= 3) ? 1 : 0, // skip topic step if already provided
+            topic: topic || '',
+            style: 'professional', contentSource: 'ai',
+            slideCount: 8, brandId: 'ndmo', language: detectedLang, imageStyle: 'icons-only',
+            colorScheme: '', fontFamily: '', templateId: '',
           });
           return;
         }
-        addAssistantMessage(`جاري إنشاء عرض عن **${topic}**... ⏳`, {
+
+        // ─── Wizard choices are available — use them ───
+        const wc = wizardChoicesRef.current;
+        wizardChoicesRef.current = null; // consume
+        const finalTopic = wc.topic || topic || userText;
+        const apiBrand = (wc.brandId === 'creative' ? 'custom' : wc.brandId) as 'ndmo' | 'sdaia' | 'modern' | 'minimal' | 'custom';
+
+        // ─── STEP 1: Generate TOC ───
+        addAssistantMessage(`جاري تحليل الموضوع وإنشاء فهرس المحتويات... ⏳\n\n**${finalTopic}**`, {
           stages: [
-            { name: 'تحليل الموضوع', status: 'completed', progress: 100 },
-            { name: 'توليد الشرائح', status: 'running', progress: 50 },
-            { name: 'التنسيق والتصميم', status: 'pending', progress: 0 },
+            { name: 'تحليل الموضوع', status: 'running', progress: 0 },
+            { name: 'إنشاء الفهرس', status: 'pending', progress: 0 },
+            { name: 'توليد الشرائح', status: 'pending', progress: 0 },
           ],
         });
 
-        // Use wizard options if available, otherwise defaults
-        const wizardBrand = pendingIntent?.brandId || 'ndmo';
-        const wizardCount = pendingIntent?.slideCount || 8;
-        const wizardLang = pendingIntent?.language || 'ar';
-        const wizardSource = (pendingIntent?.contentSource || 'ai') as 'ai' | 'user' | 'library' | 'file';
-        // Map brandId: 'creative' -> 'custom' for API compatibility
-        const apiBrand = (wizardBrand === 'creative' ? 'custom' : wizardBrand) as 'ndmo' | 'sdaia' | 'modern' | 'minimal' | 'custom';
+        // Animate progress realistically — stage 1 ticks while waiting for API
+        const progressInterval = setInterval(() => {
+          setMessages(prev => {
+            const last = prev[prev.length - 1];
+            if (!last?.stages || last.stages[0]?.status !== 'running') { clearInterval(progressInterval); return prev; }
+            const updated = [...prev];
+            const msg = { ...updated[updated.length - 1] };
+            const stages = [...(msg.stages || [])];
+            const s0 = { ...stages[0] };
+            // Slowly increment: max 85% while waiting for API
+            if (s0.progress < 85) s0.progress = Math.min(s0.progress + Math.floor(Math.random() * 8 + 3), 85);
+            stages[0] = s0;
+            msg.stages = stages;
+            updated[updated.length - 1] = msg;
+            return updated;
+          });
+        }, 600);
 
-        const slidesResult = await generateSlidesMutation.mutateAsync({
-          topic: topic || userText,
-          slideCount: wizardCount,
-          brandId: apiBrand,
-          language: wizardLang,
-          contentSource: wizardSource,
+        const tocResult = await generateTOCMutation.mutateAsync({
+          topic: finalTopic,
+          slideCount: wc.slideCount,
+          style: wc.style,
+          language: wc.language,
         });
 
-        const slides = slidesResult.slides || [];
-        let savedId = '';
-        try {
-          if (slides.length > 0) {
-            const saved = await createPresentation.mutateAsync({
-              title: slides[0]?.title || topic || 'عرض تقديمي جديد',
-              description: topic,
-              slides: slides,
-              theme: 'ndmo',
-            });
-            savedId = saved?.id ? String(saved.id) : '';
-          }
-        } catch { /* save failed — show results anyway */ }
+        clearInterval(progressInterval);
 
-        // Store slides and generate HTML previews
-        setGeneratedSlides(slides as SlideData[]);
-        const themeId = pendingIntent?.brandId || slideThemeId || 'ndmo';
-        setSlideThemeId(themeId);
-        const htmls = generateHtmlPresentation(slides as SlideData[], themeId);
-        setSlideHtmls(htmls);
-        setCurrentSlideIndex(0);
-        setShowSlideViewer(true);
+        const toc = tocResult.toc || [];
+        if (toc.length === 0) {
+          addAssistantMessage('فشل في إنشاء الفهرس. يرجى المحاولة مرة أخرى.');
+          return;
+        }
+
+        // ─── STEP 2: Show TOC for approval ───
+        setIsTyping(false);
+        setPendingTOC({ toc, topic: finalTopic });
+        setSlideThemeId(apiBrand);
 
         addAssistantMessage(
-          `تم إنشاء العرض بنجاح! 🎉 — **${slides.length} شريحة**`,
+          `تم إنشاء فهرس المحتويات — **${toc.length} شريحة**\n\nراجع الفهرس أدناه ثم اضغط **ابدأ التوليد** للمتابعة.`,
           {
             stages: [
               { name: 'تحليل الموضوع', status: 'completed', progress: 100 },
-              { name: 'توليد الشرائح', status: 'completed', progress: 100 },
-              { name: 'التنسيق والتصميم', status: 'completed', progress: 100 },
-            ],
-            actions: [
-              { id: 'export-pptx', label: 'تصدير PPTX', icon: 'download', variant: 'primary' },
-              { id: 'export-pdf', label: 'تصدير PDF', icon: 'picture_as_pdf', variant: 'secondary' },
-              { id: 'save-library', label: 'حفظ في المكتبة', icon: 'bookmark', variant: 'success' },
-              { id: 'save-template', label: 'حفظ كقالب', icon: 'style', variant: 'secondary' },
-              { id: 'new-presentation', label: 'عرض آخر', icon: 'add', variant: 'secondary' },
+              { name: 'إنشاء الفهرس', status: 'completed', progress: 100 },
+              { name: 'توليد الشرائح', status: 'pending', progress: 0 },
             ],
           }
         );
@@ -727,15 +770,166 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
       }
     } else if (action.id === 'save-template') {
       toast.info('سيتم حفظ العرض كقالب قريباً');
+    } else if (action.id === 'play-slideshow') {
+      if (slideHtmls.length > 0) {
+        setSlideshowIndex(0);
+        setSlideshowMode(true);
+      }
     } else {
       doSend(action.label);
     }
   }, [doSend, generatedSlides, slideHtmls, slideThemeId, createPresentation]);
 
+  // ═══ APPROVE TOC & START PROGRESSIVE GENERATION ═══
+  const approveTOC = useCallback(async () => {
+    if (!pendingTOC) return;
+    const { toc, topic } = pendingTOC;
+    setPendingTOC(null);
+    setIsGeneratingSlides(true);
+    setGenerationProgress({ current: 0, total: toc.length });
+    setGeneratedSlides([]);
+    setSlideHtmls([]);
+    setShowSlideViewer(true);
+
+    addAssistantMessage(`جاري توليد **${toc.length} شريحة** — شريحة شريحة... ⏳`, {
+      stages: [
+        { name: 'توليد الشرائح', status: 'running', progress: 0 },
+      ],
+    });
+
+    const allSlides: SlideData[] = [];
+    const allHtmls: string[] = [];
+    const themeId = slideThemeId || 'ndmo';
+
+    for (let i = 0; i < toc.length; i++) {
+      try {
+        const result = await generateSingleSlideMutation.mutateAsync({
+          topic,
+          slideIndex: i,
+          slideTitle: toc[i].title,
+          slideLayout: toc[i].layout,
+          slideDescription: toc[i].description,
+          totalSlides: toc.length,
+          style: wizardChoicesRef.current?.style || 'professional',
+          language: wizardChoicesRef.current?.language || 'ar',
+          previousSlides: allSlides.map(s => ({ title: s.title || '', layout: s.layout || '' })),
+        });
+
+        const slideData = { ...result.slide, layout: toc[i].layout } as SlideData;
+        allSlides.push(slideData);
+        const html = generateHtmlPresentation([slideData], themeId)[0];
+        allHtmls.push(html);
+
+        // Update state progressively — each slide appears immediately
+        setGeneratedSlides([...allSlides]);
+        setSlideHtmls([...allHtmls]);
+        setGenerationProgress({ current: i + 1, total: toc.length });
+        setCurrentSlideIndex(i);
+
+        // Update progress bar in message — show current slide name with real percentage
+        const realProgress = Math.round(((i + 1) / toc.length) * 100);
+        const currentSlideName = toc[i].title || `شريحة ${i + 1}`;
+        const nextSlideName = (i + 1 < toc.length) ? toc[i + 1].title : null;
+        setMessages(prev => {
+          const updated = [...prev];
+          const lastIdx = updated.length - 1;
+          if (lastIdx >= 0 && updated[lastIdx]?.stages) {
+            const msg = { ...updated[lastIdx] };
+            const stages: Array<{ name: string; status: 'pending' | 'running' | 'completed' | 'failed'; progress: number }> = [];
+            // Show completed slides
+            for (let j = 0; j <= i; j++) {
+              stages.push({ name: `${j + 1}. ${toc[j].title}`, status: 'completed', progress: 100 });
+            }
+            // Show next slide as running
+            if (nextSlideName) {
+              stages.push({ name: `${i + 2}. ${nextSlideName}`, status: 'running', progress: 0 });
+            }
+            // Show remaining as pending
+            for (let j = i + 2; j < toc.length; j++) {
+              stages.push({ name: `${j + 1}. ${toc[j].title}`, status: 'pending', progress: 0 });
+            }
+            msg.stages = stages;
+            updated[lastIdx] = msg;
+          }
+          return updated;
+        });
+
+        // Auto-scroll to latest slide
+        setTimeout(() => {
+          const el = document.getElementById(`chatcanvas-slide-${i}`);
+          el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 200);
+      } catch (err) {
+        console.error(`Failed to generate slide ${i + 1}:`, err);
+        // Add placeholder slide on error
+        const placeholder = { title: toc[i].title, layout: toc[i].layout, content: 'فشل في توليد هذه الشريحة' } as SlideData;
+        allSlides.push(placeholder);
+        const html = generateHtmlPresentation([placeholder], themeId)[0];
+        allHtmls.push(html);
+        setGeneratedSlides([...allSlides]);
+        setSlideHtmls([...allHtmls]);
+      }
+    }
+
+    setIsGeneratingSlides(false);
+
+    // Save to library
+    try {
+      await createPresentation.mutateAsync({
+        title: allSlides[0]?.title || topic || 'عرض تقديمي',
+        description: topic,
+        slides: allSlides,
+        theme: themeId,
+      });
+    } catch { /* save failed */ }
+
+    addAssistantMessage(
+      `تم توليد العرض بنجاح! — **${allSlides.length} شريحة** بجودة Ultra Premium Infographic 400%`,
+      {
+        stages: allSlides.map((s, idx) => ({ name: `${idx + 1}. ${s.title || 'شريحة'}`, status: 'completed' as const, progress: 100 })),
+        actions: [
+          { id: 'export-pptx', label: 'تصدير PPTX', icon: 'download', variant: 'primary' },
+          { id: 'export-pdf', label: 'تصدير PDF', icon: 'picture_as_pdf', variant: 'secondary' },
+          { id: 'play-slideshow', label: 'تشغيل العرض', icon: 'play_arrow', variant: 'success' },
+          { id: 'save-library', label: 'حفظ في المكتبة', icon: 'bookmark', variant: 'secondary' },
+          { id: 'new-presentation', label: 'عرض آخر', icon: 'add', variant: 'secondary' },
+        ],
+      }
+    );
+  }, [pendingTOC, slideThemeId, generateSingleSlideMutation, createPresentation, addAssistantMessage]);
+
+  // ═══ AI EDIT SLIDE ═══
+  const handleAIEdit = useCallback(async (slideIndex: number, instruction: string) => {
+    if (!instruction.trim() || aiEditLoading) return;
+    setAiEditLoading(true);
+    try {
+      const result = await editSlideAIMutation.mutateAsync({
+        currentSlide: generatedSlides[slideIndex] as any,
+        instruction,
+        slideIndex,
+      });
+      const updated = [...generatedSlides];
+      updated[slideIndex] = { ...result.slide, layout: generatedSlides[slideIndex]?.layout } as SlideData;
+      setGeneratedSlides(updated);
+      setSlideHtmls(generateHtmlPresentation(updated, slideThemeId));
+      setAiEditInstruction('');
+      setEditingSlide(null);
+      toast.success('تم تعديل الشريحة بنجاح!');
+    } catch {
+      toast.error('فشل في تعديل الشريحة');
+    }
+    setAiEditLoading(false);
+  }, [generatedSlides, slideThemeId, editSlideAIMutation, aiEditLoading]);
+
   // Handle new conversation
   const handleNewConversation = useCallback(() => {
     setMessages([]);
     setChatMenuOpen(false);
+    setPendingTOC(null);
+    setShowSlideViewer(false);
+    setGeneratedSlides([]);
+    setSlideHtmls([]);
+    setSlideshowMode(false);
   }, []);
 
   const isEmpty = messages.length === 0;
@@ -1032,15 +1226,70 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
         )}
       </div>
 
-      {/* ═══ Slide Viewer & Editor — VERTICAL LAYOUT ═══ */}
-      {showSlideViewer && slideHtmls.length > 0 && (
+      {/* ═══ TOC APPROVAL PANEL ═══ */}
+      {pendingTOC && (
+        <div className="px-2 md:px-4 pb-2 animate-slide-up">
+          <div className="rounded-2xl border border-primary/20 bg-card overflow-hidden shadow-lg">
+            <div className="flex items-center justify-between px-3 py-2 border-b border-border/30 bg-primary/5">
+              <div className="flex items-center gap-2">
+                <MaterialIcon icon="list_alt" size={16} className="text-primary" />
+                <span className="text-[12px] font-bold text-foreground">فهرس المحتويات — {pendingTOC.toc.length} شريحة</span>
+              </div>
+              <button onClick={() => setPendingTOC(null)} className="w-7 h-7 rounded-lg hover:bg-accent flex items-center justify-center">
+                <MaterialIcon icon="close" size={14} className="text-muted-foreground" />
+              </button>
+            </div>
+            <div className="max-h-[40vh] overflow-y-auto p-3">
+              <div className="flex flex-col gap-1.5">
+                {pendingTOC.toc.map((item, i) => (
+                  <div key={i} className="flex items-start gap-2 p-2 rounded-lg bg-muted/20 border border-border/20 hover:border-primary/20 transition-all">
+                    <span className="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded shrink-0 mt-0.5">{item.index || i + 1}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-semibold text-foreground">{item.title}</span>
+                        <span className="text-[8px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground">{item.layout}</span>
+                      </div>
+                      <p className="text-[9px] text-muted-foreground mt-0.5 leading-relaxed">{item.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center justify-between px-3 py-2 border-t border-border/30 bg-muted/10">
+              <span className="text-[10px] text-muted-foreground">راجع الفهرس ثم اضغط ابدأ التوليد</span>
+              <div className="flex gap-1.5">
+                <button onClick={() => setPendingTOC(null)} className="px-3 py-1.5 rounded-lg border border-border text-[10px] font-medium text-muted-foreground hover:bg-accent transition-all">
+                  إلغاء
+                </button>
+                <button onClick={approveTOC} className="px-4 py-1.5 rounded-lg bg-primary text-white text-[10px] font-bold hover:bg-primary/90 transition-all active:scale-95 flex items-center gap-1">
+                  <MaterialIcon icon="play_arrow" size={14} />
+                  ابدأ التوليد
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ Slide Viewer — COMPACT VERTICAL + PROGRESSIVE + AI EDIT + SLIDESHOW ═══ */}
+      {showSlideViewer && (slideHtmls.length > 0 || isGeneratingSlides) && (
         <div className="px-2 md:px-4 pb-2">
           <div className="rounded-2xl border border-border/40 bg-card overflow-hidden shadow-lg">
             {/* Toolbar */}
             <div className="flex items-center justify-between px-3 py-2 border-b border-border/30 bg-muted/30 sticky top-0 z-10">
               <div className="flex items-center gap-2">
                 <MaterialIcon icon="slideshow" size={16} className="text-primary" />
-                <span className="text-[12px] font-bold text-foreground">عرض تقديمي — {generatedSlides.length} شريحة</span>
+                <span className="text-[12px] font-bold text-foreground">
+                  {isGeneratingSlides
+                    ? `جاري التوليد... ${generationProgress.current}/${generationProgress.total}`
+                    : `عرض تقديمي — ${generatedSlides.length} شريحة`
+                  }
+                </span>
+                {isGeneratingSlides && (
+                  <div className="w-20 h-1.5 bg-muted/30 rounded-full overflow-hidden">
+                    <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${(generationProgress.current / generationProgress.total) * 100}%` }} />
+                  </div>
+                )}
               </div>
               <div className="flex items-center gap-1">
                 {/* Theme switcher */}
@@ -1056,98 +1305,193 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                     <option key={id} value={id}>{t.name}</option>
                   ))}
                 </select>
+                {!isGeneratingSlides && slideHtmls.length > 0 && (
+                  <button onClick={() => { setSlideshowIndex(0); setSlideshowMode(true); }} className="w-7 h-7 rounded-lg hover:bg-accent flex items-center justify-center" title="تشغيل العرض">
+                    <MaterialIcon icon="play_arrow" size={16} className="text-primary" />
+                  </button>
+                )}
                 <button onClick={() => setShowSlideViewer(false)} className="w-7 h-7 rounded-lg hover:bg-accent flex items-center justify-center">
                   <MaterialIcon icon="close" size={14} className="text-muted-foreground" />
                 </button>
               </div>
             </div>
 
-            {/* ─── ALL SLIDES VERTICALLY ─── */}
-            <div className="flex flex-col gap-4 p-3 md:p-4 max-h-[70vh] overflow-y-auto">
+            {/* ─── ALL SLIDES VERTICALLY — COMPACT GRID ─── */}
+            <div ref={slidesContainerRef} className="grid grid-cols-2 md:grid-cols-3 gap-2 p-2 md:p-3 max-h-[65vh] overflow-y-auto">
               {slideHtmls.map((html, i) => (
                 <div
                   key={`vslide-${i}`}
                   id={`chatcanvas-slide-${i}`}
                   className={`rounded-xl border transition-all ${
                     currentSlideIndex === i
-                      ? 'border-primary/40 shadow-lg shadow-primary/5'
+                      ? 'border-primary/40 shadow-md shadow-primary/5'
                       : 'border-border/30 hover:border-primary/20'
                   }`}
+                  style={{ animation: `msg-slide-right 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${i * 0.05}s both` }}
                 >
                   {/* Slide header */}
-                  <div className="flex items-center justify-between px-3 py-1.5 bg-muted/20 border-b border-border/20 rounded-t-xl">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">P{i + 1}</span>
-                      <span className="text-[11px] font-medium text-foreground truncate max-w-[200px]">{generatedSlides[i]?.title || `شريحة ${i + 1}`}</span>
-                      <span className="text-[9px] text-muted-foreground">— {generatedSlides[i]?.layout}</span>
+                  <div className="flex items-center justify-between px-2.5 py-1 bg-muted/20 border-b border-border/20 rounded-t-xl">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[9px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">{i + 1}</span>
+                      <span className="text-[10px] font-medium text-foreground truncate max-w-[180px]">{generatedSlides[i]?.title || `شريحة ${i + 1}`}</span>
+                      <span className="text-[8px] text-muted-foreground px-1 py-0.5 bg-accent/50 rounded">{generatedSlides[i]?.layout}</span>
                     </div>
-                    <button onClick={() => {
-                      setCurrentSlideIndex(i);
-                      setEditingSlide(i);
-                      const slide = generatedSlides[i];
-                      setEditField({ field: 'title', value: slide?.title || '' });
-                    }} className="flex items-center gap-1 px-2 py-1 rounded-lg border border-border hover:border-primary/30 hover:bg-primary/[0.03] text-[9px] font-medium transition-all active:scale-95">
-                      <MaterialIcon icon="edit" size={11} className="text-primary" />
-                      تعديل
-                    </button>
+                    <div className="flex items-center gap-0.5">
+                      <button onClick={() => {
+                        setCurrentSlideIndex(i);
+                        setEditingSlide(editingSlide === i ? null : i);
+                        setAiEditInstruction('');
+                        setEditField({ field: 'title', value: generatedSlides[i]?.title || '' });
+                      }} className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-md border border-border hover:border-primary/30 hover:bg-primary/[0.03] text-[8px] font-medium transition-all active:scale-95">
+                        <MaterialIcon icon="edit" size={10} className="text-primary" />
+                        تعديل
+                      </button>
+                    </div>
                   </div>
 
-                  {/* Slide iframe */}
-                  <div className="bg-neutral-900 flex items-center justify-center p-2 md:p-3">
-                    <iframe
-                      srcDoc={html}
-                      className="border-0 shadow-xl rounded-lg w-full"
-                      style={{ aspectRatio: '16/9', maxWidth: 640, background: '#fff' }}
-                      title={`شريحة ${i + 1}`}
-                    />
+                  {/* Slide iframe — THUMBNAIL SIZE */}
+                  <div className="bg-neutral-900 flex items-center justify-center p-1">
+                    <div className="w-full" style={{ maxWidth: 280 }}>
+                      <iframe
+                        srcDoc={html}
+                        className="border-0 shadow-md rounded-sm w-full pointer-events-none"
+                        style={{ aspectRatio: '16/9', background: '#fff', transform: 'scale(1)', transformOrigin: 'top center' }}
+                        title={`شريحة ${i + 1}`}
+                      />
+                    </div>
                   </div>
 
-                  {/* Edit panel (inline, only for this slide) */}
+                  {/* Edit panel — MANUAL + AI EDIT */}
                   {editingSlide === i && (
-                    <div className="border-t border-border/30 p-3 bg-card rounded-b-xl animate-fade-in">
+                    <div className="border-t border-border/30 p-2.5 bg-card rounded-b-xl animate-fade-in">
                       <div className="flex flex-col gap-2">
                         <div className="flex items-center justify-between">
-                          <span className="text-[11px] font-bold text-foreground">تعديل الشريحة {i + 1}</span>
-                          <div className="flex gap-1">
-                            <button onClick={() => {
-                              const updated = [...generatedSlides];
-                              if (editField.field === 'title') updated[i] = { ...updated[i], title: editField.value };
-                              else if (editField.field === 'content') updated[i] = { ...updated[i], content: editField.value };
-                              else if (editField.field === 'subtitle') updated[i] = { ...updated[i], subtitle: editField.value };
-                              setGeneratedSlides(updated);
-                              setSlideHtmls(generateHtmlPresentation(updated, slideThemeId));
-                              setEditingSlide(null);
-                            }} className="px-3 py-1.5 rounded-lg bg-primary text-white text-[10px] font-bold hover:bg-primary/90 transition-all active:scale-95">
-                              حفظ
-                            </button>
-                            <button onClick={() => setEditingSlide(null)} className="px-2 py-1.5 rounded-lg border border-border text-[10px] text-muted-foreground hover:bg-accent transition-all">
-                              إلغاء
-                            </button>
-                          </div>
+                          <span className="text-[10px] font-bold text-foreground">تعديل الشريحة {i + 1}</span>
+                          <button onClick={() => setEditingSlide(null)} className="text-[9px] text-muted-foreground hover:text-foreground">إغلاق</button>
                         </div>
-                        <div className="flex gap-1.5">
+
+                        {/* Manual field edit */}
+                        <div className="flex gap-1">
                           {['title', 'subtitle', 'content'].map(f => (
                             <button key={f} onClick={() => {
                               const slide = generatedSlides[i];
                               setEditField({ field: f, value: (slide as any)?.[f] || '' });
-                            }} className={`px-2.5 py-1 rounded-lg text-[10px] font-medium border transition-all ${editField.field === f ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:border-primary/30'}`}>
-                              {f === 'title' ? 'العنوان' : f === 'subtitle' ? 'العنوان الفرعي' : 'المحتوى'}
+                            }} className={`px-2 py-0.5 rounded text-[9px] font-medium border transition-all ${editField.field === f ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground'}`}>
+                              {f === 'title' ? 'العنوان' : f === 'subtitle' ? 'الفرعي' : 'المحتوى'}
                             </button>
                           ))}
                         </div>
                         <textarea
                           value={editField.value}
                           onChange={e => setEditField(prev => ({ ...prev, value: e.target.value }))}
-                          rows={3}
-                          className="w-full text-[12px] bg-muted/30 border border-border rounded-lg px-3 py-2 outline-none focus:border-primary/40 resize-none"
-                          placeholder="اكتب التعديل..."
+                          rows={2}
+                          className="w-full text-[11px] bg-muted/30 border border-border rounded-lg px-2 py-1.5 outline-none focus:border-primary/40 resize-none"
+                          placeholder="عدل الحقل يدوياً..."
                         />
+                        <button onClick={() => {
+                          const updated = [...generatedSlides];
+                          if (editField.field === 'title') updated[i] = { ...updated[i], title: editField.value };
+                          else if (editField.field === 'content') updated[i] = { ...updated[i], content: editField.value };
+                          else if (editField.field === 'subtitle') updated[i] = { ...updated[i], subtitle: editField.value };
+                          setGeneratedSlides(updated);
+                          setSlideHtmls(generateHtmlPresentation(updated, slideThemeId));
+                          toast.success('تم حفظ التعديل');
+                        }} className="self-end px-3 py-1 rounded-lg bg-primary text-white text-[9px] font-bold hover:bg-primary/90 transition-all active:scale-95">
+                          حفظ التعديل
+                        </button>
+
+                        {/* AI Edit */}
+                        <div className="border-t border-border/20 pt-2 mt-1">
+                          <div className="flex items-center gap-1 mb-1">
+                            <MaterialIcon icon="auto_awesome" size={11} className="text-primary" />
+                            <span className="text-[9px] font-bold text-primary">تعديل بالذكاء الاصطناعي</span>
+                          </div>
+                          <div className="flex gap-1">
+                            <input
+                              value={aiEditInstruction}
+                              onChange={e => setAiEditInstruction(e.target.value)}
+                              onKeyDown={e => { if (e.key === 'Enter') handleAIEdit(i, aiEditInstruction); }}
+                              placeholder="مثل: أضف إحصائيات أكثر / غير العنوان / اجعلها إنفوجرافيك"
+                              className="flex-1 text-[10px] bg-muted/30 border border-border rounded-lg px-2 py-1.5 outline-none focus:border-primary/40"
+                            />
+                            <button
+                              onClick={() => handleAIEdit(i, aiEditInstruction)}
+                              disabled={aiEditLoading || !aiEditInstruction.trim()}
+                              className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-primary to-primary/80 text-white text-[9px] font-bold hover:opacity-90 transition-all active:scale-95 disabled:opacity-50 flex items-center gap-1"
+                            >
+                              {aiEditLoading ? <MaterialIcon icon="sync" size={11} className="animate-spin" /> : <MaterialIcon icon="auto_awesome" size={11} />}
+                              عدل
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
                 </div>
               ))}
+
+              {/* Loading indicator for next slide */}
+              {isGeneratingSlides && (
+                <div className="flex items-center justify-center gap-2 py-4 animate-pulse">
+                  <MaterialIcon icon="sync" size={16} className="text-primary animate-spin" />
+                  <span className="text-[11px] text-muted-foreground">جاري توليد الشريحة {generationProgress.current + 1}...</span>
+                </div>
+              )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ SLIDESHOW MODE (FULLSCREEN) ═══ */}
+      {slideshowMode && slideHtmls.length > 0 && (
+        <div
+          className="fixed inset-0 z-50 bg-black flex flex-col"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+              e.preventDefault();
+              setSlideshowIndex(prev => Math.min(prev + 1, slideHtmls.length - 1));
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+              e.preventDefault();
+              setSlideshowIndex(prev => Math.max(prev - 1, 0));
+            } else if (e.key === 'Escape') {
+              setSlideshowMode(false);
+            }
+          }}
+          ref={(el) => el?.focus()}
+        >
+          {/* Slideshow toolbar */}
+          <div className="flex items-center justify-between px-4 py-2 bg-black/80 text-white">
+            <span className="text-[12px] font-bold">{generatedSlides[slideshowIndex]?.title || `شريحة ${slideshowIndex + 1}`}</span>
+            <div className="flex items-center gap-3">
+              <span className="text-[11px] text-gray-400">{slideshowIndex + 1} / {slideHtmls.length}</span>
+              <button onClick={() => setSlideshowMode(false)} className="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center">
+                <MaterialIcon icon="close" size={18} className="text-white" />
+              </button>
+            </div>
+          </div>
+          {/* Slide */}
+          <div className="flex-1 flex items-center justify-center p-4">
+            <iframe
+              srcDoc={slideHtmls[slideshowIndex]}
+              className="border-0 rounded-lg shadow-2xl"
+              style={{ width: '90vw', height: '80vh', maxWidth: 1200, background: '#fff' }}
+              title={`عرض ${slideshowIndex + 1}`}
+            />
+          </div>
+          {/* Navigation */}
+          <div className="flex items-center justify-center gap-4 py-3 bg-black/80">
+            <button onClick={() => setSlideshowIndex(prev => Math.max(prev - 1, 0))} disabled={slideshowIndex === 0} className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center disabled:opacity-30">
+              <MaterialIcon icon="chevron_right" size={22} className="text-white" />
+            </button>
+            <div className="flex gap-1">
+              {slideHtmls.map((_, i) => (
+                <button key={i} onClick={() => setSlideshowIndex(i)} className={`w-2 h-2 rounded-full transition-all ${i === slideshowIndex ? 'bg-primary w-4' : 'bg-white/30 hover:bg-white/50'}`} />
+              ))}
+            </div>
+            <button onClick={() => setSlideshowIndex(prev => Math.min(prev + 1, slideHtmls.length - 1))} disabled={slideshowIndex === slideHtmls.length - 1} className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center disabled:opacity-30">
+              <MaterialIcon icon="chevron_left" size={22} className="text-white" />
+            </button>
           </div>
         </div>
       )}
@@ -1167,7 +1511,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                     {pendingIntent.type === 'presentation' ? 'عرض تقديمي جديد' : pendingIntent.type === 'report' ? 'تقرير جديد' : 'لوحة مؤشرات جديدة'}
                   </span>
                   <div className="flex gap-0.5 mt-0.5">
-                    {[0,1,2,3,4,5,6,7].map(s => (
+                    {[0,1,2,3,4,5,6].map(s => (
                       <div key={s} className={`h-[3px] rounded-full transition-all duration-300 ${s < pendingIntent.step ? 'w-4 bg-primary' : s === pendingIntent.step ? 'w-6 bg-primary animate-pulse' : 'w-2 bg-border'}`} />
                     ))}
                   </div>
@@ -1300,34 +1644,8 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
               </div>
             )}
 
-            {/* Step 5: Image style */}
+            {/* Step 5: Language */}
             {pendingIntent.step === 5 && (
-              <div className="flex flex-col gap-2">
-                <span className="text-[13px] font-semibold text-foreground">أسلوب الصور</span>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {[
-                    { id: 'ai-generated', label: 'صور بالذكاء الاصطناعي', desc: 'Banana Pro / DALL-E', icon: 'auto_awesome' },
-                    { id: 'icons-only', label: 'أيقونات فقط', desc: 'Material Design Icons', icon: 'emoji_symbols' },
-                    { id: 'photos', label: 'صور واقعية', desc: 'Unsplash / Pexels', icon: 'photo_library' },
-                    { id: 'none', label: 'بدون صور', desc: 'نصوص وبيانات فقط', icon: 'text_fields' },
-                  ].map(s => (
-                    <button key={s.id} onClick={() => handleIntentChip(s.id)}
-                      className="flex items-center gap-2.5 p-3 rounded-xl border border-border/60 bg-card hover:border-primary/30 hover:bg-primary/[0.03] transition-all active:scale-[0.97]">
-                      <div className="w-9 h-9 rounded-lg bg-primary/8 flex items-center justify-center shrink-0">
-                        <MaterialIcon icon={s.icon} size={18} className="text-primary" />
-                      </div>
-                      <div className="text-right">
-                        <div className="text-[11px] font-bold text-foreground">{s.label}</div>
-                        <div className="text-[9px] text-muted-foreground">{s.desc}</div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Step 6: Language */}
-            {pendingIntent.step === 6 && (
               <div className="flex flex-col gap-2">
                 <span className="text-[13px] font-semibold text-foreground">اللغة</span>
                 <div className="flex flex-wrap gap-1.5">
@@ -1346,8 +1664,8 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
               </div>
             )}
 
-            {/* Step 7: Confirm */}
-            {pendingIntent.step === 7 && (
+            {/* Step 6: Confirm */}
+            {pendingIntent.step === 6 && (
               <div className="flex flex-col gap-2.5">
                 <span className="text-[13px] font-semibold text-foreground">ملخص الطلب</span>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
@@ -1356,7 +1674,6 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
                   <span className="text-muted-foreground">المحتوى:</span><span className="font-bold text-foreground">{{'ai':'ذكاء اصطناعي','user':'محتوى خاص','library':'من المكتبة'}[pendingIntent.contentSource] || pendingIntent.contentSource}</span>
                   <span className="text-muted-foreground">العدد:</span><span className="font-bold text-foreground">{pendingIntent.slideCount} {pendingIntent.type === 'presentation' ? 'شريحة' : 'قسم'}</span>
                   <span className="text-muted-foreground">الهوية:</span><span className="font-bold text-foreground">{{'ndmo':'NDMO','sdaia':'سدايا','modern':'عصري','minimal':'بسيط','creative':'إبداعي','custom':'مخصص'}[pendingIntent.brandId] || pendingIntent.brandId}</span>
-                  <span className="text-muted-foreground">الصور:</span><span className="font-bold text-foreground">{{'ai-generated':'ذكاء اصطناعي','icons-only':'أيقونات','photos':'واقعية','none':'بدون'}[pendingIntent.imageStyle] || pendingIntent.imageStyle}</span>
                   <span className="text-muted-foreground">اللغة:</span><span className="font-bold text-foreground">{{'ar':'العربية','en':'English','both':'ثنائي'}[pendingIntent.language] || pendingIntent.language}</span>
                 </div>
                 <button onClick={() => handleIntentChip('execute')}
@@ -1368,14 +1685,14 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
             )}
 
             {/* Selections summary */}
-            {pendingIntent.step > 0 && pendingIntent.step < 7 && (
+            {pendingIntent.step > 0 && pendingIntent.step < 6 && (
               <div className="flex flex-wrap gap-1 pt-0.5 border-t border-border/20 mt-0.5 pt-1.5">
                 {pendingIntent.topic && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{pendingIntent.topic}</span>}
                 {pendingIntent.step > 1 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'professional':'احترافي','infographic':'إنفوجرافيك','executive':'قيادي','creative':'إبداعي','minimal':'بسيط','data-heavy':'تحليلي'}[pendingIntent.style]}</span>}
                 {pendingIntent.step > 2 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'ai':'AI','user':'محتوى خاص','library':'مكتبة'}[pendingIntent.contentSource]}</span>}
                 {pendingIntent.step > 3 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{pendingIntent.slideCount} شريحة</span>}
                 {pendingIntent.step > 4 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'ndmo':'NDMO','sdaia':'سدايا','modern':'عصري','minimal':'بسيط','creative':'إبداعي','custom':'مخصص'}[pendingIntent.brandId]}</span>}
-                {pendingIntent.step > 5 && <span className="text-[9px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{{'ai-generated':'صور AI','icons-only':'أيقونات','photos':'صور','none':'بدون'}[pendingIntent.imageStyle]}</span>}
+
               </div>
             )}
           </div>

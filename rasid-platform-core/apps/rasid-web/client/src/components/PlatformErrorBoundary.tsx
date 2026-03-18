@@ -103,6 +103,9 @@ export default function PlatformErrorBoundary({ children }: PlatformErrorBoundar
   }, []);
 
   const handleConnectionChange = useCallback((wsConnected: boolean) => {
+    // In local/dev mode, suppress all WS connection toasts
+    const _isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('manus.computer'));
+    if (_isLocal) return;
     if (!wsConnected) {
       // Only show WS disconnect if we were previously connected
       toast.loading('انقطع الاتصال المباشر. جاري إعادة المحاولة...', {
