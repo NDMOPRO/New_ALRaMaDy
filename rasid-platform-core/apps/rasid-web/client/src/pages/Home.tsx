@@ -591,13 +591,30 @@ export default function Home() {
   }, [toggleData, toggleStudio, toggleBoth, dataOpen, studioOpen, mobileDrawer, showShortcutToast]);
 
   const handleToolClick = useCallback((tool: { icon: string; label: string; id: string }) => {
-    if (activeView !== 'chat') {
+    // Map studio tool IDs to workspace view IDs
+    const toolToView: Record<string, string> = {
+      'dashboard': 'dashboard',
+      'report': 'reports',
+      'presentation': 'presentations',
+      'matching': 'matching',
+      'arabization': 'translation',
+      'extraction': 'extraction',
+      'translation': 'translation',
+    };
+    const targetView = toolToView[tool.id];
+    if (targetView) {
       setPrevView(activeView);
-      setActiveView('chat');
+      setActiveView(targetView);
+    } else {
+      // Fallback: send to chat
+      if (activeView !== 'chat') {
+        setPrevView(activeView);
+        setActiveView('chat');
+      }
+      setTimeout(() => {
+        chatCanvasRef.current?.sendMessage(tool.label);
+      }, 100);
     }
-    setTimeout(() => {
-      chatCanvasRef.current?.sendMessage(tool.label);
-    }, 100);
   }, [activeView]);
 
   const handleSettingsClick = useCallback((e: React.MouseEvent) => {

@@ -2800,4 +2800,25 @@ ${targetPrompt}`,
       const base64 = Buffer.from(arrayBuffer).toString('base64');
       return { audioBase64: base64, mimeType: 'audio/mpeg' };
     }),
+
+  // ─── Upload File (for extraction engine) ──────────────────
+  uploadFile: publicProcedure
+    .input(z.object({
+      fileName: z.string(),
+      base64Data: z.string(),
+      mimeType: z.string().optional(),
+    }))
+    .mutation(async ({ input }) => {
+      const fs = await import('fs');
+      const path = await import('path');
+      const uploadsDir = path.join(process.cwd(), 'uploads');
+      if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+      const ext = input.fileName.split('.').pop() || 'bin';
+      const fileKey = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const filePath = path.join(uploadsDir, fileKey);
+      const buffer = Buffer.from(input.base64Data, 'base64');
+      fs.writeFileSync(filePath, buffer);
+      const url = `/uploads/${fileKey}`;
+      return { url, fileName: input.fileName, filePath };
+    }),
 });

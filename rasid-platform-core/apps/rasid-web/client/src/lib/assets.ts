@@ -73,8 +73,14 @@ export const CHAT_OPTIONS: Array<{ id: string; label: string; icon: string; dang
 // ===== WORKSPACE VIEWS =====
 export const WORKSPACE_VIEWS = [
   { id: 'chat', label: 'راصد الذكي', icon: 'smart_toy' },
+  { id: 'dashboard', label: 'لوحة المؤشرات', icon: 'dashboard' },
+  { id: 'reports', label: 'التقارير', icon: 'description' },
+  { id: 'presentations', label: 'العروض', icon: 'slideshow' },
   { id: 'data', label: 'بياناتي', icon: 'table_chart' },
   { id: 'library', label: 'مكتبتي', icon: 'folder_open' },
+  { id: 'translation', label: 'الترجمة', icon: 'translate' },
+  { id: 'extraction', label: 'التفريغ', icon: 'text_snippet' },
+  { id: 'matching', label: 'المطابقة', icon: 'compare' },
 ] as const;
 
 // ===== SETUP PANEL COMMON OPTIONS =====

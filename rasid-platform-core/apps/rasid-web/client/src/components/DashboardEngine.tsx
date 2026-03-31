@@ -708,15 +708,28 @@ export default function DashboardEngine() {
         </div>
       </div>
 
-      {/* Bottom Bar */}
+      {/* AI Bottom Bar */}
       <div className="px-2 pb-1.5 pt-1 border-t border-border shrink-0">
-        <div className="flex items-center gap-1.5 bg-accent/30 rounded-xl px-2 py-1.5">
+        <form onSubmit={(e) => { e.preventDefault(); handleAIDashboard(); }} className="flex items-center gap-1.5 bg-accent/30 rounded-xl px-2 py-1.5">
           <img src={theme === 'dark' ? CHARACTERS.char3_dark : CHARACTERS.char1_waving} alt="راصد" className="w-5 h-5 rounded-full object-contain" />
-          <input type="text" placeholder="اطلب من راصد تعديل اللوحة... مثال: أضف مؤشر لعدد الجهات المتأخرة" className="flex-1 bg-transparent text-[10px] sm:text-[11px] outline-none text-foreground placeholder:text-muted-foreground" />
-          <button className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-accent transition-all">
-            <MaterialIcon icon="send" size={13} className="text-primary" />
-          </button>
-        </div>
+          <input
+            type="text"
+            value={aiPrompt}
+            onChange={(e) => setAiPrompt(e.target.value)}
+            placeholder="اطلب من راصد إنشاء لوحة مؤشرات... مثال: أنشئ لوحة مؤشرات لأداء الجهات الحكومية"
+            className="flex-1 bg-transparent text-[10px] sm:text-[11px] outline-none text-foreground placeholder:text-muted-foreground"
+            disabled={aiLoading}
+          />
+          {aiLoading ? (
+            <div className="w-6 h-6 flex items-center justify-center">
+              <MaterialIcon icon="progress_activity" size={13} className="text-primary animate-spin" />
+            </div>
+          ) : (
+            <button type="submit" disabled={!aiPrompt.trim()} className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-accent transition-all disabled:opacity-30">
+              <MaterialIcon icon="auto_awesome" size={13} className="text-primary" />
+            </button>
+          )}
+        </form>
       </div>
     </div>
   );
