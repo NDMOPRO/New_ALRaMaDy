@@ -588,11 +588,54 @@ export default function ExcelEngine() {
             setActiveSheetIndex(sheets.length);
           }
         };
-        reader.readAsText(file);
+         reader.readAsText(file);
+      } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+        // XLSX/XLS drag & drop import
+        const reader = new FileReader();
+        reader.onload = async (ev) => {
+          try {
+            const XLSX = await import('xlsx');
+            const data = new Uint8Array(ev.target?.result as ArrayBuffer);
+            const workbook = XLSX.read(data, { type: 'array' });
+            pushUndo();
+            const importedSheets: Sheet[] = [];
+            workbook.SheetNames.forEach((sheetName: string, idx: number) => {
+              const worksheet = workbook.Sheets[sheetName];
+              const jsonData = XLSX.utils.sheet_to_json<string[]>(worksheet, { header: 1 }) as string[][];
+              if (jsonData.length > 0) {
+                const headers = (jsonData[0] || []).map((h: any) => String(h || ''));
+                const columns: Column[] = headers.map(h => ({
+                  id: uid(), name: h, width: 140, pinned: false, type: 'auto' as const, hidden: false,
+                }));
+                const rows: CellValue[][] = jsonData.slice(1).map(row => {
+                  return headers.map((_: string, ci: number) => {
+                    const val = (row as any)[ci];
+                    const str = val !== undefined && val !== null ? String(val) : '';
+                    const num = parseFloat(str);
+                    return { raw: str, computed: isNaN(num) ? str : num, type: (isNaN(num) ? 'text' : 'number') as CellValue['type'] };
+                  });
+                });
+                importedSheets.push({
+                  id: uid(),
+                  name: sheetName.slice(0, 31),
+                  columns,
+                  rows,
+                  color: COLORS[(sheets.length + idx) % COLORS.length],
+                });
+              }
+            });
+            if (importedSheets.length > 0) {
+              setSheets(prev => [...prev, ...importedSheets]);
+              setActiveSheetIndex(sheets.length);
+            }
+          } catch (err) {
+            console.error('Failed to parse XLSX:', err);
+          }
+        };
+        reader.readAsArrayBuffer(file);
       }
     }
   }, [sheets, pushUndo]);
-
   // Export to CSV
   const exportCSV = useCallback(() => {
     const headers = activeSheet.columns.map(c => c.name).join(',');
@@ -1239,6 +1282,50 @@ export default function ExcelEngine() {
                 }
               };
               reader.readAsText(file);
+            } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+              // XLSX/XLS import using SheetJS
+              const reader = new FileReader();
+              reader.onload = async (ev) => {
+                try {
+                  const XLSX = await import('xlsx');
+                  const data = new Uint8Array(ev.target?.result as ArrayBuffer);
+                  const workbook = XLSX.read(data, { type: 'array' });
+                  pushUndo();
+                  const importedSheets: Sheet[] = [];
+                  workbook.SheetNames.forEach((sheetName: string, idx: number) => {
+                    const worksheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json<string[]>(worksheet, { header: 1 }) as string[][];
+                    if (jsonData.length > 0) {
+                      const headers = (jsonData[0] || []).map((h: any) => String(h || ''));
+                      const columns: Column[] = headers.map(h => ({
+                        id: uid(), name: h, width: 140, pinned: false, type: 'auto' as const, hidden: false,
+                      }));
+                      const rows: CellValue[][] = jsonData.slice(1).map(row => {
+                        return headers.map((_: string, ci: number) => {
+                          const val = row[ci];
+                          const str = val !== undefined && val !== null ? String(val) : '';
+                          const num = parseFloat(str);
+                          return { raw: str, computed: isNaN(num) ? str : num, type: (isNaN(num) ? 'text' : 'number') as CellValue['type'] };
+                        });
+                      });
+                      importedSheets.push({
+                        id: uid(),
+                        name: sheetName.slice(0, 31),
+                        columns,
+                        rows,
+                        color: COLORS[(sheets.length + idx) % COLORS.length],
+                      });
+                    }
+                  });
+                  if (importedSheets.length > 0) {
+                    setSheets(prev => [...prev, ...importedSheets]);
+                    setActiveSheetIndex(sheets.length);
+                  }
+                } catch (err) {
+                  console.error('Failed to parse XLSX:', err);
+                }
+              };
+              reader.readAsArrayBuffer(file);
             }
           }
         }}

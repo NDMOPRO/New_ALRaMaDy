@@ -121,6 +121,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
   const createReport = trpc.reports.create.useMutation();
   const createDashboard = trpc.dashboards.create.useMutation();
   const createSpreadsheet = trpc.spreadsheets.create.useMutation();
+  const excelOperationMutation = trpc.ai.excelOperation.useMutation();
 
   // File upload state for replication
   const [uploadedFile, setUploadedFile] = useState<{ url: string; name: string; type: string } | null>(null);
@@ -249,6 +250,11 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
     if (/لوحة|داشبورد|مؤشر|مؤشرات|dashboard|kpi|احصائ/i.test(t)) {
       const cleaned = t.replace(/[أا]نش[ئيء]|نفذ|اعمل|سوي|سو|[أا]صنع|صمم|جهز|حضر|[أا]بني|ابغ[اىي]|[أا]بي|[أا]ريد|لي|لوحة مؤشرات|لوحة|مؤشرات|داشبورد|عن|بعنوان|حول|بموضوع/gi, '').trim();
       return { intent: 'dashboard', topic: cleaned };
+    }
+    // Excel / إكسل operations
+    if (/إكسل|اكسل|excel|جدول بيانات|spreadsheet|ادمج|دمج.*جدول|فصل.*جدول|افصل|جمّل|تجميل.*جدول|حسّن.*جدول|تحسين.*جدول|نظّف|تنظيف.*جدول|بيانات.*جدول|أنشئ.*جدول|اعمل.*جدول|سوي.*جدول/i.test(t)) {
+      const cleaned = t.replace(/[أا]نش[ئيء]|نفذ|اعمل|سوي|سو|[أا]صنع|صمم|جهز|حضر|[أا]بني|ابغ[اىي]|[أا]بي|[أا]ريد|لي|عن|بعنوان|حول|بموضوع/gi, '').trim();
+      return { intent: 'excel', topic: cleaned };
     }
     // Translation / ترجمة
     if (/ترجم|ترجمة|translate/i.test(t))
@@ -504,6 +510,93 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
         return;
       }
 
+      // ═══ EXCEL OPERATIONS ═══
+      if (intent === 'excel') {
+        // Detect operation type from text
+        const opMap: Array<{ regex: RegExp; op: string }> = [
+          { regex: /ادمج|دمج|merge/i, op: 'merge' },
+          { regex: /افصل|فصل|split/i, op: 'split' },
+          { regex: /جمّل|تجميل|beautify|زيّن/i, op: 'beautify' },
+          { regex: /حسّن|تحسين|improve|طوّر/i, op: 'improve' },
+          { regex: /نظّف|تنظيف|clean/i, op: 'clean' },
+          { regex: /حلّل|تحليل|analyze/i, op: 'analyze' },
+          { regex: /صيغة|صيغ|formula/i, op: 'formula' },
+          { regex: /حوّل|تحويل|transform/i, op: 'transform' },
+          { regex: /لخّص|تلخيص|summarize/i, op: 'summarize' },
+        ];
+        const detected = opMap.find(o => o.regex.test(userText));
+        const operation = (detected?.op || 'generate') as any;
+        const opLabels: Record<string, string> = {
+          merge: 'دمج الجداول', split: 'فصل الجدول', beautify: 'تجميل الجدول',
+          improve: 'تحسين الجدول', clean: 'تنظيف البيانات', analyze: 'تحليل البيانات',
+          formula: 'اقتراح صيغ', transform: 'تحويل البيانات', summarize: 'تلخيص البيانات',
+          generate: 'إنشاء جدول بيانات',
+        };
+
+        addAssistantMessage(`جاري **${opLabels[operation]}**... ⏳`, {
+          stages: [
+            { name: 'تحليل الطلب', status: 'completed', progress: 100 },
+            { name: opLabels[operation], status: 'running', progress: 40 },
+            { name: 'حفظ النتائج', status: 'pending', progress: 0 },
+          ],
+        });
+
+        try {
+          const excelResult = await excelOperationMutation.mutateAsync({
+            operation,
+            prompt: userText,
+            sheetsData: uploadedFile ? undefined : undefined, // Will use data from ExcelEngine if available
+          });
+
+          // If result has sheets, save as spreadsheet
+          let savedId = '';
+          if (excelResult.sheets && excelResult.sheets.length > 0) {
+            try {
+              const sheetsForSave = excelResult.sheets.map((s: any) => ({
+                name: s.name || 'ورقة 1',
+                columns: (s.columns || []).map((c: string) => ({ id: Math.random().toString(36).slice(2), name: c, width: 140, pinned: false, type: 'auto' as const, hidden: false })),
+                rows: (s.rows || []).map((r: string[]) => r.map((cell: string) => {
+                  const num = parseFloat(cell);
+                  return { raw: cell, computed: isNaN(num) ? cell : num, type: (isNaN(num) ? 'text' : 'number') as any };
+                })),
+                color: '#3b82f6',
+              }));
+              const saved = await createSpreadsheet.mutateAsync({
+                title: topic || 'جدول بيانات',
+                sheets: sheetsForSave as any,
+              });
+              savedId = saved?.id ? String(saved.id) : '';
+            } catch { /* save failed */ }
+          }
+
+          const summary = excelResult.summary || 'تمت العملية بنجاح';
+          const sheetsCount = excelResult.sheets?.length || 0;
+          const changes = excelResult.changes || excelResult.improvements || excelResult.issues || [];
+          const changesText = changes.length > 0 ? `\n\n**التغييرات:**\n${changes.map((c: string, i: number) => `${i + 1}. ${c}`).join('\n')}` : '';
+
+          addAssistantMessage(
+            `✅ تم **${opLabels[operation]}** بنجاح!\n\n${summary}\n\nعدد الجداول: **${sheetsCount}**${changesText}`,
+            {
+              stages: [
+                { name: 'تحليل الطلب', status: 'completed', progress: 100 },
+                { name: opLabels[operation], status: 'completed', progress: 100 },
+                { name: 'حفظ النتائج', status: 'completed', progress: 100 },
+              ],
+              artifacts: [{ id: savedId || 'excel-1', type: 'data', label: topic || 'جدول بيانات', icon: 'table_chart' }],
+              actions: [
+                { id: 'open-excel', label: 'فتح في بياناتي', icon: 'table_chart', variant: 'primary' },
+                { id: 'new-excel', label: 'جدول آخر', icon: 'add', variant: 'secondary' },
+              ],
+            }
+          );
+        } catch (err: any) {
+          addAssistantMessage(`❌ فشلت عملية ${opLabels[operation]}: ${err.message || 'خطأ غير متوقع'}`, {
+            actions: [{ id: 'retry', label: 'إعادة المحاولة', icon: 'refresh', variant: 'primary' }],
+          });
+        }
+        return;
+      }
+
       // ═══ REPLICATE FROM IMAGE ═══
       if (intent === 'replicate-image') {
         if (!uploadedFile) {
@@ -688,24 +781,40 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
       const fileUrl = await toBase64(file);
       setUploadedFile({ url: fileUrl, name: file.name, type: file.type });
       const isPdf = file.name.toLowerCase().endsWith('.pdf');
-      addAssistantMessage(
-        `✅ تم رفع الملف: **${file.name}**\n\nالآن اكتب ماذا تريد:\n${isPdf
-          ? '• "حول PDF إلى عرض تقديمي"\n• "حول PDF إلى تقرير"'
-          : '• "طابق الصورة كلوحة مؤشرات"\n• "طابق الصورة كعرض تقديمي"\n• "طابق الصورة كتقرير"\n• "طابق الصورة كجدول"'}`,
-        {
-          actions: isPdf
-            ? [
-                { id: 'pdf-to-pres', label: 'حول إلى عرض تقديمي', icon: 'slideshow', variant: 'primary' },
-                { id: 'pdf-to-report', label: 'حول إلى تقرير', icon: 'description', variant: 'secondary' },
-              ]
-            : [
-                { id: 'match-dashboard', label: 'طابق كلوحة مؤشرات', icon: 'dashboard', variant: 'primary' },
-                { id: 'match-presentation', label: 'طابق كعرض', icon: 'slideshow', variant: 'secondary' },
-                { id: 'match-report', label: 'طابق كتقرير', icon: 'description', variant: 'secondary' },
-                { id: 'match-spreadsheet', label: 'طابق كجدول', icon: 'table_chart', variant: 'secondary' },
-              ],
-        }
-      );
+      const isExcel = /\.(xlsx|xls|csv|tsv)$/i.test(file.name.toLowerCase());
+      if (isExcel) {
+        addAssistantMessage(
+          `✅ تم رفع ملف الإكسل: **${file.name}**\n\nالآن اكتب ماذا تريد:\n• "حسّن الجدول"\n• "جمّل الجدول"\n• "نظّف البيانات"\n• "حلّل البيانات"\n• "ادمج الجداول"\n• "افتح في بياناتي"`,
+          {
+            actions: [
+              { id: 'excel-improve', label: 'تحسين', icon: 'auto_fix_high', variant: 'primary' },
+              { id: 'excel-beautify', label: 'تجميل', icon: 'palette', variant: 'secondary' },
+              { id: 'excel-clean', label: 'تنظيف', icon: 'cleaning_services', variant: 'secondary' },
+              { id: 'excel-analyze', label: 'تحليل', icon: 'analytics', variant: 'secondary' },
+              { id: 'open-excel', label: 'فتح في بياناتي', icon: 'table_chart', variant: 'secondary' },
+            ],
+          }
+        );
+      } else {
+        addAssistantMessage(
+          `✅ تم رفع الملف: **${file.name}**\n\nالآن اكتب ماذا تريد:\n${isPdf
+            ? '• "حول PDF إلى عرض تقديمي"\n• "حول PDF إلى تقرير"'
+            : '• "طابق الصورة كلوحة مؤشرات"\n• "طابق الصورة كعرض تقديمي"\n• "طابق الصورة كتقرير"\n• "طابق الصورة كجدول"'}`,
+          {
+            actions: isPdf
+              ? [
+                  { id: 'pdf-to-pres', label: 'حول إلى عرض تقديمي', icon: 'slideshow', variant: 'primary' },
+                  { id: 'pdf-to-report', label: 'حول إلى تقرير', icon: 'description', variant: 'secondary' },
+                ]
+              : [
+                  { id: 'match-dashboard', label: 'طابق كلوحة مؤشرات', icon: 'dashboard', variant: 'primary' },
+                  { id: 'match-presentation', label: 'طابق كعرض', icon: 'slideshow', variant: 'secondary' },
+                  { id: 'match-report', label: 'طابق كتقرير', icon: 'description', variant: 'secondary' },
+                  { id: 'match-spreadsheet', label: 'طابق كجدول', icon: 'table_chart', variant: 'secondary' },
+                ],
+          }
+        );
+      }
     } catch {
       addAssistantMessage('❌ فشل رفع الملف. يرجى المحاولة مرة أخرى.');
     }
@@ -740,6 +849,20 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
       doSend('طابق الصورة كتقرير');
     } else if (action.id === 'match-spreadsheet') {
       doSend('طابق الصورة كجدول');
+    } else if (action.id === 'open-excel') {
+      // Navigate to data view (ExcelEngine)
+      const workspace = (window as any).__workspaceNavigate;
+      if (workspace) workspace('data');
+    } else if (action.id === 'new-excel') {
+      doSend('أنشئ جدول بيانات جديد');
+    } else if (action.id === 'excel-improve') {
+      doSend('حسّن جدول الإكسل');
+    } else if (action.id === 'excel-beautify') {
+      doSend('جمّل جدول الإكسل');
+    } else if (action.id === 'excel-clean') {
+      doSend('نظّف بيانات الإكسل');
+    } else if (action.id === 'excel-analyze') {
+      doSend('حلّل بيانات الإكسل');
     } else if (action.id === 'export-pptx') {
       if (generatedSlides.length > 0) {
         toast.promise(
@@ -1786,7 +1909,7 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*,.pdf"
+            accept="image/*,.pdf,.xlsx,.xls,.csv,.tsv"
             className="hidden"
             onChange={handleFileUpload}
           />

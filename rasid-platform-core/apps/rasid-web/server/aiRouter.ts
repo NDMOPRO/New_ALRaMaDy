@@ -2821,4 +2821,52 @@ ${targetPrompt}`,
       const url = `/uploads/${fileKey}`;
       return { url, fileName: input.fileName, filePath };
     }),
+
+  // ─── Excel AI Operations (merge, split, beautify, improve, generate, clean) ───
+  excelOperation: publicProcedure
+    .input(z.object({
+      operation: z.enum(['merge', 'split', 'beautify', 'improve', 'generate', 'clean', 'analyze', 'formula', 'transform', 'summarize']),
+      prompt: z.string(),
+      sheetsData: z.string().optional(), // JSON stringified array of sheets
+      options: z.object({
+        outputFormat: z.enum(['single', 'multiple']).optional(),
+        style: z.string().optional(),
+        language: z.string().optional(),
+      }).optional(),
+    }))
+    .mutation(async ({ input }) => {
+      const opDescriptions: Record<string, string> = {
+        merge: 'ادمج الجداول المقدمة في جدول واحد موحد. حلل الأعمدة المتشابهة ووحدها. أرجع JSON بتنسيق: { sheets: [{ name, columns: [string], rows: [[string]] }], summary: string }',
+        split: 'قسّم الجدول إلى عدة جداول منطقية بناءً على المحتوى. أرجع JSON بتنسيق: { sheets: [{ name, columns: [string], rows: [[string]] }], summary: string }',
+        beautify: 'حسّن تنسيق البيانات: نظّف النصوص، وحّد التنسيقات، أصلح الأخطاء الإملائية، رتّب الأعمدة بشكل منطقي. أرجع JSON بتنسيق: { sheets: [{ name, columns: [string], rows: [[string]] }], changes: [string], summary: string }',
+        improve: 'حسّن جودة البيانات: أضف أعمدة مفيدة محسوبة، صنّف البيانات، أضف إحصائيات. أرجع JSON بتنسيق: { sheets: [{ name, columns: [string], rows: [[string]] }], improvements: [string], summary: string }',
+        generate: 'أنشئ جدول بيانات جديد بناءً على الوصف المقدم. أنشئ بيانات واقعية ومفيدة. أرجع JSON بتنسيق: { sheets: [{ name, columns: [string], rows: [[string]] }], summary: string }',
+        clean: 'نظّف البيانات: أزل التكرارات، أصلح القيم الفارغة، وحّد التنسيقات. أرجع JSON بتنسيق: { sheets: [{ name, columns: [string], rows: [[string]] }], issues: [string], summary: string }',
+        analyze: 'حلل البيانات وقدم رؤى وإحصائيات مفصلة. أرجع JSON بتنسيق: { analysis: string, statistics: [{ label: string, value: string }], charts: [{ type: string, title: string, data: any }], summary: string }',
+        formula: 'اقترح صيغ Excel مناسبة للبيانات المقدمة. أرجع JSON بتنسيق: { formulas: [{ cell: string, formula: string, description: string }], summary: string }',
+        transform: 'حوّل البيانات إلى الشكل المطلوب (pivot, unpivot, transpose, etc). أرجع JSON بتنسيق: { sheets: [{ name, columns: [string], rows: [[string]] }], summary: string }',
+        summarize: 'لخّص البيانات في جدول ملخص مع إحصائيات رئيسية. أرجع JSON بتنسيق: { sheets: [{ name, columns: [string], rows: [[string]] }], summary: string }',
+      };
+
+      const messages: ChatMessage[] = [
+        {
+          role: 'system',
+          content: `أنت خبير بيانات وإكسل متقدم. مهمتك: ${opDescriptions[input.operation]}\n\nقواعد مهمة:\n1. أرجع JSON صالح فقط بدون أي نص إضافي\n2. البيانات يجب أن تكون باللغة العربية إذا كانت البيانات الأصلية عربية\n3. الأعمدة والصفوف يجب أن تكون مصفوفات نصية\n4. كل صف يجب أن يحتوي على نفس عدد الأعمدة\n5. أضف ملخص واضح لما تم فعله`,
+        },
+        {
+          role: 'user',
+          content: `العملية: ${input.operation}\nالطلب: ${input.prompt}${input.sheetsData ? `\n\nبيانات الجداول:\n${input.sheetsData}` : ''}`,
+        },
+      ];
+
+      const result = await callAI(messages, { temperature: 0.3, max_tokens: 8192 });
+      try {
+        const jsonMatch = result.content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const parsed = JSON.parse(jsonMatch[0]);
+          return { ...parsed, operation: input.operation, source: result.source };
+        }
+      } catch { /* fall through */ }
+      return { sheets: [], summary: result.content, operation: input.operation, source: result.source };
+    }),
 });

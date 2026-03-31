@@ -355,6 +355,15 @@ export default function Home() {
   const [studioOpen, setStudioOpen] = useState(window.innerWidth >= 1024);
   const { activeView, setActiveView } = useWorkspace();
   const [prevView, setPrevView] = useState<string>('chat');
+
+  // Expose workspace navigation globally for ChatCanvas action buttons
+  useEffect(() => {
+    (window as any).__workspaceNavigate = (viewId: string) => {
+      setPrevView(activeView);
+      setActiveView(viewId);
+    };
+    return () => { delete (window as any).__workspaceNavigate; };
+  }, [activeView, setActiveView]);
   const workspaceRef = useRef<HTMLDivElement>(null);
   const chatCanvasRef = useRef<ChatCanvasHandle>(null);
 
