@@ -2051,11 +2051,28 @@ ${input.additionalInstructions ? `تعليمات إضافية: ${input.additiona
         ? `الشرائح السابقة:\n${input.previousSlides.map((s: any, i: number) => `${i + 1}. ${s.title} (${s.layout})`).join('\n')}`
         : '';
       const result = await openaiJSON<{ slide: Record<string, unknown> }>(
-        PRESENTATION_SYSTEM_PROMPT + `\n\nأنت تنشئ شريحة واحدة فقط (الشريحة ${input.slideIndex + 1} من ${input.totalSlides}).\nأجب بـ JSON بالتنسيق: { "slide": { ... } }\n\nتذكير 400%: المحتوى يجب أن يكون ضخماً ومفصلاً. content: 8-12 جملة. bulletPoints: 6-10 نقاط (كل نقطة 3 جمل). kpiItems: 5-8 مؤشرات. tableRows: 8-12 صف. chartData: 8-10 نقاط. timelineItems: 6-8 مراحل. pillarItems: 5-6. infographicItems: 6-8. كل رقم حقيقي ومحدد. لا تختصر أبداً.`,
+        PRESENTATION_SYSTEM_PROMPT + `\n\nأنت تنشئ شريحة واحدة فقط (الشريحة ${input.slideIndex + 1} من ${input.totalSlides}).\nأجب بـ JSON بالتنسيق: { "slide": { ... } }\n\n⚠️ قاعدة صارمة للغلاف (layout: title): شريحة الغلاف يجب أن تحتوي فقط على title (العنوان الرئيسي) و subtitle (جملة واحدة قصيرة فقط). ممنوع منعاً باتاً وضع content أو bulletPoints أو أي محتوى نصي طويل في شريحة الغلاف. الغلاف = عنوان فقط.\n⚠️ قاعدة صارمة للخاتمة (layout: closing): شريحة الخاتمة تحتوي فقط على title و subtitle. ممنوع وضع content طويل.\n\nتذكير 400% (لشرائح المحتوى فقط — ليس الغلاف والخاتمة): المحتوى يجب أن يكون ضخماً ومفصلاً. content: 8-12 جملة. bulletPoints: 6-10 نقاط (كل نقطة 3 جمل). kpiItems: 5-8 مؤشرات. tableRows: 8-12 صف. chartData: 8-10 نقاط. timelineItems: 6-8 مراحل. pillarItems: 5-6. infographicItems: 6-8. كل رقم حقيقي ومحدد. لا تختصر أبداً.`,
         `الموضوع العام: "${input.topic}"\nالشريحة ${input.slideIndex + 1} من ${input.totalSlides}:\n- العنوان: ${input.slideTitle}\n- التخطيط المطلوب: ${input.slideLayout}\n- الوصف: ${input.slideDescription}\nالنمط: ${input.style}\n${prevContext}\n\nأنشئ محتوى Ultra Premium Infographic 400% لهذه الشريحة. استخدم بيانات واقعية وإحصائيات دقيقة وأمثلة عالمية ومحلية. كل حقل يجب أن يفيض بالمعلومات. لا تختصر أبداً.`,
         { max_tokens: 8192, temperature: 0.8 }
       );
       const slideResult = result.slide || {};
+
+      // ═══ FORCE CLEAN: Cover and Closing slides must have NO content ═══
+      const slideLayout = (slideResult as any).layout || input.slideLayout;
+      if (slideLayout === 'title' || slideLayout === 'closing') {
+        delete (slideResult as any).content;
+        delete (slideResult as any).bulletPoints;
+        delete (slideResult as any).kpiItems;
+        delete (slideResult as any).tableHeaders;
+        delete (slideResult as any).tableRows;
+        delete (slideResult as any).chartData;
+        delete (slideResult as any).chartLabels;
+        delete (slideResult as any).timelineItems;
+        delete (slideResult as any).pillarItems;
+        delete (slideResult as any).infographicItems;
+        delete (slideResult as any).leftContent;
+        delete (slideResult as any).rightContent;
+      }
 
       // ═══ BANANA PRO: Generate professional image for ALL slide types when banana-pro selected ═══
       if (input.imageStyle === 'banana-pro') {
