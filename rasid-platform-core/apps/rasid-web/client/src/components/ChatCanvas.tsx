@@ -1478,10 +1478,10 @@ const ChatCanvas = forwardRef<ChatCanvasHandle>(function ChatCanvas(_props, ref)
           className="fixed inset-0 z-50 bg-black flex flex-col"
           tabIndex={0}
           onKeyDown={(e) => {
-            if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowDown' || e.key === ' ') {
               e.preventDefault();
               setSlideshowIndex(prev => Math.min(prev + 1, slideHtmls.length - 1));
-            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
               e.preventDefault();
               setSlideshowIndex(prev => Math.max(prev - 1, 0));
             } else if (e.key === 'Escape') {

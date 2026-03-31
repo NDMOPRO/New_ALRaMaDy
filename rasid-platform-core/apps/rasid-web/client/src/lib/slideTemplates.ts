@@ -88,8 +88,8 @@ function baseCSS(theme: SlideTheme): string {
   return `
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; font-family: ${theme.fontBody}; }
+    * { margin: 0; padding: 0; box-sizing: border-box; direction: rtl; text-align: right; }
+    body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; text-align: right; unicode-bidi: embed; font-family: ${theme.fontBody}; }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
     @keyframes scaleIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
@@ -99,7 +99,7 @@ function baseCSS(theme: SlideTheme): string {
       width: 1280px; height: 720px; position: relative; overflow: hidden;
       font-family: ${theme.fontBody}; color: ${theme.textPrimary};
       background: ${theme.background}; display: flex; flex-direction: column;
-      direction: rtl;
+      direction: rtl; text-align: right; unicode-bidi: embed;
     }
     .slide-bg-image {
       position: absolute; inset: 0; background-size: cover; background-position: center;
@@ -126,8 +126,8 @@ function baseCSS(theme: SlideTheme): string {
       content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
       background: linear-gradient(to left, ${theme.secondary}40, transparent, ${theme.warningColor}40);
     }
-    .header-title { font-size: 24px; font-weight: 800; letter-spacing: -0.3px; animation: fadeInRight 0.5s ease 0.2s both; }
-    .header-subtitle { font-size: 13px; opacity: 0.7; margin-top: 2px; animation: fadeInRight 0.5s ease 0.3s both; }
+    .header-title { font-size: 24px; font-weight: 800; letter-spacing: -0.3px; text-align: right; animation: fadeInRight 0.5s ease 0.2s both; }
+    .header-subtitle { font-size: 13px; opacity: 0.7; margin-top: 2px; text-align: right; animation: fadeInRight 0.5s ease 0.3s both; }
     .header-badge {
       min-width: 40px; height: 40px; padding: 0 12px;
       background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
@@ -136,7 +136,7 @@ function baseCSS(theme: SlideTheme): string {
     }
 
     /* ─── Body ─── */
-    .slide-body { flex: 1; padding: 32px 48px; display: flex; flex-direction: column; gap: 20px; overflow: hidden; animation: fadeInUp 0.6s ease 0.3s both; }
+    .slide-body { flex: 1; padding: 32px 48px; display: flex; flex-direction: column; gap: 20px; overflow: hidden; text-align: right; direction: rtl; animation: fadeInUp 0.6s ease 0.3s both; }
 
     /* ─── Footer (NDMO official) ─── */
     .slide-footer {
@@ -211,7 +211,7 @@ function baseCSS(theme: SlideTheme): string {
     .bullet-list li {
       padding: 14px 22px; padding-right: 40px; position: relative; font-size: 14px; line-height: 1.8;
       background: #FAFBFC; border-radius: 12px; border: 1px solid #E2E8F0;
-      box-shadow: 0 1px 4px rgba(27,42,74,0.04);
+      box-shadow: 0 1px 4px rgba(27,42,74,0.04); text-align: right; direction: rtl;
     }
     .bullet-list li { animation: fadeInRight 0.4s ease both; }
     .bullet-list li:nth-child(1) { animation-delay: 0.3s; }
@@ -298,8 +298,8 @@ function baseCSS(theme: SlideTheme): string {
       color: ${theme.primary};
     }
     .info-value { font-size: 28px; font-weight: 900; color: ${theme.primary}; letter-spacing: -0.5px; }
-    .info-label { font-size: 12px; color: ${theme.textSecondary}; margin-top: 6px; font-weight: 600; }
-    .info-desc { font-size: 11px; color: ${theme.textSecondary}; margin-top: 6px; opacity: 0.8; line-height: 1.6; }
+    .info-label { font-size: 12px; color: ${theme.textSecondary}; margin-top: 6px; font-weight: 600; text-align: center; }
+    .info-desc { font-size: 11px; color: ${theme.textSecondary}; margin-top: 6px; opacity: 0.8; line-height: 1.6; text-align: center; }
 
     /* ─── Timeline (Premium) ─── */
     .timeline { display: flex; flex-direction: column; gap: 0; position: relative; padding-right: 36px; }
@@ -324,8 +324,8 @@ function baseCSS(theme: SlideTheme): string {
       box-shadow: 0 2px 8px rgba(27,42,74,0.05);
     }
     .tl-year { font-size: 13px; font-weight: 800; color: ${theme.secondary}; }
-    .tl-title { font-size: 14px; font-weight: 700; color: ${theme.textPrimary}; margin-top: 4px; }
-    .tl-desc { font-size: 12px; color: ${theme.textSecondary}; margin-top: 6px; line-height: 1.7; }
+    .tl-title { font-size: 14px; font-weight: 700; color: ${theme.textPrimary}; margin-top: 4px; text-align: right; }
+    .tl-desc { font-size: 12px; color: ${theme.textSecondary}; margin-top: 6px; line-height: 1.7; text-align: right; }
 
     /* ─── Pillar Cards (Premium) ─── */
     .pillar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
@@ -350,13 +350,13 @@ function baseCSS(theme: SlideTheme): string {
       background: linear-gradient(135deg, ${theme.gradientStart}, ${theme.gradientEnd});
       color: white; box-shadow: 0 6px 20px ${theme.primary}30;
     }
-    .pillar-title { font-size: 15px; font-weight: 800; color: ${theme.textPrimary}; }
-    .pillar-desc { font-size: 12px; color: ${theme.textSecondary}; margin-top: 8px; line-height: 1.7; }
+    .pillar-title { font-size: 15px; font-weight: 800; color: ${theme.textPrimary}; text-align: center; }
+    .pillar-desc { font-size: 12px; color: ${theme.textSecondary}; margin-top: 8px; line-height: 1.7; text-align: center; }
 
     /* ─── Content paragraph ─── */
     .content-text {
       font-size: 14px; line-height: 2; color: ${theme.textSecondary};
-      max-width: 95%; text-align: justify;
+      max-width: 95%; text-align: right; direction: rtl;
     }
 
     /* ─── Two Column ─── */
@@ -387,7 +387,7 @@ function footerHTML(num: number, total: number): string {
 // ─── Slide HTML wrapper ───
 function slideWrap(theme: SlideTheme, num: number, total: number, inner: string, noFooter = false, bgImage?: string): string {
   const bgDiv = bgImage ? `<div class="slide-bg-image" style="background-image:url('${bgImage}')"></div>` : '';
-  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>${baseCSS(theme)}</style></head><body><div class="slide"><div class="top-accent"></div>${bgDiv}<div style="position:relative;z-index:1;display:flex;flex-direction:column;flex:1;min-height:0">${inner}</div>${noFooter ? '' : footerHTML(num, total)}</div></body></html>`;
+  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>${baseCSS(theme)}</style></head><body><div class="slide"><div class="top-accent"></div>${bgDiv}<div style="position:relative;z-index:1;display:flex;flex-direction:column;flex:1;min-height:0;direction:rtl;text-align:right">${inner}</div>${noFooter ? '' : footerHTML(num, total)}</div></body></html>`;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -398,8 +398,8 @@ function slideWrap(theme: SlideTheme, num: number, total: number, inner: string,
 function coverSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
   return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; font-family: ${theme.fontBody}; }
+    * { margin: 0; padding: 0; box-sizing: border-box; direction: rtl; }
+    body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; text-align: right; unicode-bidi: embed; font-family: ${theme.fontBody}; }
     .cover {
       width: 1280px; height: 720px; position: relative; overflow: hidden;
       background: url('${data.backgroundImage || ASSETS.coverBg}') center/cover no-repeat;
@@ -494,8 +494,8 @@ function tocSlide(theme: SlideTheme, data: SlideData, num: number, total: number
 
   return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; font-family: ${theme.fontBody}; }
+    * { margin: 0; padding: 0; box-sizing: border-box; direction: rtl; }
+    body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; text-align: right; unicode-bidi: embed; font-family: ${theme.fontBody}; }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes tocItemIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
     @keyframes lineGrow { from { width: 0; } to { width: 64px; } }
@@ -547,7 +547,7 @@ function tocSlide(theme: SlideTheme, data: SlideData, num: number, total: number
     .toc-item:first-child .toc-item-num { background: ${theme.secondary}; }
     .toc-item-text {
       flex: 1; padding: 12px 16px; display: flex; align-items: center;
-      font-size: 13px; font-weight: 700; color: ${theme.textPrimary}; line-height: 1.5;
+      font-size: 13px; font-weight: 700; color: ${theme.textPrimary}; line-height: 1.5; text-align: right; direction: rtl;
     }
     .toc-footer {
       position: absolute; bottom: 0; left: 0; right: 0; height: 44px; padding: 0 48px;
@@ -586,8 +586,8 @@ function tocSlide(theme: SlideTheme, data: SlideData, num: number, total: number
 function sectionTitleSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
   return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; font-family: ${theme.fontBody}; }
+    * { margin: 0; padding: 0; box-sizing: border-box; direction: rtl; }
+    body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; text-align: right; unicode-bidi: embed; font-family: ${theme.fontBody}; }
     @keyframes fadeInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes scaleIn { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
@@ -856,8 +856,8 @@ function closingSlide(theme: SlideTheme, data: SlideData, num: number, total: nu
   return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; font-family: ${theme.fontBody}; }
+    * { margin: 0; padding: 0; box-sizing: border-box; direction: rtl; }
+    body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; text-align: right; unicode-bidi: embed; font-family: ${theme.fontBody}; }
     .closing {
       width: 1280px; height: 720px; position: relative; overflow: hidden;
       background: url('${data.backgroundImage || ASSETS.coverBg}') center/cover no-repeat;
