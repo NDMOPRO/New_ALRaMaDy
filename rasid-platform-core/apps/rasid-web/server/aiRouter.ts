@@ -2062,22 +2062,29 @@ ${input.additionalInstructions ? `تعليمات إضافية: ${input.additiona
         const bananaKey = ENV.bananaApiKey;
         if (bananaKey) {
           try {
-            // Build specialized prompt per slide type
+            // Build Ultra Premium specialized prompt per slide type
             let imagePrompt = '';
             const layout = input.slideLayout;
+            const baseStyle = `Ultra high resolution, 8K quality, photorealistic rendering, professional corporate presentation design. Color palette: Royal Dark Blue (#1B2A4A) as dominant, Gold (#D4AF37) accents, Teal (#00B388) highlights, White (#FFFFFF) clean spaces. Saudi Arabia NDMO government executive style. ABSOLUTELY NO TEXT, NO WORDS, NO LETTERS, NO NUMBERS on the image.`;
             
             if (layout === 'title') {
-              imagePrompt = `Ultra premium cover slide visual for presentation titled: "${input.slideTitle}". Topic: ${input.topic}. Style: cinematic hero image, royal dark blue (#1B2A4A) dominant, golden accents (#D4AF37), dramatic lighting, executive keynote quality, Saudi government NDMO style. Abstract futuristic data visualization elements, geometric patterns, NO text, NO words. 16:9 widescreen.`;
+              imagePrompt = `${baseStyle} Cinematic hero cover image for executive keynote presentation about: "${input.topic}". Dramatic wide-angle perspective, volumetric lighting with golden rays, abstract futuristic data streams and holographic geometric patterns floating in space, glass morphism elements, depth of field bokeh effect. Premium Apple-keynote quality. 16:9 widescreen landscape.`;
             } else if (layout === 'closing') {
-              imagePrompt = `Ultra premium closing/thank you slide visual for: "${input.slideTitle}". Topic: ${input.topic}. Style: elegant dark blue gradient background, golden accent lines, abstract celebration/completion motifs, premium corporate finish, Saudi NDMO style. NO text, NO words. 16:9 widescreen.`;
+              imagePrompt = `${baseStyle} Elegant closing/finale slide background. Sophisticated dark blue gradient with subtle golden particle effects, abstract celebration motifs, converging light beams suggesting completion and success, premium glass morphism circles, soft ambient glow. Topic: ${input.topic}. 16:9 widescreen landscape.`;
             } else if (layout === 'toc') {
-              imagePrompt = `Ultra premium table of contents slide visual for: "${input.slideTitle}". Topic: ${input.topic}. Style: clean structured layout background, royal dark blue sidebar, modern geometric index/navigation elements, premium corporate, Saudi NDMO style. NO text, NO words. 16:9 widescreen.`;
+              imagePrompt = `${baseStyle} Table of contents background with structured geometric layout. Clean organized grid pattern, subtle royal blue sidebar element, modern navigation dots and lines, minimalist index design elements, frosted glass panels. Topic: ${input.topic}. 16:9 widescreen landscape.`;
             } else if (layout === 'section-title') {
-              imagePrompt = `Ultra premium section divider slide visual for section: "${input.slideTitle}". Topic: ${input.topic}. Style: bold royal dark blue with golden accent stripe, dramatic abstract geometric shapes, premium section break design, Saudi NDMO style. NO text, NO words. 16:9 widescreen.`;
+              imagePrompt = `${baseStyle} Bold section divider background for: "${input.slideTitle}". Dramatic geometric shapes, large royal dark blue blocks with golden accent stripe, abstract 3D shapes floating, premium depth effect, cinematic lighting from the side. Topic: ${input.topic}. 16:9 widescreen landscape.`;
             } else if (layout === 'executive-summary') {
-              imagePrompt = `Ultra premium executive summary slide background for: "${input.slideTitle}". Topic: ${input.topic}. Style: clean white background with subtle royal dark blue geometric accents, premium data visualization elements, executive boardroom quality, Saudi NDMO style. NO text, NO words. 16:9 widescreen.`;
+              imagePrompt = `${baseStyle} Executive summary slide background. Clean white canvas with subtle royal dark blue geometric corner accents, floating abstract data visualization elements (charts, graphs, nodes), premium boardroom quality, minimal and sophisticated. Topic: ${input.slideTitle} - ${input.topic}. 16:9 widescreen landscape.`;
+            } else if (layout === 'kpi' || layout === 'chart') {
+              imagePrompt = `${baseStyle} Data visualization slide background for: "${input.slideTitle}". Abstract floating holographic charts, glowing data points, subtle grid lines, modern dashboard aesthetic, dark blue gradient base with luminous teal and gold data elements. Topic: ${input.topic}. 16:9 widescreen landscape.`;
+            } else if (layout === 'timeline') {
+              imagePrompt = `${baseStyle} Timeline slide background for: "${input.slideTitle}". Abstract horizontal flow elements, connected nodes with golden lines, progression arrows, futuristic roadmap aesthetic, subtle dark blue gradient with glowing waypoints. Topic: ${input.topic}. 16:9 widescreen landscape.`;
+            } else if (layout === 'pillars') {
+              imagePrompt = `${baseStyle} Pillars/columns slide background for: "${input.slideTitle}". Abstract architectural columns or pillars in royal blue, geometric foundation elements, structured grid layout, premium corporate strength aesthetic. Topic: ${input.topic}. 16:9 widescreen landscape.`;
             } else {
-              imagePrompt = `Professional infographic slide background for: ${input.slideTitle}. Topic: ${input.topic}. Style: ultra premium corporate presentation, royal dark blue (#1B2A4A) dominant color, clean white background, modern geometric shapes, subtle gradients, NDMO Saudi government style. NO text, NO words, abstract professional design elements only. 16:9 widescreen.`;
+              imagePrompt = `${baseStyle} Professional infographic slide background for: "${input.slideTitle}". Clean white background with subtle geometric accents in royal dark blue corners, floating abstract shapes, modern corporate design elements, premium gradient overlays. Topic: ${input.topic}. 16:9 widescreen landscape.`;
             }
 
             const imageUrl = await generateImageAndWait(imagePrompt, {

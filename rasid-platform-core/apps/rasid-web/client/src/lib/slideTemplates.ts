@@ -99,6 +99,11 @@ function baseCSS(theme: SlideTheme): string {
       width: 1280px; height: 720px; position: relative; overflow: hidden;
       font-family: ${theme.fontBody}; color: ${theme.textPrimary};
       background: ${theme.background}; display: flex; flex-direction: column;
+      direction: rtl;
+    }
+    .slide-bg-image {
+      position: absolute; inset: 0; background-size: cover; background-position: center;
+      z-index: 0; opacity: 0.12;
     }
     h1, h2, h3, h4 { font-family: ${theme.fontHeading}; line-height: 1.3; }
     .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-size: 24px; direction: ltr; }
@@ -380,15 +385,16 @@ function footerHTML(num: number, total: number): string {
 }
 
 // ─── Slide HTML wrapper ───
-function slideWrap(theme: SlideTheme, num: number, total: number, inner: string, noFooter = false): string {
-  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>${baseCSS(theme)}</style></head><body><div class="slide"><div class="top-accent"></div>${inner}${noFooter ? '' : footerHTML(num, total)}</div></body></html>`;
+function slideWrap(theme: SlideTheme, num: number, total: number, inner: string, noFooter = false, bgImage?: string): string {
+  const bgDiv = bgImage ? `<div class="slide-bg-image" style="background-image:url('${bgImage}')"></div>` : '';
+  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>${baseCSS(theme)}</style></head><body><div class="slide"><div class="top-accent"></div>${bgDiv}<div style="position:relative;z-index:1;display:flex;flex-direction:column;flex:1;min-height:0">${inner}</div>${noFooter ? '' : footerHTML(num, total)}</div></body></html>`;
 }
 
 // ═══════════════════════════════════════════════════════════════
 // SLIDE TEMPLATES — Ultra Premium
 // ═══════════════════════════════════════════════════════════════
 
-// ─── 1. COVER (Mandatory: Picture1.jpg background) ───
+// ─── 1. COVER (Mandatory: Picture1.jpg background) — TITLE ONLY, Ultra Premium ───
 function coverSlide(theme: SlideTheme, data: SlideData, num: number, total: number): string {
   return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
@@ -396,69 +402,77 @@ function coverSlide(theme: SlideTheme, data: SlideData, num: number, total: numb
     body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; font-family: ${theme.fontBody}; }
     .cover {
       width: 1280px; height: 720px; position: relative; overflow: hidden;
-      background: url('${ASSETS.coverBg}') center/cover no-repeat;
+      background: url('${data.backgroundImage || ASSETS.coverBg}') center/cover no-repeat;
       display: flex; flex-direction: column; justify-content: center; align-items: center;
       text-align: center; color: white;
     }
     .cover::before {
       content: ''; position: absolute; inset: 0;
-      background: linear-gradient(180deg, rgba(11,17,35,0.55) 0%, rgba(11,17,35,0.75) 100%);
+      background: linear-gradient(180deg, rgba(11,17,35,0.45) 0%, rgba(11,17,35,0.70) 50%, rgba(11,17,35,0.85) 100%);
     }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes lineGrow { from { width: 0; } to { width: 80px; } }
+    .cover::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center bottom, rgba(0,179,136,0.08) 0%, transparent 70%);
+    }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes lineGrow { from { width: 0; opacity: 0; } to { width: 120px; opacity: 1; } }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .cover-content { position: relative; z-index: 2; max-width: 900px; padding: 0 60px; }
-    .cover-accent {
-      width: 80px; height: 5px; border-radius: 3px; margin: 0 auto 36px;
-      background: linear-gradient(90deg, ${theme.secondary}, ${theme.warningColor});
-      animation: lineGrow 0.8s ease 0.3s both;
+    @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+    @keyframes floatUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+    .cover-content { position: relative; z-index: 2; max-width: 1000px; padding: 0 80px; }
+    .cover-accent-top {
+      width: 120px; height: 4px; border-radius: 2px; margin: 0 auto 48px;
+      background: linear-gradient(90deg, ${theme.secondary}, ${theme.warningColor}, ${theme.secondary});
+      background-size: 200% auto;
+      animation: lineGrow 1s ease 0.3s both, shimmer 3s linear 1.3s infinite;
     }
     .cover-title {
-      font-size: 44px; font-weight: 900; line-height: 1.35; letter-spacing: -0.5px;
-      text-shadow: 0 4px 24px rgba(0,0,0,0.4);
-      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
-    }
-    .cover-subtitle {
-      font-size: 18px; font-weight: 400; opacity: 0.88; margin-top: 20px;
-      line-height: 1.7; text-shadow: 0 2px 12px rgba(0,0,0,0.3);
-      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both;
+      font-size: 52px; font-weight: 900; line-height: 1.4; letter-spacing: -0.5px;
+      text-shadow: 0 4px 32px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3);
+      animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
     }
     .cover-accent-bottom {
-      width: 80px; height: 5px; border-radius: 3px; margin: 36px auto 0;
-      background: linear-gradient(90deg, ${theme.warningColor}, ${theme.secondary});
-      animation: lineGrow 0.8s ease 0.9s both;
+      width: 120px; height: 4px; border-radius: 2px; margin: 48px auto 0;
+      background: linear-gradient(90deg, ${theme.warningColor}, ${theme.secondary}, ${theme.warningColor});
+      background-size: 200% auto;
+      animation: lineGrow 1s ease 1s both, shimmer 3s linear 2s infinite;
     }
-    .cover-meta {
-      font-size: 13px; opacity: 0.6; margin-top: 40px;
-      display: flex; align-items: center; justify-content: center; gap: 20px;
-      animation: fadeIn 1s ease 1.1s both;
+    .cover-org {
+      font-size: 15px; font-weight: 600; opacity: 0.7; margin-top: 40px;
+      letter-spacing: 2px;
+      animation: fadeIn 1s ease 1.3s both;
     }
-    .cover-meta-sep { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.4); }
+    .cover-date {
+      font-size: 13px; opacity: 0.45; margin-top: 12px;
+      animation: fadeIn 1s ease 1.5s both;
+    }
     .cover-logos {
-      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
-      display: flex; align-items: center; gap: 16px; z-index: 2;
+      position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 20px; z-index: 2;
+      animation: fadeIn 1.2s ease 1.6s both, floatUp 4s ease-in-out 2.8s infinite;
     }
-    .cover-logos img { height: 36px; object-fit: contain; filter: brightness(10); }
-    .cover-logo-sep { width: 1px; height: 28px; background: rgba(255,255,255,0.3); }
+    .cover-logos img { height: 40px; object-fit: contain; filter: brightness(10); }
+    .cover-logo-sep { width: 1px; height: 32px; background: rgba(255,255,255,0.25); }
     .top-accent-cover {
       position: absolute; top: 0; left: 0; right: 0; height: 5px;
       background: linear-gradient(to left, ${theme.secondary}, ${theme.accent}, ${theme.warningColor});
       z-index: 100;
     }
+    .bottom-accent-cover {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(to right, ${theme.secondary}60, transparent, ${theme.warningColor}60);
+      z-index: 100;
+    }
   </style></head><body>
     <div class="cover">
       <div class="top-accent-cover"></div>
+      <div class="bottom-accent-cover"></div>
       <div class="cover-content">
-        <div class="cover-accent"></div>
+        <div class="cover-accent-top"></div>
         <h1 class="cover-title">${data.title}</h1>
-        ${data.subtitle ? `<p class="cover-subtitle">${data.subtitle}</p>` : ''}
         <div class="cover-accent-bottom"></div>
-        <div class="cover-meta">
-          <span>مكتب إدارة البيانات الوطنية</span>
-          <span class="cover-meta-sep"></span>
-          <span>${new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'long' })}</span>
-          ${data.content ? `<span class="cover-meta-sep"></span><span>${data.content}</span>` : ''}
-        </div>
+        <div class="cover-org">مكتب إدارة البيانات الوطنية</div>
+        <div class="cover-date">${new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'long' })}</div>
       </div>
       <div class="cover-logos">
         <img src="${ASSETS.ndmoLogo}" alt="NDMO" onerror="this.style.display='none'">
@@ -665,7 +679,7 @@ function executiveSummarySlide(theme: SlideTheme, data: SlideData, num: number, 
       ${data.content ? `<p class="content-text">${data.content}</p>` : ''}
       ${bullets ? `<ul class="bullet-list">${bullets}</ul>` : ''}
     </div>
-  `);
+  `, false, data.backgroundImage);
 }
 
 // ─── 5. KPI ───
@@ -688,7 +702,7 @@ function kpiSlide(theme: SlideTheme, data: SlideData, num: number, total: number
       ${data.content ? `<p class="content-text">${data.content}</p>` : ''}
       <div class="kpi-grid" style="grid-template-columns:repeat(${cols},1fr);">${kpis}</div>
     </div>
-  `);
+  `, false, data.backgroundImage);
 }
 
 // ─── 6. CHART ───
@@ -715,7 +729,7 @@ function chartSlide(theme: SlideTheme, data: SlideData, num: number, total: numb
       ${data.content ? `<p class="content-text">${data.content}</p>` : ''}
       <div class="chart-area">${bars}</div>
     </div>
-  `);
+  `, false, data.backgroundImage);
 }
 
 // ─── 7. TABLE ───
@@ -734,7 +748,7 @@ function tableSlide(theme: SlideTheme, data: SlideData, num: number, total: numb
       ${data.content ? `<p class="content-text" style="margin-bottom:4px;">${data.content}</p>` : ''}
       <div class="table-wrap"><table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table></div>
     </div>
-  `);
+  `, false, data.backgroundImage);
 }
 
 // ─── 8. INFOGRAPHIC ───
@@ -756,7 +770,7 @@ function infographicSlide(theme: SlideTheme, data: SlideData, num: number, total
       ${data.content ? `<p class="content-text">${data.content}</p>` : ''}
       <div class="info-grid" style="flex:1;align-content:center;">${items}</div>
     </div>
-  `);
+  `, false, data.backgroundImage);
 }
 
 // ─── 9. TIMELINE ───
@@ -777,7 +791,7 @@ function timelineSlide(theme: SlideTheme, data: SlideData, num: number, total: n
       <div class="header-badge">${String(num).padStart(2, '0')}</div>
     </div>
     <div class="slide-body"><div class="timeline">${items}</div></div>
-  `);
+  `, false, data.backgroundImage);
 }
 
 // ─── 10. PILLARS ───
@@ -798,7 +812,7 @@ function pillarsSlide(theme: SlideTheme, data: SlideData, num: number, total: nu
       ${data.content ? `<p class="content-text">${data.content}</p>` : ''}
       <div class="pillar-grid" style="flex:1;align-content:center;">${items}</div>
     </div>
-  `);
+  `, false, data.backgroundImage);
 }
 
 // ─── 11. CONTENT ───
@@ -813,7 +827,7 @@ function contentSlide(theme: SlideTheme, data: SlideData, num: number, total: nu
       ${data.content ? `<p class="content-text">${data.content}</p>` : ''}
       ${bullets ? `<ul class="bullet-list">${bullets}</ul>` : ''}
     </div>
-  `);
+  `, false, data.backgroundImage);
 }
 
 // ─── 12. TWO COLUMN ───
@@ -834,7 +848,7 @@ function twoColumnSlide(theme: SlideTheme, data: SlideData, num: number, total: 
         <ul class="bullet-list">${col2}</ul>
       </div>
     </div>
-  `);
+  `, false, data.backgroundImage);
 }
 
 // ─── 13. CLOSING (Mandatory: Picture1.jpg background) ───
@@ -846,7 +860,7 @@ function closingSlide(theme: SlideTheme, data: SlideData, num: number, total: nu
     body, html { width: 1280px; height: 720px; overflow: hidden; direction: rtl; font-family: ${theme.fontBody}; }
     .closing {
       width: 1280px; height: 720px; position: relative; overflow: hidden;
-      background: url('${ASSETS.coverBg}') center/cover no-repeat;
+      background: url('${data.backgroundImage || ASSETS.coverBg}') center/cover no-repeat;
       display: flex; flex-direction: column; justify-content: center; align-items: center;
       text-align: center; color: white;
     }
